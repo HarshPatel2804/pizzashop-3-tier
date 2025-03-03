@@ -1,0 +1,15 @@
+D:\pizzashop\pizzashop.service\bin\Debug\net7.0\pizzashop.service.deps.json
+D:\pizzashop\pizzashop.service\bin\Debug\net7.0\pizzashop.service.dll
+D:\pizzashop\pizzashop.service\bin\Debug\net7.0\pizzashop.service.pdb
+D:\pizzashop\pizzashop.service\bin\Debug\net7.0\pizzashop.repository.dll
+D:\pizzashop\pizzashop.service\bin\Debug\net7.0\pizzashop.repository.pdb
+D:\pizzashop\pizzashop.service\obj\Debug\net7.0\pizzashop.service.csproj.AssemblyReference.cache
+D:\pizzashop\pizzashop.service\obj\Debug\net7.0\pizzashop.service.GeneratedMSBuildEditorConfig.editorconfig
+D:\pizzashop\pizzashop.service\obj\Debug\net7.0\pizzashop.service.AssemblyInfoInputs.cache
+D:\pizzashop\pizzashop.service\obj\Debug\net7.0\pizzashop.service.AssemblyInfo.cs
+D:\pizzashop\pizzashop.service\obj\Debug\net7.0\pizzashop.service.csproj.CoreCompileInputs.cache
+D:\pizzashop\pizzashop.service\obj\Debug\net7.0\pizzashop.service.csproj.CopyComplete
+D:\pizzashop\pizzashop.service\obj\Debug\net7.0\pizzashop.service.dll
+D:\pizzashop\pizzashop.service\obj\Debug\net7.0\refint\pizzashop.service.dll
+D:\pizzashop\pizzashop.service\obj\Debug\net7.0\pizzashop.service.pdb
+D:\pizzashop\pizzashop.service\obj\Debug\net7.0\ref\pizzashop.service.dll

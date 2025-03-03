@@ -1,0 +1,153 @@
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Profile Page";
+}
+
+@model pizzashop.repository.ViewModels.ProfileViewModel;
+
+<head>
+    <link rel="stylesheet" href="~/css/userList.css">
+</head>
+<section style="min-height: 100vh; background-color: lightblue;">
+    <div class="row pt-4 ms-sm-5 me-sm-5 ms-3 me-3 mb-4" style="height: 70px;">
+        <h2 class="col" style="color: rgb(101, 101, 224); font-family: Roboto; font-weight: 550">My Profile</h1>
+    </div>
+
+    <div class="row  ms-sm-5 me-sm-5 ms-3 me-3"
+        style="border-radius: 6px; box-shadow: 1px 1px 15px rgb(108, 103, 103);">
+        <div class="row" style="--bs-gutter-x: 0rem;">
+            <img src="~/images/profile_div_bg.jpg"
+                style="max-height: 50px; border-top-left-radius: 6px; border-top-right-radius: 6px;"
+                class="w-100 h-100 pe-0 ps-0">
+            <div class="col d-flex align-items-center mb-3" style="margin-top: -21px;">
+                <img src="~/images/Default_pfp.svg.png" alt="profile image" class="ms-md-4 ms-2 bg-light ps-0 pe-0"
+                    id="profile" style="max-height: 100px; max-width: 100px; border-radius: 50%;">
+                <label class="d-flex flex-column justify-content-center align-items-center" for="files">
+                    <img class="p-1" id="upload-photo-icon" src="~/images/cloud-arrow-up.svg" alt="upload-icon" />
+                </label>
+                <input id="files" type="file" class="upload-file text-muted d-none" />
+                <div class="d-flex flex-column">
+                    <span class=" fw-bold">HARSH PATEL</span>
+                    <span>Admin</span>
+                </div>
+                <span class="ms-auto me-md-4 me-2">@Model.Email</span>
+            </div>
+        </div>
+        <form asp-controller="Dashboard" asp-action="Profile">
+            <input type="hidden" asp-for="Email">
+        <input type="hidden" asp-for="Id">
+            <div class="row">
+                <div class="form-floating col-md-6 col-12 mb-3">
+                    <input asp-for="FirstName" type="text" class="form-control" id="floatingInput">
+                    <label for="floatingInput" class="label-pad">First Name</label>
+                </div>
+                <div class="form-floating col-md-6 col-12 mb-3">
+                    <input asp-for="LastName" type="text" class="form-control" id="floatingPassword" >
+                    <label for="floatingPassword" class="label-pad">Last Name</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-floating col-md-6 col-12 mb-3">
+                    <input asp-for="Username" type="text" class="form-control" id="floatingInput">
+                    <label for="floatingInput" class="label-pad">Username</label>
+                </div>
+                <div class="form-floating col-md-6 col-12 mb-3">
+                    <input asp-for="Phone" type="text" class="form-control" id="floatingPassword" >
+                    <label for="floatingPassword" class="label-pad">Phone</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-floating col-md-4 col-12 mb-3">
+                    <select class="form-select" aria-label="Default select example" asp-for="CountryId">
+                        <option value="">Select Country</option>
+                        @foreach (var country in Model.Countries)
+                        {
+                        <option value="@country.Value">@country.Text</option>
+                        }
+                    </select>
+                    <label for="floatingPassword" class="label-pad">Country</label>
+                </div>
+                <div class="form-floating col-md-4 col-12 mb-3">
+                    <select class="form-select" aria-label="Default select example" asp-for="StateId">
+                        <option>Select State</option>
+                        @foreach (var state in Model.States)
+                        {
+                        <option value="@state.Value">@state.Text</option>
+                        }
+                    </select>
+                    <label for="floatingPassword" class="label-pad">State</label>
+                </div>
+                <div class="form-floating col-md-4 col-12 mb-3">
+                    <select class="form-select" aria-label="Default select example" asp-for="CityId">
+                        <option >Select City</option>
+                         @foreach (var city in Model.Cities)
+                        {
+                        <option value="@city.Value">@city.Text</option>
+                        }
+                    </select>
+                    <label for="floatingPassword" class="label-pad">City</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-floating col-md-8 col-12 mb-3">
+                    <input asp-for="Address" type="text" class="form-control" id="floatingPassword" >
+                    <label for="floatingPassword" class="label-pad">Address</label>
+                </div>
+                <div class="form-floating col-md-4 col-12 mb-3">
+                    <input asp-for="Zipcode" type="text" class="form-control" id="floatingInput" >
+                    <label for="floatingInput" class="label-pad">Zipcode</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-auto mb-3 ms-auto">
+                    <button type="submit" class="btn btn-primary"
+                        style="border-radius: 3px; width: 120px;">Update</button>
+                </div>
+                <div class="col-auto">
+                    <button type="button" class="btn "
+                        style="border-radius: 3px; width: 90px; border: 1px solid blue; color: blue">Cancel</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+<script>
+    $(document).ready( function() {
+        $("#Country").change(function() {
+            console.log("hii");
+            var countryId = $(this).val();
+            if(countryId){
+                $.getJSON('/Country/GetStates' , { countryId : countryId} , function(data) {
+                    var state = $("#State");
+                    state.empty();
+                    state.append('<option value="">Select State</option>');
+                    $.each(data , function (index , item) {
+                        
+                        state.append('<option value="' + item.stateid + '">' + item.statename + '</option>');
+                    });
+                });
+            }
+            else{
+                $("#State").html('<option value="">Select State</option>');
+                $("#State").html('<option value="">Select City</option>');
+            }
+        });
+        $("#State").change(function() {
+            var stateId = $(this).val();
+            if(stateId){
+                $.getJSON('/Country/GetCities' , { stateId : stateId} , function(data) {
+                    console.log(data);
+                    var city = $("#City");
+                    city.empty();
+                    city.append('<option value="">Select State</option>');
+                    $.each(data , function (index , item) {
+                        city.append('<option value="' + item.cityid + '">' + item.cityname + '</option>');
+                    });
+                });
+            }
+            else{
+                $("#City").html('<option value="">Select City</option>');
+            }
+        });
+    })
+</script>

@@ -1,0 +1,48 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body,main{
+    height: 100vh;
+    /* overflow-x: hidden; */
+}
+
+main>section.row{
+    --bs-gutter-x : 0rem !important;
+}
+
+.sidebar{
+    background-color: white;
+    height: 100%;
+    min-height: 1000px;
+}
+
+.menu{
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    cursor: pointer;
+    height: 48px;
+    text-decoration: none;
+}
+
+.menu.active{
+    background-color: lightblue;
+}
+
+.menu-icon{
+    width: 25px;
+    height: 25px;
+}
+
+.offcanvas-start{
+    width: auto !important;
+ }
+
+@media (max-height: 700px){
+    .menu{
+        height:35px;
+    }
+}

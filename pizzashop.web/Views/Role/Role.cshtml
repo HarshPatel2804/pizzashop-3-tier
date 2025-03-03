@@ -1,0 +1,34 @@
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Add User Page";
+}
+<head>
+    <link rel="stylesheet" href="~/css/userList.css">
+</head>
+<section style = "min-height: 100vh; background-color: rgb(225, 234, 237); padding: 15px 100px;" class = "role-main">
+                    <div style = "padding: 25px 25px; background-color: white; width: 100%; max-width: 60rem; margin-top: 50px;" class = "table-responsive">
+                        <table class="table" style = "max-width: 60rem;">
+                                <thead>
+                                  <tr>
+                                    <th scope="col"><span class = "heading">Role</span></th>
+                                    <th scope="col" class = "text-end"><span class = "heading">Action</span></th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var role in Model)
+                                    {
+                                    <tr>                       
+                                      <td>@role.Text</td>
+                                      <td class = "text-end">
+                                          <a asp-controller="Role" asp-action="Permission" asp-route-id = "@role.Value">
+                                              <img src="~/images/pen.svg" alt="profile image" class="me-2 bg-light"
+                                              id="profile" style="max-height: 30px; height: 100%; width:auto;">
+                                          </a>
+                                      </td>
+                                    </tr>
+                                    }
+                                    
+                                  </tbody>
+                              </table>       
+                    </div>
+                </section>

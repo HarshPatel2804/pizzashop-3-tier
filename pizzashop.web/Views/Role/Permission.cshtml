@@ -1,0 +1,102 @@
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Add User Page";
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/userList.css">
+</head>
+
+<section style = "min-height: 100vh; background-color: lightblue;">
+                    <div class = "row pt-4 ms-2 me-3" style = "height: 70px;">
+                        <h2 class = "col" style="color: rgb(101, 101, 224); font-family: Roboto; font-weight: 550">Permissions</h1>
+                        <a asp-controller="Role" asp-action="Role" type = "button" class = "btn btn-primary col-auto ms-2 d-flex align-items-center" style = "border-radius: 2px; border: none;">Back</a>
+                    </div>
+                    <div class = "row mt-4 ms-3 me-3 px-3 table-responsive" style = "border-radius: 6px; box-shadow: 1px 1px 15px rgb(108, 103, 103); background-color: white;" >
+                        <div class="form-floating col-6 mt-3 mb-3">
+                            <input type="text" class="form-control Role" id="floatingInput" value="@Model[0].Rolename" disabled>
+                            <label for="floatingInput" class = "label-pad">Role</label>
+                        </div>
+                        <table class="table">
+                                <thead>
+                                  <tr>
+                                    <th scope="col"><img src = "~/images/minus.png" style = "width:20px;" class = "mb-1"><span class = "heading ms-3">Permission</span></th>
+                                    <th scope="col"><span class = "heading">Can View</span></th>
+                                    <th scope="col"><span class = "heading">Can Add/Edit</span></th>
+                                    <th scope="col"><span class = "heading">Can Delete</span> </th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var module in Model)
+                                    {
+                                  <tr>
+                                    <td>
+                                        <div class="form-check">
+                                            <input class="form-check-input module-checkbox" type="checkbox" value="" id="flexCheckDefault" data-module-id="@module.PermissionId">
+                                            <label class="form-check-label" for="flexCheckDefault" >
+                                              @module.ModuleName
+                                            </label>
+                                          </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input can-view" type="checkbox" id="flexSwitchCheckDefault" data-module-id="@module.PermissionId" @(module.CanView ? "checked" : "")>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input can-edit" type="checkbox" id="flexSwitchCheckDefault" data-module-id="@module.PermissionId" @(module.CanEdit ? "checked" : "")>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input can-delete" type="checkbox" id="flexSwitchCheckDefault" data-module-id="@module.PermissionId" @(module.CanDelete ? "checked" : "")>
+                                        </div>
+                                    </td>
+                                  </tr>
+                                    }                   
+                                </tbody>
+                              </table>
+                        <div class = "row mb-3">
+                            <div class = "col-auto ms-auto">
+                                <button type="submit" class="btn btn-primary harsh" style = "border-radius: 3px; width: 120px;">Save</button>                                  
+                            </div>
+                            <div class = "col-auto" style = "padding-left: 0px;">
+                                <button type="button" class="btn" style = "border-radius: 3px; width: 90px; border: 1px solid blue; color: blue">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+<script>
+    document.querySelector(".harsh").addEventListener("click", function () {
+        let permissions = [];
+
+        document.querySelectorAll(".module-checkbox").forEach((checkbox) => {
+            if(!checkbox.checked) return;
+            let permissionId = checkbox.getAttribute("data-module-id");
+            let canView = document.querySelector(`.can-view[data-module-id='${permissionId}']`).checked;
+            let canEdit = document.querySelector(`.can-edit[data-module-id='${permissionId}']`).checked;
+            let canDelete = document.querySelector(`.can-delete[data-module-id='${permissionId}']`).checked;
+
+            permissions.push({               
+                PermissionId: parseInt(permissionId),
+                CanView: canView,
+                CanEdit: canEdit,
+                CanDelete: canDelete
+            });
+        });
+
+        fetch("/Role/Permission", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(permissions),
+        })
+        .then(response => response.json())
+        .then(data => {
+            location.reload(); // Reload page to reflect changes
+        })
+        .catch(error => console.error("Error:", error));
+    });
+</script>
