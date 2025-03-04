@@ -13,10 +13,12 @@ namespace pizzashop.web.Controllers;
 public class DashboardController : Controller
 {
     private readonly IProfileService _ProfileService;
+    private readonly PizzaShopContext _context;
 
-    public DashboardController(IProfileService ProfileService)
+    public DashboardController(IProfileService ProfileService , PizzaShopContext context)
     {
         _ProfileService = ProfileService;
+        _context = context;
     }
     public IActionResult Dashboard()
     {
@@ -30,5 +32,41 @@ public class DashboardController : Controller
         var model = await _ProfileService.GetProfileData((int)id);
         
         return View(model);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Profile(ProfileViewModel model)
+    {
+        await _ProfileService.UpdateProfileData(model);
+        
+        return RedirectToAction("Profile","Dashboard");
+    }
+
+    public IActionResult ChangePassword()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+    {
+        var userData = SessionUtils.GetUser(HttpContext);
+        model.Email = userData.Email;
+        Console.WriteLine(model.OldPassword + "Password");
+        await _ProfileService.UpdatePassword(model);
+        return RedirectToAction("Dashboard","Dashboard");;
+    }
+
+    
+    public JsonResult GetStates(int countryId)
+    {
+        var states = _context.States.Where(s => s.Countryid == countryId);
+        return Json(states);
+    }
+
+    public JsonResult GetCities(int stateId)
+    {
+        var cities = _context.Cities.Where(s => s.Stateid == stateId);
+        return Json(cities);
     }
 }

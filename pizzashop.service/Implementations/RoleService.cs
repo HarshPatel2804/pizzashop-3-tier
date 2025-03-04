@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.Rendering;
 using pizzashop.repository.Models;
 using pizzashop.service.Interfaces;
 
@@ -11,6 +12,13 @@ public class RoleService : IRoleService
     {
         _RoleRepository = RoleRepository;
     }
+
+    public async Task<List<SelectListItem>> GetAllRoles()
+    {
+        return await _RoleRepository.GetAllRoleAsync();
+    }
+
+
     public async Task<Role> GetRoleById(int Roleid)
     {
         return await _RoleRepository.GetUserRoleAsync(Roleid);

@@ -120,7 +120,7 @@
         $("#Country").change(function() {
             var countryId = $(this).val();
             if(countryId){
-                $.getJSON('/Country/GetStates' , { countryId : countryId} , function(data) {
+                $.getJSON('/Dashboard/GetStates' , { countryId : countryId} , function(data) {
                     var state = $("#State");
                     state.empty();
                     state.append('<option value="">Select State</option>');
@@ -132,17 +132,17 @@
             }
             else{
                 $("#State").html('<option value="">Select State</option>');
-                $("#State").html('<option value="">Select City</option>');
+                $("#City").html('<option value="">Select City</option>');
             }
         });
         $("#State").change(function() {
             var stateId = $(this).val();
             if(stateId){
-                $.getJSON('/Country/GetCities' , { stateId : stateId} , function(data) {
+                $.getJSON('/Dashboard/GetCities' , { stateId : stateId} , function(data) {
                     console.log(data);
                     var city = $("#City");
                     city.empty();
-                    city.append('<option value="">Select State</option>');
+                    city.append('<option value="">Select City</option>');
                     $.each(data , function (index , item) {
                         city.append('<option value="' + item.cityid + '">' + item.cityname + '</option>');
                     });

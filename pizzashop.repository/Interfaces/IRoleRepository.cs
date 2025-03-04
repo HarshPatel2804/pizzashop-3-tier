@@ -7,5 +7,5 @@ public interface IRoleRepository
 {
     Task<Role> GetUserRoleAsync(int Roleid);
 
-    Task<List<SelectListItem>> GetAllRoleAsync(int Roleid);
+    Task<List<SelectListItem>> GetAllRoleAsync();
 }

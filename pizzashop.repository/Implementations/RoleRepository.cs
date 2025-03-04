@@ -18,7 +18,7 @@ public class RoleRepository : IRoleRepository
         return await _context.Roles.FirstOrDefaultAsync(r => r.Roleid == Roleid);
     }
 
-    public async Task<List<SelectListItem>> GetAllRoleAsync(int Roleid)
+    public async Task<List<SelectListItem>> GetAllRoleAsync()
     {
         return _context.Roles.Select(r => new SelectListItem
             {

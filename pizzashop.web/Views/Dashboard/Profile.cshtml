@@ -33,16 +33,16 @@
                 <span class="ms-auto me-md-4 me-2">@Model.Email</span>
             </div>
         </div>
-        <form asp-controller="Dashboard" asp-action="Profile">
+        <form asp-controller="Dashboard" asp-action="Profile" method="post">
             <input type="hidden" asp-for="Email">
-        <input type="hidden" asp-for="Id">
+            <input type="hidden" asp-for="Id">
             <div class="row">
                 <div class="form-floating col-md-6 col-12 mb-3">
                     <input asp-for="FirstName" type="text" class="form-control" id="floatingInput">
                     <label for="floatingInput" class="label-pad">First Name</label>
                 </div>
                 <div class="form-floating col-md-6 col-12 mb-3">
-                    <input asp-for="LastName" type="text" class="form-control" id="floatingPassword" >
+                    <input asp-for="LastName" type="text" class="form-control" id="floatingPassword">
                     <label for="floatingPassword" class="label-pad">Last Name</label>
                 </div>
             </div>
@@ -52,37 +52,37 @@
                     <label for="floatingInput" class="label-pad">Username</label>
                 </div>
                 <div class="form-floating col-md-6 col-12 mb-3">
-                    <input asp-for="Phone" type="text" class="form-control" id="floatingPassword" >
+                    <input asp-for="Phone" type="text" class="form-control" id="floatingPassword">
                     <label for="floatingPassword" class="label-pad">Phone</label>
                 </div>
             </div>
             <div class="row">
                 <div class="form-floating col-md-4 col-12 mb-3">
-                    <select class="form-select" aria-label="Default select example" asp-for="CountryId">
+                    <select class="form-select" id="Country" aria-label="Default select example" asp-for="CountryId">
                         <option value="">Select Country</option>
                         @foreach (var country in Model.Countries)
                         {
-                        <option value="@country.Value">@country.Text</option>
+                            <option value="@country.Value">@country.Text</option>
                         }
                     </select>
                     <label for="floatingPassword" class="label-pad">Country</label>
                 </div>
                 <div class="form-floating col-md-4 col-12 mb-3">
-                    <select class="form-select" aria-label="Default select example" asp-for="StateId">
-                        <option>Select State</option>
+                    <select class="form-select" id="State" aria-label="Default select example" asp-for="StateId">
+                        <option value="">Select State</option>
                         @foreach (var state in Model.States)
                         {
-                        <option value="@state.Value">@state.Text</option>
+                            <option value="@state.Value">@state.Text</option>
                         }
                     </select>
                     <label for="floatingPassword" class="label-pad">State</label>
                 </div>
                 <div class="form-floating col-md-4 col-12 mb-3">
-                    <select class="form-select" aria-label="Default select example" asp-for="CityId">
-                        <option >Select City</option>
-                         @foreach (var city in Model.Cities)
+                    <select class="form-select" id="City" aria-label="Default select example" asp-for="CityId">
+                        <option value="">Select City</option>
+                        @foreach (var city in Model.Cities)
                         {
-                        <option value="@city.Value">@city.Text</option>
+                            <option value="@city.Value">@city.Text</option>
                         }
                     </select>
                     <label for="floatingPassword" class="label-pad">City</label>
@@ -90,11 +90,11 @@
             </div>
             <div class="row">
                 <div class="form-floating col-md-8 col-12 mb-3">
-                    <input asp-for="Address" type="text" class="form-control" id="floatingPassword" >
+                    <input asp-for="Address" type="text" class="form-control" id="floatingPassword">
                     <label for="floatingPassword" class="label-pad">Address</label>
                 </div>
                 <div class="form-floating col-md-4 col-12 mb-3">
-                    <input asp-for="Zipcode" type="text" class="form-control" id="floatingInput" >
+                    <input asp-for="Zipcode" type="text" class="form-control" id="floatingInput">
                     <label for="floatingInput" class="label-pad">Zipcode</label>
                 </div>
             </div>
@@ -112,40 +112,40 @@
     </div>
 </section>
 <script>
-    $(document).ready( function() {
-        $("#Country").change(function() {
+    $(document).ready(function () {
+        $("#Country").change(function () {
             console.log("hii");
             var countryId = $(this).val();
-            if(countryId){
-                $.getJSON('/Country/GetStates' , { countryId : countryId} , function(data) {
+            if (countryId) {
+                $.getJSON('/Dashboard/GetStates', { countryId: countryId }, function (data) {
                     var state = $("#State");
                     state.empty();
                     state.append('<option value="">Select State</option>');
-                    $.each(data , function (index , item) {
-                        
+                    $.each(data, function (index, item) {
+
                         state.append('<option value="' + item.stateid + '">' + item.statename + '</option>');
                     });
                 });
             }
-            else{
+            else {
                 $("#State").html('<option value="">Select State</option>');
-                $("#State").html('<option value="">Select City</option>');
+                $("#City").html('<option value="">Select City</option>');
             }
         });
-        $("#State").change(function() {
+        $("#State").change(function () {
             var stateId = $(this).val();
-            if(stateId){
-                $.getJSON('/Country/GetCities' , { stateId : stateId} , function(data) {
+            if (stateId) {
+                $.getJSON('/Dashboard/GetCities', { stateId: stateId }, function (data) {
                     console.log(data);
                     var city = $("#City");
                     city.empty();
-                    city.append('<option value="">Select State</option>');
-                    $.each(data , function (index , item) {
+                    city.append('<option value="">Select City</option>');
+                    $.each(data, function (index, item) {
                         city.append('<option value="' + item.cityid + '">' + item.cityname + '</option>');
                     });
                 });
             }
-            else{
+            else {
                 $("#City").html('<option value="">Select City</option>');
             }
         });

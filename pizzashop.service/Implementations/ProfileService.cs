@@ -1,6 +1,7 @@
 using pizzashop.repository.Interfaces;
 using pizzashop.repository.ViewModels;
 using pizzashop.service.Interfaces;
+using pizzashop.service.Utils;
 
 namespace pizzashop.service.Implementations;
 
@@ -49,5 +50,39 @@ public class ProfileService : IProfileService
         };
         return model;
     }
+
+     public async Task UpdateProfileData(ProfileViewModel model)
+     {
+         var userDetails = await _UserRepository.GetUserByIdAsync(model.Id);
+         var user = await _UsersloginRepository.GetUserByIdAsync(model.Id);
+
+         userDetails.Firstname = model.FirstName;
+         userDetails.Lastname = model.LastName;
+         userDetails.Phone = model.Phone;
+         userDetails.Address = model.Address;
+         userDetails.Zipcode = model.Zipcode;
+         userDetails.Countryid = model.CountryId;
+         userDetails.Stateid = model.StateId;
+         userDetails.Cityid = model.CityId;
+         user.Username = model.Username;
+
+         await _UserRepository.UpdateUser(userDetails);
+         await _UsersloginRepository.UpdateUserLoginDetails(user);
+     }
+
+     public async Task<bool> UpdatePassword(ChangePasswordViewModel model){
+        var usersLogin = await _UsersloginRepository.GetUserByEmailAsync(model.Email);
+        if (usersLogin == null || !PasswordUtills.VerifyPassword(model.OldPassword, usersLogin.Passwordhash))
+        {
+            Console.WriteLine(model.Email + model.OldPassword);
+            return false;
+        }
+        else 
+        {
+            usersLogin.Passwordhash = model.Password;
+             await _UsersloginRepository.UpdateUserLoginDetails(usersLogin);
+            return true;
+        }
+     }
 
 }
