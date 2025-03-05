@@ -24,7 +24,7 @@ public class MenuController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Category(CategoryViewModel model){
+    public async Task<IActionResult> Category([FromBody] CategoryViewModel model){
         Console.WriteLine(model.Categoryname + "name");
         await _menuService.AddCategory(model);
         return RedirectToAction("Menu","Menu");
