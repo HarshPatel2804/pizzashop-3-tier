@@ -9,4 +9,8 @@ public interface IUserService
     Task DeleteUser(int id);
 
     Task AddUser(UserViewModel model);
+
+    Task<UserViewModel> GetUserData(int id);
+
+    Task UpdateUserData(UserViewModel model);
 }

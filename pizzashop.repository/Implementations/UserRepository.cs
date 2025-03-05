@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using pizzashop.repository.Interfaces;
 using pizzashop.repository.Models;
@@ -45,5 +46,48 @@ public class UserRepository : IUserRepository
     {
         _context.Users.Update(user);
         _context.SaveChanges();
+    }
+
+    public async Task<UserViewModel> GetUserDataAsync(int id){
+        var userLoginDetails = _context.Userslogins.FirstOrDefault(u => u.Userid == id);
+        var user = _context.Users.FirstOrDefault(u => u.Userid == id);
+        var role = _context.Roles.FirstOrDefault(r => r.Roleid == userLoginDetails.Roleid);
+
+        var model = new UserViewModel
+        {
+            Id = id,
+            FirstName = user.Firstname,
+            LastName = user.Lastname,
+            Email = userLoginDetails.Email,
+            Username = userLoginDetails.Username,
+            Role = role.Roleid,
+            Phone = user.Phone,
+            Address = user.Address,
+            Zipcode = user.Zipcode,
+            CountryId = user.Countryid,
+            StateId = user.Stateid,
+            CityId = user.Cityid,
+            Roles = _context.Roles.Select(r => new SelectListItem
+            {
+                Value = r.Roleid.ToString(),
+                Text = r.Rolename
+            }).ToList(),
+            Countries = _context.Countries.Select(c => new SelectListItem
+            {
+                Value = c.Countryid.ToString(),
+                Text = c.Countryname
+            }).ToList(),
+            States = _context.States.Where(c => c.Countryid == user.Countryid).Select(c => new SelectListItem
+            {
+                Value = c.Stateid.ToString(),
+                Text = c.Statename
+            }).ToList(),
+            Cities = _context.Cities.Where(c => c.Stateid == user.Stateid).Select(c => new SelectListItem
+            {
+                Value = c.Cityid.ToString(),
+                Text = c.Cityname
+            }).ToList()
+        };
+        return model;
     }
 }

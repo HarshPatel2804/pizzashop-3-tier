@@ -12,10 +12,13 @@ public class UserService : IUserService
      private readonly IUserRepository _UserRepository;
      private readonly IUsersloginRepository _usersloginRepository;
 
-    public UserService(IUserRepository UserRepository, IUsersloginRepository usersloginRepository)
+     private readonly IUsersLoginService _usersLoginService;
+
+    public UserService(IUserRepository UserRepository, IUsersloginRepository usersloginRepository,IUsersLoginService usersLoginService)
     {
         _UserRepository = UserRepository;
         _usersloginRepository = usersloginRepository;
+        _usersLoginService = usersLoginService;
     }
     public async Task<User> GetUserById(int id)
     {
@@ -34,4 +37,26 @@ public class UserService : IUserService
 
         await _usersloginRepository.AddUserloginDetails(model , user.Userid);
     }
+
+    public async Task<UserViewModel> GetUserData(int id){
+        return await _UserRepository.GetUserDataAsync(id);
+    }
+
+    public async Task UpdateUserData(UserViewModel model)
+     {
+         var userDetails = await _UserRepository.GetUserByIdAsync(model.Id);
+
+         userDetails.Firstname = model.FirstName;
+         userDetails.Lastname = model.LastName;
+         userDetails.Phone = model.Phone;
+         userDetails.Address = model.Address;
+         userDetails.Zipcode = model.Zipcode;
+         userDetails.Countryid = model.CountryId;
+         userDetails.Stateid = model.StateId;
+         userDetails.Cityid = model.CityId;
+
+         await _UserRepository.UpdateUser(userDetails);
+         await _usersLoginService.UpdateUserLoginData(model);
+     }
+
 }

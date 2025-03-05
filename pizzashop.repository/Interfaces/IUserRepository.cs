@@ -10,4 +10,6 @@ public interface IUserRepository
      Task UpdateUser(User user);
 
      Task<User> AddUser(UserViewModel model);
+
+     Task<UserViewModel> GetUserDataAsync(int id);
 }

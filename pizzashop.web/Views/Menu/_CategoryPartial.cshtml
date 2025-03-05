@@ -1,0 +1,15 @@
+<ul>
+    @foreach (var category in Model)
+    {
+                                    <li class="d-flex items" tabindex="0">
+                                        <div class="d-flex align-items-center" style="padding-top: 5px; padding-bottom: 5px;">
+                                            <img src="~/images/dots-graphic.png">
+                                            <div style="width: 130px;" class="text-wrap ms-1 fw-bold">
+                    @category.Categoryname</div>
+                                        </div>
+                                        <img src="~/images/pen.svg" class="ms-auto d-none">
+                                        <img src="~/images/trash.svg" style="margin-right: 0px;" class="d-none"
+                                            class="d-none">
+                                    </li>
+    }
+</ul>

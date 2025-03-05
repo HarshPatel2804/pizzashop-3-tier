@@ -125,6 +125,7 @@ li {
     display: block !important;
 }
 
-/* .items:focus{
-    background-color: white !important;
-} */
+.items:hover{
+    color: #0066a7;
+    background-color: #f2f2f2;
+}

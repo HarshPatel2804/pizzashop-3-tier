@@ -64,5 +64,18 @@ namespace pizzashop.web.Controllers
             await _userService.AddUser(model);
             return RedirectToAction("UserList", "User");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> EditUser(int id){
+            var model = await _userService.GetUserData(id);
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditUser(UserViewModel model)
+        {
+            await _userService.UpdateUserData(model);
+            return RedirectToAction("EditUser", "User");
+        }
     }
 }
