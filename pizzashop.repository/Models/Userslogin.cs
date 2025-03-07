@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 
 namespace pizzashop.repository.Models;
-
+public enum statustype
+{
+    Active = 1,
+    Inactive = 2
+}
 public partial class Userslogin
 {
     public int Userloginid { get; set; }
@@ -18,6 +22,8 @@ public partial class Userslogin
     public int Roleid { get; set; }
 
     public string Username { get; set; } = null!;
+
+    public statustype status { get; set; }
 
     public virtual Role Role { get; set; } = null!;
 

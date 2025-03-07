@@ -8,4 +8,8 @@ public interface ICategoryRepository
 {
     Task<List<CategoryViewModel>> GetAllCategoryAsync();
     Task AddCategoryAsync(Category model);
+
+    Task<Category> GetCategoryByIdAsync(int categoryid);
+
+    Task EditCategoryAsync(Category model);
 }

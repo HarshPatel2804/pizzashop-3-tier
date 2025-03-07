@@ -3,6 +3,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace pizzashop.repository.ViewModels;
 
+public enum statustype
+{
+    Active = 1,
+    Inactive = 2
+}
+
 public class UserViewModel
 {
    public int Id { get; set; }
@@ -30,6 +36,8 @@ public class UserViewModel
     public string? Address { get; set; }
 
     public string? Zipcode { get; set; }
+
+    public statustype status { get; set; }
 
     public List<SelectListItem> Countries {get; set;}
 

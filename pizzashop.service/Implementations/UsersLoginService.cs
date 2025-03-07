@@ -37,6 +37,7 @@ public class UsersLoginService : IUsersLoginService
 
         userloginDetailsById.Roleid = model.Role;
         userloginDetailsById.Username = model.Username;
+        userloginDetailsById.status = (repository.Models.statustype)model.status;
 
         await _UsersloginRepository.UpdateUserLoginDetails(userloginDetailsById);
     }

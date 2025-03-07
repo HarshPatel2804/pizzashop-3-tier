@@ -50,9 +50,10 @@
                     <label for="floatingInput" class="label-pad">Email</label>
                 </div>
                 <div class="form-floating col-md-6 col-12 mb-3">
-                    <select class="form-select" aria-label="Default select example">
+                    <select asp-for="status" class="form-select" aria-label="Default select example">
                         <option selected>Status</option>
                         <option value="1">Active</option>
+                        <option value="2">Inactive</option>
                     </select>
                     <label for="floatingPassword" class="label-pad">Status</label>
                 </div>

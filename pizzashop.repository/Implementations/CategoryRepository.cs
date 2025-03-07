@@ -22,7 +22,7 @@ public class CategoryRepository : ICategoryRepository
             Categoryname = u.Categoryname,
             Description = u.Description
 
-        }).ToListAsync();
+        }).OrderBy(u => u.Categoryid).ToListAsync();
 
         return model;
     }
@@ -31,6 +31,17 @@ public class CategoryRepository : ICategoryRepository
         await _context.Categories.AddAsync(model);
         await _context.SaveChangesAsync();
 
+    }
+
+    public async Task<Category> GetCategoryByIdAsync(int categoryid)
+    {
+        return await _context.Categories.FirstOrDefaultAsync(u => u.Categoryid == categoryid);
+    }
+
+    public async Task EditCategoryAsync(Category model)
+    {
+        _context.Categories.Update(model);
+        await _context.SaveChangesAsync();
     }
 
 }

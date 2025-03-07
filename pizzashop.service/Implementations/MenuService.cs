@@ -7,11 +7,13 @@ namespace pizzashop.service.Implementations;
 
 public class MenuService : IMenuService
 {
-     private readonly ICategoryRepository _categoryService;
+     private readonly ICategoryRepository _categoryRepository;
+     private readonly IItemRepository _itemRepository;
 
-     public MenuService(ICategoryRepository categoryService)
+     public MenuService(ICategoryRepository categoryRepository , IItemRepository itemRepository)
     {
-       _categoryService = categoryService;
+       _categoryRepository = categoryRepository;
+       _itemRepository = itemRepository;
     }
 
     public async Task AddCategory(CategoryViewModel model)
@@ -20,13 +22,51 @@ public class MenuService : IMenuService
             Categoryname = model.Categoryname,
             Description = model.Description,
         };
-        await _categoryService.AddCategoryAsync(Category);
+        await _categoryRepository.AddCategoryAsync(Category);
     }
 
+    public async Task EditCategory(CategoryViewModel model)
+    {
+        // Console.WriteLine(model.Description + "Description");
+        var category = await _categoryRepository.GetCategoryByIdAsync(model.Categoryid);
+        category.Categoryname = model.Categoryname;
+        category.Description = model.Description;
+        await _categoryRepository.EditCategoryAsync(category);
+    }
 
     public async Task<List<CategoryViewModel>> GetAllCategories()
     {
-        return await _categoryService.GetAllCategoryAsync();
+        return await _categoryRepository.GetAllCategoryAsync();
     }
 
+    public async Task<CategoryViewModel> GetCategoryById(int categoryId)
+    {
+        var model = await _categoryRepository.GetCategoryByIdAsync(categoryId);
+
+        var viewModel = new CategoryViewModel{
+            Categoryid = model.Categoryid,
+            Categoryname = model.Categoryname,
+            Description = model.Description
+        };
+
+        return viewModel;
+    }
+
+
+    public async Task<List<ItemViewModel>> GetItemsByCategory(int CategoryId)
+    {
+        var model = await _itemRepository.GetItemsByCategoryAsync(CategoryId);
+
+        var itemModel = model.Select(u => new ItemViewModel
+        {
+            Categoryid = u.Categoryid,
+            Itemid = u.Itemid,
+            Itemname = u.Itemname,
+            Rate = u.Rate,
+            Isavailable = u.Isavailable,
+            Quantity = u.Quantity,
+        }).ToList();
+        
+        return itemModel;
+    }
 }

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using pizzashop.repository.Models;
 using pizzashop.repository.ViewModels;
 using pizzashop.service.Interfaces;
 
@@ -28,5 +29,22 @@ public class MenuController : Controller
         Console.WriteLine(model.Categoryname + "name");
         await _menuService.AddCategory(model);
         return RedirectToAction("Menu","Menu");
+    }
+
+    public async Task<IActionResult> Items(int categoryId){
+        var model = await _menuService.GetItemsByCategory(categoryId);
+        return PartialView("_ItemPartial",model);
+    }
+
+    public async Task<CategoryViewModel> EditCategoryById(int categoryId){
+        var model = await _menuService.GetCategoryById(categoryId);
+
+        return model;
+    }
+
+    [HttpPost]
+    public async Task<CategoryViewModel> EditCategoryById([FromBody] CategoryViewModel model){
+        await _menuService.EditCategory(model);
+        return model;
     }
 }

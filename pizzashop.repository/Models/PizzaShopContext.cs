@@ -798,7 +798,7 @@ public partial class PizzaShopContext : DbContext
                 .HasConstraintName("users_stateid_fkey");
         });
 
-        modelBuilder.Entity<Userslogin>(entity =>
+        modelBuilder.Entity<Userslogin>(static entity =>
         {
             entity.HasKey(e => e.Userloginid).HasName("userslogin_pkey");
 
@@ -821,6 +821,11 @@ public partial class PizzaShopContext : DbContext
             entity.Property(e => e.Username)
                 .HasMaxLength(100)
                 .HasColumnName("username");
+           
+            entity.Property(e => e.status).HasColumnName("status")
+            .HasConversion(
+                v => v.ToString(),
+                v => (statustype)Enum.Parse(typeof(statustype), v));
 
             entity.HasOne(d => d.Role).WithMany(p => p.Userslogins)
                 .HasForeignKey(d => d.Roleid)
