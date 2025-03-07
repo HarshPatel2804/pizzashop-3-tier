@@ -3,6 +3,7 @@ using pizzashop.service;
 using pizzashop.repository.ViewModels;
 using pizzashop.service.Utils;
 using pizzashop.service.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace pizzashop.web.Controllers;
 
@@ -20,6 +21,7 @@ public class HomeController : Controller
         _AuthService = AuthService;
         _EmailService = EmailService;
     }
+    [AllowAnonymous]
     [HttpGet]
     public IActionResult Index()
     {

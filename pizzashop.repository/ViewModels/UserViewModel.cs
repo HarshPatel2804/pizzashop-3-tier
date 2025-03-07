@@ -5,8 +5,8 @@ namespace pizzashop.repository.ViewModels;
 
 public enum statustype
 {
-    Active = 1,
-    Inactive = 2
+    Active = 0,
+    Inactive = 1
 }
 
 public class UserViewModel

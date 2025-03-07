@@ -25,6 +25,14 @@ public class MenuService : IMenuService
         await _categoryRepository.AddCategoryAsync(Category);
     }
 
+    public async Task DeleteCategory(int Categoryid)
+    {
+        await _categoryRepository.DeleteCategoryAsync(Categoryid);
+
+        await _itemRepository.DeleteItemsByCategory(Categoryid);
+    }
+
+
     public async Task EditCategory(CategoryViewModel model)
     {
         // Console.WriteLine(model.Description + "Description");

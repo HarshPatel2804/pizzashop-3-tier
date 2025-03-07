@@ -34,10 +34,10 @@ public class UsersLoginService : IUsersLoginService
 
     public async Task UpdateUserLoginData(UserViewModel model){
         var userloginDetailsById = await _UsersloginRepository.GetUserByIdAsync(model.Id);
-
+        Console.WriteLine(model.status + "status");
         userloginDetailsById.Roleid = model.Role;
         userloginDetailsById.Username = model.Username;
-        userloginDetailsById.status = (repository.Models.statustype)model.status;
+        userloginDetailsById.status = (pizzashop.repository.Models.statustype)Enum.Parse(typeof(pizzashop.repository.Models.statustype), model.status.ToString());
 
         await _UsersloginRepository.UpdateUserLoginDetails(userloginDetailsById);
     }

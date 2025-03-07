@@ -47,4 +47,10 @@ public class MenuController : Controller
         await _menuService.EditCategory(model);
         return model;
     }
+
+    [HttpPost]
+     public async Task DeleteCategory(int categoryId){
+        Console.WriteLine(categoryId + "id");
+        await _menuService.DeleteCategory(categoryId);
+    }
 }

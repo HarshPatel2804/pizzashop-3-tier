@@ -12,8 +12,17 @@ public class ItemRepository : IItemRepository
     {
         _context = context;
     }
+
+    public async Task DeleteItemsByCategory(int Categoryid)
+    {
+        // Console.WriteLine(Categoryid + "items");
+        await _context.Items.Where(u => u.Categoryid== Categoryid).ForEachAsync(u => u.Isdeleted = true);
+        await _context.SaveChangesAsync();
+    }
+
+
     public async Task<List<Item>> GetItemsByCategoryAsync(int CategoryId)
     {
-        return await _context.Items.Where(u => u.Categoryid == CategoryId).ToListAsync();
+        return await _context.Items.Where(u => u.Categoryid == CategoryId && u.Isdeleted != true).ToListAsync();
     }
 }

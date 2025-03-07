@@ -16,7 +16,7 @@ public class CategoryRepository : ICategoryRepository
     }
     public async Task<List<CategoryViewModel>> GetAllCategoryAsync()
     {
-        var model = await _context.Categories.Select(u => new CategoryViewModel
+        var model = await _context.Categories.Where(u => u.Isdeleted != true).Select(u => new CategoryViewModel
         {
             Categoryid = u.Categoryid,
             Categoryname = u.Categoryname,
@@ -44,4 +44,11 @@ public class CategoryRepository : ICategoryRepository
         await _context.SaveChangesAsync();
     }
 
+    public async Task DeleteCategoryAsync(int Categoryid)
+    {
+        var category = await _context.Categories.FirstOrDefaultAsync(u => u.Categoryid == Categoryid);
+        category.Isdeleted = true;
+        _context.Categories.Update(category);
+        await _context.SaveChangesAsync();
+    }
 }

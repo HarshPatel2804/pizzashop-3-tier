@@ -14,4 +14,6 @@ public interface IMenuService
     Task<CategoryViewModel> GetCategoryById(int categoryId);
 
     Task EditCategory(CategoryViewModel model);
+
+    Task DeleteCategory(int Categoryid);
 }

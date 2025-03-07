@@ -67,6 +67,7 @@ public class UserRepository : IUserRepository
             CountryId = user.Countryid,
             StateId = user.Stateid,
             CityId = user.Cityid,
+            status = (ViewModels.statustype)userLoginDetails.status,
             Roles = _context.Roles.Select(r => new SelectListItem
             {
                 Value = r.Roleid.ToString(),

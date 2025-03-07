@@ -7,9 +7,12 @@ using pizzashop.repository.Models;
 using pizzashop.repository.ViewModels;
 using pizzashop.service.Interfaces;
 using pizzashop.service.Utils;
+using pizzashop.service.Attributes;
+using pizzashop.service.Constants;
 
 namespace pizzashop.web.Controllers;
 
+[CustomAuthorize]
 public class DashboardController : Controller
 {
     private readonly IProfileService _ProfileService;

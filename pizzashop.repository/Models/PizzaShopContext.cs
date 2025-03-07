@@ -821,11 +821,13 @@ public partial class PizzaShopContext : DbContext
             entity.Property(e => e.Username)
                 .HasMaxLength(100)
                 .HasColumnName("username");
-           
-            entity.Property(e => e.status).HasColumnName("status")
-            .HasConversion(
-                v => v.ToString(),
-                v => (statustype)Enum.Parse(typeof(statustype), v));
+
+                        entity.Property(e => e.status)
+                .HasColumnName("status")
+                .HasConversion(
+                    v => (int)v,
+                    v => (statustype)v
+                );
 
             entity.HasOne(d => d.Role).WithMany(p => p.Userslogins)
                 .HasForeignKey(d => d.Roleid)

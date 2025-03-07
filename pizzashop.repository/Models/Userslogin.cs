@@ -4,8 +4,8 @@ using System.Collections.Generic;
 namespace pizzashop.repository.Models;
 public enum statustype
 {
-    Active = 1,
-    Inactive = 2
+    Active = 0,
+    Inactive = 1
 }
 public partial class Userslogin
 {
