@@ -8,7 +8,7 @@
 <head>
     <link rel="stylesheet" href="~/css/userList.css">
 </head>
-<section style="min-height: 100vh; background-color: lightblue;">
+<section style="min-height: 100vh;background-color: #fafafa;">
     <div class="row pt-4 ms-sm-5 me-sm-5 ms-3 me-3 mb-4" style="height: 70px;">
         <h2 class="col" style="color: rgb(101, 101, 224); font-family: Roboto; font-weight: 550">My Profile</h1>
     </div>
@@ -21,7 +21,7 @@
                 class="w-100 h-100 pe-0 ps-0">
             <div class="col d-flex align-items-center mb-3" style="margin-top: -21px;">
                 <img src="~/images/Default_pfp.svg.png" alt="profile image" class="ms-md-4 ms-2 bg-light ps-0 pe-0"
-                    id="profile" style="max-height: 100px; max-width: 100px; border-radius: 50%;">
+                    id="profile" style="height: 100px; width: 100px; border-radius: 50%;">
                 <label class="d-flex flex-column justify-content-center align-items-center" for="files">
                     <img class="p-1" id="upload-photo-icon" src="~/images/cloud-arrow-up.svg" alt="upload-icon" />
                 </label>
@@ -150,4 +150,17 @@
             }
         });
     })
+</script>
+<script>
+    document.getElementById('files').addEventListener('change', function (e) {
+        const file = e.target.files[0];
+        if (file) {
+            // Display the selected image as a preview
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                document.getElementById('profile').src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
 </script>

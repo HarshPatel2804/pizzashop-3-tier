@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="~/css/userList.css">
 </head>
 
-<section style = "min-height: 100vh; background-color: lightblue;">
+<section style = "min-height: 100vh; background-color: #fafafa;">
                     <div class = "row pt-4 ms-2 me-3" style = "height: 70px;">
                         <h2 class = "col" style="color: rgb(101, 101, 224); font-family: Roboto; font-weight: 550">Permissions</h1>
                         <a asp-controller="Role" asp-action="Role" type = "button" class = "btn btn-primary col-auto ms-2 d-flex align-items-center" style = "border-radius: 2px; border: none;">Back</a>
@@ -20,7 +20,7 @@
                         <table class="table">
                                 <thead>
                                   <tr>
-                                    <th scope="col"><img src = "~/images/minus.png" style = "width:20px;" class = "mb-1"><span class = "heading ms-3">Permission</span></th>
+                                    <th scope="col"><input class="form-check-input master-checkbox" type="checkbox" value="" id="flexCheckDefault"><span class = "heading ms-3">Permission</span></th>
                                     <th scope="col"><span class = "heading">Can View</span></th>
                                     <th scope="col"><span class = "heading">Can Add/Edit</span></th>
                                     <th scope="col"><span class = "heading">Can Delete</span> </th>
@@ -29,7 +29,7 @@
                                 <tbody>
                                     @foreach (var module in Model)
                                     {
-                                  <tr>
+                                  <tr data-module-id="@module.PermissionId">
                                     <td>
                                         <div class="form-check">
                                             <input class="form-check-input module-checkbox" type="checkbox" value="" id="flexCheckDefault" data-module-id="@module.PermissionId">
@@ -68,35 +68,251 @@
                     </div>
                 </section>
 <script>
-    document.querySelector(".harsh").addEventListener("click", function () {
-        let permissions = [];
+   document.addEventListener('DOMContentLoaded', function() {
+    // Fetch the ViewModel data passed from the backend (your model)
+    const modelData = @Html.Raw(Json.Serialize(Model)); // Passing List<PermissionViewModel> to JavaScript
 
-        document.querySelectorAll(".module-checkbox").forEach((checkbox) => {
-            if(!checkbox.checked) return;
-            let permissionId = checkbox.getAttribute("data-module-id");
-            let canView = document.querySelector(`.can-view[data-module-id='${permissionId}']`).checked;
-            let canEdit = document.querySelector(`.can-edit[data-module-id='${permissionId}']`).checked;
-            let canDelete = document.querySelector(`.can-delete[data-module-id='${permissionId}']`).checked;
+    // Initialize checkboxes based on the model data
+    function initializeCheckboxes() {
+        modelData.forEach(moduleData => {
+            console.log(moduleData);
+            const row = document.querySelector(`tr[data-module-id="${moduleData.permissionId}"]`);
+            console.log(row);
+            if (row) {
+                console.log("initiator");
+                const canViewCheckbox = row.querySelector('.can-view');
+                const canEditCheckbox = row.querySelector('.can-edit');
+                const canDeleteCheckbox = row.querySelector('.can-delete');
+                const moduleCheckbox = row.querySelector('.module-checkbox');
 
-            permissions.push({               
-                PermissionId: parseInt(permissionId),
-                CanView: canView,
-                CanEdit: canEdit,
-                CanDelete: canDelete
-            });
+                // Set the state of the checkboxes based on the fetched data
+                canViewCheckbox.checked = moduleData.canView;
+                canEditCheckbox.checked = moduleData.canEdit;
+                canDeleteCheckbox.checked = moduleData.canDelete;
+
+                // Set the state of the module checkbox (Type B) based on Type C checkboxes
+                if (canViewCheckbox.checked || canEditCheckbox.checked || canDeleteCheckbox.checked) {
+                    moduleCheckbox.checked = true;
+                } else {
+                    moduleCheckbox.checked = false;
+                    canViewCheckbox.disabled = true;
+                    canEditCheckbox.disabled = true;
+                    canDeleteCheckbox.disabled = true;
+                }
+            }
         });
 
-        fetch("/Role/Permission", {
-            method: "POST",
+        // Update the master checkbox (Type A) based on the state of all module checkboxes
+        updateMasterCheckboxState();
+    }
+
+    // Update the master checkbox state (Type A) based on module checkboxes (Type B)
+    function updateMasterCheckboxState() {
+        const masterCheckbox = document.querySelector('.master-checkbox');
+        let allChecked = true;
+        let someChecked = false;
+
+        document.querySelectorAll('.module-checkbox').forEach((checkbox) => {
+            if (checkbox.checked) {
+                someChecked = true;
+            } else {
+                allChecked = false;
+            }
+        });
+
+        if (allChecked) {
+            masterCheckbox.checked = true;
+            masterCheckbox.indeterminate = false;
+        } else if (someChecked) {
+            masterCheckbox.checked = false;
+            masterCheckbox.indeterminate = true;
+        } else {
+            masterCheckbox.checked = false;
+            masterCheckbox.indeterminate = false;
+        }
+    }
+
+    // Handle Can View checkbox change event
+    document.querySelectorAll('.can-view').forEach((checkbox) => {
+        checkbox.addEventListener('change', function () {
+            const row = this.closest('tr');
+            const canViewCheckbox = row.querySelector('.can-view');
+            const canEditCheckbox = row.querySelector('.can-edit');
+            const canDeleteCheckbox = row.querySelector('.can-delete');
+            const moduleCheckbox = row.querySelector('.module-checkbox');
+
+            // If Can View is unchecked, uncheck Can Edit and Can Delete automatically
+            if (!canViewCheckbox.checked) {
+                canEditCheckbox.checked = false;
+                canDeleteCheckbox.checked = false;
+            }
+
+            // If Can Edit or Can Delete is checked, make sure Can View is checked
+            if (canEditCheckbox.checked || canDeleteCheckbox.checked) {
+                canViewCheckbox.checked = true;
+            }
+
+            // Update the module checkbox (Type B) based on Type C checkboxes
+            if (canViewCheckbox.checked || canEditCheckbox.checked || canDeleteCheckbox.checked) {
+                moduleCheckbox.checked = true;
+            } 
+
+            // Update the master checkbox (Type A) based on the state of all module checkboxes
+            updateMasterCheckboxState();
+        });
+    });
+
+    // Handle Can Edit checkbox change event
+    document.querySelectorAll('.can-edit').forEach((checkbox) => {
+        checkbox.addEventListener('change', function () {
+            const row = this.closest('tr');
+            const canViewCheckbox = row.querySelector('.can-view');
+            const canEditCheckbox = row.querySelector('.can-edit');
+            const canDeleteCheckbox = row.querySelector('.can-delete');
+            const moduleCheckbox = row.querySelector('.module-checkbox');
+
+            // If Can Edit or Can Delete is checked, make sure Can View is checked
+            if (canEditCheckbox.checked || canDeleteCheckbox.checked) {
+                canViewCheckbox.checked = true;
+            }
+
+            // Update the module checkbox (Type B) based on Type C checkboxes
+            if (canViewCheckbox.checked || canEditCheckbox.checked || canDeleteCheckbox.checked) {
+                moduleCheckbox.checked = true;
+            } 
+
+            // Update the master checkbox (Type A) based on the state of all module checkboxes
+            updateMasterCheckboxState();
+        });
+    });
+
+    // Handle Can Delete checkbox change event
+    document.querySelectorAll('.can-delete').forEach((checkbox) => {
+        checkbox.addEventListener('change', function () {
+            const row = this.closest('tr');
+            const canViewCheckbox = row.querySelector('.can-view');
+            const canEditCheckbox = row.querySelector('.can-edit');
+            const canDeleteCheckbox = row.querySelector('.can-delete');
+            const moduleCheckbox = row.querySelector('.module-checkbox');
+
+            // If Can Edit or Can Delete is checked, make sure Can View is checked
+            if (canEditCheckbox.checked || canDeleteCheckbox.checked) {
+                canViewCheckbox.checked = true;
+            }
+
+            // Update the module checkbox (Type B) based on Type C checkboxes
+            if (canViewCheckbox.checked || canEditCheckbox.checked || canDeleteCheckbox.checked) {
+                moduleCheckbox.checked = true;
+            } 
+            // Update the master checkbox (Type A) based on the state of all module checkboxes
+            updateMasterCheckboxState();
+        });
+    });
+
+    // When the module checkbox (Type B) is clicked, toggle Type C checkboxes
+    document.querySelectorAll('.module-checkbox').forEach((checkbox) => {
+        checkbox.addEventListener('change', function () {
+            const row = this.closest('tr');
+            const canViewCheckbox = row.querySelector('.can-view');
+            const canEditCheckbox = row.querySelector('.can-edit');
+            const canDeleteCheckbox = row.querySelector('.can-delete');
+
+            // Enable Type C checkboxes only if Type B checkbox is checked
+            const isModuleChecked = this.checked;
+            if(!this.checked){
+                canViewCheckbox.checked = false;
+                canEditCheckbox.checked = false;
+                canDeleteCheckbox.checked = false;
+            }
+            canViewCheckbox.disabled = !isModuleChecked;
+            canEditCheckbox.disabled = !isModuleChecked;
+            canDeleteCheckbox.disabled = !isModuleChecked;
+
+            // If Type B is checked, make sure Can View is also checked if Can Edit or Can Delete is checked
+            if (canEditCheckbox.checked || canDeleteCheckbox.checked) {
+                canViewCheckbox.checked = true;
+            }
+            updateMasterCheckboxState();
+        });
+    });
+
+    // Master checkbox logic (Type A)
+    const masterCheckbox = document.querySelector('.master-checkbox');
+    masterCheckbox.addEventListener('change', function () {
+        const isChecked = masterCheckbox.checked;
+        document.querySelectorAll('.module-checkbox').forEach((checkbox) => {
+            checkbox.checked = isChecked;
+            const row = checkbox.closest('tr');
+            const canViewCheckbox = row.querySelector('.can-view');
+            const canEditCheckbox = row.querySelector('.can-edit');
+            const canDeleteCheckbox = row.querySelector('.can-delete');
+
+            if(!isChecked){
+            canViewCheckbox.checked = isChecked;
+            canEditCheckbox.checked = isChecked;
+            canDeleteCheckbox.checked = isChecked;
+            }
+            canViewCheckbox.disabled = !isChecked;
+            canEditCheckbox.disabled = !isChecked;
+            canDeleteCheckbox.disabled = !isChecked;
+        });
+
+        // Update master checkbox to reflect the current state of all module checkboxes
+        updateMasterCheckboxState();
+    });
+
+    // Initialize the checkboxes based on the backend data passed to the ViewModel
+    initializeCheckboxes();
+
+    // Handle Save button click
+    document.querySelector('.harsh').addEventListener('click', function (event) {
+        event.preventDefault(); // Prevent default form submission
+
+        // Prepare the data to send
+        let permissions = [];
+
+        document.querySelectorAll('.module-checkbox').forEach((checkbox) => {
+
+                const row = checkbox.closest('tr');
+                const permissionId = row.getAttribute('data-module-id');
+                const canView = row.querySelector('.can-view').checked;
+                const canEdit = row.querySelector('.can-edit').checked;
+                const canDelete = row.querySelector('.can-delete').checked;
+
+                permissions.push({
+                    PermissionId: parseInt(permissionId),
+                    CanView: canView,
+                    CanEdit: canEdit,
+                    CanDelete: canDelete
+                });
+            
+        });
+
+        // Send the updated permissions to the server using fetch
+        fetch('/Role/Permission', {
+            method: 'POST',
             headers: {
-                "Content-Type": "application/json",
+                'Content-Type': 'application/json'
             },
-            body: JSON.stringify(permissions),
+            body: JSON.stringify(permissions)
         })
         .then(response => response.json())
         .then(data => {
-            location.reload(); // Reload page to reflect changes
+            // Handle the response (e.g., show a success message, reload the page, etc.)
+            location.reload(); // Reload the page to reflect changes
         })
-        .catch(error => console.error("Error:", error));
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error saving permissions.');
+        });
     });
+});
+
 </script>
+
+
+
+
+
+
+

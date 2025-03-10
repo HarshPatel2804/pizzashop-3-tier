@@ -10,10 +10,13 @@ public class MenuService : IMenuService
      private readonly ICategoryRepository _categoryRepository;
      private readonly IItemRepository _itemRepository;
 
-     public MenuService(ICategoryRepository categoryRepository , IItemRepository itemRepository)
+     private readonly IModifierRepository _modifierRepository;
+
+     public MenuService(ICategoryRepository categoryRepository , IItemRepository itemRepository , IModifierRepository modifierRepository)
     {
        _categoryRepository = categoryRepository;
        _itemRepository = itemRepository;
+       _modifierRepository = modifierRepository;
     }
 
     public async Task AddCategory(CategoryViewModel model)
@@ -46,6 +49,21 @@ public class MenuService : IMenuService
     {
         return await _categoryRepository.GetAllCategoryAsync();
     }
+
+    public async Task<List<ModifierViewModel>> GetAllmodifiers()
+    {
+        var model = await _modifierRepository.GetAllModifierGroupAsync();;
+         var viewModel = model.Select(u => new ModifierViewModel
+        {
+            Modifiergroupid = u.Modifiergroupid,
+            Modifiergroupname = u.Modifiergroupname,
+            Description = u.Description,
+
+        }).ToList();
+
+        return viewModel;
+    }
+
 
     public async Task<CategoryViewModel> GetCategoryById(int categoryId)
     {

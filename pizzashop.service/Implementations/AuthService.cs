@@ -6,6 +6,7 @@ using pizzashop.service.Utils;
 using Microsoft.AspNetCore.Http;
 using pizzashop.repository.ViewModels;
 using System.Data;
+using pizzashop.repository.Interfaces;
 
 namespace pizzashop.service.Implementations;
 
@@ -15,12 +16,15 @@ public class AuthService : IAuthService
     private readonly IJwtService _jwtService;
     private readonly IRoleService _roleService;
 
+    private readonly IUsersloginRepository _usersloginRepository;
 
-    public AuthService(IUsersLoginService usersloginService, IJwtService jwtService, IRoleService roleService)
+
+    public AuthService(IUsersLoginService usersloginService, IJwtService jwtService, IRoleService roleService , IUsersloginRepository usersloginRepository)
     {
         _usersloginService = usersloginService;
         _jwtService = jwtService;
         _roleService = roleService;
+        _usersloginRepository = usersloginRepository;
     }
     public async Task<bool> AuthenticateUser(LoginViewModel loginViewModel, HttpContext httpContext)
     {
@@ -49,6 +53,14 @@ public class AuthService : IAuthService
     public async Task<bool> ForgotPassword(string email){
          var usersLogin = await _usersloginService.GetUserByEmail(email);
          if(usersLogin == null) return false;
+         return true;
+    }
+
+    public async Task<bool> ResetPasswordAsync(string email , string Password){
+         var usersLogin = await _usersloginService.GetUserByEmail(email);
+         if(usersLogin == null) return false;
+         usersLogin.Passwordhash = Password;
+         await _usersloginRepository.UpdateUserLoginDetails(usersLogin);
          return true;
     }
 }

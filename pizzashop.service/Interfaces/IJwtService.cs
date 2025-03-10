@@ -6,5 +6,7 @@ namespace pizzashop.service
     {
         string GenerateJwtToken(string email, string role);
         ClaimsPrincipal? ValidateToken(string token);
+
+        string GenerateJwtResetToken(string email);
     }
 }

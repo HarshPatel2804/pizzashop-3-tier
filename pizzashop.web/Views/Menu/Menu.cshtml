@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="~/css/Menu.css">
 
 </head>
-<section style="min-height: 100vh; background-color: #F2F2F2;">
+<section style="min-height: 100vh;background-color: #fafafa;">
     <div class="row pt-4 ms-1 me-1" style="height: 70px;">
         <h2 class="col" style="color: rgb(101, 101, 224); font-family: Roboto; font-weight: 550">Menu
             </h1>
@@ -106,91 +106,8 @@
                                 <img src="~/images/more.png" style="width: 30px;">
                             </button>
                         </div>
-                        <div class="row overflow-auto me-2 mt-2" style="height: 400px; ;
-">
-                            <ul>
-                                <li class="d-flex items" tabindex="0">
-                                    <div class="d-flex align-items-center"
-                                        style="padding-top: 5px; padding-bottom: 5px;">
-                                        <img src="~/images/dots-graphic.png">
-                                        <div style="width: 130px;" class="text-wrap ms-1 fw-bold">
-                                            Samosa</div>
-                                    </div>
-                                    <img src="~/images/pen.svg" class="ms-auto d-none">
-                                    <img src="~/images/trash.svg" style="margin-right: 0px;" class="d-none"
-                                        class="d-none">
-                                </li>
-                                <li class="d-flex items" tabindex="0">
-                                    <div class="d-flex align-items-center"
-                                        style="padding-top: 5px; padding-bottom: 5px;">
-                                        <img src="~/images/dots-graphic.png">
-                                        <div style="width: 130px;" class="text-wrap ms-1 fw-bold">Pasta
-                                        </div>
-                                    </div>
-                                    <img src="~/images/pen.svg" class="ms-auto d-none">
-                                    <img src="~/images/trash.svg" style="margin-right: 0px;" class="d-none">
-                                </li>
-                                <li class="d-flex items" tabindex="0">
-                                    <div class="d-flex align-items-center"
-                                        style="padding-top: 5px; padding-bottom: 5px;">
-                                        <img src="~/images/dots-graphic.png">
-                                        <div style="width: 130px;" class="text-wrap ms-1 fw-bold">Sides
-                                            and Appetizers</div>
-                                    </div>
-                                    <img src="~/images/pen.svg" class="ms-auto d-none">
-                                    <img src="~/images/trash.svg" style="margin-right: 0px;" class="d-none">
-                                </li>
-                                <li class="d-flex items" tabindex="0">
-                                    <div class="d-flex align-items-center"
-                                        style="padding-top: 5px; padding-bottom: 5px;">
-                                        <img src="~/images/dots-graphic.png">
-                                        <div style="width: 130px;" class="text-wrap ms-1 fw-bold">Salads
-                                        </div>
-                                    </div>
-                                    <img src="~/images/pen.svg" class="ms-auto d-none">
-                                    <img src="~/images/trash.svg" style="margin-right: 0px;" class="d-none">
-                                </li>
-                                <li class="d-flex items" tabindex="0">
-                                    <div class="d-flex align-items-center"
-                                        style="padding-top: 5px; padding-bottom: 5px;">
-                                        <img src="~/images/dots-graphic.png">
-                                        <div style="width: 130px;" class="text-wrap ms-1 fw-bold">Dips
-                                            and Sauces</div>
-                                    </div>
-                                    <img src="~/images/pen.svg" class="ms-auto d-none">
-                                    <img src="~/images/trash.svg" style="margin-right: 0px;" class="d-none">
-                                </li>
-                                <li class="d-flex items" tabindex="0">
-                                    <div class="d-flex align-items-center"
-                                        style="padding-top: 5px; padding-bottom: 5px;">
-                                        <img src="~/images/dots-graphic.png">
-                                        <div style="width: 130px;" class="text-wrap ms-1 fw-bold">pizza
-                                        </div>
-                                    </div>
-                                    <img src="~/images/pen.svg" class="ms-auto d-none">
-                                    <img src="~/images/trash.svg" style="margin-right: 0px;" class="d-none">
-                                </li>
-                                <li class="d-flex items" tabindex="0">
-                                    <div class="d-flex align-items-center"
-                                        style="padding-top: 5px; padding-bottom: 5px;">
-                                        <img src="~/images/dots-graphic.png">
-                                        <div style="width: 130px;" class="text-wrap ms-1 fw-bold">
-                                            Deserts</div>
-                                    </div>
-                                    <img src="~/images/pen.svg" class="ms-auto d-none">
-                                    <img src="~/images/trash.svg" style="margin-right: 0px;" class="d-none">
-                                </li>
-                                <li class="d-flex items" tabindex="0">
-                                    <div class="d-flex align-items-center"
-                                        style="padding-top: 5px; padding-bottom: 5px;">
-                                        <img src="~/images/dots-graphic.png">
-                                        <div style="width: 130px;" class="text-wrap ms-1 fw-bold">
-                                            Burgers</div>
-                                    </div>
-                                    <img src="~/images/pen.svg" class="ms-auto d-none">
-                                    <img src="~/images/trash.svg" style="margin-right: 0px;" class="d-none">
-                                </li>
-                            </ul>
+                        <div class="row overflow-auto me-2 mt-2" style="height: 400px; ;" id="ModifierGroup">
+                            
                         </div>
                     </div>
                     <div class="col">
@@ -638,8 +555,18 @@
             });
         };
 
-        categoryList();
+        function modifierGroupList() {
+            $.ajax({
+                url: '/Menu/Modifier',
+                type: 'GET',
+                success: function (data) {
+                    $('#ModifierGroup').html(data);
+                }
+            });
+        };
 
+        categoryList();
+        modifierGroupList();
         $("#addCategoryForm").submit(function (e) {
             e.preventDefault(); // Prevent page refresh
 

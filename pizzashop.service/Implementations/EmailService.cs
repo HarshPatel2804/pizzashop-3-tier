@@ -34,6 +34,30 @@ public class EmailService : IEmailService
         return await SendEmailAsync(toEmail, "Reset Password", htmlBody, imagePath);
     }
 
+    public async Task<bool> SendEmailtoNewUserAsync(string toEmail,string FirstName,string Password)
+    {
+        string imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "logos", "pizzashop_logo.png"); 
+
+        string htmlBody = $@"
+                <div style=""font-family: Arial, sans-serif;"">
+                    <div style=""justify-content: center; align-items: center; margin: auto; background-color: #0066A7; display: flex; text-align: center; margin-top: 50px; padding: 20px;"">
+                        <img src=""cid:logo"" alt=""Logo"" style=""margin-right: 10px; width: 90px; height: 76px;"">
+                        <h1 style=""color: white; font-size: 50px; margin: 0;"">PIZZASHOP</h1>
+                    </div>
+                    
+                    <div style=""padding: 1.5%; padding-bottom: 3%; font-size: larger; margin: 0; background-color: #F2F2F2;"">
+                        Dear {FirstName},<br><br>
+                        Welcome to PizzaShop! Your account has been created successfully. Here are your login details:<br><br>
+                        Username: <strong>{toEmail}</strong><br>
+                        Password: <strong>{Password}</strong><br><br>
+                        
+                        If you encounter any issues or have any questions, please do not hesitate to contact our support team.<br><br>
+                    </div>
+                </div>
+            ";
+
+        return await SendEmailAsync(toEmail, "Login Credientials", htmlBody, imagePath);
+    }
 
     public async Task<bool> SendEmailAsync(string toEmail, string subject, string HtmlBody, string imagePath)
     {

@@ -32,6 +32,7 @@ public class UsersloginRepository : IUsersloginRepository
        _context.SaveChanges();
     }
 
+
      public async Task<(List<Userslogin> users, int totalUsers)> GetPaginatedUsersAsync(int page, int pageSize, string search)
         {
             var query = _context.Userslogins

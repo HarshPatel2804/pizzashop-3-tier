@@ -40,6 +40,7 @@ public class DashboardController : Controller
     [HttpPost]
     public async Task<IActionResult> Profile(ProfileViewModel model)
     {
+         if(!ModelState.IsValid) return View(model);
         await _ProfileService.UpdateProfileData(model);
         
         return RedirectToAction("Profile","Dashboard");
@@ -53,6 +54,7 @@ public class DashboardController : Controller
     [HttpPost]
     public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
     {
+         if(!ModelState.IsValid) return View(model);
         var userData = SessionUtils.GetUser(HttpContext);
         model.Email = userData.Email;
         Console.WriteLine(model.OldPassword + "Password");

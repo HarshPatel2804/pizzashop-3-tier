@@ -4,6 +4,7 @@ using pizzashop.repository.ViewModels;
 using pizzashop.service.Utils;
 using pizzashop.service.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace pizzashop.web.Controllers;
 
@@ -15,11 +16,16 @@ public class HomeController : Controller
 
     private readonly IEmailService _EmailService;
 
-    public HomeController( IConfiguration config,IAuthService AuthService , IEmailService EmailService)
+    private readonly IJwtService _JwtService;
+
+
+
+    public HomeController(IConfiguration config, IAuthService AuthService, IEmailService EmailService, IJwtService JwtService)
     {
         _config = config;
         _AuthService = AuthService;
         _EmailService = EmailService;
+        _JwtService = JwtService;
     }
     [AllowAnonymous]
     [HttpGet]
@@ -35,21 +41,28 @@ public class HomeController : Controller
     [HttpPost]
     public async Task<IActionResult> Index(LoginViewModel loginViewModel)
     {
-        if (string.IsNullOrEmpty(loginViewModel.Email) || string.IsNullOrEmpty(loginViewModel.Password))
+
+        if (ModelState.IsValid)
         {
-            ViewBag.ErrorMessage = "Email and password are required";
-            return View();
+            if (string.IsNullOrEmpty(loginViewModel.Email) || string.IsNullOrEmpty(loginViewModel.Password))
+            {
+                ViewBag.ErrorMessage = "Email and password are required";
+                return View();
+            }
+            var user = await _AuthService.AuthenticateUser(loginViewModel, HttpContext);
+
+            TempData["LoginEmail"] = loginViewModel.Email;
+            if (user == true)
+            {
+                return RedirectToAction("Dashboard", "Dashboard");
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Invalid email or password";
+                return View();
+            }
         }
-        var user = await _AuthService.AuthenticateUser(loginViewModel, HttpContext);
-        
-        TempData["LoginEmail"] = loginViewModel.Email;
-        if (user == true)
-        {
-            return RedirectToAction("Dashboard", "Dashboard");
-        }
-        else
-        {
-              TempData["ErrorMessage"] = "Invalid email or password";
+        else{
             return View();
         }
     }
@@ -63,49 +76,57 @@ public class HomeController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> ForgotPassword(string email)
+    public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
     {
-        var user = _AuthService.ForgotPassword(email);
+         if(!ModelState.IsValid) return View(model);
+        var user = await _AuthService.ForgotPassword(model.email);
         // Console.WriteLine("EMAIl" + email);
-        if (user != null)
+        Console.WriteLine(user);
+        if (user)
         {
-            var url = Url.ActionLink("ResetPassword", "Home");
-            await _EmailService.SendResetPasswordEmailAsync(email , url);
+            var token = _JwtService.GenerateJwtResetToken(model.email);
+            var url = Url.ActionLink("ResetPassword", "Home", new { Token = token }, Request.Scheme);
+            await _EmailService.SendResetPasswordEmailAsync(model.email, url);
+            TempData["SuccessMessage"] = "Email sent successfully!";
         }
         else
         {
-            ViewBag.Error = "Email is incorrect";
+            TempData["ErrorMessage"] = "Email is incorrect";
         }
         return View();
     }
 
     [HttpGet]
-    public IActionResult ResetPassword()
+    public IActionResult ResetPassword(string token)
     {
-        return View();
+        Console.WriteLine(token + "token");
+        return View(new ResetPasswordViewModel { Token = token });
     }
 
-    // [HttpPost]
-    // public IActionResult ResetPassword(string password, string conf_password)
-    // {
-    //     var email = TempData["email"].ToString();
-    //     if (password != conf_password)
-    //     {
-    //         ViewBag.Error = "Both passwords are different!";
-    //         return View();
-    //     }
-    //     var user = _context.Userslogins.FirstOrDefault(u => u.Email == email);
-    //     if (user != null)
-    //     {
-    //         user.Passwordhash = password;
-    //         _context.SaveChanges();
-    //         ViewBag.Success = "Password changed successfully!";
-    //     }
-    //     else
-    //     {
-    //         ViewBag.Error = "Email does not exist!";
-    //     }
-    //     return View();
-    // }
+    [HttpPost]
+    public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+    {
+         if(!ModelState.IsValid) return View(model);
+        if (model.Password == model.ConfirmPassword)
+        {
+            var principal = _JwtService.ValidateToken(model.Token);
 
+            var emailClaim = principal?.FindFirst(ClaimTypes.Email);
+            Console.WriteLine(emailClaim.Value);
+
+            await _AuthService.ResetPasswordAsync(emailClaim.Value, model.Password);
+
+            return RedirectToAction("Index", "Home");
+        }
+        return View(model);
+    }
+
+     [HttpPost]
+    public IActionResult logout()
+    {
+        CookieUtils.ClearCookies(HttpContext);
+        SessionUtils.ClearSession(HttpContext);
+
+        return RedirectToAction("Index", "Home");
+    }
 }

@@ -12,13 +12,16 @@ namespace pizzashop.web.Controllers
         private readonly IUserService _userService;
         private readonly IRoleService _roleService;
         private readonly ICountryService _countryService;
+            private readonly IEmailService _EmailService;
 
-        public UserController(IUsersLoginService usersLoginService, IUserService userService, IRoleService roleService, ICountryService countryService)
+        public UserController(IUsersLoginService usersLoginService, IUserService userService, IRoleService roleService, ICountryService countryService, IEmailService EmailService)
         {
             _usersLoginService = usersLoginService;
             _userService = userService;
             _roleService = roleService;
             _countryService = countryService;
+            _EmailService = EmailService;
+            
         }
 
         public async Task<IActionResult> UserList(int page = 1, int pageSize = 5, string search = "")
@@ -61,7 +64,10 @@ namespace pizzashop.web.Controllers
         [HttpPost]
         public async Task<IActionResult> AddUser(UserViewModel model)
         {
+            if(!ModelState.IsValid) return View(model);
             await _userService.AddUser(model);
+            await _EmailService.SendEmailtoNewUserAsync(model.Email , model.FirstName , model.Password);
+            TempData["SuccessMessage"] = "User added successfully!";
             return RedirectToAction("UserList", "User");
         }
 
@@ -74,7 +80,16 @@ namespace pizzashop.web.Controllers
         [HttpPost]
         public async Task<IActionResult> EditUser(UserViewModel model)
         {
+            ModelState.Remove(nameof(model.Countries));
+            ModelState.Remove(nameof(model.States));
+            ModelState.Remove(nameof(model.Cities));
+            ModelState.Remove(nameof(model.Roles));
+            ModelState.Remove(nameof(model.Email));
+            ModelState.Remove(nameof(model.Password));
+            
+             if(!ModelState.IsValid) return View(model);
             await _userService.UpdateUserData(model);
+            TempData["SuccessMessage"] = "User edited successfully!";
             return RedirectToAction("EditUser", "User");
         }
     }

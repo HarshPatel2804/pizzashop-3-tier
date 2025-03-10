@@ -6,7 +6,8 @@
 <head>
     <link rel="stylesheet" href="~/css/userList.css">
 </head>
-<section style="min-height: 100vh; background-color: lightblue;">
+@await Html.PartialAsync("_Toast")
+<section style="min-height: 100vh; background-color: #fafafa;">
     <div class="row pt-4 ms-sm-5 me-sm-5 ms-3 me-3 mb-4" style="height: 70px;">
         <h2 class="col" style="color: rgb(101, 101, 224); font-family: Roboto; font-weight: 550">Edit User</h1>
             <a asp-controller="User" asp-action="UserList" type="button"
@@ -22,16 +23,19 @@
                 <div class="form-floating col-md-6 col-12 mb-3">
                     <input asp-for = "FirstName" type="text" class="form-control" id="floatingInput" placeholder="First Name">
                     <label for="floatingInput" class="label-pad">First Name</label>
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
                 </div>
                 <div class="form-floating col-md-6 col-12 mb-3">
                     <input asp-for = "LastName" type="text" class="form-control" id="floatingPassword" placeholder="Last Name">
                     <label for="floatingPassword" class="label-pad">Last Name</label>
+                    <span asp-validation-for="LastName" class="text-danger"></span>
                 </div>
             </div>
             <div class="row">
                 <div class="form-floating col-md-6 col-12 mb-3">
                     <input asp-for = "Username" type="text" class="form-control" id="floatingInput" placeholder="Username">
                     <label for="floatingInput" class="label-pad">Username</label>
+                    <span asp-validation-for="Username" class="text-danger"></span>
                 </div>
                 <div class="form-floating col-md-6 col-12 mb-3">
                     <select asp-for = "Role" class="form-select" aria-label="Default select example">
@@ -42,12 +46,14 @@
                         }
                     </select>
                     <label for="floatingPassword" class="label-pad">Role</label>
+                    <span asp-validation-for="Role" class="text-danger"></span>
                 </div>
             </div>
             <div class="row">
                 <div class="form-floating col-md-6 col-12 mb-3">
                     <input asp-for="Email" type="email" class="form-control" id="floatingInput" placeholder="Email" disabled>
                     <label for="floatingInput" class="label-pad">Email</label>
+                    <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
                 <div class="form-floating col-md-6 col-12 mb-3">
                     <select asp-for="status" class="form-select" aria-label="Default select example">
@@ -56,6 +62,7 @@
                         <option value="1">Inactive</option>
                     </select>
                     <label for="floatingPassword" class="label-pad">Status</label>
+                    <span asp-validation-for="status" class="text-danger"></span>
                 </div>
             </div>
             <div class="row mb-3 mx-1">
@@ -71,23 +78,25 @@
             <div class="row">
                 <div class="form-floating col-md-4 col-12 mb-3">
                     <select asp-for="CountryId" id="Country" class="form-control" aria-label="Default select example">
-                        <option>Select Country</option>
+                        <option value="">Select Country</option>
                         @foreach (var country in Model.Countries)
                         {
                         <option value="@country.Value">@country.Text</option>
                         }
                     </select>
                     <label for="floatingPassword" class="label-pad">Country</label>
+                    <span asp-validation-for="CountryId" class="text-danger"></span>
                 </div>
                 <div class="form-floating col-md-4 col-12 mb-3">
                     <select asp-for="StateId" id="State" class="form-control" aria-label="Default select example">
-                        <option>Select State</option>
+                        <option value="">Select State</option>
                         @foreach (var state in Model.States)
                         {
                         <option value="@state.Value">@state.Text</option>
                         }
                     </select>
                     <label for="floatingPassword" class="label-pad">State</label>
+                    <span asp-validation-for="StateId" class="text-danger"></span>
                 </div>
                 <div class="form-floating col-md-4 col-12 mb-3">
                     <select asp-for="CityId" id="City"class="form-control" aria-label="Default select example">
@@ -98,12 +107,14 @@
                         }
                     </select>
                     <label for="floatingPassword" class="label-pad">City</label>
+                    <span asp-validation-for="CityId" class="text-danger"></span>
                 </div>
             </div>
             <div class="row">
                 <div class="form-floating col-md-4 col-12 mb-3">
                     <input asp-for="Zipcode" type="text" class="form-control" id="floatingInput" placeholder="Zipcode">
                     <label for="floatingInput" class="label-pad">Zipcode</label>
+                    <span asp-validation-for="Zipcode" class="text-danger"></span>
                 </div>
                 <div class="form-floating col-md-4 col-12 mb-3">
                     <input asp-for="Address" type="text" class="form-control" id="floatingPassword" placeholder="Address">
@@ -112,6 +123,7 @@
                 <div class="form-floating col-md-4 col-12 mb-3">
                     <input asp-for="Phone" type="text" class="form-control" id="floatingPassword" placeholder="Phone">
                     <label for="floatingPassword" class="label-pad">Phone</label>
+                    <span asp-validation-for="Phone" class="text-danger"></span>
                 </div>
             </div>
             <div class="row">

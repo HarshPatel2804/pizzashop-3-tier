@@ -31,6 +31,12 @@ public class MenuController : Controller
         return RedirectToAction("Menu","Menu");
     }
 
+    [HttpGet]
+    public async Task<IActionResult> Modifier(){
+        var model = await _menuService.GetAllmodifiers();
+        return PartialView("_Modifierpartial",model);
+    }
+
     public async Task<IActionResult> Items(int categoryId){
         var model = await _menuService.GetItemsByCategory(categoryId);
         return PartialView("_ItemPartial",model);

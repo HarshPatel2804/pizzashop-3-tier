@@ -7,6 +7,8 @@ public interface IMenuService
 {
     Task<List<CategoryViewModel>> GetAllCategories();
 
+    Task<List<ModifierViewModel>> GetAllmodifiers();
+
     Task AddCategory(CategoryViewModel model);
 
     Task<List<ItemViewModel>> GetItemsByCategory(int CategoryId);

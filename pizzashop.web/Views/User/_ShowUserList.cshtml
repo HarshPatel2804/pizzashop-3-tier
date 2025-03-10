@@ -22,8 +22,8 @@
                 <td>@user.User.Phone</td>
                 <td>@user.Role.Rolename</td>
                 <td>
-                    <span class="status-badge-green">
-                        Active
+                    <span class="@(user.status == pizzashop.repository.Models.statustype.Active ? "status-badge-green" : "status-badge-red")">
+                        @user.status
                     </span>
                 </td>
                 <td>

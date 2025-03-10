@@ -1,0 +1,9 @@
+using Microsoft.AspNetCore.Mvc.Rendering;
+using pizzashop.repository.Models;
+
+namespace pizzashop.repository.Interfaces;
+
+public interface IModifierRepository
+{
+    Task<List<Modifiergroup>> GetAllModifierGroupAsync();
+}

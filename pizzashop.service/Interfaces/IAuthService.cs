@@ -9,5 +9,7 @@ namespace pizzashop.service
         Task<bool> AuthenticateUser(LoginViewModel loginViewModel, HttpContext  httpContext);
 
         Task<bool> ForgotPassword(string email);
+
+        Task<bool> ResetPasswordAsync(string email , string Password);
     }
 }

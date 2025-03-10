@@ -19,6 +19,8 @@ public class ProfileViewModel
     
     public int CountryId { get; set; }
 
+    public string Profileimg {get; set;}
+
     public int StateId { get; set; }
 
     public int CityId { get; set; }
