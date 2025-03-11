@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using pizzashop.repository.Interfaces;
 using pizzashop.repository.ViewModels;
 using pizzashop.service.Interfaces;
@@ -16,8 +17,10 @@ public class ProfileService : IProfileService
     private readonly IStateRepository _StateRepository;
     private readonly ICityRepository _CityRepository;
 
+    private readonly IImageService _imageService;
+
     public ProfileService(IUsersloginRepository UsersloginRepository , IUserRepository UserRepository, IRoleRepository RoleRepository,
-    ICountryRepository CountryRepository , IStateRepository StateRepository , ICityRepository CityRepository)
+    ICountryRepository CountryRepository , IStateRepository StateRepository , ICityRepository CityRepository , IImageService imageService)
     {
         _UsersloginRepository = UsersloginRepository;
         _UserRepository = UserRepository;
@@ -25,12 +28,14 @@ public class ProfileService : IProfileService
         _CountryRepository = CountryRepository;
         _StateRepository = StateRepository;
         _CityRepository = CityRepository;
+        _imageService = imageService;
     }
     public async Task<ProfileViewModel> GetProfileData(int Id)
     {
         Console.WriteLine("ID" + Id);
          var userDetails = await _UserRepository.GetUserByIdAsync(Id);
         var user = await _UsersloginRepository.GetUserByIdAsync(Id);
+         var role = await _RoleRepository.GetUserRoleAsync(user.Roleid);
 
         var model = new ProfileViewModel{
             Id = userDetails.Userid,
@@ -44,6 +49,8 @@ public class ProfileService : IProfileService
             CountryId = userDetails.Countryid,
             StateId = userDetails.Stateid,
             CityId = userDetails.Cityid,
+            Profileimg = userDetails.Profileimg,
+            Rolename = role.Rolename,
             Countries = await _CountryRepository.GetAllCountryAsync(),
             States = await _StateRepository.GetAllStateAsync(userDetails.Countryid),
             Cities = await _CityRepository.GetAllCityAsync(userDetails.Stateid)
@@ -51,10 +58,11 @@ public class ProfileService : IProfileService
         return model;
     }
 
-     public async Task UpdateProfileData(ProfileViewModel model)
+     public async Task UpdateProfileData(ProfileViewModel model , IFormFile ProfileImage)
      {
          var userDetails = await _UserRepository.GetUserByIdAsync(model.Id);
          var user = await _UsersloginRepository.GetUserByIdAsync(model.Id);
+        
 
          userDetails.Firstname = model.FirstName;
          userDetails.Lastname = model.LastName;
@@ -65,6 +73,10 @@ public class ProfileService : IProfileService
          userDetails.Stateid = model.StateId;
          userDetails.Cityid = model.CityId;
          user.Username = model.Username;
+         if(ProfileImage != null)
+         {
+         userDetails.Profileimg = _imageService.GiveImagePath(ProfileImage);
+         }
 
          await _UserRepository.UpdateUser(userDetails);
          await _UsersloginRepository.UpdateUserLoginDetails(user);

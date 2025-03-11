@@ -18,7 +18,7 @@
                 class="btn btn-primary col-sm-auto col-4 ms-sm-2 ms-auto align-items-center d-flex"
                 style="border-radius: 2px; border: none;">+Add User</a>
     </div>
-    <div class="row table-responsive pt-4 ms-sm-5 me-sm-5 ms-3 me-3" id="table-container">
+    <div class="table-responsive pt-4 ms-2 me-2" id="table-container">
        <partial name="_ShowUserList" model="Model">
     </div>
     <div class="fade modal" id="exampleModalCenter" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
@@ -48,12 +48,12 @@
     $(document).ready(function () {
         let currentPage = @ViewBag.CurrentPage;
         let searchQuery = "@ViewBag.SearchQuery" || "";
-        let sortColumn = "@ViewBag.SortColumn" || "";
-        let sortOrder = "@ViewBag.SortOrder" || "";
+        let sortColumn = "@ViewBag.SortColumn" || "Name"; 
+        let sortOrder = "@ViewBag.SortOrder" || "asc";  
 
         function loadUserTable(page) {
             let pageSize = $("#pageSizeSelect").val();
-            let search = $("#searchInput").val(); // Get search input value
+            let search = $("#searchInput").val(); 
 
             $.ajax({
                 url: "/User/userList",
@@ -77,6 +77,22 @@
                 loadUserTable(page);
             }
         });
+
+        $(document).on("click", ".sort-icon", function (e) {
+        e.preventDefault();
+        
+        // Get the sort column and order
+        sortColumn = $(this).data("column");
+        sortOrder = $(this).data("order");
+
+        console.log(sortColumn);
+        
+        $(".sort-icon").removeClass("active");
+        $(this).addClass("active");
+        
+        // Load the user table with the updated sorting
+        loadUserTable(1);
+    });
 
         $(document).on("change", "#pageSizeSelect", function () {
             loadUserTable(1);

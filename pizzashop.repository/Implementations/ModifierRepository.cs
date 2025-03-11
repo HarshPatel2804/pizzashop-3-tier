@@ -19,6 +19,11 @@ public class ModifierRepository : IModifierRepository
 
         return model;
     }
+
+    public async Task<List<Modifier>> GetModifierByGroupAsync(int ModifierGroupId)
+    {
+        return await _context.Modifiers.Where(u => u.Modifiergroupid == ModifierGroupId && u.Isdeleted != true).ToListAsync();
+    }
 }
 
     

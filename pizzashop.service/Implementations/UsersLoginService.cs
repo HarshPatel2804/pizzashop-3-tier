@@ -23,9 +23,9 @@ public class UsersLoginService : IUsersLoginService
         return await _UsersloginRepository.GetUserByIdAsync(id);
     }
 
-    public async Task<(List<Userslogin> users, int totalUsers, int totalPages)> GetPaginatedUsersAsync(int page, int pageSize, string search)
+    public async Task<(List<Userslogin> users, int totalUsers, int totalPages)> GetPaginatedUsersAsync(int page, int pageSize, string search, string sortColumn, string sortOrder)
     {
-        var (users, totalUsers) = await _UsersloginRepository.GetPaginatedUsersAsync(page, pageSize, search);
+        var (users, totalUsers) = await _UsersloginRepository.GetPaginatedUsersAsync(page, pageSize, search, sortColumn, sortOrder);
 
         int totalPages = (int)System.Math.Ceiling((double)totalUsers / pageSize);
 

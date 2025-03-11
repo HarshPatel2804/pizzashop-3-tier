@@ -32,9 +32,14 @@ public class MenuController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Modifier(){
-        var model = await _menuService.GetAllmodifiers();
-        return PartialView("_Modifierpartial",model);
+    public async Task<IActionResult> ModifierGroup(){
+        var model = await _menuService.GetAllmodifiergroups();
+        return PartialView("_ModifierGrouppartial",model);
+    }
+
+    public async Task<IActionResult> Modifiers(int ModifierGroupId){
+        var model = await _menuService.GetModifiersByGroup(ModifierGroupId);
+        return PartialView("_ModifierPartial",model);
     }
 
     public async Task<IActionResult> Items(int categoryId){

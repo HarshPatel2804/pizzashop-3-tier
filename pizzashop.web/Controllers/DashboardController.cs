@@ -33,15 +33,16 @@ public class DashboardController : Controller
         var userData = SessionUtils.GetUser(HttpContext);
         var id = userData.Id;
         var model = await _ProfileService.GetProfileData((int)id);
+        Console.WriteLine(model.Profileimg + "image");
         
         return View(model);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Profile(ProfileViewModel model)
-    {
-         if(!ModelState.IsValid) return View(model);
-        await _ProfileService.UpdateProfileData(model);
+    public async Task<IActionResult> Profile(ProfileViewModel model , IFormFile ProfileImage)
+    { 
+        //  if(!ModelState.IsValid) return View(model);
+        await _ProfileService.UpdateProfileData(model , ProfileImage);
         
         return RedirectToAction("Profile","Dashboard");
     }

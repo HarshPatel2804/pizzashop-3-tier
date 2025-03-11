@@ -15,25 +15,25 @@
 
     <div class="row  ms-sm-5 me-sm-5 ms-3 me-3"
         style="border-radius: 6px; box-shadow: 1px 1px 15px rgb(108, 103, 103);">
-        <div class="row" style="--bs-gutter-x: 0rem;">
+        <form asp-controller="Dashboard" asp-action="Profile" method="post" enctype="multipart/form-data">
+        <div class="row" >
             <img src="~/images/profile_div_bg.jpg"
                 style="max-height: 50px; border-top-left-radius: 6px; border-top-right-radius: 6px;"
                 class="w-100 h-100 pe-0 ps-0">
             <div class="col d-flex align-items-center mb-3" style="margin-top: -21px;">
-                <img src="~/images/Default_pfp.svg.png" alt="profile image" class="ms-md-4 ms-2 bg-light ps-0 pe-0"
+                <img src="@Url.Content("~/images/uploads/" + Model.Profileimg)" alt="profile image" class="ms-md-4 ms-2 bg-light ps-0 pe-0"
                     id="profile" style="height: 100px; width: 100px; border-radius: 50%;">
                 <label class="d-flex flex-column justify-content-center align-items-center" for="files">
                     <img class="p-1" id="upload-photo-icon" src="~/images/cloud-arrow-up.svg" alt="upload-icon" />
                 </label>
-                <input id="files" type="file" class="upload-file text-muted d-none" />
+                <input id="files" type="file" name="ProfileImage" class="upload-file text-muted d-none" />
                 <div class="d-flex flex-column">
-                    <span class=" fw-bold">HARSH PATEL</span>
-                    <span>Admin</span>
+                    <span class=" fw-bold">@Model.FirstName</span>
+                    <span>@Model.Rolename</span>
                 </div>
                 <span class="ms-auto me-md-4 me-2">@Model.Email</span>
             </div>
         </div>
-        <form asp-controller="Dashboard" asp-action="Profile" method="post">
             <input type="hidden" asp-for="Email">
             <input type="hidden" asp-for="Id">
             <div class="row">

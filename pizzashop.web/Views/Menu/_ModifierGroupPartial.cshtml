@@ -1,0 +1,20 @@
+<ul>
+    @foreach (var modifier in Model)
+    {
+    <li class="d-flex items selectedModifierGroup" tabindex="0" data-id="@modifier.Modifiergroupid">
+        <div class="d-flex align-items-center" style="padding-top: 5px; padding-bottom: 5px;">
+            <img src="~/images/dots-graphic.png">
+            <div style="width: 130px;" class="text-wrap ms-1 fw-bold">
+                @modifier.Modifiergroupname</div>
+        </div>
+        <button class="btn ms-auto edit-btn" type="button" data-bs-toggle="modal" data-bs-target="#Edit-Category"
+                data-id="@modifier.Modifiergroupid">
+                <img src="~/images/pen.svg" class="d-none">
+            </button>
+            <button class="btn ms-1 delete-category" type="button" data-bs-toggle="modal" data-bs-target="#DeleteModal" data-id="@modifier.Modifiergroupid">
+                <img src="~/images/trash.svg" style="margin-right: 0px;" class="d-none" class="d-none">
+            </button>
+    </li>
+    }
+
+</ul>

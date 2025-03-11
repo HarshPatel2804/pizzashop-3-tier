@@ -10,5 +10,5 @@ public interface IUsersloginRepository
     Task<Userslogin> AddUserloginDetails(UserViewModel model,int id);
 
     Task UpdateUserLoginDetails(Userslogin user);
-    Task<(List<Userslogin> users, int totalUsers)> GetPaginatedUsersAsync(int page, int pageSize, string search);
+    Task<(List<Userslogin> users, int totalUsers)> GetPaginatedUsersAsync(int page, int pageSize, string search, string sortColumn, string sortOrder);
 }

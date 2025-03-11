@@ -24,10 +24,10 @@ namespace pizzashop.web.Controllers
             
         }
 
-        public async Task<IActionResult> UserList(int page = 1, int pageSize = 5, string search = "")
+        public async Task<IActionResult> UserList(int page = 1, int pageSize = 5, string search = "", string sortColumn = "", string sortOrder = "")
         {
-            var (users, totalUsers, totalPages) = await _usersLoginService.GetPaginatedUsersAsync(page, pageSize, search);
-
+            
+            var (users, totalUsers, totalPages) = await _usersLoginService.GetPaginatedUsersAsync(page, pageSize, search, sortColumn, sortOrder);
             ViewBag.CurrentPage = page;
             ViewBag.PageSize = pageSize;
             ViewBag.TotalUsers = totalUsers;
@@ -58,12 +58,18 @@ namespace pizzashop.web.Controllers
                 Countries = await _countryService.GetAllCountry()
             };
 
+            Console.WriteLine(model.Roles);
+
             return View(model);
         }
 
         [HttpPost]
         public async Task<IActionResult> AddUser(UserViewModel model)
         {
+            ModelState.Remove(nameof(model.Countries));
+            ModelState.Remove(nameof(model.States));
+            ModelState.Remove(nameof(model.Cities));
+            ModelState.Remove(nameof(model.Roles));
             if(!ModelState.IsValid) return View(model);
             await _userService.AddUser(model);
             await _EmailService.SendEmailtoNewUserAsync(model.Email , model.FirstName , model.Password);

@@ -1,20 +1,41 @@
-<ul>
-    @foreach (var modifier in Model)
-    {
-    <li class="d-flex items" tabindex="0">
-        <div class="d-flex align-items-center" style="padding-top: 5px; padding-bottom: 5px;">
-            <img src="~/images/dots-graphic.png">
-            <div style="width: 130px;" class="text-wrap ms-1 fw-bold">
-                @modifier.Modifiergroupname</div>
-        </div>
-        <button class="btn ms-auto edit-btn" type="button" data-bs-toggle="modal" data-bs-target="#Edit-Category"
-                data-id="@modifier.Modifiergroupid">
-                <img src="~/images/pen.svg" class="d-none">
-            </button>
-            <button class="btn ms-1 delete-category" type="button" data-bs-toggle="modal" data-bs-target="#DeleteModal" data-id="@modifier.Modifiergroupid">
-                <img src="~/images/trash.svg" style="margin-right: 0px;" class="d-none" class="d-none">
-            </button>
-    </li>
-    }
-
-</ul>
+<table class="table  px-5" style="border-radius: 6px;">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">
+                                            <input class="form-check-input" type="checkbox" value=""
+                                                id="flexCheckDefault">
+                                            <span class="heading ">Name</span>
+                                        </th>
+                                        <th scope="col"><span class="heading">Unit</span></th>
+                                        <th scope="col"><span class="heading">Rate</span></th>
+                                        <th scope="col"><span class="heading">Quantity</span> </th>
+                                        <th scope="col"><span class="heading">Action</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+        @foreach (var modifier in Model)
+        {
+                                        <tr>
+                                            <td class="d-flex">
+                                                <input class="form-check-input" type="checkbox" value=""
+                                                    id="flexCheckDefault">
+                                                <span>@modifier.Modifiername</span>
+                                            </td>
+                                            <td>@modifier.UnitName</td>
+                                            <td>@modifier.Rate</td>
+                                            <td>@modifier.Quantity</td>
+                                            <td>
+                                                <a href="Edit_user.html">
+                                                    <img src="~/images/pen.svg" alt="profile image" class="me-2 bg-light"
+                                                        id="profile" style="max-height: 30px; height: 100%; width:auto;">
+                                                </a>
+                                                <a data-bs-toggle="modal" data-bs-target="#exampleModalCenter">
+                                                    <img src="~/images/trash.svg" alt="profile image" class="me-2 bg-light"
+                                                        id="profile"
+                                                        style="max-height: 30px; height: 100%; width:auto; border-radius: 100%;">
+                                                </a>
+                                            </td>
+                                        </tr>
+        }
+                                </tbody>
+                            </table>

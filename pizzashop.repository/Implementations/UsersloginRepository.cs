@@ -6,8 +6,8 @@ using pizzashop.repository.ViewModels;
 namespace pizzashop.repository.Implementations;
 
 public class UsersloginRepository : IUsersloginRepository
-{ 
-        private readonly PizzaShopContext _context;
+{
+    private readonly PizzaShopContext _context;
 
     public UsersloginRepository(PizzaShopContext context)
     {
@@ -28,36 +28,56 @@ public class UsersloginRepository : IUsersloginRepository
 
     public async Task UpdateUserLoginDetails(Userslogin user)
     {
-       _context.Userslogins.Update(user);
-       _context.SaveChanges();
+        _context.Userslogins.Update(user);
+        _context.SaveChanges();
     }
 
 
-     public async Task<(List<Userslogin> users, int totalUsers)> GetPaginatedUsersAsync(int page, int pageSize, string search)
+    public async Task<(List<Userslogin> users, int totalUsers)> GetPaginatedUsersAsync(int page, int pageSize, string search, string sortColumn, string sortOrder)
+    {
+        var query = _context.Userslogins
+                    .Include(u => u.User)
+                    .Include(u => u.Role)
+                    .Where(u => u.User.Isdeleted != true)
+                    .Where(u => string.IsNullOrEmpty(search) ||
+                        u.User.Firstname.ToLower().Contains(search.ToLower()) ||
+                        u.User.Lastname.ToLower().Contains(search.ToLower()) ||
+                        u.Email.ToLower().Contains(search.ToLower()) ||
+                        u.User.Phone.ToLower().Contains(search.ToLower()) ||
+                        u.Role.Rolename.ToLower().Contains(search.ToLower()));
+
+
+        if (!string.IsNullOrEmpty(sortColumn) && !string.IsNullOrEmpty(sortOrder))
         {
-            var query = _context.Userslogins
-                .Include(u => u.User)
-                .Include(u => u.Role)
-                .Where(u => u.User.Isdeleted != true)
-                .Where(u => string.IsNullOrEmpty(search) ||
-                            u.User.Firstname.Contains(search) ||
-                            u.User.Lastname.Contains(search) ||
-                            u.Email.Contains(search) ||
-                            u.User.Phone.Contains(search) ||
-                            u.Role.Rolename.Contains(search));
-
-            int totalUsers = await query.CountAsync();
-
-            var users = await query
-                .OrderBy(u => u.Userloginid)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-
-            return (users, totalUsers);
+            switch (sortColumn)
+            {
+                case "Name":
+                    query = sortOrder == "asc"
+                        ? query.OrderBy(u => u.User.Firstname)
+                        : query.OrderByDescending(u => u.User.Firstname);
+                    break;
+                case "Role":
+                    query = sortOrder == "asc"
+                        ? query.OrderBy(u => u.Role.Rolename)
+                        : query.OrderByDescending(u => u.Role.Rolename);
+                    break;
+                default:
+                    query = query.OrderBy(u => u.Userloginid);
+                    break;
+            }
         }
 
-    public async Task<Userslogin> AddUserloginDetails(UserViewModel model , int id)
+        int totalUsers = await query.CountAsync();
+
+        var users = await query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return (users, totalUsers);
+    }
+
+    public async Task<Userslogin> AddUserloginDetails(UserViewModel model, int id)
     {
         var userLogin = new Userslogin
         {

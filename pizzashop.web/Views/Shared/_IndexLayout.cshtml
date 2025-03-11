@@ -19,6 +19,7 @@
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <!-- jQuery Unobtrusive Validation -->
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
     
 </head>
@@ -41,3 +42,23 @@
 </body>
 
 </html>
+<script>
+    $(document).ready(function () {
+
+        $('.togglePassword').click(function () {
+            console.log("clicked");
+            var passwordField = $(this).closest('.input-group').find('input');
+            var eyeIcon = $(this).find('i');
+
+            var type = passwordField.attr('type') === 'password' ? 'text' : 'password';
+            passwordField.attr('type', type);
+
+            if (type === 'password') {
+                eyeIcon.removeClass('bi-eye').addClass('bi-eye-slash');
+            } else {
+                eyeIcon.removeClass('bi-eye-slash').addClass('bi-eye');
+            }
+        });
+    });
+</script>
+

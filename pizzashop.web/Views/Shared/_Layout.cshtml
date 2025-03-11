@@ -34,9 +34,9 @@
                     <button type="button" class="btn-close text-reset ms-auto d-lg-none" data-bs-dismiss="offcanvas"
                         data-bs-target="#sidebar" aria-label="Close"></button>
                 </div>
-                <a asp-controller="Dashboard" asp-action="Dashboard" class="menu w-100 mt-4" onclick="selectItem(this)">
+                <a class='@(ViewContext.RouteData.Values["controller"]!.ToString() == "Dashboard" ? "active" : " ") menu w-100 mt-4' asp-controller="Dashboard" asp-action="Dashboard" class="" onclick="selectItem(this)">
                     <img src="~/images/navbar-icons/dashboard-default.png" class="me-2 ms-4 menu-icon black">
-                    <img src="~/images/navbar-icons/dashboard-active.png" class="me-2 ms-4 menu-icon  blue d-none">
+                    <img src="~/images/navbar-icons/dashboard-active.png" class="me-2 ms-4 menu-icon  blue">
                     <span style="color: rgb(101, 101, 224); font-weight: 600;" class="text">Dashboard</span>
                 </a>
                 <a asp-controller="User" asp-action="UserList" class="menu w-100 mt-4" onclick="selectItem(this)">
@@ -123,3 +123,23 @@
 </body>
 
 </html>
+<script>
+    $(document).ready(function () {
+
+        $('.togglePassword').click(function () {
+            console.log("clicked");
+            var passwordField = $(this).closest('.input-group').find('input');
+            var eyeIcon = $(this).find('i');
+
+            var type = passwordField.attr('type') === 'password' ? 'text' : 'password';
+            passwordField.attr('type', type);
+
+            if (type === 'password') {
+                eyeIcon.removeClass('bi-eye').addClass('bi-eye-slash');
+            } else {
+                eyeIcon.removeClass('bi-eye-slash').addClass('bi-eye');
+            }
+        });
+    });
+</script>
+

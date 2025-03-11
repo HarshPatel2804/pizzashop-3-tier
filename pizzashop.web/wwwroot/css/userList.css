@@ -32,9 +32,26 @@ a{
     text-decoration: none;
 }
 
-.menu.active{
-    background-color: lightblue;
-}
+.active{
+    background-color: #e6e6e6e5 !important;
+    color: var(--pz-blue);
+  }
+  
+  .active .black{
+      display: none;
+  }
+  
+  .active .blue{
+      display: block;
+  }
+  
+  .blue{
+      display: none;
+  }
+  
+  .black{
+      display: block;
+  }
 
 .menu-icon{
     width: 25px;

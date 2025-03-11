@@ -58,7 +58,7 @@ public class HomeController : Controller
             }
             else
             {
-                TempData["ErrorMessage"] = "Invalid email or password";
+                TempData["ErrorMessage"] = "Invalid Email or Password";
                 return View();
             }
         }

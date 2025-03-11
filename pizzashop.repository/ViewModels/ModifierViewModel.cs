@@ -5,9 +5,19 @@ namespace pizzashop.repository.Models;
 
 public partial class ModifierViewModel
 {
+    public int Modifierid { get; set; }
+
+    public string Modifiername { get; set; } = null!;
+
     public int Modifiergroupid { get; set; }
 
-    public string Modifiergroupname { get; set; } = null!;
+    public decimal Rate { get; set; }
+
+    public short? Quantity { get; set; }
+
+    public int Unitid { get; set; }
+
+    public string UnitName {get; set;}
 
     public string? Description { get; set; }
 
@@ -15,13 +25,13 @@ public partial class ModifierViewModel
 
     public DateTime? Createdat { get; set; }
 
-    public int Createdby { get; set; }
+    public int? Createdby { get; set; }
 
     public DateTime? Modifiedat { get; set; }
 
-    public int Modifiedby { get; set; }
+    public int? Modifiedby { get; set; }
 
-    public virtual ICollection<Itemmodifiergroupmap> Itemmodifiergroupmaps { get; set; } = new List<Itemmodifiergroupmap>();
+    public virtual Modifiergroup Modifiergroup { get; set; } = null!;
 
-    public virtual ICollection<Modifier> Modifiers { get; set; } = new List<Modifier>();
+    public virtual Unit Unit { get; set; } = null!;
 }
