@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using pizzashop.repository.Interfaces;
 using pizzashop.repository.Models;
@@ -14,11 +15,14 @@ public class UserService : IUserService
 
      private readonly IUsersLoginService _usersLoginService;
 
-    public UserService(IUserRepository UserRepository, IUsersloginRepository usersloginRepository,IUsersLoginService usersLoginService)
+     private readonly IImageService  _imageService;
+
+    public UserService(IUserRepository UserRepository, IUsersloginRepository usersloginRepository,IUsersLoginService usersLoginService,IImageService  imageService)
     {
         _UserRepository = UserRepository;
         _usersloginRepository = usersloginRepository;
         _usersLoginService = usersLoginService;
+        _imageService = imageService;
     }
     public async Task<User> GetUserById(int id)
     {
@@ -32,9 +36,17 @@ public class UserService : IUserService
     }
 
     
-    public async Task AddUser(UserViewModel model){
-        var user = await _UserRepository.AddUser(model);
+    public async Task AddUser(UserViewModel model , IFormFile ProfileImg){
+        if(ProfileImg != null)
+         {
+         model.Profileimg = await _imageService.GiveImagePath(ProfileImg);
+         Console.WriteLine(model.Profileimg);
+         }
+         else{
+            Console.WriteLine("empty");
+         }
 
+        var user = await _UserRepository.AddUser(model);
         await _usersloginRepository.AddUserloginDetails(model , user.Userid);
     }
 
@@ -42,10 +54,14 @@ public class UserService : IUserService
         return await _UserRepository.GetUserDataAsync(id);
     }
 
-    public async Task UpdateUserData(UserViewModel model)
+    public async Task UpdateUserData(UserViewModel model , IFormFile ProfileImg)
      {
          var userDetails = await _UserRepository.GetUserByIdAsync(model.Id);
-
+        if(ProfileImg != null)
+         {
+         userDetails.Profileimg =await  _imageService.GiveImagePath(ProfileImg);
+         Console.WriteLine(model.Profileimg);
+         }
          userDetails.Firstname = model.FirstName;
          userDetails.Lastname = model.LastName;
          userDetails.Phone = model.Phone;
@@ -54,7 +70,7 @@ public class UserService : IUserService
          userDetails.Countryid = model.CountryId;
          userDetails.Stateid = model.StateId;
          userDetails.Cityid = model.CityId;
-
+        
          await _UserRepository.UpdateUser(userDetails);
          await _usersLoginService.UpdateUserLoginData(model);
      }

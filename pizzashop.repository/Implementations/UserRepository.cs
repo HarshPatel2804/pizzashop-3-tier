@@ -26,7 +26,8 @@ public class UserRepository : IUserRepository
             Stateid = model.StateId,
             Cityid = model.CityId,
             Address = model.Address,
-            Zipcode = model.Zipcode
+            Zipcode = model.Zipcode,
+            Profileimg = model.Profileimg
         };
 
         await _context.Users.AddAsync(user);
@@ -67,6 +68,7 @@ public class UserRepository : IUserRepository
             CountryId = user.Countryid,
             StateId = user.Stateid,
             CityId = user.Cityid,
+            Profileimg = user.Profileimg,
             status = (ViewModels.statustype)userLoginDetails.status,
             Roles = _context.Roles.Select(r => new SelectListItem
             {

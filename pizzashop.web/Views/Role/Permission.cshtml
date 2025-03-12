@@ -59,18 +59,19 @@
                               </table>
                         <div class = "row mb-3">
                             <div class = "col-auto ms-auto">
-                                <button type="submit" class="btn btn-primary harsh" style = "border-radius: 3px; width: 120px;">Save</button>                                  
+                                <button type="submit" class="btn btn-primary save" style = "border-radius: 3px; width: 120px;">Save</button>                                  
                             </div>
                             <div class = "col-auto" style = "padding-left: 0px;">
-                                <button type="button" class="btn" style = "border-radius: 3px; width: 90px; border: 1px solid blue; color: blue">Cancel</button>
+                                <a type="button" class="btn border-primary text-primary" asp-controller="Role" asp-action="Role"
+                        style="border-radius: 3px; width: 90px; ">Cancel</a>
                             </div>
                         </div>
                     </div>
                 </section>
 <script>
    document.addEventListener('DOMContentLoaded', function() {
-    // Fetch the ViewModel data passed from the backend (your model)
-    const modelData = @Html.Raw(Json.Serialize(Model)); // Passing List<PermissionViewModel> to JavaScript
+    // Fetch the ViewModel data passed from the backend
+    const modelData = @Html.Raw(Json.Serialize(Model)); 
 
     // Initialize checkboxes based on the model data
     function initializeCheckboxes() {
@@ -102,11 +103,11 @@
             }
         });
 
-        // Update the master checkbox (Type A) based on the state of all module checkboxes
+        // Update the master checkbox 
         updateMasterCheckboxState();
     }
 
-    // Update the master checkbox state (Type A) based on module checkboxes (Type B)
+    // Update the master checkbox state 
     function updateMasterCheckboxState() {
         const masterCheckbox = document.querySelector('.master-checkbox');
         let allChecked = true;
@@ -152,12 +153,12 @@
                 canViewCheckbox.checked = true;
             }
 
-            // Update the module checkbox (Type B) based on Type C checkboxes
+            // Update the module checkbox
             if (canViewCheckbox.checked || canEditCheckbox.checked || canDeleteCheckbox.checked) {
                 moduleCheckbox.checked = true;
             } 
 
-            // Update the master checkbox (Type A) based on the state of all module checkboxes
+            // Update the master checkbox 
             updateMasterCheckboxState();
         });
     });
@@ -176,12 +177,12 @@
                 canViewCheckbox.checked = true;
             }
 
-            // Update the module checkbox (Type B) based on Type C checkboxes
+            // Update the module checkbox 
             if (canViewCheckbox.checked || canEditCheckbox.checked || canDeleteCheckbox.checked) {
                 moduleCheckbox.checked = true;
             } 
 
-            // Update the master checkbox (Type A) based on the state of all module checkboxes
+            // Update the master checkbox 
             updateMasterCheckboxState();
         });
     });
@@ -200,16 +201,16 @@
                 canViewCheckbox.checked = true;
             }
 
-            // Update the module checkbox (Type B) based on Type C checkboxes
+            // Update the module checkbox 
             if (canViewCheckbox.checked || canEditCheckbox.checked || canDeleteCheckbox.checked) {
                 moduleCheckbox.checked = true;
             } 
-            // Update the master checkbox (Type A) based on the state of all module checkboxes
+            // Update the master checkbox 
             updateMasterCheckboxState();
         });
     });
 
-    // When the module checkbox (Type B) is clicked, toggle Type C checkboxes
+    // When the module checkbox 
     document.querySelectorAll('.module-checkbox').forEach((checkbox) => {
         checkbox.addEventListener('change', function () {
             const row = this.closest('tr');
@@ -236,7 +237,7 @@
         });
     });
 
-    // Master checkbox logic (Type A)
+    // Master checkbox logic 
     const masterCheckbox = document.querySelector('.master-checkbox');
     masterCheckbox.addEventListener('change', function () {
         const isChecked = masterCheckbox.checked;
@@ -265,7 +266,7 @@
     initializeCheckboxes();
 
     // Handle Save button click
-    document.querySelector('.harsh').addEventListener('click', function (event) {
+    document.querySelector('.save').addEventListener('click', function (event) {
         event.preventDefault(); // Prevent default form submission
 
         // Prepare the data to send

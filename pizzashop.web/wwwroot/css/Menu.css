@@ -32,7 +32,7 @@ a{
     text-decoration: none;
 }
 
-.menu.active{
+.menu .active{
     background-color: lightblue;
 }
 
@@ -42,11 +42,12 @@ a{
 }
 
 .nav-link{
+    background-color: none !important;
     border: none !important;
     color: black !important;
 }
 
-.nav-link.active{
+.nav-link .active{
     border-bottom:1px solid blue !important;
 }
 
@@ -91,6 +92,90 @@ a{
  .offcanvas-start{
     width: auto !important;
  }
+
+ .modal .form-floating > label {
+    padding-left: 1rem !important;
+}
+
+ .modal-delete span{
+    color: grey;
+    font-size: 20px;
+  }
+  
+  .modal-header{
+      color: grey;
+      border-bottom:none!important; 
+  }
+  
+  .modal-footer {
+      border-top:none!important;
+  }
+  
+  .btn-primary
+  {
+      background-color:#087cc4!important;
+      color: white!important;
+      width: 80px!important;
+  }
+  
+  .btn-danger{
+      background-color:white!important;
+      color: #087cc4!important;
+      border-color: #087cc4!important;
+      width: 100px;
+  }
+  
+  .modal-addNewItem .modal{
+      --bs-modal-width: 70%!important;
+  }
+  
+  .modal-addNewItem .form-switch .form-check-input {
+      width:3.5em!important;
+      height: 2em;
+      margin-left: -2.5em!important;
+  }
+  
+  .modal-addNewItem .form-check-input{
+      --bs-form-check-bg:lightgrey;
+  }
+  
+  .file-upload{
+      border:1px dashed grey;
+      border-radius: 5px;
+  }
+  
+  .modal-addNewItem .right-side-addItem
+  {
+      background-color: lightyellow;
+      border: 1px solid grey;
+      border-radius: 5px;
+      height: auto;
+  }
+  
+  .button-input .new-Modifiers-btn{
+      width: 130px;
+      height: 40px;
+      border:none;
+      border-radius: 5px;
+      color: white;
+      background-color: #087cc4;
+  }
+  
+  .modal-addModifiersGroup a{
+      text-decoration: none;
+      color: #087cc4;
+  }
+  
+  .modal-updateModifiersGroup a{
+      text-decoration: none;
+      color: #087cc4;
+  }
+  
+  
+  .modal-footer{
+      padding: 5px!important;
+  }
+  
 
 @media (max-height: 700px){
     .menu{

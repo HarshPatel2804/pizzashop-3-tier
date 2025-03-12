@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims
+@using pizzashop.repository.ViewModels
+@using pizzashop.service.Utils
+@inject IHttpContextAccessor HttpContextAccessor
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -19,7 +23,13 @@
     <!-- jQuery Unobtrusive Validation -->
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 
-
+@{
+     CookiesViewModel user = SessionUtils.GetUser(HttpContextAccessor.HttpContext);
+    var Username = user?.Username;
+    var Profileimg = user?.ProfileImg;
+    var defaultImg = Url.Content("~/images/Default_pfp.svg.png");
+    var profileImageUrl = !string.IsNullOrEmpty(Profileimg) ? Url.Content("~/images/uploads/" + Profileimg) : defaultImg;
+}
 <body>
     <main class="d-flex flex-column w-100">
         <section class="row w-100 h-100">
@@ -34,45 +44,45 @@
                     <button type="button" class="btn-close text-reset ms-auto d-lg-none" data-bs-dismiss="offcanvas"
                         data-bs-target="#sidebar" aria-label="Close"></button>
                 </div>
-                <a class='@(ViewContext.RouteData.Values["controller"]!.ToString() == "Dashboard" ? "active" : " ") menu w-100 mt-4' asp-controller="Dashboard" asp-action="Dashboard" class="" onclick="selectItem(this)">
+                <a class='@(ViewContext.RouteData.Values["controller"]!.ToString() == "Dashboard" ? "activeItem" : " ") menu w-100 mt-4' asp-controller="Dashboard" asp-action="Dashboard" class="" onclick="selectItem(this)">
                     <img src="~/images/navbar-icons/dashboard-default.png" class="me-2 ms-4 menu-icon black">
                     <img src="~/images/navbar-icons/dashboard-active.png" class="me-2 ms-4 menu-icon  blue">
-                    <span style="color: rgb(101, 101, 224); font-weight: 600;" class="text">Dashboard</span>
+                    <span style="font-weight: 600;" class="text">Dashboard</span>
                 </a>
-                <a asp-controller="User" asp-action="UserList" class="menu w-100 mt-4" onclick="selectItem(this)">
+                <a class='@(ViewContext.RouteData.Values["controller"]!.ToString() == "User" ? "activeItem" : " ") menu w-100 mt-4' asp-controller="User" asp-action="UserList"  onclick="selectItem(this)">
                     <img src="~/images/navbar-icons/users-default.png" class="me-2 ms-4 menu-icon black">
-                    <img src="~/images/navbar-icons/users-active.png" class="me-2 ms-4 menu-icon blue d-none">
-                    <span style="color: rgb(101, 101, 224); font-weight: 600;" class="text">Users</span>
+                    <img src="~/images/navbar-icons/users-active.png" class="me-2 ms-4 menu-icon blue">
+                    <span style="font-weight: 600;" class="text">Users</span>
                 </a>
-                <a asp-controller="Role" asp-action="Role" class="menu w-100 mt-4 px-1" onclick="selectItem(this)">
+                <a class='@(ViewContext.RouteData.Values["controller"]!.ToString() == "Role" ? "activeItem" : " ") menu w-100 mt-4' asp-controller="Role" asp-action="Role"  onclick="selectItem(this)">
                     <img src="~/images/navbar-icons/roles-default.png" class="me-2 ms-4 menu-icon black ">
-                    <img src="~/images/navbar-icons/roles-active.png" class="me-2 ms-4 menu-icon blue d-none">
-                    <span style="color: rgb(101, 101, 224); font-weight: 600;" class="text">Roles and Permission</span>
+                    <img src="~/images/navbar-icons/roles-active.png" class="me-2 ms-4 menu-icon blue ">
+                    <span style="font-weight: 600;" class="text me-2">Roles and Permission</span>
                 </a>
-                <a asp-controller="Menu" asp-action="Menu" class="menu w-100 mt-4" onclick="selectItem(this)">
+                <a class='@(ViewContext.RouteData.Values["controller"]!.ToString() == "Menu" ? "activeItem" : " ") menu w-100 mt-4' asp-controller="Menu" asp-action="Menu"  onclick="selectItem(this)">
                     <img src="~/images/navbar-icons/menu-default.png" class="me-2 ms-4 menu-icon black">
-                    <img src="~/images/navbar-icons/menu-active.png" class="me-2 ms-4 menu-icon blue d-none">
-                    <span style="color: rgb(101, 101, 224); font-weight: 600;" class="text">Menu</span>
+                    <img src="~/images/navbar-icons/menu-active.png" class="me-2 ms-4 menu-icon blue">
+                    <span style="font-weight: 600;" class="text">Menu</span>
                 </a>
                 <a class="menu w-100 mt-4" onclick="selectItem(this)">
                     <img src="~/images/navbar-icons/table-default.png" class="me-2 ms-4 menu-icon black">
                     <img src="~/images/navbar-icons/table-active.png" class="me-2 ms-4 menu-icon blue d-none">
-                    <span style="color: rgb(101, 101, 224); font-weight: 600;" class="text">Tables amd Sections</span>
+                    <span style="font-weight: 600;" class="text">Tables amd Sections</span>
                 </a>
                 <a class="menu w-100 mt-4" onclick="selectItem(this)">
                     <img src="~/images/navbar-icons/taxes-default.png" class="me-2 ms-4 menu-icon black">
                     <img src="~/images/navbar-icons/taxes-active.png" class="me-2 ms-4 menu-icon blue d-none">
-                    <span style="color: rgb(101, 101, 224); font-weight: 600;" class="text">Taxes and Fees</span>
+                    <span style="font-weight: 600;" class="text">Taxes and Fees</span>
                 </a>
                 <a class="menu w-100 mt-4" onclick="selectItem(this)">
                     <img src="~/images/navbar-icons/orders-default.png" class="me-2 ms-4 menu-icon black">
                     <img src="~/images/navbar-icons/orders-active.png" class="me-2 ms-4 menu-icon blue d-none">
-                    <span style="color: rgb(101, 101, 224); font-weight: 600;" class="text">Orders</span>
+                    <span style="font-weight: 600;" class="text">Orders</span>
                 </a>
                 <a class="menu w-100 mt-4" onclick="selectItem(this)">
                     <img src="~/images/navbar-icons/customers-default.png" class="me-2 ms-4 menu-icon black">
                     <img src="~/images/navbar-icons/customers-active.png" class="me-2 ms-4 menu-icon blue d-none">
-                    <span style="color: rgb(101, 101, 224); font-weight: 600;" class="text">Customers</span>
+                    <span style="font-weight: 600;" class="text">Customers</span>
                 </a>
             </aside>
             <section class="col" style="height:100%; max-height: 100%;">
@@ -81,13 +91,13 @@
                     <img src="~/images/menu-bar.svg" data-bs-toggle="offcanvas" data-bs-target="#sidebar"
                         alt="menu-bar-image" class="menu-image ms-4 d-lg-none">
                     <div class="dropdown ms-auto">
-                            <img src="~/images/Default_pfp.svg.png" class="dropdown-toggle me-2" id="dropdownMenuButton1"
+                            <img src=@profileImageUrl class="dropdown-toggle me-2" id="dropdownMenuButton1"
                             data-bs-toggle="dropdown" aria-expanded="false" style="width:30px; height: 30px;">                        
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
                             <li class="mt-2">
                                 <div class="d-flex ms-2 mb-0">
-                                    <img src="~/images/Default_pfp.svg.png" class="me-2" style="width:25px; height: 25px;">  
-                                    <span>Admin@123</span>
+                                    <img src=@profileImageUrl class="me-2" style="width:25px; height: 25px;">  
+                                    <span>@Username</span>
                                 </div>
                             </li>
                             <li class="mt-3"><hr class="dropdown-divider"></li>

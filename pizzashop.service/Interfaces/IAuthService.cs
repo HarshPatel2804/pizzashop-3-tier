@@ -10,6 +10,6 @@ namespace pizzashop.service
 
         Task<bool> ForgotPassword(string email);
 
-        Task<bool> ResetPasswordAsync(string email , string Password);
+        Task<bool> ResetPasswordAsync(ResetPasswordViewModel model);
     }
 }

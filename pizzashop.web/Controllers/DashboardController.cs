@@ -41,7 +41,13 @@ public class DashboardController : Controller
     [HttpPost]
     public async Task<IActionResult> Profile(ProfileViewModel model , IFormFile ProfileImage)
     { 
-        //  if(!ModelState.IsValid) return View(model);
+            ModelState.Remove(nameof(model.Countries));
+            ModelState.Remove(nameof(model.States));
+            ModelState.Remove(nameof(model.Cities));
+            ModelState.Remove(nameof(model.Roles));
+            ModelState.Remove(nameof(model.Profileimg));
+            ModelState.Remove(nameof(ProfileImage));
+         if(!ModelState.IsValid) return View(model);
         await _ProfileService.UpdateProfileData(model , ProfileImage);
         
         return RedirectToAction("Profile","Dashboard");

@@ -9,6 +9,11 @@ body,main{
     /* overflow-x: hidden; */
 }
 
+a{
+    text-decoration: none !important;
+    color: black !important;
+}
+
 main>section.row{
     --bs-gutter-x : 0rem !important;
 }
@@ -28,16 +33,19 @@ main>section.row{
     text-decoration: none;
 }
 
-.active{
-  background-color: #e6e6e6e5 !important;
-  color: var(--pz-blue);
+.activeItem{
+  background-color: #e6e6e6e5;
 }
 
-.active .black{
+.activeItem .text{
+    color: #0066A7 !important;
+}
+
+.activeItem .black{
     display: none;
 }
 
-.active .blue{
+.activeItem .blue{
     display: block;
 }
 

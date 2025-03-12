@@ -32,10 +32,6 @@ namespace pizzashop.web.Controllers
             ViewBag.PageSize = pageSize;
             ViewBag.TotalUsers = totalUsers;
             ViewBag.TotalPages = totalPages;
-            // Console.WriteLine(totalUsers);
-            // if(totalUsers == 0){
-            //     TempData["ErrorMessage"] = "No User";
-            // }
 
             return Request.Headers["X-Requested-With"] == "XMLHttpRequest"
                 ? PartialView("_ShowUserList", users)
@@ -64,14 +60,16 @@ namespace pizzashop.web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddUser(UserViewModel model)
+        public async Task<IActionResult> AddUser(UserViewModel model , IFormFile ProfileImage)
         {
             ModelState.Remove(nameof(model.Countries));
             ModelState.Remove(nameof(model.States));
             ModelState.Remove(nameof(model.Cities));
             ModelState.Remove(nameof(model.Roles));
+            ModelState.Remove(nameof(model.Profileimg));
+            ModelState.Remove(nameof(ProfileImage));
             if(!ModelState.IsValid) return View(model);
-            await _userService.AddUser(model);
+            await _userService.AddUser(model , ProfileImage);
             await _EmailService.SendEmailtoNewUserAsync(model.Email , model.FirstName , model.Password);
             TempData["SuccessMessage"] = "User added successfully!";
             return RedirectToAction("UserList", "User");
@@ -84,7 +82,7 @@ namespace pizzashop.web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditUser(UserViewModel model)
+        public async Task<IActionResult> EditUser(UserViewModel model , IFormFile ProfileImage)
         {
             ModelState.Remove(nameof(model.Countries));
             ModelState.Remove(nameof(model.States));
@@ -92,11 +90,12 @@ namespace pizzashop.web.Controllers
             ModelState.Remove(nameof(model.Roles));
             ModelState.Remove(nameof(model.Email));
             ModelState.Remove(nameof(model.Password));
-            
+            ModelState.Remove(nameof(model.Profileimg));
+            ModelState.Remove(nameof(ProfileImage));
              if(!ModelState.IsValid) return View(model);
-            await _userService.UpdateUserData(model);
+            await _userService.UpdateUserData(model, ProfileImage);
             TempData["SuccessMessage"] = "User edited successfully!";
-            return RedirectToAction("EditUser", "User");
+            return RedirectToAction("UserList", "User");
         }
     }
 }

@@ -75,7 +75,7 @@ public class ProfileService : IProfileService
          user.Username = model.Username;
          if(ProfileImage != null)
          {
-         userDetails.Profileimg = _imageService.GiveImagePath(ProfileImage);
+         userDetails.Profileimg = await _imageService.GiveImagePath(ProfileImage);
          }
 
          await _UserRepository.UpdateUser(userDetails);

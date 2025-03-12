@@ -38,7 +38,8 @@ public class UsersloginRepository : IUsersloginRepository
         var query = _context.Userslogins
                     .Include(u => u.User)
                     .Include(u => u.Role)
-                    .Where(u => u.User.Isdeleted != true)
+                    .Where(u => u.User.Isdeleted == false)
+                    .OrderBy(u => u.User.Firstname)
                     .Where(u => string.IsNullOrEmpty(search) ||
                         u.User.Firstname.ToLower().Contains(search.ToLower()) ||
                         u.User.Lastname.ToLower().Contains(search.ToLower()) ||
@@ -62,7 +63,7 @@ public class UsersloginRepository : IUsersloginRepository
                         : query.OrderByDescending(u => u.Role.Rolename);
                     break;
                 default:
-                    query = query.OrderBy(u => u.Userloginid);
+                    query = query.OrderBy(u => u.User.Firstname);
                     break;
             }
         }

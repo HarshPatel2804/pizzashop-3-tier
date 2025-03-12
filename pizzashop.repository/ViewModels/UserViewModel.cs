@@ -23,6 +23,9 @@ public class UserViewModel
             ErrorMessage = "Last name can have only alphabates and can be of 2 to 50 characters long.")]
     public string LastName { get; set; }
 
+    [Required(ErrorMessage = "Phone number is required.")]
+    [RegularExpression(@"^[0-9]{10}$",
+            ErrorMessage = "Phone number must be of 10 digits.")]
     public string Phone { get; set; }
 
     [Required(ErrorMessage = "User Name is required.")]
@@ -61,6 +64,7 @@ public class UserViewModel
     [Required(ErrorMessage = "Status is required.")]
     public statustype status { get; set; }
 
+    public string Profileimg {get; set;}
     public List<SelectListItem> Countries {get; set;}
 
      public List<SelectListItem> States {get; set;}

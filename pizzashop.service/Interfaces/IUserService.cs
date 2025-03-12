@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using pizzashop.repository.Models;
 using pizzashop.repository.ViewModels;
 
@@ -8,9 +9,9 @@ public interface IUserService
     Task<User> GetUserById(int id);
     Task DeleteUser(int id);
 
-    Task AddUser(UserViewModel model);
+    Task AddUser(UserViewModel model , IFormFile ProfileImg);
 
     Task<UserViewModel> GetUserData(int id);
 
-    Task UpdateUserData(UserViewModel model);
+    Task UpdateUserData(UserViewModel model , IFormFile ProfileImg);
 }

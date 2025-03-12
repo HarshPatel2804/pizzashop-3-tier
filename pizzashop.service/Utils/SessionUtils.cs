@@ -7,16 +7,18 @@ namespace pizzashop.service.Utils;
 
 public static class SessionUtils
 {
-    public static void SetUser(HttpContext httpContext, Userslogin user)
+    public static void SetUser(HttpContext httpContext, Userslogin userLogin, User user)
     {
         if(user != null)
         {
             CookiesViewModel cookieUserData = new CookiesViewModel
             {
-                Id = user.Userid,
-                Email = user.Email,
-                Username = user.Username
+                Id = userLogin.Userid,
+                Email = userLogin.Email,
+                Username = userLogin.Username,
+                ProfileImg = user.Profileimg
             };
+
 
             string userData = JsonSerializer.Serialize(cookieUserData);
             httpContext.Session.SetString("UserData", userData);

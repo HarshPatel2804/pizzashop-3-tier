@@ -4,5 +4,5 @@ namespace pizzashop.service.Interfaces;
 
 public interface IImageService
 {
-    string GiveImagePath(IFormFile ProfileImage);
+    Task<string> GiveImagePath(IFormFile ProfileImage);
 }

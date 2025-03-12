@@ -18,8 +18,6 @@ public class HomeController : Controller
 
     private readonly IJwtService _JwtService;
 
-
-
     public HomeController(IConfiguration config, IAuthService AuthService, IEmailService EmailService, IJwtService JwtService)
     {
         _config = config;
@@ -62,7 +60,8 @@ public class HomeController : Controller
                 return View();
             }
         }
-        else{
+        else
+        {
             return View();
         }
     }
@@ -78,7 +77,7 @@ public class HomeController : Controller
     [HttpPost]
     public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
     {
-         if(!ModelState.IsValid) return View(model);
+        if (!ModelState.IsValid) return View(model);
         var user = await _AuthService.ForgotPassword(model.email);
         // Console.WriteLine("EMAIl" + email);
         Console.WriteLine(user);
@@ -106,22 +105,19 @@ public class HomeController : Controller
     [HttpPost]
     public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
     {
-         if(!ModelState.IsValid) return View(model);
-        if (model.Password == model.ConfirmPassword)
-        {
-            var principal = _JwtService.ValidateToken(model.Token);
+        if (!ModelState.IsValid) return View(model);
 
-            var emailClaim = principal?.FindFirst(ClaimTypes.Email);
-            Console.WriteLine(emailClaim.Value);
-
-            await _AuthService.ResetPasswordAsync(emailClaim.Value, model.Password);
-
-            return RedirectToAction("Index", "Home");
+        bool isValidLink = await _AuthService.ResetPasswordAsync(model);
+        if(!isValidLink){
+            TempData["ErrorMessage"] = "Reset link can be used for one time only";
+            return View(model);
         }
-        return View(model);
+            return RedirectToAction("Index", "Home");
+
+        
     }
 
-     [HttpPost]
+    [HttpPost]
     public IActionResult logout()
     {
         CookieUtils.ClearCookies(HttpContext);

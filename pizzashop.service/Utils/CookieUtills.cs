@@ -33,14 +33,17 @@ namespace pizzashop.service.Utils
         /// </summary>
         /// <param name="response"></param>
         /// <param name="user"></param>
-        public static void SaveUserData(HttpResponse response, Userslogin user)
+        public static void SaveUserData(HttpResponse response, Userslogin userLogin, User user)
         {
              CookiesViewModel cookieUserData = new CookiesViewModel
             {
-                Id = user.Userid,
-                Email = user.Email,
-                Username = user.Username
+                Id = userLogin.Userid,
+                Email = userLogin.Email,
+                Username = userLogin.Username,
+                ProfileImg = user.Profileimg
             };
+
+            Console.WriteLine(cookieUserData.ProfileImg);
 
             string userData = JsonSerializer.Serialize(cookieUserData);
 

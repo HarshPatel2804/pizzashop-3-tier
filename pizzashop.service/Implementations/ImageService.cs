@@ -5,7 +5,7 @@ namespace pizzashop.service.Implementations;
 
 public class ImageService : IImageService
 {
-    public string GiveImagePath(IFormFile ProfileImage)
+    public async Task<string> GiveImagePath(IFormFile ProfileImage)
     {
         if(ProfileImage == null) return null;
         var fileGuid = Guid.NewGuid().ToString();
@@ -26,7 +26,7 @@ public class ImageService : IImageService
         // Save the file to the server
         using (var fileStream = new FileStream(filePath, FileMode.Create))
         {
-             ProfileImage.CopyToAsync(fileStream);
+             await ProfileImage.CopyToAsync(fileStream);
         }
 
         // Optionally, store the image filename or GUID in your database

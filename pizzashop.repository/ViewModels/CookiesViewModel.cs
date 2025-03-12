@@ -10,4 +10,7 @@ public class CookiesViewModel
 
     public string Username { get; set; }
 
+    public string ProfileImg {get; set;}
+
+
 }
