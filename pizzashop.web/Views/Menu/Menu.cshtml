@@ -83,7 +83,8 @@
                                     src="~/images/trash.svg"></button>
                             <a href="" type="button"
                                 class="btn col-md-auto col-3 ms-1 align-items-center d-flex item-button"
-                                style="border-radius: 2px; border: 1px solid black; background-color: rgb(85, 85, 247); color: white  !important;"  data-bs-toggle="modal" data-bs-target="#addItem">
+                                style="border-radius: 2px; border: 1px solid black; background-color: rgb(85, 85, 247); color: white  !important;"
+                                data-bs-toggle="modal" data-bs-target="#addItem">
                                 + New Item
                             </a>
                         </div>
@@ -102,7 +103,7 @@
                                 Modifier Group
                             </div>
                             <button class="btn col-auto ms-3" type="button" data-bs-toggle="modal"
-                                data-bs-target="#Add-Category">
+                                data-bs-target="#addModifiersGroup">
                                 <img src="~/images/more.png" style="width: 30px;">
                             </button>
                         </div>
@@ -112,7 +113,8 @@
                     </div>
                     <div class="col">
                         <div class="row px-3">
-                            <div class="col-auto d-flex align-items-center mt-1 fw-bold" style="font-size: 20px;">Modifiers
+                            <div class="col-auto d-flex align-items-center mt-1 fw-bold" style="font-size: 20px;">
+                                Modifiers
                             </div>
                         </div>
 
@@ -128,7 +130,7 @@
                                         Modifier Group
                                     </div>
                                     <button class="btn col-auto ms-auto" type="button" data-bs-toggle="modal"
-                                        data-bs-target="#Add-Category">
+                                        data-bs-target="#addModifiersGroup">
                                         <img src="~/images/more.png" style="width: 30px;">
                                     </button>
                                 </div>
@@ -225,12 +227,13 @@
                                     src="~/images/trash.svg"></button>
                             <a href="" type="button"
                                 class="btn col-md-auto col-3 ms-1 align-items-center d-flex item-button"
-                                style="border-radius: 2px; border: 1px solid black; background-color: rgb(85, 85, 247); color: white  !important;">
-                                + New Item
+                                style="border-radius: 2px; border: 1px solid black; background-color: rgb(85, 85, 247); color: white  !important;"
+                                data-bs-toggle="modal" data-bs-target="#addNewModifier">
+                                + New Modifier
                             </a>
                         </div>
                         <div class="row table-responsive pt-4 ms-2 me-2" id="Modifier">
-                            
+
                         </div>
                     </div>
                 </div>
@@ -349,6 +352,269 @@
         </div>
     </div>
 
+    <div class="modal-addNewModifier">
+        <div class="modal fade" id="addNewModifier" tabindex="-1" aria-labelledby="addNewModifier" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addNewModifier">Add New Modifier</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <!-- first row -->
+                        <div>
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                        <div class="form-floating">
+                                            <select class="form-select" id="floatingSelect" aria-label="Item type"
+                                                required>
+                                                <option selected>Select Modifier Group(s)</option>
+                                                <option value="1">Pasta</option>
+                                                <option value="2">Pizza</option>
+                                                <option value="3">Desserts</option>
+                                            </select>
+                                            <label for="floatingSelect">Modifier</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" id="floatingInput"
+                                                placeholder="Name" required>
+                                            <label for="floatingInput">Name*</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="container-fluid ">
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-sm-12 mb-3">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="floatingInput" placeholder="Rate"
+                                            required value="0">
+                                        <label for="floatingInput">Rate*</label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-12">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="floatingInput"
+                                            placeholder="Quantity" required value="0">
+                                        <label for="floatingInput">Quantity*</label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-12 doted-border">
+                                    <div class="form-floating">
+                                        <select class="form-select" id="floatingSelect" aria-label="Item type" required>
+                                            <option selected>Select a Unit</option>
+                                            <option value="1">Pasta</option>
+                                            <option value="2">Pizza</option>
+                                            <option value="3">Desserts</option>
+                                        </select>
+                                        <label for="floatingSelect">Unit*</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="container-fluid form-floating">
+                            <textarea class="form-control" placeholder="Give Description of this Modifier"
+                                id="floatingTextarea"></textarea>
+                            <label for="floatingTextarea">Description</label>
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="modal-footer d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Save</button>
+                        <button type="button" class="btn btn-danger">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="modal fade modal-delete" id="selectExistingModifiers" tabindex="-1" aria-labelledby="deleteModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="selectExistingModifiers">Select Existing Modifiers</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="search-field w-50">
+                        <input class="search form-control me-2 border-0" type="search" placeholder="Search"
+                            aria-label="Search">
+                    </div>
+
+
+                    <div class="table-responsive mt-2">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                    </th>
+                                    <th>
+                                        Name
+                                    </th>
+                                    <th>Unit</th>
+                                    <th>Rate</th>
+                                    <th>Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                <tr>
+                                    <td>
+                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                    </td>
+                                    <td>Medium</td>
+                                    <td>pcs</td>
+                                    <td>170</td>
+                                    <td>1</td>
+                                </tr>
+
+
+                                <tr>
+                                    <td>
+                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                    </td>
+                                    <td>Onion</td>
+                                    <td>g</td>
+                                    <td>10</td>
+                                    <td>5</td>
+                                </tr>
+
+
+                                <tr>
+                                    <td>
+                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                    </td>
+                                    <td>Capsicum</td>
+                                    <td>g</td>
+                                    <td>42</td>
+                                    <td>1</td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                    </td>
+                                    <td>Onion</td>
+                                    <td>pcs</td>
+                                    <td>20</td>
+                                    <td>5</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                    </td>
+                                    <td>test</td>
+                                    <td>g</td>
+                                    <td>500</td>
+                                    <td>1</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-flex justify-content-end align-items-center gap-2 mt-2 p-3">
+                        <div class="d-flex align-items-center">
+                            <span class="d-none d-sm-inline px-1">Items Per page:</span>
+                            <select id="pageSizeSelect" class="form-select form-select-sm" style="width: auto;">
+                                <option value="5" selected="@(ViewBag.PageSize == 5)">5</option>
+                                <option value="10" selected="@(ViewBag.PageSize == 10)">10</option>
+                                <option value="25" selected="@(ViewBag.PageSize == 25)">25</option>
+                            </select>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="d-none d-sm-inline px-1">
+                                Showing @(ViewBag.TotalUsers > 0 ? ((ViewBag.CurrentPage - 1) * ViewBag.PageSize + 1) :
+                                0)
+                                - @(ViewBag.TotalUsers > 0 ? Math.Min(ViewBag.CurrentPage * ViewBag.PageSize,
+                                  ViewBag.TotalUsers) :
+                                  0)
+                                of @ViewBag.TotalUsers
+                            </span>
+                            <nav>
+                                <ul class="pagination pagination-sm">
+                                    <!-- Previous Page -->
+                                    <li class="page-item @(ViewBag.CurrentPage > 1 ? "" : "disabled")">
+                                        <a class="page-link pagination-link" href="#"
+                                            data-page="@(ViewBag.CurrentPage - 1)">
+                                            <i class="bi bi-chevron-left"></i>
+                                        </a>
+                                    </li>
+
+                                    <!-- Next Page -->
+                                    <li class="page-item @(ViewBag.CurrentPage < ViewBag.TotalPages ? "" : "disabled")">
+                                        <a class="page-link pagination-link" href="#"
+                                            data-page="@(ViewBag.CurrentPage + 1)">
+                                            <i class="bi bi-chevron-right"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer d-flex justify-content-start gap-2">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Add</button>
+                    <button type="button" class="btn btn-danger">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade modal-updateModifiersGroup" id="addModifiersGroup" tabindex="-1"
+        aria-labelledby="AddNewCategory" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addModifiersGroup">Add Modifier Group</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body ">
+                    <form>
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="floatingInput" placeholder="Category name"
+                                required>
+                            <label for="floatingInput">Name*</label>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <textarea class="form-control" placeholder="Add a Description of Xategory"
+                                id="floatingTextarea"></textarea>
+                            <label for="floatingTextarea">Description</label>
+                        </div>
+
+                        <a href="" class="ModalAnchor" data-bs-toggle="modal" data-bs-target="#selectExistingModifiers">+ Add Existing
+                            Modifiers</a>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button submit" class="btn btn-primary sav-btn" data-bs-dismiss="modal">Save</button>
+                    <button type="button" class="btn btn-danger">Cancel</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
     <!-- Add new item -->
     <div class="modal-addNewItem">
         <div class="modal fade" id="addItem" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
@@ -398,10 +664,13 @@
                                         <div class="form-floating">
                                             <select class="form-select" id="floatingSelect" aria-label="Item type"
                                                 required>
-                                                <option selected>Select a type</option>
-                                                <option value="1">Pasta</option>
-                                                <option value="2">Pizza</option>
-                                                <option value="3">Desserts</option>
+                                                @foreach (var type in
+                                                Enum.GetValues(typeof(itemtype)).Cast<itemtype>())
+                                                {
+                                                    <option value="@((int)type)">
+                                                        @type.ToString()
+                                                    </option>
+                                                }
                                             </select>
                                             <label for="floatingSelect">Item Type*</label>
                                         </div>
@@ -485,9 +754,10 @@
 
 
                             <div class="container-fluid mb-3">
-                                <textarea class="form-control" placeholder="Description"
-                                    id="floatingTextarea2" style="height: 100px"></textarea>
-                                @* <label for="floatingTextarea2" style="padding-left: 2rem !important;">Description</label> *@
+                                <textarea class="form-control" placeholder="Description" id="floatingTextarea2"
+                                    style="height: 100px"></textarea>
+                                @* <label for="floatingTextarea2" style="padding-left: 2rem
+                                !important;">Description</label> *@
                             </div>
 
 
@@ -585,7 +855,7 @@
                 }
             });
         };
-        
+
         function modifierList(ModifierGroupId) {
             $.ajax({
                 type: "GET",
@@ -638,7 +908,7 @@
             var categoryId = $(this).data("id");
             ItemList(categoryId);
         });
-         $(document).on("click", ".selectedModifierGroup", function () {
+        $(document).on("click", ".selectedModifierGroup", function () {
             var modifierGroupId = $(this).data("id");
             modifierList(modifierGroupId);
         });

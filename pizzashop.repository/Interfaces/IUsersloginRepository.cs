@@ -10,5 +10,9 @@ public interface IUsersloginRepository
     Task<Userslogin> AddUserloginDetails(UserViewModel model,int id);
 
     Task UpdateUserLoginDetails(Userslogin user);
+
+    bool CheckUsername(string Username, int? Id = null);
+
+    bool CheckEmail(string Email, int? Id = null);
     Task<(List<Userslogin> users, int totalUsers)> GetPaginatedUsersAsync(int page, int pageSize, string search, string sortColumn, string sortOrder);
 }

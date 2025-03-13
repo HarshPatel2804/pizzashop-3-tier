@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using pizzashop.repository.Models;
 using pizzashop.repository.ViewModels;
 using pizzashop.service.Implementations;
 using pizzashop.service.Interfaces;
@@ -12,21 +13,24 @@ namespace pizzashop.web.Controllers
         private readonly IUserService _userService;
         private readonly IRoleService _roleService;
         private readonly ICountryService _countryService;
-            private readonly IEmailService _EmailService;
+        private readonly IEmailService _EmailService;
 
-        public UserController(IUsersLoginService usersLoginService, IUserService userService, IRoleService roleService, ICountryService countryService, IEmailService EmailService)
+        private readonly PizzaShopContext _context;
+
+
+        public UserController(IUsersLoginService usersLoginService, IUserService userService, IRoleService roleService, ICountryService countryService, IEmailService EmailService, PizzaShopContext context)
         {
             _usersLoginService = usersLoginService;
             _userService = userService;
             _roleService = roleService;
             _countryService = countryService;
             _EmailService = EmailService;
-            
+            _context = context;
         }
 
         public async Task<IActionResult> UserList(int page = 1, int pageSize = 5, string search = "", string sortColumn = "", string sortOrder = "")
         {
-            
+
             var (users, totalUsers, totalPages) = await _usersLoginService.GetPaginatedUsersAsync(page, pageSize, search, sortColumn, sortOrder);
             ViewBag.CurrentPage = page;
             ViewBag.PageSize = pageSize;
@@ -60,7 +64,7 @@ namespace pizzashop.web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddUser(UserViewModel model , IFormFile ProfileImage)
+        public async Task<IActionResult> AddUser(UserViewModel model, IFormFile ProfileImage)
         {
             ModelState.Remove(nameof(model.Countries));
             ModelState.Remove(nameof(model.States));
@@ -68,22 +72,24 @@ namespace pizzashop.web.Controllers
             ModelState.Remove(nameof(model.Roles));
             ModelState.Remove(nameof(model.Profileimg));
             ModelState.Remove(nameof(ProfileImage));
-            if(!ModelState.IsValid) return View(model);
-            await _userService.AddUser(model , ProfileImage);
-            await _EmailService.SendEmailtoNewUserAsync(model.Email , model.FirstName , model.Password);
+            if (!ModelState.IsValid) return View(model);
+            await _userService.AddUser(model, ProfileImage);
+            await _EmailService.SendEmailtoNewUserAsync(model.Email, model.FirstName, model.Password);
             TempData["SuccessMessage"] = "User added successfully!";
             return RedirectToAction("UserList", "User");
         }
 
         [HttpGet]
-        public async Task<IActionResult> EditUser(int id){
+        public async Task<IActionResult> EditUser(int id)
+        {
             var model = await _userService.GetUserData(id);
             return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditUser(UserViewModel model , IFormFile ProfileImage)
+        public async Task<IActionResult> EditUser(UserViewModel model, IFormFile ProfileImage)
         {
+            Console.WriteLine("edit");
             ModelState.Remove(nameof(model.Countries));
             ModelState.Remove(nameof(model.States));
             ModelState.Remove(nameof(model.Cities));
@@ -92,10 +98,34 @@ namespace pizzashop.web.Controllers
             ModelState.Remove(nameof(model.Password));
             ModelState.Remove(nameof(model.Profileimg));
             ModelState.Remove(nameof(ProfileImage));
-             if(!ModelState.IsValid) return View(model);
+            if (!ModelState.IsValid) return View(model);
             await _userService.UpdateUserData(model, ProfileImage);
             TempData["SuccessMessage"] = "User edited successfully!";
             return RedirectToAction("UserList", "User");
+        }
+
+        [HttpGet]
+        public JsonResult CheckUsername(string Username, int? Id = null)
+        {
+            var isUsernameTaken = _usersLoginService.CheckUsername(Username , Id);
+
+            return Json(!isUsernameTaken);
+        }
+
+        [HttpGet]
+        public JsonResult CheckPhone(string Phone, int? Id = null)
+        {
+            var isPhoneTaken = _userService.CheckPhone(Phone , Id);
+
+            return Json(!isPhoneTaken);
+        }
+
+        [HttpGet]
+        public JsonResult CheckEmail(string Email, int? Id = null)
+        {
+            var isEmailTaken =_usersLoginService.CheckEmail(Email , Id);
+
+            return Json(!isEmailTaken);
         }
     }
 }

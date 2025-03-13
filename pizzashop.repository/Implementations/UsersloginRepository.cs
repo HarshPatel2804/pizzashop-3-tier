@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using pizzashop.repository.Interfaces;
 using pizzashop.repository.Models;
@@ -31,6 +32,24 @@ public class UsersloginRepository : IUsersloginRepository
         _context.Userslogins.Update(user);
         _context.SaveChanges();
     }
+
+    public bool CheckUsername(string Username, int? Id = null)
+    {
+        var isUsernameTaken = _context.Userslogins
+            .Where(u => u.Username == Username && u.Userid != Id)
+            .Any();
+
+        return isUsernameTaken;
+    }
+
+    public bool CheckEmail(string Email, int? Id = null)
+        {
+            var isUsernameTaken = _context.Userslogins
+                .Where(u => u.Email == Email && u.Userid != Id) 
+                .Any();
+
+            return isUsernameTaken;
+        }
 
 
     public async Task<(List<Userslogin> users, int totalUsers)> GetPaginatedUsersAsync(int page, int pageSize, string search, string sortColumn, string sortOrder)

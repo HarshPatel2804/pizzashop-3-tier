@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using pizzashop.repository.Interfaces;
 using pizzashop.repository.Models;
 using pizzashop.repository.ViewModels;
@@ -22,6 +23,15 @@ public class UsersLoginService : IUsersLoginService
     {
         return await _UsersloginRepository.GetUserByIdAsync(id);
     }
+
+    public bool CheckUsername(string Username , int? Id = null){
+        return _UsersloginRepository.CheckUsername(Username , Id);
+    }
+
+    public bool CheckEmail(string Email, int? Id = null)
+        {
+            return _UsersloginRepository.CheckEmail(Email,Id);
+        }
 
     public async Task<(List<Userslogin> users, int totalUsers, int totalPages)> GetPaginatedUsersAsync(int page, int pageSize, string search, string sortColumn, string sortOrder)
     {

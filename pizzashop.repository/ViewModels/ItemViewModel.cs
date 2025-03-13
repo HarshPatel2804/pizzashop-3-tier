@@ -1,13 +1,16 @@
 using System;
 using System.Collections.Generic;
+using pizzashop.repository.Models;
 
-namespace pizzashop.repository.Models;
+namespace pizzashop.repository.ViewModels;
 
 public partial class ItemViewModel
 {
     public int Itemid { get; set; }
 
     public string Itemname { get; set; } = null!;
+
+    public itemtype Itemtype { get; set; }
 
     public int Categoryid { get; set; }
 

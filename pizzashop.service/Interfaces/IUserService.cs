@@ -14,4 +14,6 @@ public interface IUserService
     Task<UserViewModel> GetUserData(int id);
 
     Task UpdateUserData(UserViewModel model , IFormFile ProfileImg);
+
+    bool CheckPhone(string Phone, int? Id = null);
 }

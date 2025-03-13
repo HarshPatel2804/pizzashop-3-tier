@@ -54,6 +54,13 @@ public class UserService : IUserService
         return await _UserRepository.GetUserDataAsync(id);
     }
 
+    public bool CheckPhone(string Phone, int? Id = null)
+        {
+            return _UserRepository.CheckPhone(Phone,Id);
+        }
+
+        
+
     public async Task UpdateUserData(UserViewModel model , IFormFile ProfileImg)
      {
          var userDetails = await _UserRepository.GetUserByIdAsync(model.Id);

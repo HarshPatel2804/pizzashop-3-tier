@@ -11,5 +11,7 @@ public interface IUserRepository
 
      Task<User> AddUser(UserViewModel model);
 
+     bool CheckPhone(string Phone, int? Id = null);
+
      Task<UserViewModel> GetUserDataAsync(int id);
 }

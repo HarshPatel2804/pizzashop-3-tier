@@ -63,9 +63,12 @@
                 </div>
                 <div class="form-floating col-md-6 col-12 mb-3">
                     <select asp-for="status" class="form-select" aria-label="Default select example">
-                        <option selected>Status</option>
-                        <option value="0">Active</option>
-                        <option value="1">Inactive</option>
+                        @foreach (var status in Enum.GetValues(typeof(pizzashop.repository.ViewModels.statustype)).Cast<pizzashop.repository.ViewModels.statustype>())
+                        {
+                            <option value="@((int)status)">
+                                @status.ToString()
+                            </option>
+                        }
                     </select>
                     <label for="floatingPassword" class="label-pad">Status</label>
                     <span asp-validation-for="status" class="text-danger"></span>
@@ -82,7 +85,7 @@
                         }
                         else
                         {
-                            <img id="profileImg" style="width: 50px; display: none;"/>
+                            <img id="profileImg" style="width: 50px; display: none;" />
                         }
                         <div class="d-flex flex-column align-items-center ms-3">
                             <img src="~/images/cloud-arrow-up.svg" alt="upload-icon" style="width: 30px;" />

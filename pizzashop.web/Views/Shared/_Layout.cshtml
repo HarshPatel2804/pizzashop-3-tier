@@ -64,10 +64,10 @@
                     <img src="~/images/navbar-icons/menu-active.png" class="me-2 ms-4 menu-icon blue">
                     <span style="font-weight: 600;" class="text">Menu</span>
                 </a>
-                <a class="menu w-100 mt-4" onclick="selectItem(this)">
+                <a class='@(ViewContext.RouteData.Values["controller"]!.ToString() == "Table" ? "activeItem" : " ") menu w-100 mt-4' asp-controller="Table" asp-action="Table"  onclick="selectItem(this)">
                     <img src="~/images/navbar-icons/table-default.png" class="me-2 ms-4 menu-icon black">
-                    <img src="~/images/navbar-icons/table-active.png" class="me-2 ms-4 menu-icon blue d-none">
-                    <span style="font-weight: 600;" class="text">Tables amd Sections</span>
+                    <img src="~/images/navbar-icons/table-active.png" class="me-2 ms-4 menu-icon blue">
+                    <span style="font-weight: 600;" class="text">Tables and Sections</span>
                 </a>
                 <a class="menu w-100 mt-4" onclick="selectItem(this)">
                     <img src="~/images/navbar-icons/taxes-default.png" class="me-2 ms-4 menu-icon black">

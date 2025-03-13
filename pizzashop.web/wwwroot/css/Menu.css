@@ -1,29 +1,31 @@
-*{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-body,main{
+body,
+main {
     height: 100vh;
     overflow: hidden;
 }
 
-main>section.row{
-    --bs-gutter-x : 0rem !important;
+main>section.row {
+    --bs-gutter-x: 0rem !important;
 }
 
-a{
+a {
     text-decoration: none !important;
     color: black !important;
 }
-#sidebar{
+
+#sidebar {
     background-color: white;
     height: 100%;
     min-height: 1000px;
 }
 
-.menu{
+.menu {
     display: flex;
     align-items: center;
     justify-content: start;
@@ -32,23 +34,27 @@ a{
     text-decoration: none;
 }
 
-.menu .active{
+.menu .active {
     background-color: lightblue;
 }
 
-.menu-icon{
+.menu-icon {
     width: 25px;
     height: 25px;
 }
 
-.nav-link{
+.nav-link {
     background-color: none !important;
     border: none !important;
     color: black !important;
 }
 
-.nav-link .active{
-    border-bottom:1px solid blue !important;
+.pagination {
+    margin-top: -13px !important;
+}
+
+.nav-link .active {
+    border-bottom: 1px solid blue !important;
 }
 
 .status-badge-green {
@@ -64,7 +70,7 @@ a{
     width: 69px;
 }
 
-.label-pad{
+.label-pad {
     margin-left: 1rem;
 }
 
@@ -72,133 +78,133 @@ a{
     display: none;
 }
 
-.heading{
+.heading {
     font-size: 1.2rem;
     font-family: Roboto;
 }
 
-#flexCheckDefault{
+#flexCheckDefault {
     min-width: 18px !important;
     min-height: 19px !important;
     margin-right: 1rem;
     border: 0.5px solid black !important;
 }
 
-#flexSwitchCheckDefault{
+#flexSwitchCheckDefault {
     min-width: 55px !important;
     min-height: 30px !important;
 }
 
- .offcanvas-start{
+.offcanvas-start {
     width: auto !important;
- }
+}
 
- .modal .form-floating > label {
+.modal .form-floating>label {
     padding-left: 1rem !important;
 }
 
- .modal-delete span{
+.modal-delete span {
     color: grey;
     font-size: 20px;
-  }
-  
-  .modal-header{
-      color: grey;
-      border-bottom:none!important; 
-  }
-  
-  .modal-footer {
-      border-top:none!important;
-  }
-  
-  .btn-primary
-  {
-      background-color:#087cc4!important;
-      color: white!important;
-      width: 80px!important;
-  }
-  
-  .btn-danger{
-      background-color:white!important;
-      color: #087cc4!important;
-      border-color: #087cc4!important;
-      width: 100px;
-  }
-  
-  .modal-addNewItem .modal{
-      --bs-modal-width: 70%!important;
-  }
-  
-  .modal-addNewItem .form-switch .form-check-input {
-      width:3.5em!important;
-      height: 2em;
-      margin-left: -2.5em!important;
-  }
-  
-  .modal-addNewItem .form-check-input{
-      --bs-form-check-bg:lightgrey;
-  }
-  
-  .file-upload{
-      border:1px dashed grey;
-      border-radius: 5px;
-  }
-  
-  .modal-addNewItem .right-side-addItem
-  {
-      background-color: lightyellow;
-      border: 1px solid grey;
-      border-radius: 5px;
-      height: auto;
-  }
-  
-  .button-input .new-Modifiers-btn{
-      width: 130px;
-      height: 40px;
-      border:none;
-      border-radius: 5px;
-      color: white;
-      background-color: #087cc4;
-  }
-  
-  .modal-addModifiersGroup a{
-      text-decoration: none;
-      color: #087cc4;
-  }
-  
-  .modal-updateModifiersGroup a{
-      text-decoration: none;
-      color: #087cc4;
-  }
-  
-  
-  .modal-footer{
-      padding: 5px!important;
-  }
-  
+}
 
-@media (max-height: 700px){
-    .menu{
-        height:35px;
+.modal-header {
+    color: grey;
+    border-bottom: none !important;
+}
+
+
+
+.modal-footer {
+    border-top: none !important;
+}
+
+.btn-primary {
+    background-color: #087cc4 !important;
+    color: white !important;
+    width: 80px !important;
+}
+
+.btn-danger {
+    background-color: white !important;
+    color: #087cc4 !important;
+    border-color: #087cc4 !important;
+    width: 100px;
+}
+
+.modal-addNewItem .modal {
+    --bs-modal-width: 70% !important;
+}
+
+.modal-addNewItem .form-switch .form-check-input {
+    width: 3.5em !important;
+    height: 2em;
+    margin-left: -2.5em !important;
+}
+
+.modal-addNewItem .form-check-input {
+    --bs-form-check-bg: lightgrey;
+}
+
+.file-upload {
+    border: 1px dashed grey;
+    border-radius: 5px;
+}
+
+.modal-addNewItem .right-side-addItem {
+    background-color: lightyellow;
+    border: 1px solid grey;
+    border-radius: 5px;
+    height: auto;
+}
+
+.button-input .new-Modifiers-btn {
+    width: 130px;
+    height: 40px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    background-color: #087cc4;
+}
+
+.modal-addModifiersGroup a {
+    text-decoration: none !important;
+    color: #087cc4 !important;
+}
+
+.modal-updateModifiersGroup a {
+    text-decoration: none !important;
+    color: #087cc4 !important;
+}
+
+
+.modal-footer {
+    padding: 5px !important;
+}
+
+
+@media (max-height: 700px) {
+    .menu {
+        height: 35px;
     }
 }
 
-@media (max-width: 576px){
-    .item-button{
+@media (max-width: 576px) {
+    .item-button {
         --bs-btn-padding-x: 0rem !important;
     }
 }
 
-li > img{
-    width:20px;
+li>img {
+    width: 20px;
 }
 
-li > div > img {
+li>div>img {
     width: 20px;
 
 }
 
-li > span{
+li>span {
     font-weight: 500;
 }
 
@@ -206,19 +212,19 @@ li {
     margin-top: 2rem;
 }
 
-.items:focus-within > button > img{
+.items:focus-within>button>img {
     display: block !important;
 }
 
-.items > .btn {
+.items>.btn {
     --bs-btn-padding-x: 0rem !important;
 }
 
-.items:hover{
+.items:hover {
     color: #0066a7;
     background-color: #f2f2f2;
 }
 
-.form-floating > label{
+.form-floating>label {
     padding-left: 0rem !important;
 }

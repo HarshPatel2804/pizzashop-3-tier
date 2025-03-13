@@ -76,7 +76,7 @@ public partial class PizzaShopContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
-            .HasPostgresEnum("itemtype", new[] { "Veg", "Non-Veg", "Vegan" })
+            .HasPostgresEnum("itemtype", new[] { "Veg", "Nonveg", "Vegan" })
             .HasPostgresEnum("orderstatus", new[] { "InProgress", "Pending", "Served", "Completed", "Cancelled", "On Hold", "Failed" })
             .HasPostgresEnum("statustype", new[] { "Active", "Inactive" })
             .HasPostgresEnum("tablestatus", new[] { "Available", "Occupied", "Reserved" });
@@ -303,6 +303,13 @@ public partial class PizzaShopContext : DbContext
                 .HasPrecision(5, 2)
                 .HasColumnName("taxpercentage");
             entity.Property(e => e.Unitid).HasColumnName("unitid");
+
+            entity.Property(e => e.Itemtype)
+                .HasColumnName("itemtype")
+                .HasConversion(
+                    v => (int)v,
+                    v => (itemtype)v
+                );
 
             entity.HasOne(d => d.Category).WithMany(p => p.Items)
                 .HasForeignKey(d => d.Categoryid)
@@ -822,12 +829,12 @@ public partial class PizzaShopContext : DbContext
                 .HasMaxLength(100)
                 .HasColumnName("username");
 
-                        entity.Property(e => e.status)
-                .HasColumnName("status")
-                .HasConversion(
-                    v => (int)v,
-                    v => (statustype)v
-                );
+            entity.Property(e => e.status)
+    .HasColumnName("status")
+    .HasConversion(
+        v => (int)v,
+        v => (statustype)v
+    );
 
             entity.HasOne(d => d.Role).WithMany(p => p.Userslogins)
                 .HasForeignKey(d => d.Roleid)

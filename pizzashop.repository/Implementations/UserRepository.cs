@@ -49,6 +49,15 @@ public class UserRepository : IUserRepository
         _context.SaveChanges();
     }
 
+    public bool CheckPhone(string Phone, int? Id = null)
+        {
+            var isUsernameTaken = _context.Users
+                .Where(u => u.Phone == Phone && u.Userid != Id) 
+                .Any();
+
+            return isUsernameTaken;
+        }
+
     public async Task<UserViewModel> GetUserDataAsync(int id){
         var userLoginDetails = _context.Userslogins.FirstOrDefault(u => u.Userid == id);
         var user = _context.Users.FirstOrDefault(u => u.Userid == id);

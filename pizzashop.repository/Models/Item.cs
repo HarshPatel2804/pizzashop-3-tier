@@ -3,11 +3,20 @@ using System.Collections.Generic;
 
 namespace pizzashop.repository.Models;
 
+public enum itemtype
+{
+    Veg = 0,
+    Nonveg = 1,
+
+    Vegan = 2
+}
 public partial class Item
 {
     public int Itemid { get; set; }
 
     public string Itemname { get; set; } = null!;
+
+    public itemtype Itemtype { get; set; }
 
     public int Categoryid { get; set; }
 

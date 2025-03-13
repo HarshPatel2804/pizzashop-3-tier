@@ -12,4 +12,8 @@ public interface IUsersLoginService
     Task<(List<Userslogin> users, int totalUsers, int totalPages)> GetPaginatedUsersAsync(int page, int pageSize, string search, string sortColumn, string sortOrder);
 
     Task UpdateUserLoginData(UserViewModel model);
+
+    bool CheckUsername(string Username , int? Id = null);
+
+    bool CheckEmail(string Email, int? Id = null);
 }
