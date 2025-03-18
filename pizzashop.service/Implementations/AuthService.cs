@@ -34,10 +34,11 @@ public class AuthService : IAuthService
     public async Task<bool> AuthenticateUser(LoginViewModel loginViewModel, HttpContext httpContext)
     {
         var usersLogin = await _usersloginService.GetUserByEmail(loginViewModel.Email);
-        if (usersLogin == null || !PasswordUtills.VerifyPassword(loginViewModel.Password, usersLogin.Passwordhash))
+        if (usersLogin == null || !PasswordUtills.VerifyPassword(loginViewModel.Password, usersLogin.Passwordhash) || usersLogin.status==repository.Models.statustype.Inactive)
             return false;
         var role = await _roleService.GetRoleById(usersLogin.Roleid);
         var user = await _userService.GetUserById((int)usersLogin.Userid);
+        if(user.Isdeleted == true) return false;
         Console.WriteLine(user.Profileimg);
 
         // Generate JWT Token

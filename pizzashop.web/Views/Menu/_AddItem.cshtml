@@ -1,0 +1,181 @@
+@using pizzashop.repository.Models
+@model pizzashop.repository.ViewModels.AddEditItemViewModel
+
+<div class="modal fade" id="addItem" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-dialog-centered">
+        <form method="post" id="addItemForm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Add New Menu Item</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body d-flex">
+
+                    <div class="left-side-addItem w-75">
+
+                        <!-- first row -->
+                        <div>
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                        <div class="form-floating">
+                                            <select class="form-select" asp-for="Categoryid" asp-items="Model.Category"
+                                                id="categoryid" aria-label="Floating label select example">
+                                                <option selected>Select Category</option>
+                                            </select>
+                                            <label for="categoryid">Categories</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" id="floatingInput"
+                                                placeholder="Name" asp-for="Itemname" required>
+                                            <label for="floatingInput">Name*</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- two row -->
+
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class=" col-xxl-3 col-lg-6 col-md-6 col-sm-6 col-12 mb-3">
+                                    <div class="form-floating">
+                                        <select class="form-select" asp-for="ItemType" id="floatingSelect" aria-label="Item type" required>
+                                            @foreach (var type in
+                                            Enum.GetValues(typeof(itemtype)).Cast<itemtype>())
+                                            {
+                                                <option value="@((int)type)">
+                                                    @type.ToString()
+                                                </option>
+                                            }
+                                        </select>
+                                        <label for="floatingSelect">Item Type*</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-xxl-3 col-lg-6 col-md-6  col-sm-6 col-12 mb-3">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" asp-for="Rate" id="floatingInput" placeholder="Rate"
+                                            required value="0">
+                                        <label for="floatingInput">Rate*</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-xxl-3 col-lg-6 col-md-6 col-sm-6 col-12 mb-3">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" asp-for="Quantity" id="floatingInput"
+                                            placeholder="Quantity" required value="0">
+                                        <label for="floatingInput">Quantity*</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-xxl-3 col-lg-6 col-md-6 col-sm-6 col-12 mb-3">
+                                    <div class="form-floating">
+                                        <select class="form-select" asp-for="Unitid" asp-items="Model.Units"
+                                            id="floatingSelect" aria-label="Item type" required>
+                                            <option selected>Select a Unit</option>
+                                        </select>
+                                        <label for="floatingSelect">Unit*</label>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- three row -->
+
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div
+                                    class=" col-xxl-3 col-lg-6 col-md-6 col-sm-6 col-12 mb-3 d-flex align-items-center">
+                                    <div class="form-check form-switch d-flex gap-2 align-items-center">
+                                        <input class="form-check-input" asp-for="Isavailable" type="checkbox" role="switch"
+                                            id="flexSwitchCheckDefault">
+                                        <label class="form-check-label" for="flexSwitchCheckDefault">Available</label>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="col-xxl-3 col-lg-6 col-md-6  col-sm-6 col-12 mb-3 d-flex align-items-center">
+                                    <div
+                                        class="form-check form-switch d-flex gap-2 align-items-center justify-content-start">
+                                        <input class="form-check-input" asp-for="Isdefaulttax" type="checkbox" role="switch"
+                                            id="flexSwitchCheckDefault">
+                                        <label class="form-check-label" for="flexSwitchCheckDefault">DefaultTax</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-xxl-3 col-lg-6 col-md-6 col-sm-6 col-12 mb-3">
+                                    <div class="form-floating">
+                                        <input type="text" asp-for="Taxpercentage" class="form-control" id="floatingInput"
+                                            placeholder="Tax Percentage">
+                                        <label for="floatingInput">Tax Percentage</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-xxl-3 col-lg-6 col-md-6 col-sm-6 col-12 mb-3">
+                                    <div class="form-floating">
+                                        <input type="text" asp-for="Shortcode" class="form-control" id="floatingInput"
+                                            placeholder="Short Code">
+                                        <label for="floatingInput">Short Code</label>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="container-fluid mb-3">
+                            <textarea class="form-control" asp-for="Description" placeholder="Description" id="floatingTextarea2"
+                                style="height: 100px"></textarea>
+                            @* <label for="floatingTextarea2" style="padding-left: 2rem
+                            !important;">Description</label> *@
+                        </div>
+
+
+                        <div class="container-fluid">
+                            <span>Upload Image</span>
+                            <div class="input-group d-flex justify-content-center align-items-center file-upload p-4">
+                                <!-- Button to trigger the file input -->
+                                <button type="button" class="btn d-flex align-items-center gap-2"
+                                    id="inputGroupFileAddon04"
+                                    onclick="document.getElementById('inputGroupFile01').click();">
+                                    <img class="upload-icon" src="../images/cloud-arrow-up.svg" alt="Upload" />
+                                    <div>
+                                        Drag and Drop Or Browse files
+                                    </div>
+                                </button>
+
+                                <!-- Hidden file input -->
+                                <input type="file" class="form-control" id="inputGroupFile01" style="display: none;"
+                                    aria-describedby="fileNameDisplay"
+                                    onchange="this.nextElementSibling.textContent = this.files.length > 0 ? this.files[0].name : 'No file selected';">
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="right-side-addItem w-25">
+                        <div class="container-fluid mt-2">
+                            <select class="form-select" aria-label="Default select example">
+                                <option selected>Select Modifiers Groups(s)</option>
+                                <option value="1">One</option>
+                                <option value="2">Two</option>
+                                <option value="3">Three</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="SaveItem">Save</button>
+                    <button type="button" class="btn btn-danger">Cancel</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

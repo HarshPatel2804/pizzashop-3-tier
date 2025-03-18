@@ -5,6 +5,7 @@ using pizzashop.service.Utils;
 using pizzashop.service.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using pizzashop.service.Attributes;
 
 namespace pizzashop.web.Controllers;
 
@@ -30,7 +31,8 @@ public class HomeController : Controller
     public IActionResult Index()
     {
         var user = SessionUtils.GetUser(HttpContext);
-        if (user != null)
+        var token = CookieUtils.GetJWTToken(Request);
+        if (user != null && token != null)
             return RedirectToAction("Dashboard", "Dashboard");
 
         return View();
@@ -65,8 +67,6 @@ public class HomeController : Controller
             return View();
         }
     }
-
-
 
     [HttpGet]
     public IActionResult ForgotPassword()
@@ -108,13 +108,14 @@ public class HomeController : Controller
         if (!ModelState.IsValid) return View(model);
 
         bool isValidLink = await _AuthService.ResetPasswordAsync(model);
-        if(!isValidLink){
+        if (!isValidLink)
+        {
             TempData["ErrorMessage"] = "Reset link can be used for one time only";
             return View(model);
         }
-            return RedirectToAction("Index", "Home");
+        return RedirectToAction("Index", "Home");
 
-        
+
     }
 
     [HttpPost]
@@ -124,5 +125,10 @@ public class HomeController : Controller
         SessionUtils.ClearSession(HttpContext);
 
         return RedirectToAction("Index", "Home");
+    }
+
+    public IActionResult Error(int statusCode)
+    {
+        return View();
     }
 }

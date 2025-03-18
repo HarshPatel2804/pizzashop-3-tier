@@ -1,12 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
 using pizzashop.repository.Models;
 using pizzashop.repository.ViewModels;
+using pizzashop.service.Attributes;
 using pizzashop.service.Implementations;
 using pizzashop.service.Interfaces;
 using System.Threading.Tasks;
 
-namespace pizzashop.web.Controllers
-{
+namespace pizzashop.web.Controllers;
+
+    [CustomAuthorize]
     public class UserController : Controller
     {
         private readonly IUsersLoginService _usersLoginService;
@@ -128,4 +130,3 @@ namespace pizzashop.web.Controllers
             return Json(!isEmailTaken);
         }
     }
-}

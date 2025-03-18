@@ -31,7 +31,7 @@ public class JwtService : IJwtService
                     new Claim(ClaimTypes.Email, email),
                     new Claim(ClaimTypes.Role, role),
                 }),
-                Expires = DateTime.UtcNow.AddHours(1),
+                Expires = DateTime.UtcNow.AddHours(24),
                 Issuer = _issuer,
                 Audience = _audience,
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)

@@ -33,6 +33,16 @@ public class CategoryRepository : ICategoryRepository
 
     }
 
+     public async Task<List<SelectListItem>> GetCategoriesListAsync()
+    {
+        return _context.Categories.Where(u=>u.Isdeleted == false).OrderBy(u=>u.Categoryid).Select(c => new SelectListItem
+            {
+                Value = c.Categoryid.ToString(),
+                Text = c.Categoryname
+            }).ToList();
+    }
+
+
     public async Task<Category> GetCategoryByIdAsync(int categoryid)
     {
         return await _context.Categories.FirstOrDefaultAsync(u => u.Categoryid == categoryid);

@@ -40,6 +40,10 @@ public class MenuService : IMenuService
         await _itemRepository.DeleteItemsByCategory(Categoryid);
     }
 
+    public async Task DeleteItem(int Itemid)
+    {
+        await _itemRepository.DeleteItem(Itemid);
+    }
 
     public async Task EditCategory(CategoryViewModel model)
     {
@@ -84,6 +88,14 @@ public class MenuService : IMenuService
         return viewModel;
     }
 
+    public async Task<AddEditItemViewModel> GetItemDetails()
+    {
+        var model =  new AddEditItemViewModel{
+            Category = await _categoryRepository.GetCategoriesListAsync(),
+            Units = await _unitRepository.GetUnitsListAsync()
+        };
+        return model;
+    }
 
     public async Task<List<ItemViewModel>> GetItemsByCategory(int CategoryId)
     {
@@ -97,9 +109,29 @@ public class MenuService : IMenuService
             Rate = u.Rate,
             Isavailable = u.Isavailable,
             Quantity = u.Quantity,
+            Itemtype = u.Itemtype
         }).ToList();
 
         return itemModel;
+    }
+
+    public async Task AddItemAsync(AddEditItemViewModel addEditItemViewModel)
+    {
+        var items = new Item
+        {
+            Categoryid = addEditItemViewModel.Categoryid,
+            Itemname = addEditItemViewModel.Itemname,
+            Itemtype = addEditItemViewModel.ItemType,
+            Rate = addEditItemViewModel.Rate,
+            Quantity = addEditItemViewModel.Quantity,
+            Unitid = addEditItemViewModel.Unitid,
+            Taxpercentage = addEditItemViewModel.Taxpercentage,
+            Shortcode = addEditItemViewModel.Shortcode,
+            Description = addEditItemViewModel.Description,
+            Isavailable = addEditItemViewModel.Isavailable,
+            Isdefaulttax = addEditItemViewModel.Isdefaulttax
+        };
+        await _itemRepository.AddItemsAsync(items);
     }
 
     public async Task<List<ModifierViewModel>> GetModifiersByGroup(int ModifierGroupId)

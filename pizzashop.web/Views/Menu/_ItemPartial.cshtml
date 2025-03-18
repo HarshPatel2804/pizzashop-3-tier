@@ -22,7 +22,7 @@
                     style="max-height:35px; height: 100%; width:auto; border-radius: 100%;">
                 <span>@item.Itemname</span>
             </td>
-            <td><img src="~/images/icons/non-veg-icon.svg" style="width: 20px;" class="ms-4"></td>
+            <td><img src=@(item.Itemtype == itemtype.Veg ? "../images/icons/veg-icon.svg" : (item.Itemtype == itemtype.Nonveg ? "../images/icons/non-veg-icon.svg" : "../images/icons/vegan-icon.svg")) width="20px" class="ms-4"></td>
             <td>@item.Rate</td>
             <td>@item.Quantity</td>
             <td class="mx-auto">
@@ -36,7 +36,7 @@
                         style="max-height: 30px; height: 100%; width:auto;">
                 </a>
                 <a data-bs-toggle="modal" data-bs-target="#exampleModalCenter">
-                    <img src="~/images/trash.svg" alt="profile image" class="me-2 bg-light" id="profile"
+                    <img src="~/images/trash.svg" alt="profile image" class="me-2 bg-light deleteItem" id="profile" data-bs-toggle="modal" data-bs-target="#DeleteItemModal" data-id="@item.Itemid" data-category="@item.Categoryid"
                         style="max-height: 30px; height: 100%; width:auto; border-radius: 100%;">
                 </a>
 

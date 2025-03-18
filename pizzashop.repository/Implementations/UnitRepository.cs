@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using pizzashop.repository.Interfaces;
 using pizzashop.repository.Models;
@@ -18,4 +19,13 @@ public class UnitRepository : IUnitRepository
         return unit.Unitname;
     }
 
-}
+    public async Task<List<SelectListItem>> GetUnitsListAsync()
+    {
+        return _context.Units.OrderBy(u=>u.Unitid).Select(c => new SelectListItem
+            {
+                Value = c.Unitid.ToString(),
+                Text = c.Unitname
+            }).ToList();
+    }
+    }
+

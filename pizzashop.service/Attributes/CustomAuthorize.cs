@@ -31,7 +31,6 @@ namespace pizzashop.service.Attributes
             var principal = jwtService?.ValidateToken(token ?? "");
             if (principal == null)
             {
-                Console.WriteLine("cookie is not there");
                 context.Result = new RedirectToActionResult("Index", "Home", null);
                 return;
             }

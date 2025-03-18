@@ -3,9 +3,11 @@ using pizzashop.service.Interfaces;
 using pizzashop.service;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using pizzashop.repository.ViewModels;
+using pizzashop.service.Attributes;
 
 namespace pizzashop.web.Controllers;
 
+[CustomAuthorize]
 public class RoleController : Controller
 {
      private readonly IRoleService _RoleService;

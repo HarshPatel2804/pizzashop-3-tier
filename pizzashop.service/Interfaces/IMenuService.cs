@@ -20,4 +20,10 @@ public interface IMenuService
     Task EditCategory(CategoryViewModel model);
 
     Task DeleteCategory(int Categoryid);
+
+    Task DeleteItem(int Itemid);
+
+    Task<AddEditItemViewModel> GetItemDetails();
+
+    Task AddItemAsync(AddEditItemViewModel addEditItemViewModel);
 }
