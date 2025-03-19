@@ -82,4 +82,10 @@ public class MenuController : Controller
      public async Task DeleteItem(int itemId){
         await _menuService.DeleteItem(itemId);
     }
+
+    [HttpPost]
+     public async Task DeleteModifier(int modifierId){
+        Console.WriteLine(modifierId + "id");
+        await _menuService.DeleteModifier(modifierId);
+    }
 }

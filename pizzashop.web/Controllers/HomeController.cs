@@ -94,7 +94,6 @@ public class HomeController : Controller
         }
         return View();
     }
-
     [HttpGet]
     public IActionResult ResetPassword(string token)
     {
@@ -114,8 +113,6 @@ public class HomeController : Controller
             return View(model);
         }
         return RedirectToAction("Index", "Home");
-
-
     }
 
     [HttpPost]
@@ -128,6 +125,11 @@ public class HomeController : Controller
     }
 
     public IActionResult Error(int statusCode)
+    {
+        return View();
+    }
+
+    public IActionResult AccessDenied(int statusCode)
     {
         return View();
     }

@@ -35,11 +35,14 @@ public class RoleController : Controller
     [HttpPost]
     public async Task<IActionResult> Permission([FromBody] List<PermissionViewModel> permissions)
     {
+
         if (permissions == null || permissions.Count == 0)
         {
+            // TempData["ErrorMessage"] = "No Unsaved Changes!";
             return Json(new { success = false });
         }
         await _PermissionService.UpdatePermissions(permissions);
+        TempData["SuccessMessage"] = "Changes are Saved Successfully!";
         return Json(new { success = true });
     }
 }

@@ -44,4 +44,18 @@ public class PermissionRepository : IPermissionRepository
         _context.Permissions.Update(permission);
         await _context.SaveChangesAsync();
     }
+
+    public async Task<Permission> GetPermissionByRoleAndModule(string role , string module){
+        var permission = await _context.Permissions
+            .Include(u => u.Module)
+            .Include(u => u.Role)
+            .Where(u => u.Role.Rolename == role && u.Module.Modulename == module)
+            .Select(p => new Permission{
+                Canview = p.Canview,
+                Canaddedit = p.Canaddedit,
+                Candelete = p.Candelete
+            }).FirstOrDefaultAsync();
+
+            return permission;
+    }
 }

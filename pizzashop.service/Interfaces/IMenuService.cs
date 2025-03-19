@@ -23,6 +23,8 @@ public interface IMenuService
 
     Task DeleteItem(int Itemid);
 
+    Task DeleteModifier(int modifierId);
+
     Task<AddEditItemViewModel> GetItemDetails();
 
     Task AddItemAsync(AddEditItemViewModel addEditItemViewModel);

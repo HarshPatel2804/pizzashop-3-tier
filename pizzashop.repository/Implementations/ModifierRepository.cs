@@ -24,6 +24,12 @@ public class ModifierRepository : IModifierRepository
     {
         return await _context.Modifiers.Where(u => u.Modifiergroupid == ModifierGroupId && u.Isdeleted != true).ToListAsync();
     }
+
+    public async Task DeleteModifier(int modifierId)
+    {
+        await _context.Modifiers.Where(u => u.Modifierid== modifierId).ForEachAsync(u => u.Isdeleted = true);
+        await _context.SaveChangesAsync();
+    }
 }
 
     

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using pizzashop.repository.Interfaces;
 using pizzashop.repository.Models;
 
@@ -14,12 +15,12 @@ public class CountryRepository : ICountryRepository
     }
     public async Task<List<SelectListItem>> GetAllCountryAsync()
     {
-         return _context.Countries.Select(r => new SelectListItem
+         return await _context.Countries.Select(r => new SelectListItem
             {
                 Value = r.Countryid.ToString(),
                 Text = r.Countryname,
 
-            }).ToList();
+            }).ToListAsync();
     }
 
 }

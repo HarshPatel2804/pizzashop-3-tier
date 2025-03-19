@@ -8,4 +8,6 @@ public interface IModifierRepository
     Task<List<Modifiergroup>> GetAllModifierGroupAsync();
 
     Task<List<Modifier>> GetModifierByGroupAsync(int ModifierGroupId);
+
+    Task DeleteModifier(int modifierId);
 }

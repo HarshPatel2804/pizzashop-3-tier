@@ -40,4 +40,8 @@ public class PermissionService : IPermissionService
         }
     }
 
+    public async Task<Permission> GetPermissions(string role , string module){
+        return await _permissionRepository.GetPermissionByRoleAndModule(role,module);
+    }
+
 }

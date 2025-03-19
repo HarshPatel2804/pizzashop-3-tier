@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "c8ere8X0j26vtLpj3iZt0ktH2g5ebp+Ni7/Xb8buNH0=",
+  "Hash": "OsYOCGhMwcohDjmBeEQI1obAJpodfN8vjznOtsRAq3s=",
   "Source": "pizzashop.web",
   "BasePath": "_content/pizzashop.web",
   "Mode": "Default",
@@ -1071,6 +1071,23 @@
       "OriginalItemSpec": "wwwroot\\images\\uploads\\0a19176b-3192-47d3-a8ea-37fd5db3bf0d.png"
     },
     {
+      "Identity": "D:\\pizzashop\\pizzashop.web\\wwwroot\\images\\uploads\\1f8ffebb-e410-454c-b8c2-25ec50e5ba3a.png",
+      "SourceId": "pizzashop.web",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\pizzashop\\pizzashop.web\\wwwroot\\",
+      "BasePath": "_content/pizzashop.web",
+      "RelativePath": "images/uploads/1f8ffebb-e410-454c-b8c2-25ec50e5ba3a.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\uploads\\1f8ffebb-e410-454c-b8c2-25ec50e5ba3a.png"
+    },
+    {
       "Identity": "D:\\pizzashop\\pizzashop.web\\wwwroot\\images\\uploads\\312dd0aa-f24f-4686-8a4a-901752ddd6b6.png",
       "SourceId": "pizzashop.web",
       "SourceType": "Discovered",
@@ -1188,6 +1205,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\images\\uploads\\7032f0e5-405b-409b-ac41-c186ab73d617.png"
+    },
+    {
+      "Identity": "D:\\pizzashop\\pizzashop.web\\wwwroot\\images\\uploads\\7f6b1c27-0abe-40c9-aab7-d7fd95c30491.png",
+      "SourceId": "pizzashop.web",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\pizzashop\\pizzashop.web\\wwwroot\\",
+      "BasePath": "_content/pizzashop.web",
+      "RelativePath": "images/uploads/7f6b1c27-0abe-40c9-aab7-d7fd95c30491.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\uploads\\7f6b1c27-0abe-40c9-aab7-d7fd95c30491.png"
     },
     {
       "Identity": "D:\\pizzashop\\pizzashop.web\\wwwroot\\images\\uploads\\8aca35db-9b2f-4ebc-baf5-cf7d0ac93f2c.png",

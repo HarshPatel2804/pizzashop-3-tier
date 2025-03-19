@@ -1,41 +1,40 @@
 <table class="table  px-5" style="border-radius: 6px;">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">
-                                            <input class="form-check-input" type="checkbox" value=""
-                                                id="flexCheckDefault">
-                                            <span class="heading ">Name</span>
-                                        </th>
-                                        <th scope="col"><span class="heading">Unit</span></th>
-                                        <th scope="col"><span class="heading">Rate</span></th>
-                                        <th scope="col"><span class="heading">Quantity</span> </th>
-                                        <th scope="col"><span class="heading">Action</span></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+    <thead>
+        <tr>
+            <th scope="col">
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                <span class="heading ">Name</span>
+            </th>
+            <th scope="col"><span class="heading">Unit</span></th>
+            <th scope="col"><span class="heading">Rate</span></th>
+            <th scope="col"><span class="heading">Quantity</span> </th>
+            <th scope="col"><span class="heading">Action</span></th>
+        </tr>
+    </thead>
+    <tbody>
         @foreach (var modifier in Model)
         {
-                                        <tr>
-                                            <td class="d-flex">
-                                                <input class="form-check-input" type="checkbox" value=""
-                                                    id="flexCheckDefault">
-                                                <span>@modifier.Modifiername</span>
-                                            </td>
-                                            <td>@modifier.UnitName</td>
-                                            <td>@modifier.Rate</td>
-                                            <td>@modifier.Quantity</td>
-                                            <td>
-                                                <a href="Edit_user.html">
-                                                    <img src="~/images/pen.svg" alt="profile image" class="me-2 bg-light"
-                                                        id="profile" style="max-height: 30px; height: 100%; width:auto;">
-                                                </a>
-                                                <a data-bs-toggle="modal" data-bs-target="#exampleModalCenter">
-                                                    <img src="~/images/trash.svg" alt="profile image" class="me-2 bg-light"
-                                                        id="profile"
-                                                        style="max-height: 30px; height: 100%; width:auto; border-radius: 100%;">
-                                                </a>
-                                            </td>
-                                        </tr>
+            <tr>
+                <td class="d-flex">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                    <span>@modifier.Modifiername</span>
+                </td>
+                <td>@modifier.UnitName</td>
+                <td>@modifier.Rate</td>
+                <td>@modifier.Quantity</td>
+                <td>
+                    <a href="Edit_user.html">
+                        <img src="~/images/pen.svg" alt="profile image" class="me-2 bg-light" id="profile"
+                            style="max-height: 30px; height: 100%; width:auto;">
+                    </a>
+                    <a>
+                        <img src="~/images/trash.svg" alt="profile image" data-bs-toggle="modal"
+                            data-bs-target="#DeleteModifierModal" data-id="@modifier.Modifierid"
+                            data-modifiergroup="@modifier.Modifiergroupid" class="me-2 bg-light deleteModifier" id="profile"
+                            style="max-height: 30px; height: 100%; width:auto; border-radius: 100%;">
+                    </a>
+                </td>
+            </tr>
         }
-                                </tbody>
-                            </table>
+    </tbody>
+</table>

@@ -20,12 +20,13 @@ public class RoleRepository : IRoleRepository
 
     public async Task<List<SelectListItem>> GetAllRoleAsync()
     {
-        return _context.Roles.Select(r => new SelectListItem
-            {
-                Value = r.Roleid.ToString(),
-                Text = r.Rolename,
-
-            }).ToList();
+        return await _context.Roles
+        .Select(r => new SelectListItem
+        {
+            Value = r.Roleid.ToString(),
+            Text = r.Rolename,
+        })
+        .ToListAsync();
     }
 
 }

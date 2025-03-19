@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using pizzashop.repository.Interfaces;
 using pizzashop.repository.Models;
 
@@ -15,12 +16,12 @@ public class CityRepository : ICityRepository
 
     public async Task<List<SelectListItem>> GetAllCityAsync(int Stateid)
     {
-        return _context.Cities.Where(c => c.Stateid == Stateid).Select(r => new SelectListItem
+        return await _context.Cities.Where(c => c.Stateid == Stateid).Select(r => new SelectListItem
             {
                 Value = r.Cityid.ToString(),
                 Text = r.Cityname,
 
-            }).ToList();
+            }).ToListAsync();
     }
 
 }
