@@ -55,8 +55,19 @@ public class MenuController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddNewItem(AddEditItemViewModel addEditItemViewModel){
-        await _menuService.AddItemAsync(addEditItemViewModel);
+    public async Task<IActionResult> AddNewItem(AddEditItemViewModel addEditItemViewModel , IFormFile ProfileImage){
+        await _menuService.AddItemAsync(addEditItemViewModel , ProfileImage);
+        return Json(new{success = true,message="added successfully"});
+    }
+
+     public async Task<IActionResult> editItem(int itemId){
+        var model = await _menuService.GetEditItemDetails(itemId);
+        return PartialView("_EditItem" , model);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> editItem(AddEditItemViewModel addEditItemViewModel , IFormFile ProfileImage){
+        await _menuService.EditItemAsync(addEditItemViewModel , ProfileImage);
         return Json(new{success = true,message="added successfully"});
     }
 

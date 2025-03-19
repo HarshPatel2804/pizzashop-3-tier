@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using pizzashop.repository.Models;
 using pizzashop.repository.ViewModels;
 
@@ -25,7 +26,11 @@ public interface IMenuService
 
     Task DeleteModifier(int modifierId);
 
+    Task<AddEditItemViewModel> GetEditItemDetails(int itemId);
+
     Task<AddEditItemViewModel> GetItemDetails();
 
-    Task AddItemAsync(AddEditItemViewModel addEditItemViewModel);
+    Task AddItemAsync(AddEditItemViewModel addEditItemViewModel , IFormFile ProfileImage);
+
+    Task EditItemAsync(AddEditItemViewModel addEditItemViewModel, IFormFile Itemimg);
 }

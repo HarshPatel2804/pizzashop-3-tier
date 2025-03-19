@@ -18,7 +18,7 @@
         <tr>
             <td class="d-flex">
                 <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                <img src="~/images/dining-menu.png" alt="profile image" class="me-2 bg-light" id="profile"
+                <img src="@(string.IsNullOrEmpty(item.Itemimg) ? Url.Content("~/images/dining-menu.png") : Url.Content("~/images/uploads/" + item.Itemimg))" alt="profile image" class="me-2 bg-light" id="profile"
                     style="max-height:35px; height: 100%; width:auto; border-radius: 100%;">
                 <span>@item.Itemname</span>
             </td>
@@ -31,8 +31,8 @@
                 </div>
             </td>
             <td>
-                <a href="Edit_user.html">
-                    <img src="~/images/pen.svg" alt="profile image" class="me-2 bg-light" id="profile"
+                <a>
+                    <img src="~/images/pen.svg" alt="profile image" class="me-2 bg-light editItem" id="profile" data-id="@item.Itemid"
                         style="max-height: 30px; height: 100%; width:auto;">
                 </a>
                 <a data-bs-toggle="modal" data-bs-target="#exampleModalCenter">

@@ -33,11 +33,21 @@ public class ItemRepository : IItemRepository
         return await _context.Items.Where(u => u.Categoryid == CategoryId && u.Isdeleted != true).ToListAsync();
     }
 
+    public async Task<Item> GetItemById(int itemId)
+    {
+        return await _context.Items.FirstOrDefaultAsync(u => u.Itemid == itemId);
+    }
+
      public async Task AddItemsAsync(Item model)
     {
         await _context.Items.AddAsync(model);
         await _context.SaveChangesAsync();
+    }
 
+    public async Task EditItemAsync(Item model)
+    {
+        _context.Items.Update(model);
+        await _context.SaveChangesAsync();
     }
 
 }

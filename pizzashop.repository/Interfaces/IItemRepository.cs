@@ -11,4 +11,8 @@ public interface IItemRepository
     Task AddItemsAsync(Item model);
 
     Task DeleteItem(int Itemid);
+
+    Task<Item> GetItemById(int itemId);
+
+    Task EditItemAsync(Item model);
 }

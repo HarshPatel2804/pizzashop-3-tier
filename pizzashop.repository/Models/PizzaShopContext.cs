@@ -692,6 +692,12 @@ public partial class PizzaShopContext : DbContext
                 .HasColumnName("modifiedat");
             entity.Property(e => e.Modifiedby).HasColumnName("modifiedby");
             entity.Property(e => e.Sectionid).HasColumnName("sectionid");
+            entity.Property(e => e.Tablestatus)
+                .HasColumnName("status")
+                .HasConversion(
+                    v => (int)v,
+                    v => (tablestatus)v
+                );
             entity.Property(e => e.Tablename)
                 .HasMaxLength(5)
                 .HasColumnName("tablename");

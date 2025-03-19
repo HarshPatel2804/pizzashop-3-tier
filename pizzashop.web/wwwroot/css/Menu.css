@@ -151,6 +151,10 @@ a {
     border-radius: 5px;
 }
 
+.upload-file::-webkit-file-upload-button {
+    display: none;
+}
+
 .modal-addNewItem .right-side-addItem {
     background-color: lightyellow;
     border: 1px solid grey;

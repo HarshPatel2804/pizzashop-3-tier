@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using pizzashop.repository.Interfaces;
 using pizzashop.repository.Models;
 using pizzashop.repository.ViewModels;
@@ -15,12 +16,15 @@ public class MenuService : IMenuService
 
     private readonly IUnitRepository _unitRepository;
 
-    public MenuService(ICategoryRepository categoryRepository, IItemRepository itemRepository, IModifierRepository modifierRepository, IUnitRepository unitRepository)
+    private readonly IImageService _imageService;
+
+    public MenuService(ICategoryRepository categoryRepository, IItemRepository itemRepository, IModifierRepository modifierRepository, IUnitRepository unitRepository, IImageService imageService)
     {
         _categoryRepository = categoryRepository;
         _itemRepository = itemRepository;
         _modifierRepository = modifierRepository;
         _unitRepository = unitRepository;
+        _imageService = imageService;
     }
 
     public async Task AddCategory(CategoryViewModel model)
@@ -95,9 +99,34 @@ public class MenuService : IMenuService
 
     public async Task<AddEditItemViewModel> GetItemDetails()
     {
-        var model =  new AddEditItemViewModel{
+        var model = new AddEditItemViewModel
+        {
             Category = await _categoryRepository.GetCategoriesListAsync(),
             Units = await _unitRepository.GetUnitsListAsync()
+        };
+        return model;
+    }
+
+    public async Task<AddEditItemViewModel> GetEditItemDetails(int itemId)
+    {
+        var item = await _itemRepository.GetItemById(itemId);
+        var model = new AddEditItemViewModel
+        {
+            Category = await _categoryRepository.GetCategoriesListAsync(),
+            Units = await _unitRepository.GetUnitsListAsync(),
+            Itemid = item.Itemid,
+            Itemname = item.Itemname,
+            Categoryid = item.Categoryid,
+            Rate = item.Rate,
+            Quantity = item.Quantity,
+            Unitid = item.Unitid,
+            Isavailable = (bool)item.Isavailable,
+            Taxpercentage = item.Taxpercentage,
+            Shortcode = item.Shortcode,
+            Isdefaulttax = (bool)item.Isdefaulttax,
+            Itemimg = item.Itemimg,
+            Description = item.Description,
+            ItemType = item.Itemtype
         };
         return model;
     }
@@ -108,6 +137,7 @@ public class MenuService : IMenuService
 
         var itemModel = model.Select(u => new ItemViewModel
         {
+            Itemimg = u.Itemimg,
             Categoryid = u.Categoryid,
             Itemid = u.Itemid,
             Itemname = u.Itemname,
@@ -120,7 +150,7 @@ public class MenuService : IMenuService
         return itemModel;
     }
 
-    public async Task AddItemAsync(AddEditItemViewModel addEditItemViewModel)
+    public async Task AddItemAsync(AddEditItemViewModel addEditItemViewModel, IFormFile Itemimg)
     {
         var items = new Item
         {
@@ -136,7 +166,36 @@ public class MenuService : IMenuService
             Isavailable = addEditItemViewModel.Isavailable,
             Isdefaulttax = addEditItemViewModel.Isdefaulttax
         };
+        if (Itemimg != null)
+        {
+            var Itemimage = await _imageService.GiveImagePath(Itemimg);
+            items.Itemimg = Itemimage;
+        }
         await _itemRepository.AddItemsAsync(items);
+    }
+
+    public async Task EditItemAsync(AddEditItemViewModel addEditItemViewModel, IFormFile Itemimg)
+    {
+        var item = await _itemRepository.GetItemById(addEditItemViewModel.Itemid);
+    
+            item.Categoryid = addEditItemViewModel.Categoryid;
+            item.Itemname = addEditItemViewModel.Itemname;
+            item.Itemtype = addEditItemViewModel.ItemType;
+            item.Rate = addEditItemViewModel.Rate;
+            item.Quantity = addEditItemViewModel.Quantity;
+            item.Unitid = addEditItemViewModel.Unitid;
+            item.Taxpercentage = addEditItemViewModel.Taxpercentage;
+            item.Shortcode = addEditItemViewModel.Shortcode;
+            item.Description = addEditItemViewModel.Description;
+            item.Isavailable = addEditItemViewModel.Isavailable;
+            item.Isdefaulttax = addEditItemViewModel.Isdefaulttax;
+        
+        if (Itemimg != null)
+        {
+            var Itemimage = await _imageService.GiveImagePath(Itemimg);
+            item.Itemimg = Itemimage;
+        }
+        await _itemRepository.EditItemAsync(item);
     }
 
     public async Task<List<ModifierViewModel>> GetModifiersByGroup(int ModifierGroupId)

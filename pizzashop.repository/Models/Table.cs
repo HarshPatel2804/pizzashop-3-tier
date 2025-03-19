@@ -3,6 +3,15 @@ using System.Collections.Generic;
 
 namespace pizzashop.repository.Models;
 
+public enum tablestatus
+{
+    Available = 0 ,
+
+    Occupied = 1 , 
+
+    Reserved = 2
+}
+
 public partial class Table
 {
     public int Tableid { get; set; }
@@ -12,6 +21,8 @@ public partial class Table
     public int? Sectionid { get; set; }
 
     public decimal Capacity { get; set; }
+
+    public tablestatus Tablestatus { get; set; }
 
     public bool? Isdeleted { get; set; }
 

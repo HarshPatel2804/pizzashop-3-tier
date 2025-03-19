@@ -668,7 +668,7 @@
         </div>
     </div>
     <!-- Add new item -->
-    <div class="modal-addNewItem" id="NewItem"></div>
+    <div class="modal-addNewItem" id="AddEditItem"></div>
 
     </div>
 </section>
@@ -752,8 +752,22 @@
                     url: "/Menu/AddNewItem",
                     type: "GET",
                     success: function (response) {
-                        $("#NewItem").html(response);
+                        $("#AddEditItem").html(response);
                         $("#addItem").modal("show");
+                    }
+                });
+        });
+
+        $(document).on("click", ".editItem", function () {
+                var itemId = $(this).data("id");
+                console.log("clicked"); 
+                $.ajax({
+                    url: "/Menu/editItem",
+                    type: "GET",
+                    data: {itemId : itemId},
+                    success: function (response) {
+                        $("#AddEditItem").html(response);
+                        $("#editItem").modal("show");
                     }
                 });
         });
@@ -766,6 +780,28 @@
             console.log(formData + "Hii");
             $.ajax({
                 url: "/Menu/AddNewItem",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                dataType: "json",
+                success: function (response) {
+                    ItemList(catid);
+                },
+                error: function (error) {
+
+                }
+            });
+        });
+
+        $(document).on("click", "#EditItem", function (e) {
+            e.preventDefault();
+            console.log("clicked");
+            var formData = new FormData($("#editItemForm")[0]);
+            var catid = $("#categoryid").val();
+            console.log(formData + "Hii");
+            $.ajax({
+                url: "/Menu/editItem",
                 type: "POST",
                 data: formData,
                 processData: false,

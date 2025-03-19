@@ -1,12 +1,13 @@
 @using pizzashop.repository.Models
 @model pizzashop.repository.ViewModels.AddEditItemViewModel
 
-<div class="modal fade" id="addItem" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+<div class="modal fade" id="editItem" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog  modal-dialog-centered">
-        <form method="post" id="addItemForm" enctype="multipart/form-data">
+        <form method="post" id="editItemForm" enctype="multipart/form-data">
+        <input type="hidden" asp-for="Itemid">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="deleteModalLabel">Add New Menu Item</h5>
+                    <h5 class="modal-title" id="deleteModalLabel">Update Menu Item</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
@@ -61,7 +62,7 @@
                                 <div class="col-xxl-3 col-lg-6 col-md-6  col-sm-6 col-12 mb-3">
                                     <div class="form-floating">
                                         <input type="text" class="form-control" asp-for="Rate" id="floatingInput"
-                                            placeholder="Rate" required value="0">
+                                            placeholder="Rate" required>
                                         <label for="floatingInput">Rate*</label>
                                     </div>
                                 </div>
@@ -69,7 +70,7 @@
                                 <div class="col-xxl-3 col-lg-6 col-md-6 col-sm-6 col-12 mb-3">
                                     <div class="form-floating">
                                         <input type="text" class="form-control" asp-for="Quantity" id="floatingInput"
-                                            placeholder="Quantity" required value="0">
+                                            placeholder="Quantity" required>
                                         <label for="floatingInput">Quantity*</label>
                                     </div>
                                 </div>
@@ -143,7 +144,15 @@
                                 <label for="files"
                                     class="btn w-100 d-flex align-items-center justify-content-center flex-column border-0">
                                     <div class="d-flex">
-                                        <img id="profileImg" style="width: 50px; display: none;" />
+                                        @if (!string.IsNullOrEmpty(Model.Itemimg))
+                                        {
+                                            <img src="@Url.Content("~/images/uploads/" + Model.Itemimg)" id="profileImg"
+                                                style="width: 50px;" />
+                                        }
+                                        else
+                                        {
+                                            <img id="profileImg" style="width: 50px; display: none;" />
+                                        }
                                         <div class="d-flex align-items-center ms-3">
                                             <img src="~/images/cloud-arrow-up.svg" alt="upload-icon"
                                                 style="width: 30px;" />
@@ -171,7 +180,7 @@
                 </div>
 
                 <div class="modal-footer d-flex justify-content-end gap-2">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="SaveItem">Save</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="EditItem">Save</button>
                     <button type="button" class="btn btn-danger">Cancel</button>
                 </div>
             </div>
