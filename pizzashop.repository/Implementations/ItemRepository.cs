@@ -28,9 +28,21 @@ public class ItemRepository : IItemRepository
     }
 
 
-    public async Task<List<Item>> GetItemsByCategoryAsync(int CategoryId)
+    public async Task<(List<Item> users, int totalItems)> GetItemsByCategoryAsync(int CategoryId , int page, int pageSize, string search)
     {
-        return await _context.Items.Where(u => u.Categoryid == CategoryId && u.Isdeleted != true).ToListAsync();
+        var query = _context.Items
+        .Where(u => u.Categoryid == CategoryId && u.Isdeleted != true)
+        .Where(u => string.IsNullOrEmpty(search) ||
+                        u.Itemname.ToLower().Contains(search.ToLower()));
+
+        int totalItems = await query.CountAsync();
+
+        var items = await query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return (items, totalItems);
     }
 
     public async Task<Item> GetItemById(int itemId)

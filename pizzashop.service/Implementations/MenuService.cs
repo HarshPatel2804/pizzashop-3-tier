@@ -131,9 +131,11 @@ public class MenuService : IMenuService
         return model;
     }
 
-    public async Task<List<ItemViewModel>> GetItemsByCategory(int CategoryId)
+    public async Task<(List<ItemViewModel> itemModel, int totalItems, int totalPages)> GetItemsByCategory(int CategoryId , int page, int pageSize, string search)
     {
-        var model = await _itemRepository.GetItemsByCategoryAsync(CategoryId);
+        var (model ,  totalItems) = await _itemRepository.GetItemsByCategoryAsync(CategoryId,page, pageSize, search);
+
+        int totalPages = (int)System.Math.Ceiling((double)totalItems / pageSize);
 
         var itemModel = model.Select(u => new ItemViewModel
         {
@@ -147,7 +149,7 @@ public class MenuService : IMenuService
             Itemtype = u.Itemtype
         }).ToList();
 
-        return itemModel;
+        return (itemModel, totalItems, totalPages);
     }
 
     public async Task AddItemAsync(AddEditItemViewModel addEditItemViewModel, IFormFile Itemimg)

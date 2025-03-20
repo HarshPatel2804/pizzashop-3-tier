@@ -44,8 +44,12 @@ public class MenuController : Controller
         return PartialView("_ModifierPartial",model);
     }
 
-    public async Task<IActionResult> Items(int categoryId){
-        var model = await _menuService.GetItemsByCategory(categoryId);
+    public async Task<IActionResult> Items(int categoryId , int page = 1, int pageSize = 5, string search = ""){
+         var (model, totalUsers, totalPages) = await _menuService.GetItemsByCategory(categoryId , page, pageSize, search);
+        ViewBag.CurrentPage = page;
+        ViewBag.PageSize = pageSize;
+        ViewBag.TotalUsers = totalUsers;
+        ViewBag.TotalPages = totalPages;
         return PartialView("_ItemPartial",model);
     }
 

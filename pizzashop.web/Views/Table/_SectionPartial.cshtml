@@ -1,0 +1,21 @@
+<ul>
+    @foreach (var sections in Model)
+    {
+        <li class="d-flex selectedSection items" tabindex="0" data-id="@sections.Sectionid">
+            <div class="d-flex align-items-center" style="padding-top: 5px; padding-bottom: 5px;">
+                <img src="~/images/dots-graphic.png">
+                <div style="width: 130px;" class="text-wrap ms-1 fw-bold">
+                    @sections.Sectionname
+                </div>
+            </div>
+            <button class="btn ms-auto edit-btn" type="button" data-bs-toggle="modal" data-bs-target="#editSectionModal"
+                data-id="@sections.Sectionid">
+                <img src="~/images/pen.svg" class="d-none">
+            </button>
+            <button class="btn ms-1 delete-section" type="button" data-bs-toggle="modal"
+                data-bs-target="#DeleteSectionModal" data-id="@sections.Sectionid">
+                <img src="~/images/trash.svg" style="margin-right: 0px;" class="d-none" class="d-none">
+            </button>
+        </li>
+    }
+</ul>

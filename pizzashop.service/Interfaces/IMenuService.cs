@@ -12,7 +12,7 @@ public interface IMenuService
 
     Task AddCategory(CategoryViewModel model);
 
-    Task<List<ItemViewModel>> GetItemsByCategory(int CategoryId);
+    Task<(List<ItemViewModel> itemModel, int totalItems, int totalPages)> GetItemsByCategory(int CategoryId , int page, int pageSize, string search);
 
     Task<List<ModifierViewModel>> GetModifiersByGroup(int ModifierGroupId);
 

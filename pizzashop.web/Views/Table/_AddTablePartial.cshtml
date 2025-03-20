@@ -1,0 +1,60 @@
+@using pizzashop.repository.Models
+@model pizzashop.repository.ViewModels.TableViewModel
+<div class="modal fade" id="AddEditTableModal">
+    <div class="modal-dialog modal-dialog-centered" style="width: 500px;">
+        <div class="modal-content ps-3 pe-3">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="addTableLabel">Add Table</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" id="addTableForm">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 col-lg-6 mb-3">
+                            <div class="form-floating">
+                                <input asp-for="Tablename" type="text" class="form-control input-height" id="Name"
+                                    placeholder="Name*">
+                                <label for="Name">Name*</label>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 mb-3">
+                            <div class="form-floating">
+                                <select asp-for="Sectionid" asp-items="Model.Sections" class="form-select input-height"
+                                    id="SectionId">
+                                    <option value="">Select Section</option>
+                                </select>
+                                <label for="SectionId">Section*</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-lg-6 mb-3">
+                            <div class="form-floating">
+                                <input asp-for="Capacity" type="text" class="form-control input-height" id="Capacity"
+                                    placeholder="Name*">
+                                <label for="Capacity">Capacity*</label>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 mb-3">
+                            <div class="form-floating">
+                                <select asp-for="Tablestatus" class="form-select input-height" id="Type">
+                                    <option value="">Select Status</option>
+                                    @foreach (var tablestatus in Enum.GetValues(typeof(tablestatus)))
+                                    {
+                                        <option value="@((int)tablestatus)">@tablestatus</option>
+                                    }
+                                </select>
+                                <label for="Type">Status*</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="SaveTable" class="btn btn-primary p-2" data-bs-dismiss="modal">Save</button>
+                    <button type="button" class="btn border-primary text-primary p-2"
+                        data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -4,7 +4,7 @@ namespace pizzashop.repository.Interfaces;
 
 public interface IItemRepository
 {
-    Task<List<Item>> GetItemsByCategoryAsync(int CategoryId);
+    Task<(List<Item> users, int totalItems)> GetItemsByCategoryAsync(int CategoryId , int page, int pageSize, string search);
 
     Task DeleteItemsByCategory(int Categoryid);
 
