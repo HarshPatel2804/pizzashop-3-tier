@@ -1,37 +1,39 @@
 <table class="table  px-5" style="border-radius: 6px;">
     <thead>
         <tr>
-            <th scope="col">
-                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                <span class="heading ">Name</span>
-            </th>
-            <th scope="col"><span class="heading">Capacity</span></th>
-            <th scope="col"><span class="heading">Status</span></th>
+            <th scope="col"><span class="heading ">Name</span></th>
+            <th scope="col"><span class="heading">Type</span></th>
+            <th scope="col"><span class="heading">IsEnabled</span></th>
+            <th scope="col"><span class="heading">Default</span></th>
+            <th scope="col"><span class="heading">Tax Value</span></th>
             <th scope="col"><span class="heading">Action</span></th>
         </tr>
     </thead>
     <tbody>
-        <input id="sectionId" value="@(Model.Count > 0 ? Model[0].Sectionid : false)" hidden>
-        @foreach (var table in Model)
+        @foreach (var tax in Model)
         {
             <tr>
-                <td class="d-flex">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                    <span>@table.Tablename</span>
+                <td>@tax.Taxname</td>
+                <td>@tax.TaxType.TaxName</td>
+                <td class="mx-auto">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" @(tax.Isenabled ? "checked" : "")>
+                    </div>
                 </td>
-                <td>@table.Capacity</td>
-                <td><span
-                        class="badge rounded-pill @(@table.Tablestatus == tablestatus.Occupied ? "bg-secondary" : (@table.Tablestatus == tablestatus.Available ? "bg-success" : "bg-danger"))">@table.Tablestatus</span>
+                <td class="mx-auto">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" @(tax.Isdefault? "checked" : "")>
+                    </div>
                 </td>
+                <td>@(tax.TaxTypeId == 1 ? $"{tax.Taxvalue}{tax.TaxType.ShortCode}" : $"{tax.TaxType.ShortCode}{tax.Taxvalue}")</td>
                 <td>
                     <a>
-                        <img src="~/images/pen.svg" alt="profile image" class="me-2 bg-light editTable" id="profile" data-id="@table.Tableid"
+                        <img src="~/images/pen.svg" alt="profile image" class="me-2 bg-light editTable" id="profile" data-id="@tax.Taxid"
                             style="max-height: 30px; height: 100%; width:auto;">
                     </a>
                     <a data-bs-toggle="modal" data-bs-target="#exampleModalCenter">
                         <img src="~/images/trash.svg" alt="profile image" class="me-2 bg-light deleteTable" id="profile"
-                            data-bs-toggle="modal" data-bs-target="#DeleteTableModal" data-id="@table.Tableid"
-                            data-sectionid="@table.Sectionid"
+                            data-bs-toggle="modal" data-bs-target="#DeleteTableModal" data-id="@tax.Taxid"
                             style="max-height: 30px; height: 100%; width:auto; border-radius: 100%;">
                     </a>
                 </td>

@@ -1,13 +1,14 @@
 @using pizzashop.repository.Models
 @model pizzashop.repository.ViewModels.TableViewModel
-<div class="modal fade" id="AddTableModal">
+<div class="modal fade" id="EditTableModal">
     <div class="modal-dialog modal-dialog-centered" style="width: 500px;">
         <div class="modal-content ps-3 pe-3">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="addTableLabel">Add Table</h1>
+                <h1 class="modal-title fs-5" id="addTableLabel">Edit Table</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form method="post" id="addTableForm">
+            <form method="post" id="editTableForm">
+                <input type="hidden" asp-for="Tableid">
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-12 col-lg-6 mb-3">
@@ -50,7 +51,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" id="SaveTable" class="btn btn-primary p-2" data-bs-dismiss="modal">Save</button>
+                    <button type="submit" id="SaveEditTable" class="btn btn-primary p-2" data-bs-dismiss="modal">Save</button>
                     <button type="button" class="btn border-primary text-primary p-2"
                         data-bs-dismiss="modal">Cancel</button>
                 </div>

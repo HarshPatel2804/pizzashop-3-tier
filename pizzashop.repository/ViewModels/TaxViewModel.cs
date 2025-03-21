@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using pizzashop.repository.Models;
 
-namespace pizzashop.repository.Models;
+namespace pizzashop.repository.ViewModels;
 
-public partial class Taxis
+public class TaxViewModel
 {
     public int Taxid { get; set; }
 
@@ -13,7 +12,9 @@ public partial class Taxis
     public bool? Isenabled { get; set; }
 
     public bool? Isdefault { get; set; }
-      public int TaxTypeId { get; set; }  
+    public int TaxTypeId { get; set; }
+
+    public string TaxTypeName { get; set; }
     public string Taxvalue { get; set; } = null!;
 
     public bool? Isdeleted { get; set; }
@@ -31,5 +32,4 @@ public partial class Taxis
     [ForeignKey("TaxTypeId")]
     public TaxType TaxType { get; set; }
 
-    
 }

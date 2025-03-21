@@ -1,0 +1,67 @@
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Tax Page";
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/Menu.css">
+</head>
+<section style="min-height: 100vh;background-color: #fafafa;">
+    <div class="row pt-4 ms-5 me-1" style="height: 70px;">
+        <h2 class="col" style="color: rgb(101, 101, 224); font-family: Roboto; font-weight: 550">Taxes/Fees
+        </h2>
+        <input type="search" class="col-md-auto col-6 me-1 ms-auto " id="search" placeholder="search"
+            style="border-radius: 3px; border: 1px solid black">
+        <button type="button" class="btn col-md-auto col-3 ms-1 me-5 align-items-center d-flex addTable"
+            style="border-radius: 2px; border: 1px solid black; background-color: rgb(85, 85, 247); color: white  !important;">
+            + New Table
+        </button>
+    </div>
+
+    <div class="row table-responsive pt-4 ms-2 me-2" id="Taxes">
+
+    </div>
+</section>
+ <script>
+        $(document).ready(function () {
+            
+
+            function TaxList( page) {
+                let pageSize = $("#pageSizeSelect").val();
+                let search = $("#search").val();
+                $.ajax({
+                    type: "GET",
+                    url: '/Taxes/TaxTable',
+                    contentType: "application/json",
+                    data: { page: page, pageSize: pageSize, search: search },
+                    success: function (data) {
+                        console.log(data);
+                        $('#Taxes').html(data);
+                    }
+                });
+            };
+
+            $("#Taxes").on("click", ".pagination-link", function (e) {
+                e.preventDefault();
+                let page = $(this).data("page");
+                if (page > 0) {
+                    TaxList(page);
+                }
+            });
+
+            $("#Taxes").on("change", "#pageSizeSelect", function () {
+                TaxList(1);
+            });
+
+            let searchTimer;
+            $("#search").on("input", function () {
+                clearTimeout(searchTimer);
+                searchTimer = setTimeout(function () {
+                    TaxList(1);
+                }, 100);
+            });
+
+            TaxList(1);
+
+        });
+</script>

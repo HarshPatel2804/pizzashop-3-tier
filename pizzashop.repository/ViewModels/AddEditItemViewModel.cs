@@ -35,5 +35,8 @@ public class AddEditItemViewModel
     public List<SelectListItem> Category{get;set;}
     public List<SelectListItem> Units{get;set;}
 
+    public List<SelectListItem> ModifierGroups{get;set;}
+
+    public List<ItemModifierGroupMapping> itemModifierGroupMapping {get; set;}
 }
 

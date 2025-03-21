@@ -80,4 +80,15 @@ public class TableSectionRepository : ITableSectionRepository
         await _context.SaveChangesAsync();
     }
 
+    public async Task<Table> GetTableById(int tableId)
+    {
+        return await _context.Tables.FirstOrDefaultAsync(u => u.Tableid == tableId);
+    }
+
+    public async Task EditTableAsync(Table table)
+    {
+        _context.Tables.Update(table);
+        await _context.SaveChangesAsync();
+    }
+
 }

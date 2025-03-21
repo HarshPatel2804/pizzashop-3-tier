@@ -69,6 +69,8 @@ public partial class PizzaShopContext : DbContext
 
     public virtual DbSet<Waitingtoken> Waitingtokens { get; set; }
 
+    public DbSet<TaxType> TaxTypes { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseNpgsql("Host=localhost;Database=PizzaShop;Username=postgres; password=Tatva@123");
@@ -80,6 +82,14 @@ public partial class PizzaShopContext : DbContext
             .HasPostgresEnum("orderstatus", new[] { "InProgress", "Pending", "Served", "Completed", "Cancelled", "On Hold", "Failed" })
             .HasPostgresEnum("statustype", new[] { "Active", "Inactive" })
             .HasPostgresEnum("tablestatus", new[] { "Available", "Occupied", "Reserved" });
+
+        modelBuilder.Entity<TaxType>(entity =>
+        {
+            entity.ToTable("TaxType");
+            entity.HasKey(e => e.TaxTypeId);
+            entity.Property(e => e.TaxName).IsRequired().HasMaxLength(50);
+            entity.Property(e => e.ShortCode).HasMaxLength(20);
+        });
 
         modelBuilder.Entity<Category>(entity =>
         {
@@ -732,9 +742,10 @@ public partial class PizzaShopContext : DbContext
             entity.Property(e => e.Taxname)
                 .HasMaxLength(10)
                 .HasColumnName("taxname");
-            entity.Property(e => e.Taxtype)
-                .HasMaxLength(20)
-                .HasColumnName("taxtype");
+            entity.HasOne(e => e.TaxType)
+                .WithMany(t => t.Taxes)
+                .HasForeignKey(e => e.TaxTypeId)
+                .OnDelete(DeleteBehavior.Cascade);
             entity.Property(e => e.Taxvalue)
                 .HasMaxLength(20)
                 .HasColumnName("taxvalue");

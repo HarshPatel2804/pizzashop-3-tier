@@ -73,4 +73,15 @@ public class TableController : Controller
         Console.WriteLine(tableId + "table");
         await _tableSectionService.DeleteTable(tableId);
     }
+
+    public async Task<IActionResult> editTable(int tableId){
+        var model = await _tableSectionService.GetTableById(tableId);
+        return PartialView("_EditTablePartial" , model);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> editTable(TableViewModel tableViewModel){
+        await _tableSectionService.EditTable(tableViewModel);
+        return Json(new{success = true,message="Table Edited Successfully"});
+    }
 }

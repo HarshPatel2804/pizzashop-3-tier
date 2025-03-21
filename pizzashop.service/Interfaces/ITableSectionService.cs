@@ -21,4 +21,8 @@ public interface ITableSectionService
     Task AddTable(TableViewModel model);
 
     Task DeleteTable(int tableId);
+
+    Task<TableViewModel> GetTableById(int tableId);
+
+    Task EditTable(TableViewModel tableViewModel);
 }

@@ -115,4 +115,30 @@ public class TableSectionService : ITableSectionService
         await _tableSectionRepository.DeleteTableAsync(tableId);
     }
 
+     public async Task<TableViewModel> GetTableById(int tableId)
+    {
+        var table = await _tableSectionRepository.GetTableById(tableId);
+        var model = new TableViewModel
+        {
+            Tableid = table.Tableid,
+            Tablename = table.Tablename,
+            Tablestatus = table.Tablestatus,
+            Capacity = table.Capacity,
+            Sectionid = table.Sectionid,
+            Sections = await _tableSectionRepository.GetSectionListAsync()
+        };
+        return model;
+    }
+
+    public async Task EditTable(TableViewModel tableViewModel){
+        var table = await _tableSectionRepository.GetTableById(tableViewModel.Tableid);
+
+        table.Tablename = tableViewModel.Tablename;
+        table.Capacity = tableViewModel.Capacity;
+        table.Tablestatus = tableViewModel.Tablestatus;
+        table.Sectionid = tableViewModel.Sectionid;
+
+        await _tableSectionRepository.EditTableAsync(table);
+    }
+
 }

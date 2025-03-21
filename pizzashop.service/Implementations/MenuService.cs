@@ -205,7 +205,7 @@ public class MenuService : IMenuService
         var model = await _modifierRepository.GetModifierByGroupAsync(ModifierGroupId);
 
         var modifierModel = new List<ModifierViewModel>();
-
+ 
         foreach (var u in model)
         {
             var unitName = await _unitRepository.GetUnit(u.Unitid);

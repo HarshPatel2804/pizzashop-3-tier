@@ -22,4 +22,8 @@ public interface ITableSectionRepository
     Task AddTableAsync(Table model);
 
     Task DeleteTableAsync(int tableId);
+
+    Task<Table> GetTableById(int tableId);
+
+    Task EditTableAsync(Table table);
 }

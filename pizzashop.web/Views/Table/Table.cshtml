@@ -195,7 +195,7 @@
     <div id="TableModal" tabindex="-1" aria-labelledby="addTableLabel" aria-hidden="true">
 
     </div>
-
+</section>
     <script>
         $(document).ready(function () {
             let lastSelectedSectionId = 0;
@@ -217,7 +217,7 @@
 
             function TableList(sectionId, page) {
                 let pageSize = $("#pageSizeSelect").val();
-                let search = $("#searchInput").val();
+                let search = $("#search").val();
                 $.ajax({
                     type: "GET",
                     url: '/Table/Tables',
@@ -244,7 +244,7 @@
             });
 
             let searchTimer;
-            $("#searchInput").on("input", function () {
+            $("#search").on("input", function () {
                 clearTimeout(searchTimer);
                 let sectionId = $("#sectionId").val();
                 searchTimer = setTimeout(function () {
@@ -337,7 +337,7 @@
                     type: "GET",
                     success: function (response) {
                         $("#TableModal").html(response);
-                        $("#AddEditTableModal").modal("show");
+                        $("#AddTableModal").modal("show");
                     }
                 });
             });
@@ -383,6 +383,43 @@
                     data: { tableId: tableId },
                     success: function (response) {
                         TableList(sectionId, 1);
+                    }
+                });
+            });
+
+            $(document).on("click", ".editTable", function () {
+                var tableId = $(this).data("id");
+                console.log("clicked");
+                $.ajax({
+                    url: "/Table/editTable",
+                    type: "GET",
+                    data: { tableId: tableId },
+                    success: function (response) {
+                        $("#TableModal").html(response);
+                        $("#EditTableModal").modal("show");
+                    }
+                });
+            });
+
+            $(document).on("click", "#SaveEditTable", function (e) {
+                e.preventDefault();
+                console.log("clicked");
+                var formData = new FormData($("#editTableForm")[0]);
+                var Sectionid = $("#SectionId").val();
+                console.log(Sectionid + "section");
+                console.log(formData + "Hii");
+                $.ajax({
+                    url: "/Table/editTable",
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    dataType: "json",
+                    success: function (response) {
+                        TableList(Sectionid, 1);
+                    },
+                    error: function (error) {
+
                     }
                 });
             });
