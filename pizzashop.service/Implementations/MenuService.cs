@@ -102,7 +102,8 @@ public class MenuService : IMenuService
         var model = new AddEditItemViewModel
         {
             Category = await _categoryRepository.GetCategoriesListAsync(),
-            Units = await _unitRepository.GetUnitsListAsync()
+            Units = await _unitRepository.GetUnitsListAsync(),
+            ModifierGroups = await _modifierRepository.GetAllmodifierGroups()
         };
         return model;
     }
@@ -131,9 +132,9 @@ public class MenuService : IMenuService
         return model;
     }
 
-    public async Task<(List<ItemViewModel> itemModel, int totalItems, int totalPages)> GetItemsByCategory(int CategoryId , int page, int pageSize, string search)
+    public async Task<(List<ItemViewModel> itemModel, int totalItems, int totalPages)> GetItemsByCategory(int CategoryId, int page, int pageSize, string search)
     {
-        var (model ,  totalItems) = await _itemRepository.GetItemsByCategoryAsync(CategoryId,page, pageSize, search);
+        var (model, totalItems) = await _itemRepository.GetItemsByCategoryAsync(CategoryId, page, pageSize, search);
 
         int totalPages = (int)System.Math.Ceiling((double)totalItems / pageSize);
 
@@ -173,25 +174,44 @@ public class MenuService : IMenuService
             var Itemimage = await _imageService.GiveImagePath(Itemimg);
             items.Itemimg = Itemimage;
         }
-        await _itemRepository.AddItemsAsync(items);
-    }
+        var itemId = await _itemRepository.AddItemsAsync(items);
+
+        if (addEditItemViewModel.SelectedModifierGroups != null)
+        {
+            var itemModifierGroupMappings = new List<Itemmodifiergroupmap>();
+
+            foreach (var modifierGroup in addEditItemViewModel.SelectedModifierGroups)
+            {
+                var itemModifierGroupMapping = new Itemmodifiergroupmap
+                {
+                    Itemid = itemId,
+                    Modifiergroupid = modifierGroup.Modifiergroupid,
+                    Minselectionrequired = modifierGroup.Minselectionrequired,
+                    Maxselectionallowed = modifierGroup.Maxselectionallowed
+                };
+
+                itemModifierGroupMappings.Add(itemModifierGroupMapping);
+            }
+            await _itemRepository.AddItemModifierGroupMappingsAsync(itemModifierGroupMappings);
+        }
+        }
 
     public async Task EditItemAsync(AddEditItemViewModel addEditItemViewModel, IFormFile Itemimg)
     {
         var item = await _itemRepository.GetItemById(addEditItemViewModel.Itemid);
-    
-            item.Categoryid = addEditItemViewModel.Categoryid;
-            item.Itemname = addEditItemViewModel.Itemname;
-            item.Itemtype = addEditItemViewModel.ItemType;
-            item.Rate = addEditItemViewModel.Rate;
-            item.Quantity = addEditItemViewModel.Quantity;
-            item.Unitid = addEditItemViewModel.Unitid;
-            item.Taxpercentage = addEditItemViewModel.Taxpercentage;
-            item.Shortcode = addEditItemViewModel.Shortcode;
-            item.Description = addEditItemViewModel.Description;
-            item.Isavailable = addEditItemViewModel.Isavailable;
-            item.Isdefaulttax = addEditItemViewModel.Isdefaulttax;
-        
+
+        item.Categoryid = addEditItemViewModel.Categoryid;
+        item.Itemname = addEditItemViewModel.Itemname;
+        item.Itemtype = addEditItemViewModel.ItemType;
+        item.Rate = addEditItemViewModel.Rate;
+        item.Quantity = addEditItemViewModel.Quantity;
+        item.Unitid = addEditItemViewModel.Unitid;
+        item.Taxpercentage = addEditItemViewModel.Taxpercentage;
+        item.Shortcode = addEditItemViewModel.Shortcode;
+        item.Description = addEditItemViewModel.Description;
+        item.Isavailable = addEditItemViewModel.Isavailable;
+        item.Isdefaulttax = addEditItemViewModel.Isdefaulttax;
+
         if (Itemimg != null)
         {
             var Itemimage = await _imageService.GiveImagePath(Itemimg);
@@ -205,7 +225,7 @@ public class MenuService : IMenuService
         var model = await _modifierRepository.GetModifierByGroupAsync(ModifierGroupId);
 
         var modifierModel = new List<ModifierViewModel>();
- 
+
         foreach (var u in model)
         {
             var unitName = await _unitRepository.GetUnit(u.Unitid);

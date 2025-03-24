@@ -10,4 +10,6 @@ public interface IModifierRepository
     Task<List<Modifier>> GetModifierByGroupAsync(int ModifierGroupId);
 
     Task DeleteModifier(int modifierId);
+
+    Task<List<SelectListItem>> GetAllmodifierGroups();
 }

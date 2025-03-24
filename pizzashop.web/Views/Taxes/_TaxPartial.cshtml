@@ -28,12 +28,12 @@
                 <td>@(tax.TaxTypeId == 1 ? $"{tax.Taxvalue}{tax.TaxType.ShortCode}" : $"{tax.TaxType.ShortCode}{tax.Taxvalue}")</td>
                 <td>
                     <a>
-                        <img src="~/images/pen.svg" alt="profile image" class="me-2 bg-light editTable" id="profile" data-id="@tax.Taxid"
+                        <img src="~/images/pen.svg" alt="profile image" class="me-2 bg-light editTax" id="profile" data-id="@tax.Taxid"
                             style="max-height: 30px; height: 100%; width:auto;">
                     </a>
                     <a data-bs-toggle="modal" data-bs-target="#exampleModalCenter">
-                        <img src="~/images/trash.svg" alt="profile image" class="me-2 bg-light deleteTable" id="profile"
-                            data-bs-toggle="modal" data-bs-target="#DeleteTableModal" data-id="@tax.Taxid"
+                        <img src="~/images/trash.svg" alt="profile image" class="me-2 bg-light deleteTax" id="profile"
+                            data-bs-toggle="modal" data-bs-target="#DeleteTaxModal" data-id="@tax.Taxid"
                             style="max-height: 30px; height: 100%; width:auto; border-radius: 100%;">
                     </a>
                 </td>

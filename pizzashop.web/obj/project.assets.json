@@ -8583,11 +8583,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\pizzashop\\pizzashop.web\\pizzashop.web.csproj",
+      "projectUniqueName": "d:\\pizzashop\\pizzashop.web\\pizzashop.web.csproj",
       "projectName": "pizzashop.web",
-      "projectPath": "D:\\pizzashop\\pizzashop.web\\pizzashop.web.csproj",
+      "projectPath": "d:\\pizzashop\\pizzashop.web\\pizzashop.web.csproj",
       "packagesPath": "C:\\Users\\pce29\\.nuget\\packages\\",
-      "outputPath": "D:\\pizzashop\\pizzashop.web\\obj\\",
+      "outputPath": "d:\\pizzashop\\pizzashop.web\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\pce29\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -8602,8 +8602,8 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "projectReferences": {
-            "D:\\pizzashop\\pizzashop.service\\pizzashop.service.csproj": {
-              "projectPath": "D:\\pizzashop\\pizzashop.service\\pizzashop.service.csproj"
+            "d:\\pizzashop\\pizzashop.service\\pizzashop.service.csproj": {
+              "projectPath": "d:\\pizzashop\\pizzashop.service\\pizzashop.service.csproj"
             }
           }
         }

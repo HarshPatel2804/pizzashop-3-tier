@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "dtdDWuevSbGe1q9OOXISF7WzzHbZuh99iujnVhY/HqzfoHWG4/yElV51IuzpH/TUJu6l/4I2EOPeibNaRWiVew==",
+  "dgSpecHash": "7WG4aCfhN2oRkfV8z7YLrMIAIab/BIl0jctUxP3uIkpoNRjAf0V9MajxcqEMxhs9OE9HqS1mYtHtMrktWPoNwQ==",
   "success": true,
-  "projectFilePath": "D:\\pizzashop\\pizzashop.service\\pizzashop.service.csproj",
+  "projectFilePath": "d:\\pizzashop\\pizzashop.service\\pizzashop.service.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\pce29\\.nuget\\packages\\bouncycastle.cryptography\\2.5.0\\bouncycastle.cryptography.2.5.0.nupkg.sha512",
     "C:\\Users\\pce29\\.nuget\\packages\\mailkit\\4.10.0\\mailkit.4.10.0.nupkg.sha512",

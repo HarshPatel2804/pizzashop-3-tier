@@ -8,11 +8,13 @@ public interface IItemRepository
 
     Task DeleteItemsByCategory(int Categoryid);
 
-    Task AddItemsAsync(Item model);
+    Task<int> AddItemsAsync(Item model);
 
     Task DeleteItem(int Itemid);
 
     Task<Item> GetItemById(int itemId);
 
     Task EditItemAsync(Item model);
+
+    Task AddItemModifierGroupMappingsAsync(List<Itemmodifiergroupmap> mappings);
 }

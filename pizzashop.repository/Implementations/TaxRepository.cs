@@ -34,4 +34,41 @@ public class TaxRepository : ITaxRepository
     {
         return await _context.TaxTypes.FirstOrDefaultAsync(u => u.TaxTypeId == TaxTypeId);
     }
+
+    public async Task<Taxis> GetTaxByIdAsync(int id)
+    {
+        return await _context.Taxes
+            .FirstOrDefaultAsync(t => t.Taxid == id && t.Isdeleted != true);
+    }
+
+    public async Task<List<TaxType>> GetAllTaxTypesAsync()
+    {
+        return await _context.TaxTypes
+            .OrderBy(t => t.TaxName)
+            .ToListAsync();
+    }
+
+    public async Task<bool> CreateTaxAsync(Taxis tax)
+    {
+        await _context.Taxes.AddAsync(tax);
+        return await _context.SaveChangesAsync() > 0;
+    }
+
+    public async Task<bool> UpdateTaxAsync(Taxis tax)
+    {
+        _context.Taxes.Update(tax);
+        return await _context.SaveChangesAsync() > 0;
+    }
+
+    public async Task<bool> DeleteTaxAsync(int id)
+    {
+        var tax = await GetTaxByIdAsync(id);
+        if (tax == null)
+            return false;
+
+        // Soft delete
+        tax.Isdeleted = true;
+
+        return await UpdateTaxAsync(tax);
+    }
 }

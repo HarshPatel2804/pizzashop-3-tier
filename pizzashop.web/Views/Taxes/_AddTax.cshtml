@@ -1,0 +1,71 @@
+@model pizzashop.repository.ViewModels.TaxViewModel;
+@using pizzashop.repository.Models;
+
+<div class="modal fade" id="AddTaxModal">
+    <div class="modal-dialog modal-dialog-centered" style="width: 500px;">
+        <div class="modal-content ps-3 pe-3">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">
+                    @(Model.Taxid == 0 ? "Add Tax" : "Edit Tax")
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="addEditTaxForm" method="post" enctype="multipart/form-data">
+                <div class="modal-body d-flex flex-column gap-3">
+
+                    <div class="row">
+                        <div class="col">
+                        <div class="form-floating custom-focus">
+                            <input type="hidden" asp-for="Taxid" id="Taxid" />
+                            <input type="text" class="form-control" asp-for="Taxname" id="Taxname" placeholder="">
+                            <label for="Taxname" style="background: none;">Name*</label>
+                            <span class="text-danger"></span>
+                        </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 col">
+                        <div class="form-floating " id="Status">
+                            <select id="TaxType" asp-for="TaxTypeId" asp-items="Model.TaxTypes" class="form-select">
+                                <option value="">Select TaxType</option>
+                            </select>
+                            <label for="TaxType">Tax Type*</label>
+                        </div>
+                        </div>
+                        <div class="col-md-6 col">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" asp-for="Taxvalue" id="Taxvalue" placeholder="">
+                            <label for="Taxvalue" >Tax Amount*</label>
+                            <span class="text-danger"></span>
+                        </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class=" col-md-4 col-12 mb-3 d-flex align-items-center">
+                            <div class="form-check form-switch d-flex gap-2 align-items-center">
+                                <input class="form-check-input" asp-for="Isenabled" type="checkbox" role="switch"
+                                    id="flexSwitchCheckDefault">
+                                <label class="form-check-label" for="flexSwitchCheckDefault">Available</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-12 mb-3 d-flex align-items-center">
+                            <div class="form-check form-switch d-flex gap-2 align-items-center justify-content-start">
+                                <input class="form-check-input" asp-for="Isdefault" type="checkbox" role="switch"
+                                    id="flexSwitchCheckDefault">
+                                <label class="form-check-label" for="flexSwitchCheckDefault">Default</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" id="SaveTax" class="btn btn-primary p-2" data-bs-dismiss="modal" data-id="@Model.Taxid">Save</button>
+                    <button type="button" class="btn border-primary text-primary p-2"
+                        data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

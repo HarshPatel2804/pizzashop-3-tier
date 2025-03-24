@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using pizzashop.repository.Models;
 
 namespace pizzashop.repository.ViewModels;
@@ -9,15 +10,15 @@ public class TaxViewModel
 
     public string Taxname { get; set; } = null!;
 
-    public bool? Isenabled { get; set; }
+    public bool Isenabled { get; set; }
 
-    public bool? Isdefault { get; set; }
+    public bool Isdefault { get; set; }
     public int TaxTypeId { get; set; }
 
     public string TaxTypeName { get; set; }
     public string Taxvalue { get; set; } = null!;
 
-    public bool? Isdeleted { get; set; }
+    public bool Isdeleted { get; set; }
 
     public DateTime? Createdat { get; set; }
 
@@ -31,5 +32,7 @@ public class TaxViewModel
 
     [ForeignKey("TaxTypeId")]
     public TaxType TaxType { get; set; }
+
+    public IEnumerable<SelectListItem> TaxTypes { get; set; }
 
 }

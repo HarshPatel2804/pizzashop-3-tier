@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "GvRvOPyFNRip81tBGWrL/mbOiu3rI9t0KzhXLjoV4vExk9Vl/3vfRn1UmEHAcNwzCZhcf6GIYUWRjISBP72LQQ==",
+  "dgSpecHash": "WbjtD/XQqLErfk5O2DTErQO3KOgRLfh0GOBVNppT8Ss9y+l0pUcxt40w0AAEmnObiud3RcbVayLPqoBw4yBbgA==",
   "success": true,
-  "projectFilePath": "D:\\pizzashop\\pizzashop.repository\\pizzashop.repository.csproj",
+  "projectFilePath": "d:\\pizzashop\\pizzashop.repository\\pizzashop.repository.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\pce29\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\pce29\\.nuget\\packages\\microsoft.aspnetcore.antiforgery\\2.3.0\\microsoft.aspnetcore.antiforgery.2.3.0.nupkg.sha512",

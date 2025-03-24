@@ -50,15 +50,22 @@ public class ItemRepository : IItemRepository
         return await _context.Items.FirstOrDefaultAsync(u => u.Itemid == itemId);
     }
 
-     public async Task AddItemsAsync(Item model)
+     public async Task<int> AddItemsAsync(Item model)
     {
         await _context.Items.AddAsync(model);
         await _context.SaveChangesAsync();
+
+       return model.Itemid;
     }
 
     public async Task EditItemAsync(Item model)
     {
         _context.Items.Update(model);
+        await _context.SaveChangesAsync();
+    }
+    public async Task AddItemModifierGroupMappingsAsync(List<Itemmodifiergroupmap> mappings)
+    {
+        await _context.Itemmodifiergroupmaps.AddRangeAsync(mappings);
         await _context.SaveChangesAsync();
     }
 

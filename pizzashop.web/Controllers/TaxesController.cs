@@ -31,5 +31,60 @@ public class TaxesController : Controller
         return PartialView("_TaxPartial",model);
     }
 
+   [HttpGet]
+    public async Task<IActionResult> GetTaxModal(int? id = null)
+    {
+        TaxViewModel viewModel;
+        
+        if (id.HasValue && id.Value > 0)
+        {
+            viewModel = await _taxService.GetTaxById(id.Value);
+            if (viewModel == null)
+            {
+                return NotFound();
+            }
+        }
+        else
+        {
+            viewModel = await _taxService.PrepareNewTaxViewModel();
+        }
+        
+        return PartialView("_AddTax", viewModel);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> SaveTax(TaxViewModel viewModel)
+    {
+        Console.WriteLine("Save");
+        bool success;
+        
+        if (viewModel.Taxid > 0)
+        {
+            success = await _taxService.UpdateTax(viewModel);
+        }
+        else
+        {
+            success = await _taxService.CreateTax(viewModel);
+        }
+
+        return Json(new { 
+            success, 
+            message = success 
+                ? viewModel.Taxid > 0 ? "Tax updated successfully." : "Tax created successfully." 
+                : "Failed to save tax."
+        });
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> DeleteTax(int id)
+    {
+        var success = await _taxService.DeleteTax(id);
+        
+        return Json(new { 
+            success, 
+            message = success ? "Tax deleted successfully." : "Failed to delete tax." 
+        });
+    }
+
 
 }

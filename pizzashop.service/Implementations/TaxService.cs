@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Mvc.Rendering;
 using pizzashop.repository.Interfaces;
+using pizzashop.repository.Models;
 using pizzashop.repository.ViewModels;
 using pizzashop.service.Interfaces;
 
@@ -32,12 +34,88 @@ public class TaxService : ITaxService
                 TaxTypeId = u.TaxTypeId,
                 Taxvalue = u.Taxvalue,
                 TaxType = taxType,
-                Isenabled = u.Isenabled,
-                Isdefault = u.Isdefault
+                Isenabled = (bool)u.Isenabled,
+                Isdefault = (bool)u.Isdefault
             });
         }
 
         return (viewModel , totalTaxes , totalPages );
        
+    }
+
+    public async Task<TaxViewModel> GetTaxById(int id)
+    {
+        var tax = await _taxRepository.GetTaxByIdAsync(id);
+        if (tax == null)
+            return null;
+
+        var taxType = await _taxRepository.GetTaxTypeDetails(tax.TaxTypeId);
+        var taxTypes = await _taxRepository.GetAllTaxTypesAsync();
+
+        return new TaxViewModel
+        {
+            Taxid = tax.Taxid,
+            Taxname = tax.Taxname,
+            TaxTypeId = tax.TaxTypeId,
+            Taxvalue = tax.Taxvalue,
+            TaxType = taxType,
+            Isenabled = (bool)tax.Isenabled,
+            Isdefault = (bool)tax.Isdefault,
+            TaxTypes = taxTypes.Select(t => new SelectListItem
+            {
+                Value = t.TaxTypeId.ToString(),
+                Text = t.TaxName
+            })
+        };
+    }
+
+    public async Task<TaxViewModel> PrepareNewTaxViewModel()
+    {
+        var taxTypes = await _taxRepository.GetAllTaxTypesAsync();
+
+        return new TaxViewModel
+        {
+            Isenabled = true,
+            TaxTypes = taxTypes.Select(t => new SelectListItem
+            {
+                Value = t.TaxTypeId.ToString(),
+                Text = t.TaxName
+            })
+        };
+    }
+
+    public async Task<bool> CreateTax(TaxViewModel viewModel)
+    {
+        var tax = new Taxis
+        {
+            Taxname = viewModel.Taxname,
+            TaxTypeId = viewModel.TaxTypeId,
+            Taxvalue = viewModel.Taxvalue,
+            Isenabled = viewModel.Isenabled,
+            Isdefault = viewModel.Isdefault,
+            Isdeleted = false,
+        };
+
+        return await _taxRepository.CreateTaxAsync(tax);
+    }
+
+    public async Task<bool> UpdateTax(TaxViewModel viewModel)
+    {
+        var existingTax = await _taxRepository.GetTaxByIdAsync(viewModel.Taxid);
+        if (existingTax == null)
+            return false;
+
+        existingTax.Taxname = viewModel.Taxname;
+        existingTax.TaxTypeId = viewModel.TaxTypeId;
+        existingTax.Taxvalue = viewModel.Taxvalue;
+        existingTax.Isenabled = viewModel.Isenabled;
+        existingTax.Isdefault = viewModel.Isdefault;
+
+        return await _taxRepository.UpdateTaxAsync(existingTax);
+    }
+
+    public async Task<bool> DeleteTax(int id)
+    {
+        return await _taxRepository.DeleteTaxAsync(id);
     }
 }

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using pizzashop.repository.Interfaces;
 using pizzashop.repository.Models;
@@ -29,6 +30,16 @@ public class ModifierRepository : IModifierRepository
     {
         await _context.Modifiers.Where(u => u.Modifierid== modifierId).ForEachAsync(u => u.Isdeleted = true);
         await _context.SaveChangesAsync();
+    }
+
+    public async Task<List<SelectListItem>> GetAllmodifierGroups()
+    {
+        return await _context.Modifiergroups.Select(r => new SelectListItem
+            {
+                Value = r.Modifiergroupid.ToString(),
+                Text = r.Modifiergroupname,
+
+            }).ToListAsync();
     }
 }
 

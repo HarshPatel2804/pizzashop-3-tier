@@ -9,6 +9,8 @@ public class AddEditItemViewModel
 
     public string Itemname { get; set; } = null!;
 
+    public int ModifierGroupId {get; set;}
+
     public int Categoryid { get; set; }
 
     public decimal Rate { get; set; }
@@ -37,6 +39,5 @@ public class AddEditItemViewModel
 
     public List<SelectListItem> ModifierGroups{get;set;}
 
-    public List<ItemModifierGroupMapping> itemModifierGroupMapping {get; set;}
+    public List<ItemModifierGroupMapping> SelectedModifierGroups {get; set;}
 }
-
