@@ -1,4 +1,5 @@
 using pizzashop.repository.Models;
+using pizzashop.repository.ViewModels;
 
 namespace pizzashop.repository.Interfaces;
 
@@ -17,4 +18,8 @@ public interface IItemRepository
     Task EditItemAsync(Item model);
 
     Task AddItemModifierGroupMappingsAsync(List<Itemmodifiergroupmap> mappings);
+
+    Task<List<ItemModifierGroupMapping>> GetItemModifierGroupsAsync(int itemId);
+
+    Task RemoveItemModifierGroupMappingsAsync(int itemId);
 }

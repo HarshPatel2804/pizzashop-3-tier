@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "d:\\pizzashop\\pizzashop.repository\\pizzashop.repository.csproj": {}
+    "D:\\pizzashop\\pizzashop.repository\\pizzashop.repository.csproj": {}
   },
   "projects": {
-    "d:\\pizzashop\\pizzashop.repository\\pizzashop.repository.csproj": {
+    "D:\\pizzashop\\pizzashop.repository\\pizzashop.repository.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "d:\\pizzashop\\pizzashop.repository\\pizzashop.repository.csproj",
+        "projectUniqueName": "D:\\pizzashop\\pizzashop.repository\\pizzashop.repository.csproj",
         "projectName": "pizzashop.repository",
-        "projectPath": "d:\\pizzashop\\pizzashop.repository\\pizzashop.repository.csproj",
+        "projectPath": "D:\\pizzashop\\pizzashop.repository\\pizzashop.repository.csproj",
         "packagesPath": "C:\\Users\\pce29\\.nuget\\packages\\",
-        "outputPath": "d:\\pizzashop\\pizzashop.repository\\obj\\",
+        "outputPath": "D:\\pizzashop\\pizzashop.repository\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\pce29\\AppData\\Roaming\\NuGet\\NuGet.Config"

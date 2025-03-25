@@ -115,6 +115,7 @@ public class MenuService : IMenuService
         {
             Category = await _categoryRepository.GetCategoriesListAsync(),
             Units = await _unitRepository.GetUnitsListAsync(),
+            ModifierGroups = await _modifierRepository.GetAllmodifierGroups(),
             Itemid = item.Itemid,
             Itemname = item.Itemname,
             Categoryid = item.Categoryid,
@@ -194,7 +195,7 @@ public class MenuService : IMenuService
             }
             await _itemRepository.AddItemModifierGroupMappingsAsync(itemModifierGroupMappings);
         }
-        }
+    }
 
     public async Task EditItemAsync(AddEditItemViewModel addEditItemViewModel, IFormFile Itemimg)
     {
@@ -218,6 +219,28 @@ public class MenuService : IMenuService
             item.Itemimg = Itemimage;
         }
         await _itemRepository.EditItemAsync(item);
+
+        await _itemRepository.RemoveItemModifierGroupMappingsAsync(addEditItemViewModel.Itemid);
+
+        // Add new modifier group mappings
+        if (addEditItemViewModel.SelectedModifierGroups != null)
+        {
+            var itemModifierGroupMappings = new List<Itemmodifiergroupmap>();
+
+            foreach (var modifierGroup in addEditItemViewModel.SelectedModifierGroups)
+            {
+                var itemModifierGroupMapping = new Itemmodifiergroupmap
+                {
+                    Itemid = addEditItemViewModel.Itemid,
+                    Modifiergroupid = modifierGroup.Modifiergroupid,
+                    Minselectionrequired = modifierGroup.Minselectionrequired,
+                    Maxselectionallowed = modifierGroup.Maxselectionallowed
+                };
+
+                itemModifierGroupMappings.Add(itemModifierGroupMapping);
+            }
+            await _itemRepository.AddItemModifierGroupMappingsAsync(itemModifierGroupMappings);
+        }
     }
 
     public async Task<List<ModifierViewModel>> GetModifiersByGroup(int ModifierGroupId)
@@ -242,6 +265,12 @@ public class MenuService : IMenuService
         }
 
         return modifierModel;
+    }
+
+    public async Task<List<ItemModifierGroupMapping>> GetItemModifierGroupsAsync(int itemId)
+    {
+        // Fetch modifier groups
+        return await _itemRepository.GetItemModifierGroupsAsync(itemId);
     }
 
 }

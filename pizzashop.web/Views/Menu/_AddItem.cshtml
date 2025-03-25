@@ -164,7 +164,7 @@
                                 <ul class="dropdown-menu w-100" aria-labelledby="modifierGroupDropdown">
                                     @foreach (var group in Model.ModifierGroups)
                                     {
-                                        <li><a class="dropdown-item modifier-group-item" data-id="@group.Value"
+                                        <li class="mt-2"><a class="dropdown-item modifier-group-item" data-id="@group.Value"
                                                 data-name="@group.Text" href="#">@group.Text</a></li>
                                     }
                                 </ul>
@@ -179,7 +179,7 @@
                 </div>
 
                 <div class="modal-footer d-flex justify-content-end gap-2">
-                    <button type="button" class="btn btn-primary" id="SaveItem">Save</button>
+                    <button type="button" class="btn btn-primary" id="SaveItem" data-bs-dismiss="modal">Save</button>
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
                 </div>
             </div>
@@ -240,6 +240,26 @@
 
     $(document).ready(function () {
         // Map to store selected modifier groups data
+
+        function ItemList(categoryId , page) {
+            console.log(categoryId + "cat");
+             let pageSize = $("#pageSizeSelect").val();
+            let search = $("#searchInput").val(); 
+            $.ajax({
+                type: "GET",
+                url: '/Menu/Items',
+                contentType: "application/json",
+                data: {  page: page, pageSize: pageSize, search: search, categoryId: categoryId },
+                success: function (data) {
+                    $('#itemByCategory').html(data);
+                }
+            });
+        };
+        function resetModifierGroups() {
+    $('#selectedModifierGroups').empty();
+}
+
+        $('#addItem').on('hidden.bs.modal', resetModifierGroups);
         const selectedGroups = new Map();
 
         // Handle modifier group selection from dropdown
@@ -322,6 +342,9 @@
         // Function to add a modifier group to the UI
         function addModifierGroupUI(groupId, groupName, modifiers) {
             // Clone the template
+            if ($(`[data-group-id="${groupId}"]`).length > 0) {
+                return; // Prevent duplicate groups
+                }
             const template = document.getElementById('modifier-group-template');
             const $groupContainer = $(template.content.cloneNode(true));
 
@@ -355,7 +378,6 @@
             $('#selectedModifierGroups').append($groupContainer);
         }
 
-        // Save button click handler
         $('#SaveItem').on('click', function (e) {
            e.preventDefault();
             console.log("clicked");
@@ -372,7 +394,7 @@
                 });
             });
 
-            console.log(groupsData[0].modifiergroupid + "Group");
+            console.log('Modifier Groups:', JSON.stringify(groupsData));
 
             // Add JSON data of selected groups
             formData.append('SelectedModifierGroups', JSON.stringify(groupsData));
@@ -386,8 +408,8 @@
                 contentType: false,
                 success: function (data) {
                     if (data.success) {
-                        alert(data.message);
-                        $('#addItem').modal('hide');
+                        ItemList(catid,1);
+                        
                         // Optionally reload page or update UI
                     } else {
                         alert(data.message);
@@ -399,6 +421,7 @@
                 }
             });
         });
+        
     });
 </script>
 

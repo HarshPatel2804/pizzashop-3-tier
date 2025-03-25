@@ -33,4 +33,5 @@ public interface IMenuService
     Task AddItemAsync(AddEditItemViewModel addEditItemViewModel , IFormFile ProfileImage);
 
     Task EditItemAsync(AddEditItemViewModel addEditItemViewModel, IFormFile Itemimg);
+    Task<List<ItemModifierGroupMapping>> GetItemModifierGroupsAsync(int itemId);
 }

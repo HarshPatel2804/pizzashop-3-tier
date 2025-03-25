@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Pizzashop.repository.Models;
 
 namespace pizzashop.repository.Models;
 
@@ -53,6 +54,8 @@ public partial class PizzaShopContext : DbContext
 
     public virtual DbSet<Section> Sections { get; set; }
 
+    public DbSet<ModifierGroupModifierMapping> ModifierGroupModifierMappings { get; set; }
+
     public virtual DbSet<State> States { get; set; }
 
     public virtual DbSet<Table> Tables { get; set; }
@@ -89,6 +92,34 @@ public partial class PizzaShopContext : DbContext
             entity.HasKey(e => e.TaxTypeId);
             entity.Property(e => e.TaxName).IsRequired().HasMaxLength(50);
             entity.Property(e => e.ShortCode).HasMaxLength(20);
+        });
+
+        modelBuilder.Entity<ModifierGroupModifierMapping>(entity =>
+        {
+            entity.ToTable("ModifierGroupModifierMappings");
+            
+            entity.HasKey(e => e.ModifierGroupModifierMappingId);
+
+            entity.Property(e => e.ModifierGroupModifierMappingId)
+                .HasColumnName("modifiergroupmodifiermappingid");
+
+            entity.Property(e => e.ModifierGroupId)
+                .HasColumnName("modifiergroupid");
+
+            entity.Property(e => e.ModifierId)
+                .HasColumnName("modifierid");
+
+            entity.HasOne(d => d.ModifierGroup)
+                .WithMany()
+                .HasForeignKey(d => d.ModifierGroupId)
+                .HasConstraintName("FK_ModifierGroupModifierMappings_ModifierGroups")
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(d => d.Modifier)
+                .WithMany()
+                .HasForeignKey(d => d.ModifierId)
+                .HasConstraintName("FK_ModifierGroupModifierMappings_Modifiers")
+                .OnDelete(DeleteBehavior.Restrict);
         });
 
         modelBuilder.Entity<Category>(entity =>

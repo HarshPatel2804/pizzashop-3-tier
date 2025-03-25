@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Orders</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .custom-btn {
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+        .table > :not(caption) > * > * {
+            padding: 8px 12px;
+        }
+        .rating-stars {
+            color: #ddd;
+            font-size: 16px;
+        }
+        .rating-stars .active {
+            color: #ffc107;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid p-4">
+    <div class="row mb-3 align-items-center">
+        <div class="col-md-3">
+            <h2 class="m-0">Orders</h2>
+        </div>
+        <div class="col-md-9 text-end">
+            <div class="d-flex justify-content-end align-items-center gap-2">
+                <input type="text" class="form-control form-control-sm" placeholder="Search" style="width: 200px;">
+                
+                <select class="form-select form-select-sm" style="width: 150px;">
+                    <option>All Status</option>
+                    <option>Pending</option>
+                    <option>Completed</option>
+                </select>
+                
+                <select class="form-select form-select-sm" style="width: 150px;">
+                    <option>All Time</option>
+                    <option>Custom</option>
+                </select>
+                
+                <input type="date" class="form-control form-control-sm" style="width: 150px;">
+                <input type="date" class="form-control form-control-sm" style="width: 150px;">
+                
+                <button class="btn btn-primary btn-sm custom-btn">Search</button>
+                <button class="btn btn-secondary btn-sm custom-btn">Clear</button>
+                <button class="btn btn-success btn-sm custom-btn">
+                    <i class="bi bi-box-arrow-up"></i> Export
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <table class="table table-bordered table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>#Order 
+                    <i class="bi bi-arrow-down-up"></i>
+                </th>
+                <th>Date 
+                    <i class="bi bi-arrow-down-up"></i>
+                </th>
+                <th>Customer 
+                    <i class="bi bi-arrow-down-up"></i>
+                </th>
+                <th>Status</th>
+                <th>Payment Mode</th>
+                <th>Rating</th>
+                <th>Total Amount 
+                    <i class="bi bi-arrow-down-up"></i>
+                </th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>#235</td>
+                <td>2025-01-22</td>
+                <td>shivani</td>
+                <td>Pending</td>
+                <td>Pending</td>
+                <td>
+                    <span class="rating-stars">
+                        <i class="bi bi-star-fill active"></i>
+                        <i class="bi bi-star-fill active"></i>
+                        <i class="bi bi-star-fill active"></i>
+                        <i class="bi bi-star"></i>
+                        <i class="bi bi-star"></i>
+                    </span>
+                </td>
+                <td>0.00</td>
+                <td class="text-center">
+                    <button class="btn btn-sm btn-outline-info">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                </td>
+            </tr>
+            <!-- More rows like the above -->
+        </tbody>
+    </table>
+
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <select class="form-select form-select-sm d-inline-block" style="width: 80px;">
+                <option>5</option>
+                <option>10</option>
+                <option>25</option>
+            </select>
+            <span class="ms-2">Showing 1-5 of 183</span>
+        </div>
+        
+        <nav>
+            <ul class="pagination mb-0">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1">Previous</a>
+                </li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

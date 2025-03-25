@@ -654,7 +654,8 @@
                             <label for="floatingTextarea">Description</label>
                         </div>
 
-                        <a href="" class="ModalAnchor" data-bs-toggle="modal" data-bs-target="#selectExistingModifiers">+ Add Existing
+                        <a href="" class="ModalAnchor" data-bs-toggle="modal"
+                            data-bs-target="#selectExistingModifiers">+ Add Existing
                             Modifiers</a>
 
                     </form>
@@ -678,25 +679,26 @@
 
     $(document).ready(function () {
         let lastSelectedCategoryId = 0;
+        const selectedGroups = new Map();
         $(document).on("click", ".delete-category", function () {
             var Id = $(this).data("id");
             $("#hiddenField").val(Id);
         });
 
-         $(document).on("click", ".deleteItem", function () {
+        $(document).on("click", ".deleteItem", function () {
             var item = $(this).data("id");
             var category = $(this).data("category");
-            @* console.log(item + category); *@
-            $("#item").val(item);
-             $("#category").val(category);
+    @* console.log(item + category); *@
+                $("#item").val(item);
+            $("#category").val(category);
         });
 
         $(document).on("click", ".deleteModifier", function () {
             var modifier = $(this).data("id");
             var modifierGroup = $(this).data("modifiergroup");
-            @* console.log(modifierGroup + "Group"); *@
-            $("#modifier").val(modifier);
-             $("#modifierGroup").val(modifierGroup);
+    @* console.log(modifierGroup + "Group"); *@
+                $("#modifier").val(modifier);
+            $("#modifierGroup").val(modifierGroup);
         });
 
         function categoryList() {
@@ -709,42 +711,44 @@
             });
         };
 
-        function ItemList(categoryId , page) {
+        function ItemList(categoryId, page) {
             console.log(categoryId + "cat");
-             let pageSize = $("#pageSizeSelect").val();
-            let search = $("#searchInput").val(); 
+            let pageSize = $("#pageSizeSelect").val();
+            let search = $("#searchInput").val();
             $.ajax({
                 type: "GET",
                 url: '/Menu/Items',
                 contentType: "application/json",
-                data: {  page: page, pageSize: pageSize, search: search, categoryId: categoryId },
+                data: { page: page, pageSize: pageSize, search: search, categoryId: categoryId },
                 success: function (data) {
                     $('#itemByCategory').html(data);
                 }
             });
         };
 
-         $("#itemByCategory").on("click", ".pagination-link", function (e) {
+        $("#itemByCategory").on("click", ".pagination-link", function (e) {
             e.preventDefault();
             let page = $(this).data("page");
             let CategoryId = $("#CategoryId").val();
             if (page > 0) {
-                ItemList(CategoryId,page);
+                ItemList(CategoryId, page);
             }
         });
 
         $("#itemByCategory").on("change", "#pageSizeSelect", function () {
             let CategoryId = $("#CategoryId").val();
-            ItemList(CategoryId,1);
+            ItemList(CategoryId, 1);
         });
+
+
 
         let searchTimer;
         $("#searchInput").on("input", function () {
             clearTimeout(searchTimer);
             let CategoryId = $("#CategoryId").val();
             searchTimer = setTimeout(function () {
-                ItemList(CategoryId || lastSelectedCategoryId,1); 
-            }, 100); 
+                ItemList(CategoryId || lastSelectedCategoryId, 1);
+            }, 100);
         });
 
         function modifierGroupList() {
@@ -772,59 +776,54 @@
         categoryList();
         modifierGroupList();
 
-         $(document).on("click", ".addItem", function () {
-                console.log("clicked"); 
-                $.ajax({
-                    url: "/Menu/AddNewItem",
-                    type: "GET",
-                    success: function (response) {
-                        $("#AddEditItem").html(response);
-                        $("#addItem").modal("show");
-                    }
-                });
+        $(document).on("click", ".addItem", function () {
+            console.log("clicked");
+            $.ajax({
+                url: "/Menu/AddNewItem",
+                type: "GET",
+                success: function (response) {
+                    $("#AddEditItem").html(response);
+                    $("#addItem").modal("show");
+                }
+            });
         });
 
         $(document).on("click", ".editItem", function () {
-                var itemId = $(this).data("id");
-                console.log("clicked"); 
-                $.ajax({
-                    url: "/Menu/editItem",
-                    type: "GET",
-                    data: {itemId : itemId},
-                    success: function (response) {
-                        $("#AddEditItem").html(response);
-                        $("#editItem").modal("show");
-                    }
-                });
-        });
-
-        @* $(document).on("click", "#SaveItem", function (e) {
-            e.preventDefault();
+            var itemId = $(this).data("id");
             console.log("clicked");
-            var formData = new FormData($("#addItemForm")[0]);
-            var catid = $("#categoryid").val();
-            console.log(formData + "Hii");
             $.ajax({
-                url: "/Menu/AddNewItem",
-                type: "POST",
-                data: formData,
-                processData: false,
-                contentType: false,
-                dataType: "json",
+                url: "/Menu/editItem",
+                type: "GET",
+                data: { itemId: itemId },
                 success: function (response) {
-                    ItemList(catid,1);
-                },
-                error: function (error) {
-
+                    $("#AddEditItem").html(response);
+                    resetModifierGroups();
+                    fetchExistingModifierGroups(itemId);
+                    $("#editItem").modal("show");
                 }
             });
-        }); *@
+        });
 
         $(document).on("click", "#EditItem", function (e) {
             e.preventDefault();
             console.log("clicked");
             var formData = new FormData($("#editItemForm")[0]);
             var catid = $("#categoryid").val();
+
+             let groupsData = [];
+            selectedGroups.forEach((group, groupId) => {
+                groupsData.push({
+                    modifiergroupid: parseInt(groupId),
+                    minselectionrequired: group.minSelection,
+                    maxselectionallowed: group.maxSelection
+                });
+            });
+
+            console.log('Modifier Groups:', JSON.stringify(groupsData));
+
+            // Add JSON data of selected groups
+            formData.append('SelectedModifierGroups', JSON.stringify(groupsData));
+
             console.log(formData + "Hii");
             $.ajax({
                 url: "/Menu/editItem",
@@ -834,7 +833,7 @@
                 contentType: false,
                 dataType: "json",
                 success: function (response) {
-                    ItemList(catid,1);
+                    ItemList(catid, 1);
                 },
                 error: function (error) {
 
@@ -872,7 +871,7 @@
                 data: { categoryId: categoryId },
                 success: function (response) {
                     categoryList();
-                    ItemList(categoryId,1);
+                    ItemList(categoryId, 1);
                 }
             });
         });
@@ -887,7 +886,7 @@
                 url: '/Menu/DeleteItem',
                 data: { itemId: itemId },
                 success: function (response) {
-                    ItemList(categoryId,1);
+                    ItemList(categoryId, 1);
                 }
             });
         });
@@ -910,7 +909,7 @@
         $(document).on("click", ".selectedCategory", function () {
             var categoryId = $(this).data("id");
             lastSelectedCategoryId = categoryId;
-            ItemList(categoryId,1);
+            ItemList(categoryId, 1);
         });
         $(document).on("click", ".selectedModifierGroup", function () {
             var modifierGroupId = $(this).data("id");
@@ -950,5 +949,212 @@
                 }
             });
         });
+
+        function resetModifierGroups() {
+            $('#selectedModifierGroups').empty();
+             selectedGroups.clear();
+        }
+
+        $('#addItem').on('hidden.bs.modal', resetModifierGroups);
+        $('#editItem').on('hidden.bs.modal', resetModifierGroups);
+        
+
+        // Handle modifier group selection from dropdown
+        $(document).on('click', '.modifier-group-item', function (e) {
+            e.preventDefault();
+            const groupId = $(this).data('id');
+            const groupName = $(this).data('name');
+             console.log(groupId + groupName);
+            // Prevent re-fetching if group is already selected
+            if (!selectedGroups.has(groupId)) {
+                console.log(groupId + groupName);
+                fetchModifierGroupData(groupId, groupName);
+            }
+        });
+
+        // Handle deletion of modifier groups
+        $(document).on('click', '.delete-group', function () {
+            const $groupContainer = $(this).closest('.modifier-group-container');
+            const groupId = $groupContainer.data('group-id');
+            selectedGroups.delete(groupId);
+            $groupContainer.remove();
+        });
+
+        // Handle min/max selection changes
+        $(document).on('change', '.min-selection-select, .max-selection-select', function () {
+            const $groupContainer = $(this).closest('.modifier-group-container');
+            const groupId = $groupContainer.data('group-id');
+
+            if (selectedGroups.has(groupId)) {
+                const group = selectedGroups.get(groupId);
+                const isMinSelect = $(this).hasClass('min-selection-select');
+
+                if (isMinSelect) {
+                    group.minSelection = parseInt($(this).val());
+                } else {
+                    group.maxSelection = parseInt($(this).val());
+                }
+            }
+        });
+
+        // Function to fetch modifier group data
+        function fetchModifierGroupData(groupId, groupName) {
+            // Show loading indicator
+            const loadingHtml = `<div id="loading-${groupId}" class="text-center p-3"><span>Loading modifiers...</span></div>`;
+            $('#selectedModifierGroups').append(loadingHtml);
+
+            // Fetch modifiers from the backend
+            $.ajax({
+                url: `/Menu/GetModifiers/${groupId}`,
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    // Remove loading indicator
+                    $(`#loading-${groupId}`).remove();
+                    console.log(data.success);
+
+                    if (data.success) {
+                        // Add the group to our selected groups
+                        selectedGroups.set(groupId, {
+                            id: groupId,
+                            name: groupName,
+                            minSelection: 0,
+                            maxSelection: 0,
+                            modifiers: data.modifiers
+                        });
+
+                        // Create and append the group HTML
+                        addModifierGroupUI(groupId, groupName, data.modifiers);
+                    } else {
+                        alert('Error loading modifiers: ' + data.message);
+                    }
+                },
+                error: function (error) {
+                    // Remove loading indicator
+                    $(`#loading-${groupId}`).remove();
+                    console.error('Error fetching modifiers:', error);
+                    alert('Failed to load modifiers. Please try again.');
+                }
+            });
+        }
+
+        // Function to add a modifier group to the UI
+        function addModifierGroupUI(groupId, groupName, modifiers) {
+            // Clone the template
+            if ($(`[data-group-id="${groupId}"]`).length > 0) {
+                return; // Prevent duplicate groups
+            }
+            const template = document.getElementById('modifier-group-template');
+            const $groupContainer = $(template.content.cloneNode(true));
+
+            // Set group ID and name
+            $groupContainer.find('.modifier-group-container').attr('data-group-id', groupId);
+            $groupContainer.find('.group-name').text(groupName);
+            $groupContainer.find('.group-id-input').val(groupId);
+
+            // Set names for selects to be used in form submission
+            $groupContainer.find('.min-selection-select').attr('name', `modifierGroups[${groupId}].minSelection`);
+            $groupContainer.find('.max-selection-select').attr('name', `modifierGroups[${groupId}].maxSelection`);
+
+            // Add modifiers to the list
+            const $modifiersList = $groupContainer.find('.modifier-items-list');
+            if (modifiers && modifiers.length > 0) {
+                modifiers.forEach((modifier, index) => {
+                    const modifierHtml = `
+                <li>
+                    <span class="modifier-name">${modifier.modifiername}</span>
+                    <span class="modifier-price">${modifier.rate}</span>
+                    <input type="hidden" name="modifierGroups[${groupId}].modifiers[${index}].id" value="${modifier.modifierid}">
+                </li>
+            `;
+                    $modifiersList.append(modifierHtml);
+                });
+            } else {
+                $modifiersList.append('<li>No modifiers available</li>');
+            }
+
+            // Append to the container
+            $('#selectedModifierGroups').append($groupContainer);
+        }
+
+        $('#SaveItem').on('click', function (e) {
+            e.preventDefault();
+            console.log("clicked");
+            var formData = new FormData($("#addItemForm")[0]);
+            var catid = $("#categoryid").val();
+
+            // Add selected modifier groups to form data
+            let groupsData = [];
+            selectedGroups.forEach((group, groupId) => {
+                groupsData.push({
+                    modifiergroupid: parseInt(groupId),
+                    minselectionrequired: group.minSelection,
+                    maxselectionallowed: group.maxSelection
+                });
+            });
+
+            console.log('Modifier Groups:', JSON.stringify(groupsData));
+
+            // Add JSON data of selected groups
+            formData.append('SelectedModifierGroups', JSON.stringify(groupsData));
+
+            // Submit the form data via AJAX
+            $.ajax({
+                url: '/Menu/AddNewItem',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    if (data.success) {
+                        ItemList(catid, 1);
+
+                        // Optionally reload page or update UI
+                    } else {
+                        alert(data.message);
+                    }
+                },
+                error: function (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred while saving the item.');
+                }
+            });
+        });
+
+        function fetchExistingModifierGroups(itemId) {
+            console.log(itemId + "Hii existing");
+            $.ajax({
+                url: `/Menu/GetItemModifierGroups/${itemId}`,
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data);
+                        data.forEach(group => {
+                            // Add to selectedGroups map
+                            selectedGroups.set(group.modifiergroupid, {
+                                id: group.modifiergroupid,
+                                name: group.modifiergroupName,
+                                minSelection: group.minselectionrequired,
+                                maxSelection: group.maxselectionallowed,
+                                modifiers: group.modifiers
+                            });
+
+                            // Add to UI
+                            addModifierGroupUI(
+                                group.modifiergroupid,
+                                group.modifiergroupName,
+                                group.modifiers
+                            );
+
+                            // Set min and max selection dropdowns
+                            $(`[data-group-id="${group.modifiergroupid}"] .min-selection-select`).val(group.minselectionrequired);
+                            $(`[data-group-id="${group.modifiergroupid}"] .max-selection-select`).val(group.maxselectionallowed);
+                        });
+                },
+                error: function (error) {
+                    console.error('Error fetching modifier groups:', error);
+                }
+            });
+        }
     });
 </script>

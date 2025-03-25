@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using pizzashop.repository.Models;
 using pizzashop.repository.ViewModels;
 using pizzashop.service.Attributes;
@@ -71,8 +72,26 @@ public class MenuController : Controller
     [HttpPost]
     public async Task<IActionResult> AddNewItem(AddEditItemViewModel addEditItemViewModel, IFormFile ProfileImage)
     {
+        var jsonString = Request.Form["SelectedModifierGroups"].ToString();
+        Console.WriteLine($"Raw JSON received: {jsonString}");
+        if (!string.IsNullOrEmpty(jsonString))
+        {
+            int arrayStartIndex = jsonString.IndexOf('[');
+            if (arrayStartIndex == -1)
+            {
+                return Json(new { success = false, message = "Invalid JSON format" });
+            }
+
+            // Extract the JSON array substring
+            string cleanedJson = jsonString.Substring(arrayStartIndex);
+
+            // Deserialize the cleaned JSON
+            var selectedModifierGroups = JsonConvert.DeserializeObject<List<ItemModifierGroupMapping>>(cleanedJson);
+            addEditItemViewModel.SelectedModifierGroups = selectedModifierGroups;
+        }
         if (addEditItemViewModel.SelectedModifierGroups != null)
-        {Console.WriteLine(addEditItemViewModel.SelectedModifierGroups);
+        {
+            Console.WriteLine(addEditItemViewModel.SelectedModifierGroups);
             // Process the selected modifier groups
             foreach (var group in addEditItemViewModel.SelectedModifierGroups)
             {
@@ -86,6 +105,7 @@ public class MenuController : Controller
 
     public async Task<IActionResult> editItem(int itemId)
     {
+        
         var model = await _menuService.GetEditItemDetails(itemId);
         return PartialView("_EditItem", model);
     }
@@ -93,6 +113,23 @@ public class MenuController : Controller
     [HttpPost]
     public async Task<IActionResult> editItem(AddEditItemViewModel addEditItemViewModel, IFormFile ProfileImage)
     {
+        var jsonString = Request.Form["SelectedModifierGroups"].ToString();
+        Console.WriteLine($"Raw JSON received: {jsonString}");
+        if (!string.IsNullOrEmpty(jsonString))
+        {
+            int arrayStartIndex = jsonString.IndexOf('[');
+            if (arrayStartIndex == -1)
+            {
+                return Json(new { success = false, message = "Invalid JSON format" });
+            }
+
+            // Extract the JSON array substring
+            string cleanedJson = jsonString.Substring(arrayStartIndex);
+
+            // Deserialize the cleaned JSON
+            var selectedModifierGroups = JsonConvert.DeserializeObject<List<ItemModifierGroupMapping>>(cleanedJson);
+            addEditItemViewModel.SelectedModifierGroups = selectedModifierGroups;
+        }
         await _menuService.EditItemAsync(addEditItemViewModel, ProfileImage);
         return Json(new { success = true, message = "added successfully" });
     }
@@ -200,5 +237,12 @@ public class MenuController : Controller
         };
 
         return PartialView("_AddItemPartial", viewModel);
+    }
+
+    [HttpGet("Menu/GetItemModifierGroups/{itemId}")]
+    public async Task<IActionResult> GetItemModifierGroups(int itemId)
+    {
+        var modifierGroups = await _menuService.GetItemModifierGroupsAsync(itemId);
+        return Ok(modifierGroups);
     }
 }

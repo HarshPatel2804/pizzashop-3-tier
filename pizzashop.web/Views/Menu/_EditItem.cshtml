@@ -2,9 +2,9 @@
 @model pizzashop.repository.ViewModels.AddEditItemViewModel
 
 <div class="modal fade" id="editItem" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog  modal-dialog-centered">
+    <div class="modal-dialog  modal-dialog-centered justify-content-center">
         <form method="post" id="editItemForm" enctype="multipart/form-data">
-        <input type="hidden" asp-for="Itemid">
+            <input type="hidden" asp-for="Itemid">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="deleteModalLabel">Update Menu Item</h5>
@@ -169,12 +169,26 @@
 
                     <div class="right-side-addItem w-25">
                         <div class="container-fluid mt-2">
-                            <select class="form-select" aria-label="Default select example">
-                                <option selected>Select Modifiers Groups(s)</option>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
-                            </select>
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle w-100 text-start" type="button"
+                                    id="modifierGroupDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Select Modifier Group(s)
+                                </button>
+                                <ul class="dropdown-menu w-100" aria-labelledby="modifierGroupDropdown">
+                                    @foreach (var group in Model.ModifierGroups)
+                                    {
+                                        <li class="mt-2">
+                                            <a class="dropdown-item modifier-group-item" data-id="@group.Value"
+                                                data-name="@group.Text" href="#">@group.Text</a>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Container for dynamically added modifier groups -->
+                        <div id="selectedModifierGroups" class="mt-3">
+                            <!-- Dynamic modifier groups will be loaded here -->
                         </div>
                     </div>
                 </div>
@@ -187,6 +201,42 @@
         </form>
     </div>
 </div>
+<template id="modifier-group-template">
+    <div class="modifier-group-container mt-2 pb-2" data-group-id="">
+        <div class="d-flex justify-content-between align-items-center ps-md-4 pe-md-4 ps-sm-3 pe-sm-3 ps-1 pe-1">
+            <span class="fw-bold group-name"></span>
+            <button type="button" class="btn btn-sm text-secondary delete-group p-0">
+                <i class="bi bi-trash"></i>
+            </button>
+        </div>
+
+        <div class="d-flex align-items-center justify-content-center my-1">
+            <select class="form-select form-select-sm min-selection-select min-max me-4">
+                <option value="0" selected>0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+
+            <select class="form-select form-select-sm max-selection-select min-max">
+                <option value="0" selected>0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+        </div>
+
+        <ul class="list-styled modifier-items-list">
+            <!-- Modifiers will be added here dynamically -->
+        </ul>
+
+        <input type="hidden" class="group-id-input" name="selectedModifierGroups" value="">
+    </div>
+</template>
 <script>
     document.getElementById('files').addEventListener('change', function (e) {
         const file = e.target.files[0];
@@ -200,3 +250,52 @@
         }
     });
 </script>
+<style>
+    .right-side-addItem {
+        padding: 0;
+        width: 25%;
+    }
+
+    .modifier-group-container {
+        font-size: 0.9rem;
+        border-bottom: 1px solid #eee;
+    }
+
+    .min-max-label {
+        font-size: 0.8rem;
+        color: #666;
+        width: 30px;
+    }
+
+    .min-selection-select,
+    .max-selection-select {
+        width: 50px;
+    }
+
+    #selectedModifierGroups {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .dropdown-menu {
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+    .modifier-items-list li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0;
+        margin-top: 0px !important;
+    }
+
+    .modifier-items-list li .modifier-price {
+        @* text-align: right; *@
+        width: 40px;
+    }
+
+    .modifier-items-list li .modifier-name {
+        @* padding-left: 3px !important;  *@
+    }
+</style>
