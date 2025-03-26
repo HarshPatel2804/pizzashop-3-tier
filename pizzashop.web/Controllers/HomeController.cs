@@ -36,6 +36,7 @@ public class HomeController : Controller
             return RedirectToAction("Dashboard", "Dashboard");
 
         return View();
+
     }
 
     [HttpPost]
@@ -69,9 +70,13 @@ public class HomeController : Controller
     }
 
     [HttpGet]
-    public IActionResult ForgotPassword()
+    public IActionResult ForgotPassword(string email)
     {
-        return View();
+        var model = new ForgotPasswordViewModel
+        {
+            email = email ?? string.Empty
+        };
+        return View(model);
     }
 
     [HttpPost]

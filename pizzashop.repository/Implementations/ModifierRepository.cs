@@ -41,6 +41,25 @@ public class ModifierRepository : IModifierRepository
 
             }).ToListAsync();
     }
+
+    public async Task<(List<Modifier> modifiers, int totalModifiers)> GetAllModifierAsync(int page, int pageSize, string search)
+    {
+
+        var query = _context.Modifiers
+                    .Where(u => u.Isdeleted == false)
+                    .OrderBy(u => u.Modifierid)
+                    .Where(u => string.IsNullOrEmpty(search) ||
+                        u.Modifiername.ToLower().Contains(search.ToLower()));
+
+        int totalModifiers = await query.CountAsync();
+
+        var modifiers = await query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return (modifiers, totalModifiers);
+    }
 }
 
     

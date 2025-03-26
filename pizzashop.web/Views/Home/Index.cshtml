@@ -31,10 +31,18 @@
                 Remember me
             </label>
         </div>
-        <a asp-controller="Home" asp-action="ForgotPassword">Forgot Password?</a>
+        <a id="forgotPasswordLink">Forgot Password?</a>
     </div>
     <button type="submit" class="mt-3"
         style="border: none; background-color: rgb(68, 68, 228); border-radius: 3px; width: 100%; height: 2.5rem;">Login</button>
 </form>
 <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
 <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+<script>
+    document.getElementById('forgotPasswordLink').addEventListener('click', function (e) {
+        e.preventDefault(); 
+        var email = document.getElementById('email').value;
+        var forgotPasswordUrl = '@Url.Action("ForgotPassword", "Home")?email=' + encodeURIComponent(email);
+        window.location.href = forgotPasswordUrl;
+    });
+</script>

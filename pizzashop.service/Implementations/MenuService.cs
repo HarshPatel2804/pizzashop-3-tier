@@ -273,4 +273,13 @@ public class MenuService : IMenuService
         return await _itemRepository.GetItemModifierGroupsAsync(itemId);
     }
 
+    public async Task<(List<Modifier> modifiers, int totalModifiers, int totalPages)> GetModifierList(int page, int pageSize, string search)
+    {
+        var (modifiers, totalModifiers) = await _modifierRepository.GetAllModifierAsync(page, pageSize, search);
+
+        int totalPages = (int)System.Math.Ceiling((double)totalModifiers / pageSize);
+
+        return (modifiers, totalModifiers, totalPages);
+    }
+
 }

@@ -34,4 +34,6 @@ public interface IMenuService
 
     Task EditItemAsync(AddEditItemViewModel addEditItemViewModel, IFormFile Itemimg);
     Task<List<ItemModifierGroupMapping>> GetItemModifierGroupsAsync(int itemId);
+
+    Task<(List<Modifier> modifiers, int totalModifiers, int totalPages)> GetModifierList(int page, int pageSize, string search);
 }

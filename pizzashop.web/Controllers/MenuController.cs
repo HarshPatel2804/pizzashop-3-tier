@@ -245,4 +245,20 @@ public class MenuController : Controller
         var modifierGroups = await _menuService.GetItemModifierGroupsAsync(itemId);
         return Ok(modifierGroups);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> Modifierlist(int page = 1, int pageSize = 5, string search = "")
+    {
+
+        var (modifiers, totalModifiers, totalPages) = await _menuService.GetModifierList(page, pageSize, search);
+        ViewBag.CurrentPage = page;
+        ViewBag.PageSize = pageSize;
+        ViewBag.TotalUsers = totalModifiers;
+        ViewBag.TotalPages = totalPages;
+
+        return Request.Headers["X-Requested-With"] == "XMLHttpRequest"
+            ? PartialView("_ShowUserList", modifiers)
+            : View(modifiers);
+    }
+    
 }

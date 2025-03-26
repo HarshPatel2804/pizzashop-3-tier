@@ -12,4 +12,6 @@ public interface IModifierRepository
     Task DeleteModifier(int modifierId);
 
     Task<List<SelectListItem>> GetAllmodifierGroups();
+
+    Task<(List<Modifier> modifiers, int totalModifiers)> GetAllModifierAsync(int page, int pageSize, string search);
 }
