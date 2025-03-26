@@ -9,7 +9,7 @@ public interface IUsersLoginService
 
     Task<Userslogin> GetUserById(int id);
 
-    Task<(List<Userslogin> users, int totalUsers, int totalPages)> GetPaginatedUsersAsync(int page, int pageSize, string search, string sortColumn, string sortOrder);
+    Task<(List<UserViewModel> users, int totalUsers, int totalPages)> GetPaginatedUsersAsync(int page, int pageSize, string search, string sortColumn, string sortOrder, int id);
 
     Task UpdateUserLoginData(UserViewModel model);
 

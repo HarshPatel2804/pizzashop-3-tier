@@ -1,7 +1,10 @@
 ﻿@using System.Security.Claims
 @using pizzashop.repository.ViewModels
+@using pizzashop.service.Interfaces
 @using pizzashop.service.Utils
+@using Microsoft.AspNetCore.Mvc;
 @inject IHttpContextAccessor HttpContextAccessor
+@inject IProfileService ProfileService
 <!DOCTYPE html>
 <html lang="en">
 
@@ -25,10 +28,14 @@
 
 @{
      CookiesViewModel user = SessionUtils.GetUser(HttpContextAccessor.HttpContext);
-    var Username = user?.Username;
-    var Profileimg = user?.ProfileImg;
-    var defaultImg = Url.Content("~/images/Default_pfp.svg.png");
-    var profileImageUrl = !string.IsNullOrEmpty(Profileimg) ? Url.Content("~/images/uploads/" + Profileimg) : defaultImg;
+      var profileImageUrl = "";
+      var Username = "";
+    if(user != null) {
+     var Id = user.Id;
+     var ProfileData = await ProfileService.GetProfileData((int)Id);
+     profileImageUrl = @Url.Content("~/images/uploads/" + ProfileData.Profileimg) ??"~/images/default-profile.png";
+     Username = ProfileData.Username;
+     }
 }
 <body>
     <main class="d-flex flex-column w-100">
@@ -89,7 +96,7 @@
                 <nav class="navbar"
                     style="max-height: 50px; height: 100%; position:sticky; background-color: rgb(0, 100, 153);">
                     <img src="~/images/menu-bar.svg" data-bs-toggle="offcanvas" data-bs-target="#sidebar"
-                        alt="menu-bar-image" class="menu-image ms-4 d-lg-none">
+                        alt="menu-bar-image" class="ms-4 d-lg-none">
                     <div class="dropdown ms-auto">
                             <img src=@profileImageUrl class="dropdown-toggle me-2" id="dropdownMenuButton1"
                             data-bs-toggle="dropdown" aria-expanded="false" style="width:30px; height: 30px;">                        

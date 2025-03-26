@@ -21,14 +21,10 @@ public class ProfileViewModel
         [Required(ErrorMessage = "Phone number is required.")]
         [RegularExpression(@"^[0-9]{10}$",
                 ErrorMessage = "Phone number must be of 10 digits.")]
-        [Remote(action: "CheckPhone", controller: "User", AdditionalFields = nameof(Id)
-        , ErrorMessage = "User exist with this Phone number")]
         public string Phone { get; set; }
         [Required(ErrorMessage = "User Name is required.")]
         [RegularExpression(@"^[A-Za-z]+$", ErrorMessage = "Username can contain only alphabets.")]
         [StringLength(20, MinimumLength = 2, ErrorMessage = "Username must be between 2 and 20 characters.")]
-        [Remote(action: "CheckUsername", controller: "User", AdditionalFields = nameof(Id)
-        , ErrorMessage = "Username is already taken.")]
 
         public string Username { get; set; }
 

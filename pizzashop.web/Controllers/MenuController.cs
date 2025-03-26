@@ -257,7 +257,7 @@ public class MenuController : Controller
         ViewBag.TotalPages = totalPages;
 
         return Request.Headers["X-Requested-With"] == "XMLHttpRequest"
-            ? PartialView("_ShowUserList", modifiers)
+            ? PartialView("_AddExistingModifier", modifiers)
             : View(modifiers);
     }
     

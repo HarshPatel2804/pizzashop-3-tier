@@ -500,11 +500,12 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addModifiersGroup">Add Modifier Group</h5>
+                    <h5 class="modal-title">Add Modifier Group</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body ">
-                    <form>
+                <form>
+                    <div class="modal-body ">
+
                         <div class="form-floating mb-3">
                             <input type="text" class="form-control" id="floatingInput" placeholder="Category name"
                                 required>
@@ -517,23 +518,47 @@
                             <label for="floatingTextarea">Description</label>
                         </div>
 
-                        <a href="" class="ModalAnchor" data-bs-toggle="modal"
-                            data-bs-target="#selectExistingModifiers">+ Add Existing
-                            Modifiers</a>
+                        <a><span id="AddModifierGroupBtn">+ Add Existing
+                                Modifiers</span></a>
 
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button submit" class="btn btn-primary sav-btn" data-bs-dismiss="modal">Save</button>
-                    <button type="button" class="btn btn-danger">Cancel</button>
-                </div>
-
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary sav-btn" data-bs-dismiss="modal">Save</button>
+                        <button type="button" class="btn btn-danger">Cancel</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
     <!-- Add new item -->
     <div class="modal-addNewItem" id="AddEditItem"></div>
 
+    </div>
+
+
+    <div class="modal fade" id="selectExistingModifiers" tabindex="-1" aria-labelledby="deleteModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header pb-0">
+                    <h5 class="modal-title">Select Existing Modifiers</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="col-md-auto col-11 mt-1 ms-md-3 ms-4 w-50 d-flex align-items-center justify-content-center"
+                        style="height: 50px;">
+                        <input class="search form-control me-2" type="search" placeholder="Search" aria-label="Search"
+                            id="searchModifier" style="height: 48px;">
+                    </div>
+                    <div id="ExistingModifier"></div>
+                </div>
+                <div class="modal-footer d-flex justify-content-start gap-2">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Add</button>
+                    <button type="button" class="btn btn-danger">Cancel</button>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js">
@@ -543,6 +568,7 @@
     $(document).ready(function () {
         let lastSelectedCategoryId = 0;
         const selectedGroups = new Map();
+        let selectedModifiers = [];
         $(document).on("click", ".delete-category", function () {
             var Id = $(this).data("id");
             $("#hiddenField").val(Id);
@@ -673,7 +699,7 @@
             var formData = new FormData($("#editItemForm")[0]);
             var catid = $("#categoryid").val();
 
-             let groupsData = [];
+            let groupsData = [];
             selectedGroups.forEach((group, groupId) => {
                 groupsData.push({
                     modifiergroupid: parseInt(groupId),
@@ -815,19 +841,19 @@
 
         function resetModifierGroups() {
             $('#selectedModifierGroups').empty();
-             selectedGroups.clear();
+            selectedGroups.clear();
         }
 
         $('#addItem').on('hidden.bs.modal', resetModifierGroups);
         $('#editItem').on('hidden.bs.modal', resetModifierGroups);
-        
+
 
         // Handle modifier group selection from dropdown
         $(document).on('click', '.modifier-group-item', function (e) {
             e.preventDefault();
             const groupId = $(this).data('id');
             const groupName = $(this).data('name');
-             console.log(groupId + groupName);
+            console.log(groupId + groupName);
             // Prevent re-fetching if group is already selected
             if (!selectedGroups.has(groupId)) {
                 console.log(groupId + groupName);
@@ -992,32 +1018,233 @@
                 dataType: 'json',
                 success: function (data) {
                     console.log(data);
-                        data.forEach(group => {
-                            // Add to selectedGroups map
-                            selectedGroups.set(group.modifiergroupid, {
-                                id: group.modifiergroupid,
-                                name: group.modifiergroupName,
-                                minSelection: group.minselectionrequired,
-                                maxSelection: group.maxselectionallowed,
-                                modifiers: group.modifiers
-                            });
-
-                            // Add to UI
-                            addModifierGroupUI(
-                                group.modifiergroupid,
-                                group.modifiergroupName,
-                                group.modifiers
-                            );
-
-                            // Set min and max selection dropdowns
-                            $(`[data-group-id="${group.modifiergroupid}"] .min-selection-select`).val(group.minselectionrequired);
-                            $(`[data-group-id="${group.modifiergroupid}"] .max-selection-select`).val(group.maxselectionallowed);
+                    data.forEach(group => {
+                        // Add to selectedGroups map
+                        selectedGroups.set(group.modifiergroupid, {
+                            id: group.modifiergroupid,
+                            name: group.modifiergroupName,
+                            minSelection: group.minselectionrequired,
+                            maxSelection: group.maxselectionallowed,
+                            modifiers: group.modifiers
                         });
+
+                        // Add to UI
+                        addModifierGroupUI(
+                            group.modifiergroupid,
+                            group.modifiergroupName,
+                            group.modifiers
+                        );
+
+                        // Set min and max selection dropdowns
+                        $(`[data-group-id="${group.modifiergroupid}"] .min-selection-select`).val(group.minselectionrequired);
+                        $(`[data-group-id="${group.modifiergroupid}"] .max-selection-select`).val(group.maxselectionallowed);
+                    });
                 },
                 error: function (error) {
                     console.error('Error fetching modifier groups:', error);
                 }
             });
         }
+
+        function modifierList(page) {
+            let pageSize = $("#pageSizeSelect").val();
+            let search = $("#searchModifier").val();
+            $.ajax({
+                type: "GET",
+                url: '/Menu/Modifierlist',
+                contentType: "application/json",
+                data: { page: page, pageSize: pageSize, search: search },
+                success: function (data) {
+                    $('#ExistingModifier').html(data);
+                    $('#selectExistingModifiers').modal('show');
+                }
+            });
+        };
+
+        function resetModifiers() {
+            selectedModifiers = [];
+            console.log(selectedModifiers);
+            $('tbody tr').each(function () {
+                $(this).find('#ModifierCheckBox').prop('checked', false);
+            });
+
+            $('#addModifiersGroup .existing-modifiers').remove();
+        }
+
+        $('#addModifiersGroup').on('hidden.bs.modal', resetModifiers);
+        $('#addModifiersGroup').on('show.bs.modal', resetModifiers);
+
+        $(document).on("click", "#AddModifierGroupBtn", function () {
+            console.log("HiiList");
+            modifierList(1);
+        });
+
+        $("#ExistingModifier").on("click", ".pagination-link", function (e) {
+            e.preventDefault();
+            let page = $(this).data("page");
+            console.log(page + "Page");
+            if (page > 0) {
+                modifierList(page);
+            }
+        });
+
+        $("#ExistingModifier").on("change", "#pageSizeSelect", function () {
+            modifierList(1);
+        });
+
+
+        $("#searchModifier").on("input", function () {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(function () {
+                modifierList(1);
+            }, 100);
+        });
+
+        function updateCheckboxStates() {
+            $('tbody tr').each(function () {
+                const row = $(this);
+                const modifierId = row.find('#ModifierId').val();
+                const checkbox = row.find('#ModifierCheckBox');
+
+                // Check if this modifier is in the selectedModifiers array
+                const isSelected = selectedModifiers.some(m => m.id === modifierId);
+
+                if (isSelected) {
+                    checkbox.prop('checked', true);
+                } else {
+                    checkbox.prop('checked', false);
+                }
+            });
+
+            // Update master checkbox state
+            const totalCheckboxes = $('#ModifierCheckBox').length;
+            const checkedCheckboxes = $('#ModifierCheckBox:checked').length;
+
+            $('#MasterCheckBox').prop('checked', totalCheckboxes > 0 && totalCheckboxes === checkedCheckboxes);
+        }
+
+        // Handle opening of the existing modifiers modal
+        $('#AddModifierGroupBtn').on('click', function () {
+            // Delay to ensure modal is fully loaded
+            setTimeout(updateCheckboxStates, 100);
+        });
+
+        // Handle checkbox selection in the existing modifiers modal
+        $(document).on('change', '#ModifierCheckBox', function () {
+            const row = $(this).closest('tr');
+            const modifierId = row.find('#ModifierId').val();
+            const modifierName = row.find('td:nth-child(2)').text().trim();
+            const checkbox = $(this);
+
+            if (checkbox.is(':checked')) {
+                // Check if modifier is not already in the list
+                const exists = selectedModifiers.some(m => m.id === modifierId);
+                if (!exists) {
+                    selectedModifiers.push({
+                        id: modifierId,
+                        name: modifierName
+                    });
+                    checkbox.attr('checked', 'checked');
+                }
+            } else {
+                // Remove modifier from selected list
+                selectedModifiers = selectedModifiers.filter(m => m.id !== modifierId);
+                checkbox.removeAttr('checked');
+            }
+        });
+
+        // Handle master checkbox (select/deselect all)
+        $(document).on('change', '#MasterCheckBox', function () {
+            const isChecked = $(this).is(':checked');
+
+            $('#ModifierCheckBox').each(function () {
+                const row = $(this).closest('tr');
+                const modifierId = row.find('#ModifierId').val();
+                const modifierName = row.find('td:nth-child(3)').text().trim();
+                const checkbox = $(this);
+
+                if (isChecked) {
+                    checkbox.attr('checked', 'checked');
+
+                    // Add to selected modifiers if not already present
+                    const exists = selectedModifiers.some(m => m.id === modifierId);
+                    if (!exists) {
+                        selectedModifiers.push({
+                            id: modifierId,
+                            name: modifierName
+                        });
+                    }
+                } else {
+                    checkbox.removeAttr('checked');
+                    selectedModifiers = [];
+                }
+            });
+
+            $(this).attr('checked', isChecked ? 'checked' : null);
+        });
+
+        $('#selectExistingModifiers .btn-primary').on('click', function () {
+            // Clear previous selections
+            $('#addModifiersGroup .existing-modifiers').remove();
+
+            // Create a container for selected modifiers
+            const modifiersContainer = $('<div class="existing-modifiers d-flex flex-wrap gap-2 mt-2"></div>');
+
+            // Add each selected modifier as a badge
+            selectedModifiers.forEach(function (modifier) {
+                const badge = $(`
+                <span class="badge bg-primary d-flex align-items-center" data-modifier-id="${modifier.id}">
+                    ${modifier.name}
+                    <button type="button" class="btn-close btn-close-white ms-2 remove-modifier" aria-label="Remove"></button>
+                </span>
+            `);
+                modifiersContainer.append(badge);
+            });
+
+            // Insert the modifiers container after the "Add Existing Modifiers" link
+            $('#AddModifierGroupBtn').after(modifiersContainer);
+        });
+
+        $(document).on('click', '.remove-modifier', function () {
+            const modifierId = $(this).parent().data('modifier-id');
+            console.log(modifierId + "delete");
+            $(this).parent().remove();
+
+            $('tbody tr').each(function () {
+                const currentModifierId = $(this).find('#ModifierId').val();
+                const checkbox = $(this).find('#ModifierCheckBox');
+
+                if (parseInt(currentModifierId) == parseInt(modifierId)) {
+                    console.log(currentModifierId + "currentId");
+                    checkbox.removeAttr('checked');
+
+                    // Remove from selected modifiers array
+                    selectedModifiers = selectedModifiers.filter(m => m.id != modifierId);
+                }
+            });
+        });
+
+        // Optional: Prepare data for form submission
+        $('form').on('submit', function (e) {
+            if (selectedModifiers.length === 0) {
+                e.preventDefault();
+                alert('Please select at least one modifier');
+                return;
+            }
+
+            // Create hidden inputs for form submission
+            const hiddenInputsContainer = $('<div class="selected-modifiers-inputs"></div>');
+            selectedModifiers.forEach((modifier, index) => {
+                hiddenInputsContainer.append(`
+                <input type="hidden" name="SelectedModifiers[${index}].Id" value="${modifier.id}">
+                <input type="hidden" name="SelectedModifiers[${index}].Name" value="${modifier.name}">
+            `);
+            });
+
+            // Remove any existing hidden inputs and append new ones
+            $('.selected-modifiers-inputs').remove();
+            $('form').append(hiddenInputsContainer);
+        });
+
     });
 </script>

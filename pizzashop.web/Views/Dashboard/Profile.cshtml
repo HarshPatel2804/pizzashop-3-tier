@@ -16,7 +16,7 @@
     <div class="row  ms-sm-5 me-sm-5 ms-3 me-3"
         style="border-radius: 6px; box-shadow: 1px 1px 15px rgb(108, 103, 103);">
 
-        <form asp-controller="Dashboard" asp-action="Profile" method="post" enctype="multipart/form-data">
+        <form asp-controller="Dashboard" asp-action="Profile" method="post" enctype="multipart/form-data" id="form">
             <div class="row">
                 <img src="~/images/profile_div_bg.jpg"
                     style="max-height: 50px; border-top-left-radius: 6px; border-top-right-radius: 6px;"
@@ -53,13 +53,13 @@
             </div>
             <div class="row">
                 <div class="form-floating col-md-6 col-12 mb-3">
-                    <input asp-for="Username" type="text" class="form-control" id="floatingInput">
-                    <label for="floatingInput" class="label-pad">Username</label>
+                    <input asp-for="Username" type="text" class="form-control" id="Username">
+                    <label for="Username" class="label-pad">Username</label>
                     <span asp-validation-for="Username" class="text-danger"></span>
                 </div>
                 <div class="form-floating col-md-6 col-12 mb-3">
-                    <input asp-for="Phone" type="text" class="form-control" id="floatingPassword">
-                    <label for="floatingPassword" class="label-pad">Phone</label>
+                    <input asp-for="Phone" type="text" class="form-control" id="Phone">
+                    <label for="Phone" class="label-pad">Phone</label>
                     <span asp-validation-for="Phone" class="text-danger"></span>
                 </div>
             </div>
@@ -114,8 +114,8 @@
                         style="border-radius: 3px; width: 120px;">Update</button>
                 </div>
                 <div class="col-auto" style="padding-left: 0px;">
-                    <a type="button" class="btn border-primary text-primary" asp-controller="Dashboard" asp-action="Dashboard"
-                        style="border-radius: 3px; width: 90px; ">Cancel</a>
+                    <a type="button" class="btn border-primary text-primary" asp-controller="Dashboard"
+                        asp-action="Dashboard" style="border-radius: 3px; width: 90px; ">Cancel</a>
                 </div>
             </div>
         </form>
@@ -123,6 +123,74 @@
 </section>
 <script>
     $(document).ready(function () {
+
+        let isUsernameValid = true;
+        let isPhoneValid = true;
+
+        function validateRemote(inputElement, url, fieldName, additionalData = {}) {
+            var value = inputElement.val();
+            var originalBorderColor = inputElement.css('border-color');
+
+            if (value.trim() !== '') {
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    data: {
+                        ...additionalData,
+                        [inputElement.attr('name')]: value
+                    },
+                    success: function (response) {
+                        if (!response) {
+                            inputElement.css('border-color', 'red');
+                            inputElement.closest('.form-floating').find('span.text-danger').text(`User with this ${fieldName} already exist`);
+
+                            if (inputElement.attr('id') === 'Username') {
+                                isUsernameValid = false;
+                            } else if (inputElement.attr('id') === 'Phone') {
+                                isPhoneValid = false;
+                            }
+                        } else {
+                            inputElement.css('border-color', originalBorderColor);
+                            inputElement.next('.text-danger').text('');
+                            if (inputElement.attr('id') === 'Username') {
+                                isUsernameValid = true;
+                            } else if (inputElement.attr('id') === 'Phone') {
+                                isPhoneValid = true;
+                            }
+                        }
+                    },
+                    error: function () {
+                        console.error('Validation request failed');
+                    }
+                });
+            }
+        }
+
+        $('#form').on('submit', function (e) {
+
+            validateRemote($('#Username'), '/User/CheckUsername', "username", {
+                Id: $('input[name="Id"]').val()
+            });
+
+            validateRemote($('#Phone'), '/User/CheckPhone', "phone number", {
+                Id: $('input[name="Id"]').val()
+            });
+            if (!isUsernameValid || !isPhoneValid) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        $('#Username').on('blur', function () {
+            console.log("blur");
+            var userId = $('input[name="Id"]').val();
+            validateRemote($(this), '/User/CheckUsername', "username", { Id: userId });
+        });
+
+        $('#Phone').on('blur', function () {
+            var userId = $('input[name="Id"]').val();
+            validateRemote($(this), '/User/CheckPhone', "phone pumber", { Id: userId });
+        });
         $("#Country").change(function () {
             console.log("hii");
             var countryId = $(this).val();

@@ -31,6 +31,8 @@ public class DashboardController : Controller
     public async Task<IActionResult> Profile()
     {
         var userData = SessionUtils.GetUser(HttpContext);
+        if (userData == null)
+            return RedirectToAction("index", "Home");
         var id = userData.Id;
         var model = await _ProfileService.GetProfileData((int)id);
         Console.WriteLine(model.Profileimg + "image");

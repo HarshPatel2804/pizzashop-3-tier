@@ -32,6 +32,7 @@ public class HomeController : Controller
     {
         var user = SessionUtils.GetUser(HttpContext);
         var token = CookieUtils.GetJWTToken(Request);
+        Console.WriteLine(user + "user");
         if (user != null && token != null)
             return RedirectToAction("Dashboard", "Dashboard");
 

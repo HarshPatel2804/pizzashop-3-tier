@@ -1,3 +1,4 @@
+
 <table class="table px-3" style="border-radius: 6px; box-shadow: 1px 1px 15px rgb(108, 103, 103);">
     <thead>
         <tr>
@@ -35,11 +36,11 @@
             <tr>
                 <td>
                     <div class="d-flex">
-                        <img src="@(string.IsNullOrEmpty(user.User.Profileimg) ? Url.Content("~/images/Default_pfp.svg.png") : Url.Content("~/images/uploads/" + user.User.Profileimg))"
+                        <img src="@(string.IsNullOrEmpty(user.Profileimg) ? Url.Content("~/images/Default_pfp.svg.png") : Url.Content("~/images/uploads/" + user.Profileimg))"
                             alt="profile image" class="me-2 bg-light"
                             style="width: 2.5rem; height: 2.5rem; border-radius: 100%;">
 
-                        <span>@user.User.Firstname @user.User.Lastname</span>
+                        <span>@user.FirstName @user.LastName</span>
                     </div>
                 </td>
                 <td class="text-break d-none d-lg-table-cell">
@@ -48,21 +49,22 @@
                 <td class="d-lg-none">
                     @user.Email
                 </td>
-                <td>@user.User.Phone</td>
-                <td>@user.Role.Rolename</td>
+                <td>@user.Phone</td>
+                <td>@user.Rolename</td>
                 <td>
                     <span
-                        class="@(user.status == pizzashop.repository.Models.statustype.Active ? "status-badge-green" : "status-badge-red")">
+                        class="@(user.status == pizzashop.repository.ViewModels.statustype.Active ? "status-badge-green" : "status-badge-red")">
                         @user.status
                     </span>
                 </td>
-                <td>
-                    <a asp-controller="User" asp-action="EditUser" asp-route-id="@user.User.Userid">
+                <td>@if(user.IsSameUser == false){
+                    <a class="btn" asp-controller="User" asp-action="EditUser" asp-route-id="@user.Id" >
                         <img src="~/images/pen.svg" alt="edit" style="max-height: 30px; height: 100%; width:auto;">
                     </a>
-                    <a class="delete-user" data-bs-toggle="modal" data-id="@user.User.Userid" data-bs-target="#delete">
+                    <a class="delete-user" data-bs-toggle="modal" data-id="@user.Id" data-bs-target="#delete" >
                         <img src="~/images/trash.svg" alt="delete" style="max-height: 30px; height: 100%; width:auto;">
                     </a>
+                    }
                     <div class="fade modal" id="delete" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
                         aria-labelledby="staticBackdropLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered" style="width: 400px;">

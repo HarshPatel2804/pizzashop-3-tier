@@ -239,6 +239,13 @@ li {
     background-color: #f2f2f2;
 }
 
-/* .form-floating>label {
-    padding-left: 0rem !important;
-} */
+.existing-modifiers .badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.existing-modifiers .btn-close {
+    font-size: 0.5rem;
+    padding: 0.25rem;
+}

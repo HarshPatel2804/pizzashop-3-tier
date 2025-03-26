@@ -4,6 +4,7 @@ using pizzashop.repository.ViewModels;
 using pizzashop.service.Attributes;
 using pizzashop.service.Implementations;
 using pizzashop.service.Interfaces;
+using pizzashop.service.Utils;
 using System.Threading.Tasks;
 
 namespace pizzashop.web.Controllers;
@@ -33,8 +34,9 @@ public class UserController : Controller
     [CustomAuthorize("Users", "CanView")]
     public async Task<IActionResult> UserList(int page = 1, int pageSize = 5, string search = "", string sortColumn = "", string sortOrder = "")
     {
+        var id = SessionUtils.GetUser(HttpContext);
 
-        var (users, totalUsers, totalPages) = await _usersLoginService.GetPaginatedUsersAsync(page, pageSize, search, sortColumn, sortOrder);
+        var (users, totalUsers, totalPages) = await _usersLoginService.GetPaginatedUsersAsync(page, pageSize, search, sortColumn, sortOrder,(int)id.Id);
         ViewBag.CurrentPage = page;
         ViewBag.PageSize = pageSize;
         ViewBag.TotalUsers = totalUsers;
@@ -107,6 +109,7 @@ public class UserController : Controller
         ModelState.Remove(nameof(model.Password));
         ModelState.Remove(nameof(model.Profileimg));
         ModelState.Remove(nameof(ProfileImage));
+        ModelState.Remove(nameof(model.Rolename));
         if (!ModelState.IsValid) return View(model);
         await _userService.UpdateUserData(model, ProfileImage);
         TempData["SuccessMessage"] = "User edited successfully!";

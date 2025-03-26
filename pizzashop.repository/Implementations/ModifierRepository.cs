@@ -46,6 +46,7 @@ public class ModifierRepository : IModifierRepository
     {
 
         var query = _context.Modifiers
+                    .Include(u => u.Unit)
                     .Where(u => u.Isdeleted == false)
                     .OrderBy(u => u.Modifierid)
                     .Where(u => string.IsNullOrEmpty(search) ||

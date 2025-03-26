@@ -15,8 +15,6 @@ public static class SessionUtils
             {
                 Id = userLogin.Userid,
                 Email = userLogin.Email,
-                Username = userLogin.Username,
-                ProfileImg = user.Profileimg
             };
 
 

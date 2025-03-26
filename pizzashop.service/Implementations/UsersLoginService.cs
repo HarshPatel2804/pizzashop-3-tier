@@ -33,13 +33,29 @@ public class UsersLoginService : IUsersLoginService
             return _UsersloginRepository.CheckEmail(Email,Id);
         }
 
-    public async Task<(List<Userslogin> users, int totalUsers, int totalPages)> GetPaginatedUsersAsync(int page, int pageSize, string search, string sortColumn, string sortOrder)
+    public async Task<(List<UserViewModel> users, int totalUsers, int totalPages)> GetPaginatedUsersAsync(int page, int pageSize, string search, string sortColumn, string sortOrder, int id)
     {
         var (users, totalUsers) = await _UsersloginRepository.GetPaginatedUsersAsync(page, pageSize, search, sortColumn, sortOrder);
 
+        var model = new List<UserViewModel>();
+        foreach(var user in users){
+            var User = new UserViewModel{
+                Id = (int)user.Userid,
+                FirstName = user.User.Firstname,
+                LastName = user.User.Lastname,
+                Email = user.Email,
+                Profileimg = user.User.Profileimg,
+                Rolename = user.Role.Rolename,
+                Phone = user.User.Phone,
+                status = (repository.ViewModels.statustype)user.status
+            };
+            if(id == user.Userid) User.IsSameUser = true;
+            else User.IsSameUser = false;
+            model.Add(User);
+        }
         int totalPages = (int)System.Math.Ceiling((double)totalUsers / pageSize);
 
-        return (users, totalUsers, totalPages);
+        return (model, totalUsers, totalPages);
     }
 
     public async Task UpdateUserLoginData(UserViewModel model){
