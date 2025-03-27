@@ -524,7 +524,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary sav-btn" data-bs-dismiss="modal">Save</button>
-                        <button type="button" class="btn btn-danger">Cancel</button>
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
                     </div>
                 </form>
             </div>
@@ -555,7 +555,7 @@
                 </div>
                 <div class="modal-footer d-flex justify-content-start gap-2">
                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Add</button>
-                    <button type="button" class="btn btn-danger">Cancel</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
                 </div>
             </div>
         </div>
@@ -569,6 +569,7 @@
         let lastSelectedCategoryId = 0;
         const selectedGroups = new Map();
         let selectedModifiers = [];
+        
         $(document).on("click", ".delete-category", function () {
             var Id = $(this).data("id");
             $("#hiddenField").val(Id);
@@ -1046,7 +1047,7 @@
             });
         }
 
-        function modifierList(page) {
+        function modifiersList(page) {
             let pageSize = $("#pageSizeSelect").val();
             let search = $("#searchModifier").val();
             $.ajax({
@@ -1057,6 +1058,8 @@
                 success: function (data) {
                     $('#ExistingModifier').html(data);
                     $('#selectExistingModifiers').modal('show');
+
+                    updateCheckboxStates();
                 }
             });
         };
@@ -1076,7 +1079,7 @@
 
         $(document).on("click", "#AddModifierGroupBtn", function () {
             console.log("HiiList");
-            modifierList(1);
+            modifiersList(1);
         });
 
         $("#ExistingModifier").on("click", ".pagination-link", function (e) {
@@ -1084,43 +1087,57 @@
             let page = $(this).data("page");
             console.log(page + "Page");
             if (page > 0) {
-                modifierList(page);
+                modifiersList(page);
             }
         });
 
         $("#ExistingModifier").on("change", "#pageSizeSelect", function () {
-            modifierList(1);
+            modifiersList(1);
         });
 
 
         $("#searchModifier").on("input", function () {
             clearTimeout(searchTimer);
             searchTimer = setTimeout(function () {
-                modifierList(1);
+                modifiersList(1);
             }, 100);
         });
 
         function updateCheckboxStates() {
-            $('tbody tr').each(function () {
+            let totalCheckboxes = 0;
+            let checkedCheckboxes = 0;
+            const masterCheckbox = $('#MasterCheckBox');
+
+            $('#ExistingModifier tbody tr').each(function () {
                 const row = $(this);
                 const modifierId = row.find('#ModifierId').val();
                 const checkbox = row.find('#ModifierCheckBox');
 
-                // Check if this modifier is in the selectedModifiers array
+                totalCheckboxes++;
+
                 const isSelected = selectedModifiers.some(m => m.id === modifierId);
+                console.log(selectedModifiers);
 
                 if (isSelected) {
                     checkbox.prop('checked', true);
+                    checkedCheckboxes++;
                 } else {
                     checkbox.prop('checked', false);
                 }
             });
 
-            // Update master checkbox state
-            const totalCheckboxes = $('#ModifierCheckBox').length;
-            const checkedCheckboxes = $('#ModifierCheckBox:checked').length;
+            console.log(totalCheckboxes + " Total " + checkedCheckboxes + " checked");
 
-            $('#MasterCheckBox').prop('checked', totalCheckboxes > 0 && totalCheckboxes === checkedCheckboxes);
+            if (checkedCheckboxes === 0) {
+                masterCheckbox.prop('checked', false);
+                masterCheckbox.prop('indeterminate', false);
+            } else if (checkedCheckboxes === totalCheckboxes) {
+                masterCheckbox.prop('checked', true);
+                masterCheckbox.prop('indeterminate', false);
+            } else {
+                masterCheckbox.prop('checked', false);
+                masterCheckbox.prop('indeterminate', true);
+            }
         }
 
         // Handle opening of the existing modifiers modal
@@ -1151,22 +1168,24 @@
                 selectedModifiers = selectedModifiers.filter(m => m.id !== modifierId);
                 checkbox.removeAttr('checked');
             }
+
+            updateCheckboxStates();
         });
 
         // Handle master checkbox (select/deselect all)
         $(document).on('change', '#MasterCheckBox', function () {
             const isChecked = $(this).is(':checked');
 
-            $('#ModifierCheckBox').each(function () {
+            $('#ExistingModifier tbody tr').each(function () {
                 const row = $(this).closest('tr');
                 const modifierId = row.find('#ModifierId').val();
-                const modifierName = row.find('td:nth-child(3)').text().trim();
+                const modifierName = row.find('td:nth-child(2)').text().trim();
                 const checkbox = $(this);
+                console.log(modifierName);
 
                 if (isChecked) {
                     checkbox.attr('checked', 'checked');
 
-                    // Add to selected modifiers if not already present
                     const exists = selectedModifiers.some(m => m.id === modifierId);
                     if (!exists) {
                         selectedModifiers.push({
@@ -1176,11 +1195,12 @@
                     }
                 } else {
                     checkbox.removeAttr('checked');
-                    selectedModifiers = [];
+                    selectedModifiers = selectedModifiers.filter(m => m.id != modifierId);
                 }
             });
 
             $(this).attr('checked', isChecked ? 'checked' : null);
+            updateCheckboxStates();
         });
 
         $('#selectExistingModifiers .btn-primary').on('click', function () {
@@ -1207,21 +1227,8 @@
 
         $(document).on('click', '.remove-modifier', function () {
             const modifierId = $(this).parent().data('modifier-id');
-            console.log(modifierId + "delete");
             $(this).parent().remove();
-
-            $('tbody tr').each(function () {
-                const currentModifierId = $(this).find('#ModifierId').val();
-                const checkbox = $(this).find('#ModifierCheckBox');
-
-                if (parseInt(currentModifierId) == parseInt(modifierId)) {
-                    console.log(currentModifierId + "currentId");
-                    checkbox.removeAttr('checked');
-
-                    // Remove from selected modifiers array
-                    selectedModifiers = selectedModifiers.filter(m => m.id != modifierId);
-                }
-            });
+            selectedModifiers = selectedModifiers.filter(m => m.id != modifierId);
         });
 
         // Optional: Prepare data for form submission

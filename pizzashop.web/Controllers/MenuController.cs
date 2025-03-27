@@ -9,7 +9,6 @@ using pizzashop.service.Interfaces;
 
 namespace pizzashop.web.Controllers;
 
-[CustomAuthorize]
 public class MenuController : Controller
 {
     private readonly IMenuService _menuService;
