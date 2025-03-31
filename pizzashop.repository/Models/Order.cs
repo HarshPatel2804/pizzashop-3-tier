@@ -3,6 +3,23 @@ using System.Collections.Generic;
 
 namespace pizzashop.repository.Models;
 
+public enum orderstatus
+{
+    InProgress = 1,
+    Pending = 2,
+    Completed=3,
+    Cancelled=4,
+    OnHold = 5,
+    Failed = 6,
+
+    Served = 7
+}
+public enum paymentmode
+{
+    Online = 0,
+    Cash = 1,
+    Card = 2
+}
 public partial class Order
 {
     public int Orderid { get; set; }
@@ -11,7 +28,9 @@ public partial class Order
 
     public int Customerid { get; set; }
 
-    public string? Paymentmode { get; set; }
+    public paymentmode Paymentmode { get; set; }
+
+    public orderstatus OrderStatus {get; set;}
 
     public string? Orderwisecomment { get; set; }
 

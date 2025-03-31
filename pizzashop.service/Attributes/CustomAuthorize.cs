@@ -23,7 +23,7 @@
 //         {
 //             // Inject JwtService to use in Middleware.
 //             var jwtService = context.HttpContext.RequestServices.GetService(typeof(IJwtService)) as IJwtService;
-            
+
 //             // Get the token from Cookie
 //             var token = CookieUtils.GetJWTToken(context.HttpContext.Request);
 
@@ -56,6 +56,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using pizzashop.service;
 using pizzashop.service.Interfaces;
 using pizzashop.service.Utils;
+
 
 namespace pizzashop.service.Attributes
 {
@@ -98,7 +99,7 @@ namespace pizzashop.service.Attributes
             // If no module or permission type is provided, skip permission check
             if (string.IsNullOrEmpty(_moduleName) || string.IsNullOrEmpty(_permissionType))
             {
-                return; 
+                return;
             }
 
             // Get the user's role from the claims in the token
@@ -126,10 +127,15 @@ namespace pizzashop.service.Attributes
                 "CanView" => permission.Canview ?? false,
                 "CanAddEdit" => permission.Canaddedit ?? false,
                 "CanDelete" => permission.Candelete ?? false,
-                _ => false 
+                _ => false
             };
 
-            if (!hasPermission)
+            if (!hasPermission && (_permissionType == "CanAddEdit" || _permissionType == "CanDelete"))
+            {
+                context.Result = new RedirectToActionResult("AccessDenied", "Home", new { statusCode = 403 , permissionType = _permissionType});
+            }
+
+            else if (!hasPermission)
             {
                 context.Result = new RedirectToActionResult("AccessDenied", "Home", new { statusCode = 403 });
             }

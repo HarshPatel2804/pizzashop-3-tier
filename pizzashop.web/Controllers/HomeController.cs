@@ -135,8 +135,25 @@ public class HomeController : Controller
         return View();
     }
 
-    public IActionResult AccessDenied(int statusCode)
+    public IActionResult AccessDenied(int statusCode ,string  permissionType)
     {
+        var PreviousURL = "";
+        if(permissionType == "CanAddEdit"){
+            TempData["ErrorMessage"] = "You do not have the required permission to perform add or edit action.";
+            PreviousURL = Request.Headers["Referer"].ToString();
+        } 
+
+        if(permissionType == "CanDelete"){
+            TempData["ErrorMessage"] = "You do not have the required permission to perform delete action.";
+            PreviousURL = Request.Headers["Referer"].ToString();
+        } 
+
+        
+
+        if (!string.IsNullOrEmpty(PreviousURL))
+        {
+            return Redirect(PreviousURL);
+        }
         return View();
     }
 }

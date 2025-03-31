@@ -64,6 +64,19 @@ public class UserService : IUserService
     public async Task UpdateUserData(UserViewModel model , IFormFile ProfileImg)
      {
          var userDetails = await _UserRepository.GetUserByIdAsync(model.Id);
+
+         string fullPath = Path.Combine("wwwroot", "images", "uploads", userDetails.Profileimg);
+            if (File.Exists(fullPath))
+            {
+                try
+                {
+                    File.Delete(fullPath);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error deleting previous profile image: {ex.Message}");
+                }
+            }
         if(ProfileImg != null)
          {
          userDetails.Profileimg =await  _imageService.GiveImagePath(ProfileImg);

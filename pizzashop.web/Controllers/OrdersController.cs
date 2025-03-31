@@ -15,16 +15,28 @@ namespace pizzashop.web.Controllers;
 [CustomAuthorize]
 public class OrdersController : Controller
 {
-    private readonly IProfileService _ProfileService;
+    private readonly IOrderService _orderService;
     private readonly PizzaShopContext _context;
 
-    public OrdersController(IProfileService ProfileService , PizzaShopContext context)
+    public OrdersController(IOrderService orderService , PizzaShopContext context)
     {
-        _ProfileService = ProfileService;
+        _orderService = orderService;
         _context = context;
     }
     public IActionResult Order()
     {
         return View();
+    }
+
+    public async Task<IActionResult> OrderList(int page = 1, int pageSize = 5, string search = "", string sortColumn = "", string sortOrder = "", orderstatus? status = null, DateTime? fromDate = null , DateTime? toDate = null)
+    {
+
+        var (orders, totalUsers, totalPages) = await _orderService.GetPaginatedOrdersAsync(page, pageSize, search, sortColumn, sortOrder,status,fromDate,toDate);
+        ViewBag.CurrentPage = page;
+        ViewBag.PageSize = pageSize;
+        ViewBag.TotalUsers = totalUsers;
+        ViewBag.TotalPages = totalPages;
+
+        return  PartialView("_OrderTablePartial", orders);
     }
 }

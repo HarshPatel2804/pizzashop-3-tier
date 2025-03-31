@@ -97,7 +97,7 @@ public partial class PizzaShopContext : DbContext
         modelBuilder.Entity<ModifierGroupModifierMapping>(entity =>
         {
             entity.ToTable("ModifierGroupModifierMappings");
-            
+
             entity.HasKey(e => e.ModifierGroupModifierMappingId);
 
             entity.Property(e => e.ModifierGroupModifierMappingId)
@@ -500,6 +500,20 @@ public partial class PizzaShopContext : DbContext
             entity.Property(e => e.Totaltax)
                 .HasPrecision(10, 2)
                 .HasColumnName("totaltax");
+
+            entity.Property(e => e.OrderStatus)
+            .HasColumnName("status")
+            .HasConversion(
+                v => (int)v,
+                v => (orderstatus)v
+            );
+
+            entity.Property(e => e.Paymentmode)
+            .HasColumnName("paymentmode")
+            .HasConversion(
+                v => (int)v,
+                v => (paymentmode)v
+            );
 
             entity.HasOne(d => d.Customer).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.Customerid)

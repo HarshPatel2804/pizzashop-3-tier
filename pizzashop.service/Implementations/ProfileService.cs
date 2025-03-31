@@ -73,6 +73,19 @@ public class ProfileService : IProfileService
          userDetails.Stateid = model.StateId;
          userDetails.Cityid = model.CityId;
          user.Username = model.Username;
+
+         string fullPath = Path.Combine("wwwroot", "images", "uploads", userDetails.Profileimg);
+            if (File.Exists(fullPath))
+            {
+                try
+                {
+                    File.Delete(fullPath);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error deleting previous profile image: {ex.Message}");
+                }
+            }
          if(ProfileImage != null)
          {
          userDetails.Profileimg = await _imageService.GiveImagePath(ProfileImage);

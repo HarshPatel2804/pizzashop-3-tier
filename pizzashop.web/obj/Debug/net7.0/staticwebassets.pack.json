@@ -85,6 +85,10 @@
       "PackagePath": "staticwebassets\\images\\icons\\dinner-table.svg"
     },
     {
+      "Id": "D:\\pizzashop\\pizzashop.web\\wwwroot\\images\\icons\\export.svg",
+      "PackagePath": "staticwebassets\\images\\icons\\export.svg"
+    },
+    {
       "Id": "D:\\pizzashop\\pizzashop.web\\wwwroot\\images\\icons\\non-veg-icon.svg",
       "PackagePath": "staticwebassets\\images\\icons\\non-veg-icon.svg"
     },
@@ -253,8 +257,8 @@
       "PackagePath": "staticwebassets\\images\\uploads\\1f8ffebb-e410-454c-b8c2-25ec50e5ba3a.png"
     },
     {
-      "Id": "D:\\pizzashop\\pizzashop.web\\wwwroot\\images\\uploads\\312dd0aa-f24f-4686-8a4a-901752ddd6b6.png",
-      "PackagePath": "staticwebassets\\images\\uploads\\312dd0aa-f24f-4686-8a4a-901752ddd6b6.png"
+      "Id": "D:\\pizzashop\\pizzashop.web\\wwwroot\\images\\uploads\\24c4ecfe-9e17-4cbd-b3d7-18014435ad39.png",
+      "PackagePath": "staticwebassets\\images\\uploads\\24c4ecfe-9e17-4cbd-b3d7-18014435ad39.png"
     },
     {
       "Id": "D:\\pizzashop\\pizzashop.web\\wwwroot\\images\\uploads\\36f01178-0749-437a-b827-d1320e1ee5b8.png",
@@ -277,8 +281,16 @@
       "PackagePath": "staticwebassets\\images\\uploads\\463e5633-6e97-4c43-8a40-19b932303ca9.png"
     },
     {
+      "Id": "D:\\pizzashop\\pizzashop.web\\wwwroot\\images\\uploads\\478f5d7e-4da5-4c2e-992c-891ad9f5abca.png",
+      "PackagePath": "staticwebassets\\images\\uploads\\478f5d7e-4da5-4c2e-992c-891ad9f5abca.png"
+    },
+    {
       "Id": "D:\\pizzashop\\pizzashop.web\\wwwroot\\images\\uploads\\55f4d34d-8804-44e7-922a-b1f825b698aa.png",
       "PackagePath": "staticwebassets\\images\\uploads\\55f4d34d-8804-44e7-922a-b1f825b698aa.png"
+    },
+    {
+      "Id": "D:\\pizzashop\\pizzashop.web\\wwwroot\\images\\uploads\\6815c947-2611-4573-a3f8-2e26f29b5ba4.png",
+      "PackagePath": "staticwebassets\\images\\uploads\\6815c947-2611-4573-a3f8-2e26f29b5ba4.png"
     },
     {
       "Id": "D:\\pizzashop\\pizzashop.web\\wwwroot\\images\\uploads\\692d2a02-ab40-4aa9-8583-6e16f0f95c38.png",
@@ -299,10 +311,6 @@
     {
       "Id": "D:\\pizzashop\\pizzashop.web\\wwwroot\\images\\uploads\\8771e92a-8aa5-4524-93b1-ac50f2867ace.jpg",
       "PackagePath": "staticwebassets\\images\\uploads\\8771e92a-8aa5-4524-93b1-ac50f2867ace.jpg"
-    },
-    {
-      "Id": "D:\\pizzashop\\pizzashop.web\\wwwroot\\images\\uploads\\8a063e2e-3752-42f3-97d6-78db49b07797.png",
-      "PackagePath": "staticwebassets\\images\\uploads\\8a063e2e-3752-42f3-97d6-78db49b07797.png"
     },
     {
       "Id": "D:\\pizzashop\\pizzashop.web\\wwwroot\\images\\uploads\\8aca35db-9b2f-4ebc-baf5-cf7d0ac93f2c.png",
