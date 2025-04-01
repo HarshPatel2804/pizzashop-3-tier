@@ -51,7 +51,7 @@
     </tr>
     @foreach (var o in Model)
     {
-        <tr>
+        <tr data-orderid = "@o.Orderid">
             <td>
                 # @o.Orderid
             </td>
@@ -74,7 +74,7 @@
                 @o.Totalamount
             </td>
             <td>
-                <a asp-controller="Home" asp-action="EditUser" class="me-2">
+                <a id="file-down" class="me-2">
                     <i class="bi bi-filetype-pdf" style="font-size: 22px;"></i>
                 </a>
                 <a class="border-0 sweetalert viewButton" data-id="@o.Orderid">
@@ -142,4 +142,10 @@
         }
         return starHtml;
     }
+    $("#file-down").click(function(){
+            let orderid = $(this).closest("tr").data("orderid");
+            let url = `/Orders/ForPdfDownload?orderid=${encodeURIComponent(orderid)}`;
+
+            window.location.href = url;
+        });
 </script>

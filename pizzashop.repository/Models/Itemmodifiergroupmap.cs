@@ -19,5 +19,5 @@ public partial class Itemmodifiergroupmap
 
     public virtual Modifiergroup Modifiergroup { get; set; } = null!;
 
-    public virtual ICollection<Ordereditemmodifer> Ordereditemmodifers { get; set; } = new List<Ordereditemmodifer>();
+    // public virtual ICollection<Ordereditemmodifer> Ordereditemmodifers { get; set; } = new List<Ordereditemmodifer>();
 }

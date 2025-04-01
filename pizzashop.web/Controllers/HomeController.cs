@@ -148,8 +148,6 @@ public class HomeController : Controller
             PreviousURL = Request.Headers["Referer"].ToString();
         } 
 
-        
-
         if (!string.IsNullOrEmpty(PreviousURL))
         {
             return Redirect(PreviousURL);

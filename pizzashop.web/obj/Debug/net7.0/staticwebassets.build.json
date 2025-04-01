@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "5Sy7uNeBZOOSyyCahcODQZBdGAft85+LlvLOZjlXhpk=",
+  "Hash": "aO3c3UkM1fFvXfsKpkB3+qNeQnRP1C4TUzEtnEZ7if0=",
   "Source": "pizzashop.web",
   "BasePath": "_content/pizzashop.web",
   "Mode": "Default",
@@ -2684,6 +2684,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\lib\\jquery\\LICENSE.txt"
+    },
+    {
+      "Identity": "D:\\pizzashop\\pizzashop.web\\wwwroot\\Templates\\OrderTemplate.xlsx",
+      "SourceId": "pizzashop.web",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\pizzashop\\pizzashop.web\\wwwroot\\",
+      "BasePath": "_content/pizzashop.web",
+      "RelativePath": "Templates/OrderTemplate.xlsx",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Templates\\OrderTemplate.xlsx"
     }
   ]
 }

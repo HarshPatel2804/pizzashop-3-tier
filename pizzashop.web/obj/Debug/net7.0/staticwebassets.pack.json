@@ -5,6 +5,10 @@
       "PackagePath": "staticwebassets\\pizzashop.web.bundle.scp.css"
     },
     {
+      "Id": "D:\\pizzashop\\pizzashop.web\\wwwroot\\Templates\\OrderTemplate.xlsx",
+      "PackagePath": "staticwebassets\\Templates\\OrderTemplate.xlsx"
+    },
+    {
       "Id": "D:\\pizzashop\\pizzashop.web\\wwwroot\\css\\Menu.css",
       "PackagePath": "staticwebassets\\css\\Menu.css"
     },

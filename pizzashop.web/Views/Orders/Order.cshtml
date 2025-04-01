@@ -5,69 +5,72 @@
 }
 @model pizzashop.repository.ViewModels.OrderViewModel
 <div class="Orderlist">
-<div class="row mb-2">
-    <div class="col-md col-12">
-        <div class="h1 mt-3" style="color: rgb(1, 123, 217); font-weight: bold">
-            Orders
+    <div class="row mb-2">
+        <div class="col-md col-12">
+            <div class="h1 mt-3" style="color: rgb(1, 123, 217); font-weight: bold">
+                Orders
+            </div>
+        </div>
+        <div class="col-md-auto col-11 mt-3 ms-md-3 ms-4 w-20  d-flex align-items-center justify-content-center">
+            <input id="searchInput" type="search" class="form-control form-control-lg " placeholder="Search"
+                style="height: 55px !important;" />
+        </div>
+        <div class="col-md-auto col-11 mt-3 ms-md-3 ms-4 d-flex align-items-center w-20">
+            <select class="form-select" asp-for="OrderStatus" id="Status-Search"
+                aria-label="Floating label select example" style="height: 55px;">
+                <option value="0" selected>All Status</option>
+                @foreach (var type in
+                Enum.GetValues(typeof(orderstatus)).Cast<orderstatus>())
+                {
+                    <option value="@((int)type)">
+                        @type.ToString()
+                    </option>
+                }
+            </select>
+        </div>
+        <div class="col-md-auto col-11 mt-3 ms-md-3 d-flex align-items-center justify-content-center w-20">
+            <select class="form-select" id="Time-Search" aria-label="Item type" style="height: 55px;" required>
+                <option value="0" selected>All Times</option>
+                <option value="1">Last 7 Days</option>
+                <option value="2">Last 30 Days</option>
+                <option value="3">Current Month</option>
+            </select>
+        </div>
+        <div class="col-md-auto col-12 mt-3 d-flex align-items-center justify-content-center">
+            <a class="text-decoration-none text-white me-3" id="exportButton"><button class="btn btn-lg btn-color"><img
+                        src="~/images/icons/export.svg"
+                        style="filter: brightness(0) invert(1); width: 24px; height: 24px;" alt=""
+                        class="mb-1 me-1">Export
+                </button></a>
         </div>
     </div>
-    <div class="col-md-auto col-11 mt-3 ms-md-3 ms-4 w-20  d-flex align-items-center justify-content-center">
-        <input id="searchInput" type="search" class="form-control form-control-lg " placeholder="Search"
-            style="height: 55px !important;" />
-    </div>
-    <div class="col-md-auto col-11 mt-3 ms-md-3 ms-4 d-flex align-items-center w-20">
-        <select class="form-select" asp-for="OrderStatus" id="Status-Search" aria-label="Floating label select example"
-            style="height: 55px;">
-            <option value="0" selected>All Status</option>
-            @foreach (var type in
-            Enum.GetValues(typeof(orderstatus)).Cast<orderstatus>())
-            {
-                <option value="@((int)type)">
-                    @type.ToString()
-                </option>
-            }
-        </select>
-    </div>
-    <div class="col-md-auto col-11 mt-3 ms-md-3 d-flex align-items-center justify-content-center w-20">
-        <select class="form-select" id="Time-Search" aria-label="Item type" style="height: 55px;" required>
-            <option value="0" selected>All Times</option>
-            <option value="1">Last 7 Days</option>
-            <option value="2">Last 30 Days</option>
-            <option value="3">Current Month</option>
-        </select>
-    </div>
-    <div class="col-md-auto col-12 mt-3 d-flex align-items-center justify-content-center">
-        <a class="text-decoration-none text-white me-3" id="exportButton"><button class="btn btn-lg btn-color"><img
-                    src="~/images/icons/export.svg" style="filter: brightness(0) invert(1); width: 24px; height: 24px;" alt="" class="mb-1 me-1">Export
-            </button></a>
-    </div>
-</div>
-<div class="row mb-2">
-    <div class="col-md mt-3 ms-md-3 ms-4  d-flex align-items-center justify-content-end">
-        <div class="form-floating" style="width: 360px;">
-            <input type="date" class="form-control" id="fromDate">
-            <label for="fromDateInput">From Date</label>
+    <div class="row mb-2">
+        <div class="col-md mt-3 ms-md-3 ms-4  d-flex align-items-center justify-content-end">
+            <div class="form-floating" style="width: 360px;">
+                <input type="date" class="form-control" id="fromDate">
+                <label for="fromDateInput">From Date</label>
+            </div>
+        </div>
+        <div class="col-md-auto mt-3 ms-md-3 ms-4  d-flex align-items-center justify-content-center">
+            <div class="form-floating" style="width: 360px;">
+                <input type="date" class="form-control" id="toDate">
+                <label for="toDateInput">To Date</label>
+            </div>
+        </div>
+        <div class="col-md-auto col-12 mt-3 d-flex align-items-center justify-content-center">
+            <a class="text-decoration-none text-white me-0" id="searchButton"><button
+                    class="btn btn-lg btn-color">Search
+                </button></a>
+        </div>
+        <div class="col-md-auto col-12 mt-3 d-flex align-items-center justify-content-center">
+            <a class="text-decoration-none text-white me-3" id="clearButton"><button
+                    class="btn btn-lg btn-border-color">Clear
+                </button></a>
         </div>
     </div>
-    <div class="col-md-auto mt-3 ms-md-3 ms-4  d-flex align-items-center justify-content-center">
-        <div class="form-floating" style="width: 360px;">
-            <input type="date" class="form-control" id="toDate">
-            <label for="toDateInput">To Date</label>
-        </div>
-    </div>
-    <div class="col-md-auto col-12 mt-3 d-flex align-items-center justify-content-center">
-        <a class="text-decoration-none text-white me-0" id="searchButton"><button class="btn btn-lg btn-color">Search
-            </button></a>
-    </div>
-    <div class="col-md-auto col-12 mt-3 d-flex align-items-center justify-content-center">
-        <a class="text-decoration-none text-white me-3" id="clearButton"><button
-                class="btn btn-lg btn-border-color">Clear
-            </button></a>
-    </div>
-</div>
-<div class="row mt-5 ms-3 me-4 table-responsive bg-white shadow" id="showOrderList">
+    <div class="row mt-5 ms-3 me-4 table-responsive bg-white shadow" id="OrderListContainer">
 
-</div>
+    </div>
 </div>
 <div class="OrderD d-none">
 
@@ -90,8 +93,7 @@
                 type: "GET",
                 data: { page: page, pageSize: pageSize, search: search, sortColumn: sortColumn, sortOrder: sortOrder, status: status_search, fromDate: fromDate, toDate: toDate },
                 success: function (data) {
-                    $("#showOrderList").html(data);
-                    @* currentPage = page; *@
+                    $("#OrderListContainer").html(data);
                 },
                 error: function () {
                     alert("Failed to load data.");
@@ -99,7 +101,7 @@
             });
         }
 
-        
+
         $(document).on("click", ".pagination-link", function (e) {
             e.preventDefault();
             let page = $(this).data("page");
@@ -131,84 +133,107 @@
             loadOrderTable(1);
         });
 
-        // Trigger search on input change (with delay to prevent excessive calls)
-        let searchTimer;
         $("#searchInput").on("input", function () {
-            clearTimeout(searchTimer);
-            searchTimer = setTimeout(function () {
-                loadOrderTable(1); // Reset to page 1 when searching
-            }, 500); // 500ms delay to avoid excessive requests
-        });
-
-        $("#Status-Search").change(function(){
             loadOrderTable(1);
         });
 
-         $("#Time-Search").change(function() {
-        const timeOption = $(this).val();
-        const today = new Date();
-        let fromDateValue = '';
-        
-        function formatDate(date) {
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        }
-        
-        const toDateValue = formatDate(today);
-        $("#toDate").val(toDateValue);
-        
-        switch(timeOption) {
-            case "1": // Last 7 Days
-                const sevenDaysAgo = new Date(today);
-                sevenDaysAgo.setDate(today.getDate() - 7);
-                fromDateValue = formatDate(sevenDaysAgo);
-                break;
-                
-            case "2": // Last 30 Days
-                const thirtyDaysAgo = new Date(today);
-                thirtyDaysAgo.setDate(today.getDate() - 30);
-                fromDateValue = formatDate(thirtyDaysAgo);
-                break;
-                
-            case "3": // Current Month
-                const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-                fromDateValue = formatDate(firstDayOfMonth);
-                break;
-                
-            case "0": 
-                 $("#fromDate").val('');
-                 $("#toDate").val('');
-                 loadOrderTable(1);
-        }
-        
-        $("#fromDate").val(fromDateValue);
-        
-        loadOrderTable(1);
-    });
+        $("#Status-Search").change(function () {
+            loadOrderTable(1);
+        });
 
-    loadOrderTable(1);
-      
+        $("#Time-Search").change(function () {
+            const timeOption = $(this).val();
+            const today = new Date();
+            let fromDateValue = '';
+
+            function formatDate(date) {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
+
+            const toDateValue = formatDate(today);
+            $("#toDate").val(toDateValue);
+
+            switch (timeOption) {
+                case "1": // Last 7 Days
+                    const sevenDaysAgo = new Date(today);
+                    sevenDaysAgo.setDate(today.getDate() - 7);
+                    fromDateValue = formatDate(sevenDaysAgo);
+                    break;
+
+                case "2": // Last 30 Days
+                    const thirtyDaysAgo = new Date(today);
+                    thirtyDaysAgo.setDate(today.getDate() - 30);
+                    fromDateValue = formatDate(thirtyDaysAgo);
+                    break;
+
+                case "3": // Current Month
+                    const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+                    fromDateValue = formatDate(firstDayOfMonth);
+                    break;
+
+                case "0":
+                    $("#fromDate").val('');
+                    $("#toDate").val('');
+                    loadOrderTable(1);
+            }
+
+            $("#fromDate").val(fromDateValue);
+
+            loadOrderTable(1);
+        });
+
+        $(document).on("click", "#searchButton", function (e) {
+    @* console.log("CLicked"); *@
+                loadOrderTable(1);
+        });
+
+        $(document).on("click", "#clearButton", function (e) {
+            $("#fromDate").val('');
+            $("#toDate").val('');
+            $("#searchInput").val('');
+            $("#Status-Search").val(0);
+            $("#Time-Search").val(0);
+            loadOrderTable(1);
+        });
+
+        $("#exportButton").click(function () {
+            var searchString = $("#searchInput").val();
+            var status = $("#Status-Search").val();
+            var fromDate = $("#fromDate").val();
+            var toDate = $("#toDate").val();
+
+            let url = `/Orders/ForExportExcel?searchString=${encodeURIComponent(searchString)}&status=${encodeURIComponent(status)}&fromDate=${encodeURIComponent(fromDate)}&toDate=${encodeURIComponent(toDate)}`;
+
+            window.location.href = url;
+        });
+
+        loadOrderTable(1);
+
     });
 </script>
 <style>
-    .btn-color{
-    background-color: #0066a7;
-    color: white;
-}
-.btn-color:hover{
-    background-color: #025d96;
-    color: white;
-}
-.btn-border-color{
-    border: 1px solid #0066a7;
-    color: #0066a7;
-    background-color: transparent;
-}
-.btn-border-color:hover{
-    border: 1px solid #0066a7;
-    color: #0066a7;
-    background-color: transparent;
-}
+    .btn-color {
+        background-color: #0066a7;
+        color: white;
+    }
+
+    .btn-color:hover {
+        background-color: #025d96;
+        color: white;
+    }
+
+    .btn-border-color {
+        border: 1px solid #0066a7;
+        color: #0066a7;
+        background-color: transparent;
+    }
+
+    .btn-border-color:hover {
+        border: 1px solid #0066a7;
+        color: #0066a7;
+        background-color: transparent;
+    }
 </style>

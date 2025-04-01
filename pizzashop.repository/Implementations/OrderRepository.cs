@@ -1,10 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using pizzashop.repository.Interfaces;
 using pizzashop.repository.Models;
+using pizzashop.repository.ViewModels;
 
 namespace pizzashop.repository.Implementations;
 
-public class OrderRepository :  IOrderRepository
+public class OrderRepository : IOrderRepository
 {
     private readonly PizzaShopContext _context;
 
@@ -12,7 +13,7 @@ public class OrderRepository :  IOrderRepository
     {
         _context = context;
     }
-    public async Task<(List<Order>, int totalOrders)> GetPaginatedOrdersAsync( int page, int pageSize, string searchInput, string sortColumn, string sortOrder,orderstatus? status, DateTime? fromDate, DateTime? toDate)
+    public async Task<(List<Order>, int totalOrders)> GetPaginatedOrdersAsync(int page, int pageSize, string searchInput, string sortColumn, string sortOrder, orderstatus? status, DateTime? fromDate, DateTime? toDate)
     {
         var query = _context.Orders
            .Include(u => u.Customer)
@@ -68,4 +69,102 @@ public class OrderRepository :  IOrderRepository
 
         return (orders, totalOrders);
     }
+
+    public async Task<(List<Order>, int totalOrders)> GetOrdersForExport(DateTime? fromDate, DateTime? toDate, orderstatus? status, string searchInput)
+    {
+        var query = _context.Orders
+           .Include(u => u.Customer)
+           .OrderBy(u => u.Orderid)
+           .Where(u => string.IsNullOrEmpty(searchInput) ||
+               u.Customer.Customername.ToLower().Contains(searchInput.ToLower()) ||
+               u.Totalamount.ToString().Contains(searchInput.ToLower()));
+
+        if (fromDate.HasValue && toDate.HasValue)
+        {
+            toDate = toDate.Value.Date.AddDays(1).AddTicks(-1);
+
+            query = query.Where(u =>
+                u.Orderdate >= fromDate.Value.Date &&
+                u.Orderdate <= toDate.Value);
+        }
+        else if (fromDate.HasValue)
+        {
+            query = query.Where(u => u.Orderdate >= fromDate.Value.Date);
+        }
+        else if (toDate.HasValue)
+        {
+            query = query.Where(u => u.Orderdate <= toDate.Value.Date);
+        }
+        if (status.HasValue)
+        {
+            query = query.Where(o => o.OrderStatus == status.Value);
+        }
+        int totalOrders = await query.CountAsync();
+        var orders = await query.ToListAsync();
+
+        return (orders, totalOrders);
+    }
+
+    public async Task<OrderDetailsView> GetOrderDetailsView(int orderId)
+    {
+        var order = await  _context.Orders
+            .Where(o => o.Orderid == orderId)
+            .Include(o => o.Customer)
+            .Include(o => o.Ordereditems)
+                .ThenInclude(oi => oi.Item)
+            .Include(o => o.Ordereditems)
+                .ThenInclude(O => O.Ordereditemmodifers)   
+                    .ThenInclude(O => O.Modifiers)
+            .Include(o => o.Ordertables)
+                .ThenInclude(ot => ot.Table)    
+                    .ThenInclude(s => s.Section)
+            .Include(o => o.Ordertaxmappings)
+                .ThenInclude(otm => otm.Tax)
+                    .ThenInclude(t => t.TaxType)
+            .FirstOrDefaultAsync();
+
+        if (order == null)
+            return null;
+
+        var orderDetailsView = new OrderDetailsView
+        {
+            OrderId = order.Orderid,
+            CustomerName = order.Customer.Customername,
+            ContactNumber = order.Customer.Phoneno,
+            CustomerEmail = order.Customer.Email,
+            NoOfPerson = order.Noofperson ?? 0,
+            Section = order.Ordertables?.FirstOrDefault()?.Table?.Section.Sectionname,
+            Table = order.Ordertables?.FirstOrDefault()?.Table.Tablename,
+            OrderDate = order.Orderdate ?? DateTime.MinValue,
+            ModifiedDate = order.Modifiedat ?? DateTime.MinValue,
+            SubTotal = order.Subamount ?? 0,
+            Total = order.Totalamount,
+            PaymentMethod = order.Paymentmode.ToString(),
+            ItemsInOrder = order.Ordereditems.Select(oi => new ItemDetailForOrder
+            {
+                OrderToItemId = oi.Ordereditemid,
+                ItemName = oi.Item.Itemname,
+                ItemAmount = oi.Item.Rate,
+                ItemQuantity = (int)oi.Item.Quantity,
+                TotalPrice = (decimal)(oi.Item.Rate * oi.Item.Quantity),
+                ItemModifiers = oi.Ordereditemmodifers
+        .Select(oim => new ModifierDetailForOrder
+        {
+            ModifierName = oim.Modifiers.Modifiername,
+            ModifierRate = oim.Modifiers.Rate,
+            ModifierQuantity = oim.Modifiers.Quantity ?? 0,
+            OrderedModifierPrice = (int)(oim.Modifiers.Rate * oim.Modifiers.Quantity)
+        }).ToList()
+            }).ToList(),
+            TaxesForOrder = order.Ordertaxmappings.Select(otm => new TaxForOrder
+            {
+                TaxName = otm.Tax.Taxname, // Get TaxName from the Taxis table
+                TaxValue = (decimal)otm.Taxvalue,
+                TaxTypeName = otm.Tax.TaxType.TaxName 
+            }).ToList()
+        };
+
+        return orderDetailsView;
+    }
 }
+

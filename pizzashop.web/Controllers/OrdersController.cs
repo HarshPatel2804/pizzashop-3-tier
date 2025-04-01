@@ -9,6 +9,11 @@ using pizzashop.service.Interfaces;
 using pizzashop.service.Utils;
 using pizzashop.service.Attributes;
 using pizzashop.service.Constants;
+using SelectPdf;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace pizzashop.web.Controllers;
 
@@ -38,5 +43,78 @@ public class OrdersController : Controller
         ViewBag.TotalPages = totalPages;
 
         return  PartialView("_OrderTablePartial", orders);
+    }
+
+    [HttpGet]
+        public async Task<IActionResult> ForExportExcel(string searchString = "", orderstatus? status = null, DateTime? fromDate = null , DateTime? toDate = null)
+        {
+                var (fileName, fileContent) = await _orderService.GenerateOrderExcel(searchString, status, fromDate, toDate);
+                return File(
+                    fileContent,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    fileName
+                );
+        }
+
+    public async Task<IActionResult> ForPdfDownload(int orderid){
+        
+        OrderDetailsView orderDetailsView = await _orderService.GetOrderDetailsViewService(orderid);
+
+       var viewHtml = await RenderViewToString("OrderPdfView",orderDetailsView);
+
+        // Convert HTML to PDF
+        HtmlToPdf converter = new HtmlToPdf();
+        
+        // Customize PDF settings
+        converter.Options.PdfPageSize = PdfPageSize.A3;
+        converter.Options.PdfPageOrientation = PdfPageOrientation.Portrait;
+        converter.Options.MarginTop = 20;
+        converter.Options.MarginBottom = 20;
+        converter.Options.MarginLeft = 20;
+        converter.Options.MarginRight = 20;
+
+        
+        // Create PDF document
+        PdfDocument doc = converter.ConvertHtmlString(viewHtml, $"{Request.Scheme}://{Request.Host}");
+
+        // Save PDF to a memory stream
+        MemoryStream ms = new MemoryStream();
+        doc.Save(ms);
+        doc.Close();
+
+        // Return the PDF file
+        return File(ms.ToArray(), "application/pdf", "Report.pdf");
+         
+    }
+
+     private async Task<string> RenderViewToString(string viewName,OrderDetailsView model)
+    {
+        using (var sw = new StringWriter())
+        {
+            var viewEngine = HttpContext.RequestServices.GetService(typeof(ICompositeViewEngine)) as ICompositeViewEngine;
+            
+            var viewResult = viewEngine.FindView(ControllerContext, viewName, false);
+
+            if (viewResult.View == null)
+            {
+                throw new ArgumentNullException($"View {viewName} not found");
+            }
+
+            var viewContext = new ViewContext(
+                ControllerContext,
+                viewResult.View,
+                new ViewDataDictionary<object>(new EmptyModelMetadataProvider(), new ModelStateDictionary())
+                {
+                    Model = model
+                },
+                TempData,
+                sw,
+                new HtmlHelperOptions()
+            );
+           
+            viewResult.View.RenderAsync(viewContext);
+            return sw.ToString();
+           
+        }
     }
 }

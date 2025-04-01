@@ -532,6 +532,7 @@ public partial class PizzaShopContext : DbContext
             entity.Property(e => e.Itemwisecomment).HasColumnName("itemwisecomment");
             entity.Property(e => e.Orderid).HasColumnName("orderid");
 
+
             entity.HasOne(d => d.Item).WithMany(p => p.Ordereditems)
                 .HasForeignKey(d => d.Itemid)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -550,18 +551,19 @@ public partial class PizzaShopContext : DbContext
             entity.ToTable("ordereditemmodifer");
 
             entity.Property(e => e.Modifieditemid).HasColumnName("modifieditemid");
-            entity.Property(e => e.Itemmodifiergroupid).HasColumnName("itemmodifiergroupid");
             entity.Property(e => e.Ordereditemid).HasColumnName("ordereditemid");
+            entity.Property(e => e.Modifierid).HasColumnName("modifierid");
 
-            entity.HasOne(d => d.Itemmodifiergroup).WithMany(p => p.Ordereditemmodifers)
-                .HasForeignKey(d => d.Itemmodifiergroupid)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("ordereditemmodifer_itemmodifiergroupid_fkey");
 
             entity.HasOne(d => d.Ordereditem).WithMany(p => p.Ordereditemmodifers)
                 .HasForeignKey(d => d.Ordereditemid)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("ordereditemmodifer_ordereditemid_fkey");
+                
+            entity.HasOne(d => d.Modifiers).WithMany(p => p.Ordereditemmodifers)
+                .HasForeignKey(d => d.Modifierid)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("ordereditemmodifer_modifierid_fkey");
         });
 
         modelBuilder.Entity<Ordertable>(entity =>

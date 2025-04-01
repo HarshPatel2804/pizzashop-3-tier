@@ -123,6 +123,10 @@
               "target": "Package",
               "version": "[7.0.3, )"
             },
+            "NPOI": {
+              "target": "Package",
+              "version": "[2.7.3, )"
+            },
             "System.IdentityModel.Tokens.Jwt": {
               "target": "Package",
               "version": "[7.0.3, )"
@@ -201,6 +205,10 @@
             "MimeKit": {
               "target": "Package",
               "version": "[4.10.0, )"
+            },
+            "Select.Pdf.NetCore": {
+              "target": "Package",
+              "version": "[24.1.0, )"
             }
           },
           "imports": [
