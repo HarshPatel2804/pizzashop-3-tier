@@ -56,6 +56,13 @@ public class OrdersController : Controller
                 );
         }
 
+        public async Task<IActionResult> FororderView(int orderid){
+            OrderDetailsView orderDetailsView = await _orderService.GetOrderDetailsViewService(orderid);
+
+            return PartialView("_Orderview" , orderDetailsView);
+
+        }
+
     public async Task<IActionResult> ForPdfDownload(int orderid){
         
         OrderDetailsView orderDetailsView = await _orderService.GetOrderDetailsViewService(orderid);

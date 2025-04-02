@@ -1,0 +1,229 @@
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Dashboard Page";
+}
+@model pizzashop.repository.ViewModels.OrderViewModel
+<section style="min-height: 100vh; background-color: #fafafa;">
+    <div class="Orderlist">
+        <div class="row mb-2">
+            <div class="col-md col-12">
+                <div class="h1 mt-3" style="color: rgb(1, 123, 217); font-weight: bold">
+                    Customers
+                </div>
+            </div>
+            <div class="col-md-auto col-11 mt-3 ms-md-3 ms-4 w-20  d-flex align-items-center justify-content-center">
+                <input id="searchInput" type="search" class="form-control form-control-lg " placeholder="Search"
+                    style="height: 55px !important;" />
+            </div>
+            <div class="col-md-auto col-11 mt-3 ms-md-3 d-flex align-items-center justify-content-center w-20">
+                <select class="form-select" id="Time-Search" aria-label="Item type" style="height: 55px;" required>
+                    <option value="0" selected>All Times</option>
+                    <option value="6">Today</option>
+                    <option value="1">Last 7 Days</option>
+                    <option value="2">Last 30 Days</option>
+                    <option value="3">Current Month</option>
+                    <option value="5" id="Custom">Custom Date</option>
+                </select>
+            </div>
+            <div class="col-md-auto col-12 mt-3 d-flex align-items-center justify-content-center">
+                <a class="text-decoration-none text-white me-3" id="exportButton"><button
+                        class="btn btn-lg btn-color"><img src="~/images/icons/export.svg"
+                            style="filter: brightness(0) invert(1); width: 24px; height: 24px;" alt=""
+                            class="mb-1 me-1">Export
+                    </button></a>
+            </div>
+        </div>
+        <div class="row mt-5 ms-3 me-4 table-responsive bg-white shadow" id="CustomerListContainer">
+
+        </div>
+    </div>
+    <div id="ShowHistory">
+
+    </div>
+    <div class="modal fade modal-delete" id="customDate" tabindex="-1" aria-labelledby="deleteModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="customDateModal">Select Data Range</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-flex gap-2 flex-row align-items-center justify-content-center">
+                    <div class="form-floating w-50">
+                        <input type="date" class="form-control" id="FromDate" placeholder="fromDate">
+                        <label for="fromDate">From Date</label>
+                    </div>
+
+                    <div class="form-floating w-50">
+                        <input type="date" class="form-control" id="ToDate" placeholder="ToDate">
+                        <label for="ToDate">To Date</label>
+                    </div>
+                </div>
+
+                <div class="modal-footer d-flex justify-content-center gap-2">
+                    <a id="serachDate">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Submit</button>
+                    </a>
+                    <button type="button" class="btn border-primary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    $(document).ready(function () {
+        let searchQuery = "@ViewBag.SearchQuery" || "";
+        let sortColumn = "";
+        let sortOrder = "asc";
+        let fromDate = '';
+        let toDate = '';
+
+        function loadCustomerTable(page) {
+            let pageSize = $("#pageSizeSelect").val();
+            let search = $("#searchInput").val();
+
+            $.ajax({
+                url: "/Customer/CustomerList",
+                type: "GET",
+                data: { page: page, pageSize: pageSize, search: search, sortColumn: sortColumn, sortOrder: sortOrder, fromDate: fromDate, toDate: toDate },
+                success: function (data) {
+                    $("#CustomerListContainer").html(data);
+                },
+                error: function () {
+                    alert("Failed to load data.");
+                }
+            });
+        }
+
+
+        $(document).on("click", ".pagination-link", function (e) {
+            e.preventDefault();
+            let page = $(this).data("page");
+
+            if (page > 0) {
+                loadCustomerTable(page);
+            }
+        });
+
+        $(document).on("click", ".sortDiv", function (e) {
+            if ($(this).find('.sort-icon').length > 0) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const clickedColumn = $(this).find('.sort-icon').first().data("column");
+
+                if (sortColumn === clickedColumn) {
+                    sortOrder = sortOrder === "asc" ? "desc" : "asc";
+                } else {
+                    sortColumn = clickedColumn;
+                    sortOrder = "asc";
+                }
+                console.log(sortColumn + " " + sortOrder);
+                loadCustomerTable(1);
+            }
+        });
+
+        $(document).on("change", "#pageSizeSelect", function () {
+            loadCustomerTable(1);
+        });
+
+        $("#searchInput").on("input", function () {
+            loadCustomerTable(1);
+        });
+
+        $("#Time-Search").change(function () {
+            const timeOption = $(this).val();
+            const today = new Date();
+
+            function formatDate(date) {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
+
+            toDate = formatDate(today);
+
+            switch (timeOption) {
+                case "0": // All Times
+                    fromDate = '';
+                    toDate = '';
+                    break;
+
+                case "6": // Today
+                    fromDate = formatDate(today);
+                    break;
+
+                case "1": // Last 7 Days
+                    const sevenDaysAgo = new Date(today);
+                    sevenDaysAgo.setDate(today.getDate() - 7);
+                    fromDate = formatDate(sevenDaysAgo);
+                    break;
+
+                case "2": // Last 30 Days
+                    const thirtyDaysAgo = new Date(today);
+                    thirtyDaysAgo.setDate(today.getDate() - 30);
+                    fromDate = formatDate(thirtyDaysAgo);
+                    break;
+
+                case "3": // Current Month
+                    const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+                    fromDate = formatDate(firstDayOfMonth);
+                    break;
+
+                case "5":
+
+                $('#customDate').modal('show');
+                
+                        
+            }
+
+            console.log("Date range set to:", fromDate, "to", toDate);
+            loadCustomerTable(1);
+        });
+        
+
+        $("#serachDate").click(function () {
+            fromDate = $("#FromDate").val();
+            toDate = $("#ToDate").val();
+            $("#FromDate").val('');
+            $("#ToDate").val('');
+            loadCustomerTable(1);
+        });
+
+        $("#exportButton").click(function () {
+            var searchString = $("#searchInput").val();
+            var fromDate = $("#fromDate").val();
+            var toDate = $("#toDate").val();
+
+            let url = `/Customer/ForExportExcel?searchString=${encodeURIComponent(searchString)}&fromDate=${encodeURIComponent(fromDate)}&toDate=${encodeURIComponent(toDate)}`;
+
+            window.location.href = url;
+        });
+        loadCustomerTable(1);
+
+    });
+</script>
+<style>
+    .btn-color {
+        background-color: #0066a7;
+        color: white;
+    }
+
+    .btn-color:hover {
+        background-color: #025d96;
+        color: white;
+    }
+
+    .btn-border-color {
+        border: 1px solid #0066a7;
+        color: #0066a7;
+        background-color: transparent;
+    }
+
+    .btn-border-color:hover {
+        border: 1px solid #0066a7;
+        color: #0066a7;
+        background-color: transparent;
+    }
+</style>

@@ -86,9 +86,9 @@
                     <img src="~/images/navbar-icons/orders-active.png" class="me-2 ms-4 menu-icon blue">
                     <span style="font-weight: 600;" class="text">Orders</span>
                 </a>
-                <a class="menu w-100 mt-4" onclick="selectItem(this)">
+                <a class='@(ViewContext.RouteData.Values["controller"]!.ToString() == "Customer" ? "activeItem" : " ") menu w-100 mt-4' asp-controller="Customer" asp-action="Customer" onclick="selectItem(this)">
                     <img src="~/images/navbar-icons/customers-default.png" class="me-2 ms-4 menu-icon black">
-                    <img src="~/images/navbar-icons/customers-active.png" class="me-2 ms-4 menu-icon blue d-none">
+                    <img src="~/images/navbar-icons/customers-active.png" class="me-2 ms-4 menu-icon blue">
                     <span style="font-weight: 600;" class="text">Customers</span>
                 </a>
             </aside>

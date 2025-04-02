@@ -4,6 +4,7 @@
     ViewData["Title"] = "Dashboard Page";
 }
 @model pizzashop.repository.ViewModels.OrderViewModel
+<section style="min-height: 100vh; background-color: #fafafa;">
 <div class="Orderlist">
     <div class="row mb-2">
         <div class="col-md col-12">
@@ -72,9 +73,10 @@
 
     </div>
 </div>
-<div class="OrderD d-none">
+<div id="viewOrder" class="d-none">
 
 </div>
+</section>
 <script>
     $(document).ready(function () {
         let searchQuery = "@ViewBag.SearchQuery" || "";
@@ -208,6 +210,23 @@
             let url = `/Orders/ForExportExcel?searchString=${encodeURIComponent(searchString)}&status=${encodeURIComponent(status)}&fromDate=${encodeURIComponent(fromDate)}&toDate=${encodeURIComponent(toDate)}`;
 
             window.location.href = url;
+        });
+
+        $("#viewButton").click(function(){
+            console.log("Clicked");
+            let orderid = $(this).closest("tr").data("orderid");
+
+            $.ajax({
+                url: "/Orders/FororderView",
+                type: "GET",
+                data: { orderid: orderid },
+                success: function (data) {
+                    $("#viewOrder").html(data);
+                },
+                error: function () {
+                    alert("Failed to load data.");
+                }
+            });
         });
 
         loadOrderTable(1);

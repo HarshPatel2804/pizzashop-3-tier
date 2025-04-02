@@ -1,3 +1,5 @@
+using pizzashop.repository.Models;
+
 namespace pizzashop.repository.ViewModels
 {
     public class OrderDetailsView
@@ -15,6 +17,8 @@ namespace pizzashop.repository.ViewModels
         public decimal Total { get; set; }
         public List<ItemDetailForOrder> ItemsInOrder { get; set; }
         public List<TaxForOrder> TaxesForOrder { get; set; }
-        public string PaymentMethod { get; set; }
+        public paymentmode Paymentmode { get; set; }
+
+        public orderstatus OrderStatus {get; set;}
     }
 }

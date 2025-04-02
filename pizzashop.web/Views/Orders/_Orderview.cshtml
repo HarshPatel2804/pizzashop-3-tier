@@ -1,0 +1,158 @@
+@model pizzashop.repository.ViewModels.OrderDetailsView
+<div class="container p-4">
+    <div class="row mb-2">
+        <div class="col-md col-12">
+            <div class="h1 mt-1" style="color: rgb(1, 123, 217); font-weight: bold">
+                Orders
+            </div>
+        </div>
+        <div class="col-md-auto col-12 mt-1 d-flex align-items-center justify-content-center">
+            <a class="text-decoration-none text-white me-3" id="exportButton" asp-controller="Orders"
+                asp-action="Order"><button class="btn btn-lg btn-border-color">Back
+                </button></a>
+        </div>
+    </div>
+    <div class="">
+        <div class="bg-white rounded p-3 mb-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex gap-2 align-items-center">
+                    <h4 class="ps-2"><strong> Order Summary </strong></h4>
+                    <h6 class="px-1 py-2 bg-info rounded">@Model.OrderStatus
+                    </h6>
+                </div>
+                <div class="d-flex align-items-center justify-content-center">
+                    <a class="text-decoration-none text-white me-3 file-down" id="btn-print" data-id="@Model.OrderId"><button class="btn btn-color"><img
+                                src="~/images/icons/export.svg" class="ex-icon" style="filter: brightness(0) invert(1); width: 24px; height: 24px;" alt="">Export
+                        </button></a>
+                </div>
+            </div>
+            <h6 class="ps-4"><strong>Invoice No. :</strong> </h6>
+
+            <div class="d-flex gap-md-3 flex-column flex-md-row ps-4">
+                <h6><strong>Paid on : </strong></h6>
+                <h6><strong>Placed on : @Model.OrderDate</strong></h6>
+                <h6><strong>Modified on : @Model.ModifiedDate</strong></h6>
+                <h6><strong>Order Duration : </strong></h6>
+            </div>
+        </div>
+        <div class="d-flex ms-0 me-0 flex-column flex-md-row" style="gap: .7rem !important;">
+            <div class="bg-white rounded mb-3 w-100 w-md-50">
+                <div class="mb-3">
+
+                    <h5 class="mb-4 mt-4 ms-4"><strong><img src="~/images/icons/navbar-icons/customers-default.png"
+                                class="me-1" alt="" width="25px">Customer Details</strong></h5>
+
+                    <div class="ms-5">
+                        <p class="mb-1">Name: @Model.CustomerName</p>
+                        <p class="mb-1">Phone: @Model.ContactNumber</p>
+                        <p class="mb-1">No of Person: @Model.NoOfPerson</p>
+                        <p class="mb-0">Email: @Model.CustomerEmail</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded mb-3 w-100 w-md-50" style="width: 49%;">
+                <div class=" mb-3">
+
+                    <h5 class="mb-4 mt-4 ms-4"><strong><img src="~/images/icons/navbar-icons/table-default.png"
+                                class="me-1" alt="" width="25px">Table Details</strong></h5>
+
+                    <div class="mb-4 ms-5">
+                        <p class="mb-1">Table: @Model.Table</p>
+                        <p mailto:class="mb-0">section:@Model.Section</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded">
+
+            <h5 class="mb-4 ms-4 pt-3"><strong>Order Items</strong></h5>
+
+            <div class="table-responsive ms-4 me-4">
+                <table class="table">
+                    <thead>
+                        <tr class="">
+                            <th>Sr.No</th>
+                            <th>Item</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Total Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var (item, index) in Model.ItemsInOrder.Select((value, index) => (value, index)))
+                        {
+                            <tr class="">
+                                <td>@(index + 1)</td>
+                                <td>
+                                    @item.ItemName
+                                    <br>
+                                    @foreach (var modifier in item.ItemModifiers)
+                                    {
+                                        <small class="text-muted">
+                                            <li class="list-group-disc">@modifier.ModifierName</li>
+                                        </small>
+                                    }
+                                </td>
+                                <td>@item.ItemQuantity
+                                    <br>
+                                    @foreach (var modifier in item.ItemModifiers)
+                                    {
+                                        <small class="text-muted">@modifier.ModifierQuantity</small>
+                                        <br>
+                                    }
+                                </td>
+                                <td>@item.ItemAmount
+                                    <br>
+                                    @foreach (var modifier in item.ItemModifiers)
+                                    {
+                                        <small class="text-muted">@modifier.ModifierRate</small>
+                                        <br>
+                                    }
+                                </td>
+                                <td>@item.TotalPrice
+                                    <br>
+                                    @foreach (var modifier in item.ItemModifiers)
+                                    {
+                                        <small class="text-muted">@modifier.OrderedModifierPrice</small>
+                                        <br>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="d-flex justify-content-end mt-4 me-4">
+                <div style="width: 12rem;">
+                    <div class="d-flex justify-content-between">
+                        <h6>Subtotal:</h6>
+                        <h6>₹@Model.SubTotal</h6>
+                    </div>
+                    @foreach(var tax in Model.TaxesForOrder)
+                    {
+                    <div class="d-flex justify-content-between">
+                        <h6>@tax.TaxName:</h6>
+                        <h6>₹@tax.TaxValue</h6>
+                    </div>
+                    }
+                    <div class="d-flex justify-content-between mb-1">
+                        <h6 class="mt-2"><strong>Total:</strong></h6>
+                        <h6 class="mt-2"><strong>₹@Model.Total</strong></h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<script>
+    $(".file-down").click(function(){
+            let orderid = $(this).data("id");
+            let url = `/Orders/ForPdfDownload?orderid=${encodeURIComponent(orderid)}`;
+
+            window.location.href = url;
+        });
+</script>

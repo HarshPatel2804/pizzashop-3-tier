@@ -1,0 +1,112 @@
+<table class="table border table-hover">
+    <tr>
+        <td>
+            <div class="d-flex sortDiv">
+                Name
+                <a href="#" class="sort-icon" id="sortIdAsc" data-column="customername">
+                    <i class="bi bi-arrow-up"></i>
+                </a>
+                <a href="#" class="sort-icon" id="sortIdDesc" data-column="customername">
+                    <i class="bi bi-arrow-down"></i>
+                </a>
+            </div>
+        </td>
+        <td>
+            <div class="d-flex">
+                Email
+            </div>
+        </td>
+        <td>
+            <div class="d-flex">
+                Phone Number
+            </div>
+        </td>
+        <td>
+            <div class="d-flex sortDiv">
+                Date
+                <a href="#" class="sort-icon" id="sortIdAsc" data-column="date">
+                    <i class="bi bi-arrow-up"></i>
+                </a>
+                <a href="#" class="sort-icon" id="sortIdDesc" data-column="date">
+                    <i class="bi bi-arrow-down"></i>
+                </a>
+            </div>
+        </td>
+        <td>
+            <div class="d-flex sortDiv">
+                Total Order
+                <a href="#" class="sort-icon" id="sortIdAsc" data-column="totalorder">
+                    <i class="bi bi-arrow-up"></i>
+                </a>
+                <a href="#" class="sort-icon" id="sortIdDesc" data-column="totalorder">
+                    <i class="bi bi-arrow-down"></i>
+                </a>
+            </div>
+        </td>
+    </tr>
+    @foreach (var customer in Model)
+    {
+        <tr class="customer" data-customerid = "@customer.Customerid">
+            <td>@customer.Customername</td>
+            <td>@customer.Email</td>
+            <td>@customer.Phoneno</td>
+            <td>@customer.Createdat.ToString("yyyy-MM-dd")</td>
+            <td>@customer.Totalorder</td>
+        </tr>
+    }
+</table>
+<div class="d-flex justify-content-end align-items-center gap-2 mt-2 p-3">
+    <div class="d-flex align-items-center">
+        <span class="d-none d-sm-inline px-1">Items Per page:</span>
+        <select id="pageSizeSelect" class="form-select form-select-sm" style="width: auto;">
+            <option value="5" selected="@(ViewBag.PageSize == 5)">5</option>
+            <option value="10" selected="@(ViewBag.PageSize == 10)">10</option>
+            <option value="25" selected="@(ViewBag.PageSize == 25)">25</option>
+        </select>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <span class="d-none d-sm-inline px-1">
+            Showing @(ViewBag.TotalUsers > 0 ? ((ViewBag.CurrentPage - 1) * ViewBag.PageSize + 1) : 0)
+            - @(ViewBag.TotalUsers > 0 ? Math.Min(ViewBag.CurrentPage * ViewBag.PageSize, ViewBag.TotalUsers) :
+              0)
+            of @ViewBag.TotalUsers
+        </span>
+        <nav>
+            <ul class="pagination pagination-sm mt-3">
+                <!-- Previous Page -->
+                <li class="page-item @(ViewBag.CurrentPage > 1 ? "" : "disabled")">
+                    <a class="page-link pagination-link" href="#" data-page="@(ViewBag.CurrentPage - 1)">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+
+                <!-- Next Page -->
+                <li class="page-item @(ViewBag.CurrentPage < ViewBag.TotalPages ? "" : "disabled")">
+                    <a class="page-link pagination-link" href="#" data-page="@(ViewBag.CurrentPage + 1)">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<script>
+    $(".customer").click(function(){
+            var id = $(this).data("customerid");
+            console.log(id + "hii");
+
+            $.ajax({
+                url: "/Customer/CustomerHistory",
+                type: "GET",
+                data: { customerId : id },
+                success: function (data) {
+                    $("#ShowHistory").html(data);
+                    $("#customerHistoryModal").modal("show");
+                },
+                error: function () {
+                    alert("Failed to load data.");
+                }
+            });
+        });
+</script>

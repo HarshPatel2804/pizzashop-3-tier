@@ -1,0 +1,81 @@
+@* @model pizzashop.repository.ViewModels.CustomerViewModel; *@
+<div class="modal fade" id="customerHistoryModal" tabindex="-1" aria-labelledby="customerHistoryModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="customerHistoryModalLabel">Customer History</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row mb-4 bg-white shadow">
+          <div class="col-md-6 pt-3">
+            <div class="row mb-3 bg-white shadow ms-0 me-0">
+              <div class="d-flex justify-content-between align-items-center pt-2 pb-2">
+                <span class="text-muted">Name</span>
+                <span><strong>@Model.Customername</strong></span>
+              </div>
+            </div>
+            <div class="row mb-3 bg-white shadow rounded ms-0 me-0">
+              <div class="d-flex justify-content-between align-items-center pt-2 pb-2">
+                <span class="text-muted">Mobilenumber</span>
+                <span><strong>@Model.Phoneno</strong></span>
+              </div>
+            </div>
+            <div class="row mb-3 bg-white shadow rounded ms-0 me-0">
+              <div class="d-flex justify-content-between align-items-center pt-2 pb-2">
+                <span class="text-muted">Max Order</span>
+                <span><strong>@Model.MaxOrder</strong></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 pt-3 pb-3">
+            <div class="row mb-3 bg-white shadow ms-0 me-0">
+              <div class="d-flex justify-content-between align-items-center pt-2 pb-2">
+                <span class="text-muted">Average Bill</span>
+                <span><strong>@Model.AverageBill</strong></span>
+              </div>
+            </div>
+            <div class="row mb-3 bg-white shadow ms-0 me-0">
+              <div class="d-flex justify-content-between align-items-center pt-2 pb-2">
+                <span class="text-muted">Coming Since</span>
+                <span><strong>@Model.ComingSince</strong></span>
+              </div>
+            </div>
+            <div class="row mb-3 bg-white shadow ms-0 me-0">
+              <div class="d-flex justify-content-between align-items-center pt-2 pb-2">
+                <span class="text-muted">Visits</span>
+                <span><strong>@Model.Visitcount</strong></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="table-responsive">
+          <table class="table table-striped table-hover">
+            <thead class="table-light">
+              <tr>
+                <th>Order Date</th>
+                <th>Order Type</th>
+                <th>Payment</th>
+                <th>Items</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+                @foreach(var items in Model.OrderHistory)
+                {
+              <tr>
+                <td>@items.Orderdate</td>
+                <td>DineIn</td>
+                <td>@items.Paymentmode</td>
+                <td>@items.Ordereditems.Count</td>
+                <td>@items.Totalamount</td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

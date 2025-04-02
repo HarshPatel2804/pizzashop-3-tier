@@ -74,7 +74,7 @@
                 @o.Totalamount
             </td>
             <td>
-                <a id="file-down" class="me-2">
+                <a class="me-2 file-down">
                     <i class="bi bi-filetype-pdf" style="font-size: 22px;"></i>
                 </a>
                 <a class="border-0 sweetalert viewButton" data-id="@o.Orderid">
@@ -142,10 +142,32 @@
         }
         return starHtml;
     }
-    $("#file-down").click(function(){
+    $(".file-down").click(function(){
             let orderid = $(this).closest("tr").data("orderid");
             let url = `/Orders/ForPdfDownload?orderid=${encodeURIComponent(orderid)}`;
 
             window.location.href = url;
         });
+
+    $(".viewButton").click(function(){
+            console.log("Clicked");
+            let orderid = $(this).closest("tr").data("orderid");
+
+            $.ajax({
+                url: "/Orders/FororderView",
+                type: "GET",
+                data: { orderid: orderid },
+                success: function (data) {
+                    $(".Orderlist").addClass('d-none');
+                    $("#viewOrder").removeClass('d-none');
+                    $("#viewOrder").html(data);
+
+                },
+                error: function () {
+                    alert("Failed to load data.");
+                }
+            });
+        });
+
+    
 </script>

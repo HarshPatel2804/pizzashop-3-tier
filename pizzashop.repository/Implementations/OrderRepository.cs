@@ -128,6 +128,7 @@ public class OrderRepository : IOrderRepository
 
         var orderDetailsView = new OrderDetailsView
         {
+
             OrderId = order.Orderid,
             CustomerName = order.Customer.Customername,
             ContactNumber = order.Customer.Phoneno,
@@ -139,7 +140,8 @@ public class OrderRepository : IOrderRepository
             ModifiedDate = order.Modifiedat ?? DateTime.MinValue,
             SubTotal = order.Subamount ?? 0,
             Total = order.Totalamount,
-            PaymentMethod = order.Paymentmode.ToString(),
+            Paymentmode = order.Paymentmode,
+            OrderStatus = order.OrderStatus,
             ItemsInOrder = order.Ordereditems.Select(oi => new ItemDetailForOrder
             {
                 OrderToItemId = oi.Ordereditemid,
