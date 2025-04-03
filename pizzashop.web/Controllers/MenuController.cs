@@ -104,7 +104,7 @@ public class MenuController : Controller
 
     public async Task<IActionResult> editItem(int itemId)
     {
-        
+
         var model = await _menuService.GetEditItemDetails(itemId);
         return PartialView("_EditItem", model);
     }
@@ -259,5 +259,12 @@ public class MenuController : Controller
             ? PartialView("_AddExistingModifier", modifiers)
             : View(modifiers);
     }
-    
+
+    [HttpPost]
+    public async Task<IActionResult> CreateModifierGroup([FromBody] ModifierGroupViewModel model)
+    {
+        int modifierGroupId = await _menuService.AddModifierGroup(model);
+        return Json(new { success = true , ID = modifierGroupId});
+    }
+
 }

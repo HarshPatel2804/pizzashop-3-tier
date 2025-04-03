@@ -36,4 +36,6 @@ public interface IMenuService
     Task<List<ItemModifierGroupMapping>> GetItemModifierGroupsAsync(int itemId);
 
     Task<(List<Modifier> modifiers, int totalModifiers, int totalPages)> GetModifierList(int page, int pageSize, string search);
+
+    Task<int> AddModifierGroup(ModifierGroupViewModel model);
 }

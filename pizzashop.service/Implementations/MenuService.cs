@@ -4,6 +4,7 @@ using pizzashop.repository.Interfaces;
 using pizzashop.repository.Models;
 using pizzashop.repository.ViewModels;
 using pizzashop.service.Interfaces;
+using Pizzashop.repository.Models;
 
 namespace pizzashop.service.Implementations;
 
@@ -251,15 +252,15 @@ public class MenuService : IMenuService
 
         foreach (var u in model)
         {
-            var unitName = await _unitRepository.GetUnit(u.Unitid);
+            var unitName = await _unitRepository.GetUnit(u.Modifier.Unitid);
 
             modifierModel.Add(new ModifierViewModel
             {
-                Modifiergroupid = u.Modifiergroupid,
-                Modifierid = u.Modifierid,
-                Modifiername = u.Modifiername,
-                Rate = u.Rate,
-                Quantity = u.Quantity,
+                Modifiergroupid = u.Modifier.Modifiergroupid,
+                Modifierid = u.Modifier.Modifierid,
+                Modifiername = u.Modifier.Modifiername,
+                Rate = u.Modifier.Rate,
+                Quantity = u.Modifier.Quantity,
                 UnitName = unitName
             });
         }
@@ -281,5 +282,37 @@ public class MenuService : IMenuService
 
         return (modifiers, totalModifiers, totalPages);
     }
+
+    public async Task<int> AddModifierGroup(ModifierGroupViewModel model)
+        {
+            // Create new modifier group
+            var modifierGroup = new Modifiergroup
+            {
+                Modifiergroupname = model.Modifiergroupname,
+                Description = model.Description,
+                Isdeleted = false,
+                Createdat = DateTime.Now,
+                Modifiedat = DateTime.Now,
+            };
+
+            int modifierGroupId = await _modifierRepository.AddModifierGroup(modifierGroup);
+
+            // Add mappings for each selected modifier
+            if (model.SelectedModifierIds != null && model.SelectedModifierIds.Count > 0)
+            {
+                foreach (var modifierId in model.SelectedModifierIds)
+                {
+                    var mapping = new ModifierGroupModifierMapping
+                    {
+                        ModifierGroupId = modifierGroupId,
+                        ModifierId = modifierId
+                    };
+
+                    await _modifierRepository.AddMappings(mapping);
+                }
+            }
+
+            return modifierGroupId;
+        }
 
 }

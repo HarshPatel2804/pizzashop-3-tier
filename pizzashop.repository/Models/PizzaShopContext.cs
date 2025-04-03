@@ -101,13 +101,13 @@ public partial class PizzaShopContext : DbContext
             entity.HasKey(e => e.ModifierGroupModifierMappingId);
 
             entity.Property(e => e.ModifierGroupModifierMappingId)
-                .HasColumnName("modifiergroupmodifiermappingid");
+                .HasColumnName("ModifierGroupModifierMappingId");
 
             entity.Property(e => e.ModifierGroupId)
-                .HasColumnName("modifiergroupid");
+                .HasColumnName("ModifierGroupId");
 
             entity.Property(e => e.ModifierId)
-                .HasColumnName("modifierid");
+                .HasColumnName("ModifierId");
 
             entity.HasOne(d => d.ModifierGroup)
                 .WithMany()

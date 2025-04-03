@@ -495,7 +495,7 @@
 
     </div>
 
-    <div class="modal fade modal-updateModifiersGroup" id="addModifiersGroup" tabindex="-1"
+    <div class="modal fade modal-addModifiersGroup" id="addModifiersGroup" tabindex="-1"
         aria-labelledby="AddNewCategory" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -507,15 +507,50 @@
                     <div class="modal-body ">
 
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="floatingInput" placeholder="Category name"
+                            <input type="text" class="form-control" id="modifierGroupName" placeholder="Category name"
                                 required>
-                            <label for="floatingInput">Name*</label>
+                            <label for="modifierGroupName">Name*</label>
                         </div>
 
                         <div class="form-floating mb-3">
                             <textarea class="form-control" placeholder="Add a Description of Xategory"
-                                id="floatingTextarea"></textarea>
-                            <label for="floatingTextarea">Description</label>
+                                id="modifierGroupDescription"></textarea>
+                            <label for="modifierGroupDescription">Description</label>
+                        </div>
+
+                        <a><span id="AddModifierGroupBtn">+ Add Existing
+                                Modifiers</span></a>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary sav-btn" data-bs-dismiss="modal">Save</button>
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade modal-updateModifiersGroup" id="editModifiersGroup" tabindex="-1"
+        aria-labelledby="AddNewCategory" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Modifier Group</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form>
+                    <div class="modal-body ">
+
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="modifierGroupName" placeholder="Category name"
+                                required>
+                            <label for="modifierGroupName">Name*</label>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <textarea class="form-control" placeholder="Add a Description of Xategory"
+                                id="modifierGroupDescription"></textarea>
+                            <label for="modifierGroupDescription">Description</label>
                         </div>
 
                         <a><span id="AddModifierGroupBtn">+ Add Existing
@@ -1142,7 +1177,6 @@
 
         // Handle opening of the existing modifiers modal
         $('#AddModifierGroupBtn').on('click', function () {
-            // Delay to ensure modal is fully loaded
             setTimeout(updateCheckboxStates, 100);
         });
 
@@ -1252,6 +1286,47 @@
             $('.selected-modifiers-inputs').remove();
             $('form').append(hiddenInputsContainer);
         });
+
+        $(".modal-addModifiersGroup form").submit(function(e) {
+        e.preventDefault();
+        
+        // Get form values
+        const modifierGroupName = $("#modifierGroupName").val();
+        const description = $("#modifierGroupDescription").val();
+
+        console.log(modifierGroupName + "name");
+        
+        // Extract just the IDs for the API call
+        const selectedModifierIds = selectedModifiers.map(m => m.id);
+        
+        // Create data object
+        const data = {
+            Modifiergroupname: modifierGroupName,
+            Description: description,
+            SelectedModifierIds: selectedModifierIds
+        };
+        
+        // Send AJAX request
+        $.ajax({
+            url: '/Menu/CreateModifierGroup',  
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function(response) {
+                if (response.success) {
+                    
+                    $("#floatingInput").val('');
+                    $("#floatingTextarea").val('');
+                    selectedModifiers = [];
+                    
+                    $('#addModifiersGroup').modal('hide');
+                    console.log(response);
+                    modifierGroupList();
+                    modifierList(response.id);
+                }
+            }
+        });
+    });
 
     });
 </script>
