@@ -25,4 +25,6 @@ public interface ITableSectionService
     Task<TableViewModel> GetTableById(int tableId);
 
     Task EditTable(TableViewModel tableViewModel);
+
+    Task UpdateSectionSortOrder(List<int> sortOrder);
 }

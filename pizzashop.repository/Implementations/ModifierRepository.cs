@@ -22,6 +22,12 @@ public class ModifierRepository : IModifierRepository
         return model;
     }
 
+     public async Task<Modifiergroup> GetModifierGroupByIdAsync(int modifierGroupId)
+        {
+            return await _context.Modifiergroups.FirstOrDefaultAsync(u => u.Modifiergroupid == modifierGroupId);
+
+        }
+
     public async Task<List<ModifierGroupModifierMapping>> GetModifierByGroupAsync(int ModifierGroupId)
     {
         return await _context.ModifierGroupModifierMappings.Where(u => u.ModifierGroupId == ModifierGroupId)
@@ -74,7 +80,9 @@ public class ModifierRepository : IModifierRepository
 
     public bool UpdateModifierGroup(Modifiergroup modifierGroup)
     {
-        _context.Modifiergroups.Update(modifierGroup);
+        var modifier = _context.Modifiergroups.FirstOrDefault(m => m.Modifiergroupid == modifierGroup.Modifiergroupid);
+        modifier.Modifiergroupname = modifierGroup.Modifiergroupname;
+        modifier.Description = modifierGroup.Description;
         return _context.SaveChanges() > 0;
     }
 
@@ -83,12 +91,22 @@ public class ModifierRepository : IModifierRepository
             _context.ModifierGroupModifierMappings.Add(mapping);
             _context.SaveChanges();
         }
+    public async Task DeleteMappings(int modifierGroupId)
+        {
+            var mappings = await _context.ModifierGroupModifierMappings.Where(m => m.ModifierGroupId == modifierGroupId).ToListAsync();
+            _context.ModifierGroupModifierMappings.RemoveRange(mappings);
+            _context.SaveChanges();
+        }
 
         public IEnumerable<ModifierGroupModifierMapping> GetByModifierGroupId(int modifierGroupId)
         {
             return _context.ModifierGroupModifierMappings
                 .Where(m => m.ModifierGroupId == modifierGroupId)
                 .ToList();
+        }
+
+        public async Task<Modifier> GetModifierByIdAsync(int modifierId){
+            return await _context.Modifiers.FirstOrDefaultAsync(m => m.Modifierid == modifierId);
         }
 }
 

@@ -16,7 +16,7 @@ public class TableSectionRepository : ITableSectionRepository
 
     public async Task<List<Section>> GetAllSetionsAsync()
     {
-        return await _context.Sections.Where(u => u.Isdeleted != true).ToListAsync();
+        return await _context.Sections.Where(u => u.Isdeleted != true).OrderBy(u=> u.OrderField).ToListAsync();
     }
 
     public async Task<(List<Table> tables, int totalTables)> GetTablesBySectionAsync(int Sectionid , int page, int pageSize, string search)
@@ -88,6 +88,18 @@ public class TableSectionRepository : ITableSectionRepository
     public async Task EditTableAsync(Table table)
     {
         _context.Tables.Update(table);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task UpdateSortOrderOfSection(List<int> sortOrder){
+
+        for(int i = 0 ; i < sortOrder.Count ; i++){
+            Section section = _context.Sections.FirstOrDefault(s => s.Sectionid == sortOrder[i]);
+
+            if(section != null){
+                section.OrderField = i+1;
+            }
+        }
         await _context.SaveChangesAsync();
     }
 

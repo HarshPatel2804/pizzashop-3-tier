@@ -21,6 +21,8 @@ public partial class Section
 
     public int? Modifiedby { get; set; }
 
+    public int? OrderField {get; set;}
+
     public virtual ICollection<Table> Tables { get; set; } = new List<Table>();
 
     public virtual ICollection<Waitingtoken> Waitingtokens { get; set; } = new List<Waitingtoken>();

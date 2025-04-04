@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Pizzashop.repository.Models;
 
 namespace pizzashop.repository.Models;
 
@@ -23,5 +24,8 @@ public partial class Modifiergroup
 
     public virtual ICollection<Itemmodifiergroupmap> Itemmodifiergroupmaps { get; set; } = new List<Itemmodifiergroupmap>();
 
+    [System.Text.Json.Serialization.JsonIgnore]
     public virtual ICollection<Modifier> Modifiers { get; set; } = new List<Modifier>();
+
+    // public virtual ICollection<ModifierGroupModifierMapping> ModifierGroupModifierMappings {get; set;} = new List<ModifierGroupModifierMapping>();
 }

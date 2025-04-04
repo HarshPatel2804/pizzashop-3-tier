@@ -314,5 +314,56 @@ public class MenuService : IMenuService
 
             return modifierGroupId;
         }
+    public async Task<int> EditModifierGroup(ModifierGroupViewModel model)
+        {
+            // Create new modifier group
+            var modifierGroup = new Modifiergroup
+            {
+                Modifiergroupid = model.Modifiergroupid,
+                Modifiergroupname = model.Modifiergroupname,
+                Description = model.Description,
+                Modifiedat = DateTime.Now,
+            };
 
+            _modifierRepository.UpdateModifierGroup(modifierGroup);
+            await _modifierRepository.DeleteMappings(model.Modifiergroupid);
+
+            // Add mappings for each selected modifier
+            if (model.SelectedModifierIds != null && model.SelectedModifierIds.Count > 0)
+            {
+                foreach (var modifierId in model.SelectedModifierIds)
+                {
+                    var mapping = new ModifierGroupModifierMapping
+                    {
+                        ModifierGroupId = model.Modifiergroupid,
+                        ModifierId = modifierId
+                    };
+
+                    await _modifierRepository.AddMappings(mapping);
+                }
+            }
+
+            return model.Modifiergroupid;
+        }
+
+    public async Task<ModifierGroupViewModel> GetSelectedModifiers(int modifierGroupId)
+    {
+        var Groupdata = await _modifierRepository.GetModifierGroupByIdAsync(modifierGroupId);
+        var modifiers = _modifierRepository.GetByModifierGroupId(modifierGroupId);
+        var modifierIds = new List<Modifier>();
+
+        foreach(var id in modifiers){
+            var modifier = await _modifierRepository.GetModifierByIdAsync(id.ModifierId);
+            modifierIds.Add(modifier);
+        }
+
+        var model = new ModifierGroupViewModel{
+            Modifiergroupname = Groupdata.Modifiergroupname,
+            Modifiergroupid = modifierGroupId,
+            Description = Groupdata.Description,
+            SelectedModifiers = modifierIds
+        };
+
+        return model;
+    }
 }

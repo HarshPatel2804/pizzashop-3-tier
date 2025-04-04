@@ -8,6 +8,8 @@ public interface IModifierRepository
 {
     Task<List<Modifiergroup>> GetAllModifierGroupAsync();
 
+    Task<Modifiergroup> GetModifierGroupByIdAsync(int modifierGroupId);
+
     Task<List<ModifierGroupModifierMapping>> GetModifierByGroupAsync(int ModifierGroupId);
 
     Task DeleteModifier(int modifierId);
@@ -24,6 +26,8 @@ public interface IModifierRepository
 
     IEnumerable<ModifierGroupModifierMapping> GetByModifierGroupId(int modifierGroupId);
 
+    Task<Modifier> GetModifierByIdAsync(int modifierId);
 
+    Task DeleteMappings(int modifierGroupId);
 
 }

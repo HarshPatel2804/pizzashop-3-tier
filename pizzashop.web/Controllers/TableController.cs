@@ -84,4 +84,9 @@ public class TableController : Controller
         await _tableSectionService.EditTable(tableViewModel);
         return Json(new{success = true,message="Table Edited Successfully"});
     }
+
+    [HttpPost]
+    public async Task UpdateSectionOrder(List<int> sortOrder){
+        await _tableSectionService.UpdateSectionSortOrder(sortOrder);
+    }
 }

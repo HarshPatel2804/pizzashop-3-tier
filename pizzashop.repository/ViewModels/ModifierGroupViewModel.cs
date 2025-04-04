@@ -21,7 +21,9 @@ public partial class ModifierGroupViewModel
 
     public int Modifiedby { get; set; }
 
-    public List<int> SelectedModifierIds { get; set; } = new List<int>();
+    public List<int> SelectedModifierIds { get; set; } 
+
+    public List<Modifier> SelectedModifiers {get; set;}
 
     public virtual ICollection<Itemmodifiergroupmap> Itemmodifiergroupmaps { get; set; } = new List<Itemmodifiergroupmap>();
 

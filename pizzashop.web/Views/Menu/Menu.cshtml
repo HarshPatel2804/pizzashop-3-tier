@@ -405,95 +405,102 @@
         </div>
     </div>
     <div class="modal-addNewModifier">
-        <div class="modal fade" id="addNewModifier" tabindex="-1" aria-labelledby="addNewModifier" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addNewModifier">Add New Modifier</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
+    <div class="modal fade" id="addNewModifier" tabindex="-1" aria-labelledby="addNewModifier" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addNewModifier">Add New Modifier</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
 
-                    <div class="modal-body">
-
-                        <!-- first row -->
-                        <div>
-                            <div class="container-fluid">
-                                <div class="row">
-                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
-                                        <div class="form-floating">
-                                            <select class="form-select" id="floatingSelect" aria-label="Item type"
-                                                required>
-                                                <option selected>Select Modifier Group(s)</option>
-                                                <option value="1">Pasta</option>
-                                                <option value="2">Pizza</option>
-                                                <option value="3">Desserts</option>
-                                            </select>
-                                            <label for="floatingSelect">Modifier</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
-                                        <div class="form-floating">
-                                            <input type="text" class="form-control" id="floatingInput"
-                                                placeholder="Name" required>
-                                            <label for="floatingInput">Name*</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="container-fluid ">
+                <div class="modal-body">
+                    <!-- first row -->
+                    <div>
+                        <div class="container-fluid">
                             <div class="row">
-                                <div class="col-lg-4 col-md-4 col-sm-12 mb-3">
-                                    <div class="form-floating">
-                                        <input type="text" class="form-control" id="floatingInput" placeholder="Rate"
-                                            required value="0">
-                                        <label for="floatingInput">Rate*</label>
+                                <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                    <div class="form-floating position-relative">
+                                        <div class="selected-options-display" id="selectedModifiersDisplay">
+                                            <span id="modifierPlaceholder"></span>
+                                            <!-- Selected options will appear here -->
+                                        </div>
+                                        <div class="dropdown-menu modifier-checkbox-dropdown" id="modifierDropdown">
+                                            <div class="modifier-checkbox-container">
+                                                <div class="form-check">
+                                                    <input class="form-check-input modifier-checkbox" type="checkbox" value="1" id="pastaModifier">
+                                                    <label class="form-check-label" for="pastaModifier">Pasta</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input modifier-checkbox" type="checkbox" value="2" id="pizzaModifier">
+                                                    <label class="form-check-label" for="pizzaModifier">Pizza</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input modifier-checkbox" type="checkbox" value="3" id="dessertsModifier">
+                                                    <label class="form-check-label" for="dessertsModifier">Desserts</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <label for="selectedModifiersDisplay">Select Modifier Group(s)</label>
+                                        <!-- Hidden input to store selected values -->
+                                        <input type="hidden" id="selectedModifiers" name="selectedModifiers">
                                     </div>
                                 </div>
-                                <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
                                     <div class="form-floating">
                                         <input type="text" class="form-control" id="floatingInput"
-                                            placeholder="Quantity" required value="0">
-                                        <label for="floatingInput">Quantity*</label>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-md-4 col-sm-12 doted-border">
-                                    <div class="form-floating">
-                                        <select class="form-select" id="floatingSelect" aria-label="Item type" required>
-                                            <option selected>Select a Unit</option>
-                                            <option value="1">Pasta</option>
-                                            <option value="2">Pizza</option>
-                                            <option value="3">Desserts</option>
-                                        </select>
-                                        <label for="floatingSelect">Unit*</label>
+                                            placeholder="Name" required>
+                                        <label for="floatingInput">Name*</label>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-
-
-                        <div class="container-fluid form-floating">
-                            <textarea class="form-control" placeholder="Give Description of this Modifier"
-                                id="floatingTextarea"></textarea>
-                            <label for="floatingTextarea">Description</label>
+                    <div class="container-fluid ">
+                        <div class="row">
+                            <div class="col-lg-4 col-md-4 col-sm-12 mb-3">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="floatingInput" placeholder="Rate"
+                                        required value="0">
+                                    <label for="floatingInput">Rate*</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="floatingInput"
+                                        placeholder="Quantity" required value="0">
+                                    <label for="floatingInput">Quantity*</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12 doted-border">
+                                <div class="form-floating">
+                                    <select class="form-select" id="floatingSelect" aria-label="Item type" required>
+                                        <option selected>Select a Unit</option>
+                                        <option value="1">Pasta</option>
+                                        <option value="2">Pizza</option>
+                                        <option value="3">Desserts</option>
+                                    </select>
+                                    <label for="floatingSelect">Unit*</label>
+                                </div>
+                            </div>
                         </div>
-
-
                     </div>
 
-
-                    <div class="modal-footer d-flex justify-content-end gap-2">
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Save</button>
-                        <button type="button" class="btn btn-danger">Cancel</button>
+                    <div class="container form-floating">
+                        <textarea class="form-control" placeholder="Give Description of this Modifier"
+                            id="floatingTextarea"></textarea>
+                        <label for="floatingTextarea" style="left: 10px !important;">Description</label>
                     </div>
+                </div>
+
+                <div class="modal-footer d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Save</button>
+                    <button type="button" class="btn btn-danger">Cancel</button>
                 </div>
             </div>
         </div>
-
-
     </div>
+</div>
 
     <div class="modal fade modal-addModifiersGroup" id="addModifiersGroup" tabindex="-1"
         aria-labelledby="AddNewCategory" aria-hidden="true">
@@ -541,19 +548,21 @@
                 <form>
                     <div class="modal-body ">
 
+                        <input type="text" class="form-control" id="editmodifierGroupId" hidden>
+
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="modifierGroupName" placeholder="Category name"
-                                required>
-                            <label for="modifierGroupName">Name*</label>
+                            <input type="text" class="form-control" id="editmodifierGroupName"
+                                placeholder="Category name" required>
+                            <label for="editmodifierGroupName">Name*</label>
                         </div>
 
                         <div class="form-floating mb-3">
                             <textarea class="form-control" placeholder="Add a Description of Xategory"
-                                id="modifierGroupDescription"></textarea>
-                            <label for="modifierGroupDescription">Description</label>
+                                id="editmodifierGroupDescription"></textarea>
+                            <label for="editmodifierGroupDescription">Description</label>
                         </div>
 
-                        <a><span id="AddModifierGroupBtn">+ Add Existing
+                        <a><span id="EditModifierGroupBtn">+ Add Existing
                                 Modifiers</span></a>
 
                     </div>
@@ -604,7 +613,7 @@
         let lastSelectedCategoryId = 0;
         const selectedGroups = new Map();
         let selectedModifiers = [];
-        
+
         $(document).on("click", ".delete-category", function () {
             var Id = $(this).data("id");
             $("#hiddenField").val(Id);
@@ -1116,6 +1125,10 @@
             console.log("HiiList");
             modifiersList(1);
         });
+        $(document).on("click", "#EditModifierGroupBtn", function () {
+            console.log("HiiList");
+            modifiersList(1);
+        });
 
         $("#ExistingModifier").on("click", ".pagination-link", function (e) {
             e.preventDefault();
@@ -1150,8 +1163,10 @@
 
                 totalCheckboxes++;
 
-                const isSelected = selectedModifiers.some(m => m.id === modifierId);
+                const isSelected = selectedModifiers.some(m => m.id == modifierId);
                 console.log(selectedModifiers);
+                console.log(isSelected + "bool");
+                console.log(modifierId + "id");
 
                 if (isSelected) {
                     checkbox.prop('checked', true);
@@ -1220,7 +1235,7 @@
                 if (isChecked) {
                     checkbox.attr('checked', 'checked');
 
-                    const exists = selectedModifiers.some(m => m.id === modifierId);
+                    const exists = selectedModifiers.some(m => m.id == modifierId);
                     if (!exists) {
                         selectedModifiers.push({
                             id: modifierId,
@@ -1238,26 +1253,40 @@
         });
 
         $('#selectExistingModifiers .btn-primary').on('click', function () {
-            // Clear previous selections
             $('#addModifiersGroup .existing-modifiers').remove();
+            $('#editModifiersGroup .existing-modifiers').remove();
 
             // Create a container for selected modifiers
-            const modifiersContainer = $('<div class="existing-modifiers d-flex flex-wrap gap-2 mt-2"></div>');
+            const addModifiersContainer = $('<div class="existing-modifiers d-flex flex-wrap gap-2 mt-2"></div>');
 
-            // Add each selected modifier as a badge
+            // Create modifiers for the Edit modal
+            const editModifiersContainer = $('<div class="existing-modifiers d-flex flex-wrap gap-2 mt-2"></div>');
+
+            // Add selected modifiers to both containers
             selectedModifiers.forEach(function (modifier) {
-                const badge = $(`
-                <span class="badge bg-primary d-flex align-items-center" data-modifier-id="${modifier.id}">
-                    ${modifier.name}
-                    <button type="button" class="btn-close btn-close-white ms-2 remove-modifier" aria-label="Remove"></button>
-                </span>
-            `);
-                modifiersContainer.append(badge);
+                const addBadge = $(`
+            <span class="badge bg-primary d-flex align-items-center" data-modifier-id="${modifier.id}">
+                ${modifier.name}
+                <button type="button" class="btn-close btn-close-white ms-2 remove-modifier" aria-label="Remove"></button>
+            </span>
+        `);
+
+                const editBadge = $(`
+            <span class="badge bg-primary d-flex align-items-center" data-modifier-id="${modifier.id}">
+                ${modifier.name}
+                <button type="button" class="btn-close btn-close-white ms-2 remove-modifier" aria-label="Remove"></button>
+            </span>
+        `);
+
+                addModifiersContainer.append(addBadge);
+                editModifiersContainer.append(editBadge);
             });
 
-            // Insert the modifiers container after the "Add Existing Modifiers" link
-            $('#AddModifierGroupBtn').after(modifiersContainer);
+            // Insert into respective modals
+            $('#AddModifierGroupBtn').after(addModifiersContainer);
+            $('#EditModifierGroupBtn').after(editModifiersContainer);
         });
+
 
         $(document).on('click', '.remove-modifier', function () {
             const modifierId = $(this).parent().data('modifier-id');
@@ -1287,46 +1316,228 @@
             $('form').append(hiddenInputsContainer);
         });
 
-        $(".modal-addModifiersGroup form").submit(function(e) {
-        e.preventDefault();
-        
-        // Get form values
-        const modifierGroupName = $("#modifierGroupName").val();
-        const description = $("#modifierGroupDescription").val();
+        $(".modal-addModifiersGroup form").submit(function (e) {
+            e.preventDefault();
 
-        console.log(modifierGroupName + "name");
-        
-        // Extract just the IDs for the API call
-        const selectedModifierIds = selectedModifiers.map(m => m.id);
-        
-        // Create data object
-        const data = {
-            Modifiergroupname: modifierGroupName,
-            Description: description,
-            SelectedModifierIds: selectedModifierIds
-        };
-        
-        // Send AJAX request
-        $.ajax({
-            url: '/Menu/CreateModifierGroup',  
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(data),
-            success: function(response) {
-                if (response.success) {
-                    
-                    $("#floatingInput").val('');
-                    $("#floatingTextarea").val('');
-                    selectedModifiers = [];
-                    
-                    $('#addModifiersGroup').modal('hide');
-                    console.log(response);
-                    modifierGroupList();
-                    modifierList(response.id);
+            // Get form values
+            const modifierGroupName = $("#modifierGroupName").val();
+            const description = $("#modifierGroupDescription").val();
+
+            console.log(modifierGroupName + "name");
+
+            // Extract just the IDs for the API call
+            const selectedModifierIds = selectedModifiers.map(m => m.id);
+
+            // Create data object
+            const data = {
+                Modifiergroupname: modifierGroupName,
+                Description: description,
+                SelectedModifierIds: selectedModifierIds
+            };
+
+            // Send AJAX request
+            $.ajax({
+                url: '/Menu/CreateModifierGroup',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (response) {
+                    if (response.success) {
+
+                        $("#floatingInput").val('');
+                        $("#floatingTextarea").val('');
+                        selectedModifiers = [];
+
+                        $('#addModifiersGroup').modal('hide');
+                        console.log(response);
+                        modifierGroupList();
+                        modifierList(response.id);
+                    }
                 }
-            }
+            });
         });
+
+        $(".modal-updateModifiersGroup form").submit(function (e) {
+            e.preventDefault();
+
+            // Get form values
+            const modifierGroupName = $("#editmodifierGroupName").val();
+            const description = $("#editmodifierGroupDescription").val();
+            const Modifiergroupid = $('#editmodifierGroupId').val();
+
+            console.log(modifierGroupName + "name");
+
+            // Extract just the IDs for the API call
+            const selectedModifierIds = selectedModifiers.map(m => m.id);
+
+            // Create data object
+            const data = {
+                Modifiergroupid: Modifiergroupid,
+                Modifiergroupname: modifierGroupName,
+                Description: description,
+                SelectedModifierIds: selectedModifierIds
+            };
+
+            // Send AJAX request
+            $.ajax({
+                url: '/Menu/UpdateModifierGroup',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (response) {
+                    if (response.success) {
+
+                        $("#floatingInput").val('');
+                        $("#floatingTextarea").val('');
+                        selectedModifiers = [];
+
+                        $('#addModifiersGroup').modal('hide');
+                        console.log(response);
+                        modifierGroupList();
+                        modifierList(response.id);
+                    }
+                }
+            });
+        });
+
+        $('#ModifierGroup').on('click', '.edit-modifierGroup-btn', function () {
+            const modifierGroupId = $(this).data('id');
+            $('#editmodifierGroupId').val(modifierGroupId);
+            selectedModifiers = [];
+            console.log("Hii edit goup");
+
+            $.ajax({
+                url: '/Menu/GetModifierGroupDetails',
+                type: 'GET',
+                data: { modifierGroupId: modifierGroupId },
+                success: function (response) {
+                    $('#editModifierGroupId').val(response.data.modifiergroupid);
+                    $('#editmodifierGroupName').val(response.data.modifiergroupname);
+                    $('#editmodifierGroupDescription').val(response.data.description);
+
+                    response.data.selectedModifiers.forEach(function (modifier) {
+                        selectedModifiers.push({
+                            id: modifier.modifierid,
+                            name: modifier.modifiername
+                        });
+                    });
+
+                    $('#editModifiersGroup .existing-modifiers').remove();
+
+                    const modifiersContainer = $('<div class="existing-modifiers d-flex flex-wrap gap-2 mt-2"></div>');
+
+                    // Add each selected modifier as a badge
+                    selectedModifiers.forEach(function (modifier) {
+                        const badge = $(`
+                <span class="badge bg-primary d-flex align-items-center" data-modifier-id="${modifier.id}">
+                    ${modifier.name}
+                    <button type="button" class="btn-close btn-close-white ms-2 remove-modifier" aria-label="Remove"></button>
+                </span>
+            `);
+                        modifiersContainer.append(badge);
+                    });
+
+                    // Insert the modifiers container after the "Add Existing Modifiers" link
+                    $('#EditModifierGroupBtn').after(modifiersContainer);
+                    console.log(selectedModifiers);
+                    $('#editModifiersGroup').modal('show');
+
+                },
+                error: function (error) {
+                    console.error('Error fetching modifier group details:', error);
+                    alert('Failed to load modifier group details.');
+                }
+            });
+        });
+
+        const selectedModifiersDisplay = document.getElementById('selectedModifiersDisplay');
+const modifierDropdown = document.getElementById('modifierDropdown');
+const checkboxes = document.querySelectorAll('.modifier-checkbox');
+const selectedModifiersInput = document.getElementById('selectedModifiers');
+const modifierPlaceholder = document.getElementById('modifierPlaceholder');
+
+// Array to store selected modifiers
+let selectedModifierGroups = [];
+
+// Toggle dropdown when clicking on the display area
+selectedModifiersDisplay.addEventListener('click', function() {
+  modifierDropdown.classList.toggle('show');
+});
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+  if (!selectedModifiersDisplay.contains(event.target) && !modifierDropdown.contains(event.target)) {
+    modifierDropdown.classList.remove('show');
+  }
+});
+
+// Handle checkbox changes
+checkboxes.forEach(checkbox => {
+  checkbox.addEventListener('change', function() {
+    const value = this.value;
+    const label = this.nextElementSibling.textContent;
+    
+    if (this.checked) {
+      // Add to selected modifiers
+      selectedModifierGroups.push({value, label});
+    } else {
+      // Remove from selected modifiers
+      selectedModifierGroups = selectedModifierGroups.filter(item => item.value !== value);
+    }
+    
+    updateDisplay();
+  });
+});
+
+// Update the display and hidden input
+function updateDisplay() {
+  // Clear current display except placeholder
+  const tags = selectedModifiersDisplay.querySelectorAll('.selected-tag');
+  tags.forEach(tag => tag.remove());
+  
+  if (selectedModifierGroups.length > 0) {
+    // Hide placeholder
+    modifierPlaceholder.style.display = 'none';
+    
+    // Create first tag
+    const firstTag = document.createElement('span');
+    firstTag.className = 'selected-tag';
+    firstTag.innerHTML = `${selectedModifierGroups[0].label} <span class="tag-remove" data-value="${selectedModifierGroups[0].value}">×</span>`;
+    selectedModifiersDisplay.appendChild(firstTag);
+    
+    // Add +N if there are more
+    if (selectedModifierGroups.length > 1) {
+      const moreTag = document.createElement('span');
+      moreTag.className = 'selected-tag';
+      moreTag.textContent = `+${selectedModifierGroups.length - 1}`;
+      selectedModifiersDisplay.appendChild(moreTag);
+    }
+  } else {
+    // Show placeholder if no selections
+    modifierPlaceholder.style.display = 'block';
+  }
+  
+  // Update hidden input value
+  selectedModifiersInput.value = JSON.stringify(selectedModifierGroups.map(item => item.value));
+  
+  // Add event listeners to remove buttons
+  const removeButtons = selectedModifiersDisplay.querySelectorAll('.tag-remove');
+  removeButtons.forEach(button => {
+    button.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const valueToRemove = this.getAttribute('data-value');
+      
+      // Uncheck the corresponding checkbox
+      const checkbox = document.querySelector(`.modifier-checkbox[value="${valueToRemove}"]`);
+      if (checkbox) checkbox.checked = false;
+      
+      // Remove from array
+      selectedModifierGroups = selectedModifierGroups.filter(item => item.value !== valueToRemove);
+      
+      updateDisplay();
     });
+  });
+}
 
     });
 </script>

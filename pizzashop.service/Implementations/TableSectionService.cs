@@ -141,4 +141,7 @@ public class TableSectionService : ITableSectionService
         await _tableSectionRepository.EditTableAsync(table);
     }
 
+    public async Task UpdateSectionSortOrder(List<int> sortOrder){
+        await _tableSectionRepository.UpdateSortOrderOfSection(sortOrder);
+    }
 }

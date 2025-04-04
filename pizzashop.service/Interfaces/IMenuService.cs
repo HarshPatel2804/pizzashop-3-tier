@@ -38,4 +38,8 @@ public interface IMenuService
     Task<(List<Modifier> modifiers, int totalModifiers, int totalPages)> GetModifierList(int page, int pageSize, string search);
 
     Task<int> AddModifierGroup(ModifierGroupViewModel model);
+
+    Task<ModifierGroupViewModel> GetSelectedModifiers(int modifierGroupId);
+
+    Task<int> EditModifierGroup(ModifierGroupViewModel model);
 }

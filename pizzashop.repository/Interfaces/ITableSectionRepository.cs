@@ -26,4 +26,6 @@ public interface ITableSectionRepository
     Task<Table> GetTableById(int tableId);
 
     Task EditTableAsync(Table table);
+
+    Task UpdateSortOrderOfSection(List<int> sortOrder);
 }

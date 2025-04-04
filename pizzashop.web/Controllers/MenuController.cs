@@ -266,5 +266,17 @@ public class MenuController : Controller
         int modifierGroupId = await _menuService.AddModifierGroup(model);
         return Json(new { success = true , ID = modifierGroupId});
     }
+    [HttpPost]
+    public async Task<IActionResult> UpdateModifierGroup([FromBody] ModifierGroupViewModel model)
+    {
+        int modifierGroupId = await _menuService.EditModifierGroup(model);
+        return Json(new { success = true , ID = modifierGroupId});
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetModifierGroupDetails(int modifierGroupId){
+        var model = await _menuService.GetSelectedModifiers(modifierGroupId);
+        return Json(new { success = true , Data = model});
+    }
 
 }
