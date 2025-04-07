@@ -1,0 +1,90 @@
+@model pizzashop.repository.ViewModels.ModifierViewModel;
+
+<div class="modal fade" id="addNewModifier" tabindex="-1" aria-labelledby="addNewModifier" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addNewModifier">Add New Modifier</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <!-- first row -->
+                <div>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                <div class="form-floating position-relative">
+                                    <div class="selected-options-display" id="selectedModifiersDisplay">
+                                        <span id="modifierPlaceholder"></span>
+                                    </div>
+                                    <div class="dropdown-menu modifier-checkbox-dropdown" id="modifierDropdown">
+                                        <div class="modifier-checkbox-container">
+                                            @foreach (var modifierGroup in Model.ModifierGroups) 
+                                            {
+                                            <div class="form-check">
+                                                <input class="form-check-input modifier-checkbox" type="checkbox"
+                                                    value="@modifierGroup.Value" id="@modifierGroup.Value">
+                                                <label class="form-check-label" for="@modifierGroup.Value">@modifierGroup.Text</label>
+                                            </div>
+                                            }
+                                        </div>
+                                    </div>
+                                    <label for="selectedModifiersDisplay">Select Modifier Group(s)</label>
+                                    <!-- Hidden input to store selected values -->
+                                    <input type="hidden" id="selectedModifiers" name="selectedModifiers">
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="floatingInput" placeholder="Name"
+                                        required>
+                                    <label for="floatingInput">Name*</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container-fluid ">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-12 mb-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="floatingInput" placeholder="Rate" required
+                                    value="0">
+                                <label for="floatingInput">Rate*</label>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="floatingInput" placeholder="Quantity"
+                                    required value="0">
+                                <label for="floatingInput">Quantity*</label>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-12 doted-border">
+                            <div class="form-floating">
+                                <select class="form-select" asp-for="Unitid" asp-items="Model.Units" id="floatingSelect"
+                                    aria-label="Item type" required>
+                                    <option selected>Select a Unit</option>
+                                </select>
+                                <label for="floatingSelect">Unit*</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container form-floating">
+                    <textarea class="form-control" placeholder="Give Description of this Modifier"
+                        id="floatingTextarea"></textarea>
+                    <label for="floatingTextarea" style="left: 10px !important;">Description</label>
+                </div>
+            </div>
+
+            <div class="modal-footer d-flex justify-content-end gap-2">
+                <button type="button" class="btn btn-primary Save-Modifier" data-bs-dismiss="modal">Save</button>
+                <button type="button" class="btn btn-danger">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -108,6 +108,15 @@ public class MenuService : IMenuService
         };
         return model;
     }
+    public async Task<ModifierViewModel> GetModifierGroups()
+    {
+        var model = new ModifierViewModel
+        {
+            ModifierGroups = await _modifierRepository.GetAllmodifierGroups(),
+            Units = await _unitRepository.GetUnitsListAsync(),
+        };
+        return model;
+    }
 
     public async Task<AddEditItemViewModel> GetEditItemDetails(int itemId)
     {
@@ -284,67 +293,67 @@ public class MenuService : IMenuService
     }
 
     public async Task<int> AddModifierGroup(ModifierGroupViewModel model)
+    {
+        // Create new modifier group
+        var modifierGroup = new Modifiergroup
         {
-            // Create new modifier group
-            var modifierGroup = new Modifiergroup
-            {
-                Modifiergroupname = model.Modifiergroupname,
-                Description = model.Description,
-                Isdeleted = false,
-                Createdat = DateTime.Now,
-                Modifiedat = DateTime.Now,
-            };
+            Modifiergroupname = model.Modifiergroupname,
+            Description = model.Description,
+            Isdeleted = false,
+            Createdat = DateTime.Now,
+            Modifiedat = DateTime.Now,
+        };
 
-            int modifierGroupId = await _modifierRepository.AddModifierGroup(modifierGroup);
+        int modifierGroupId = await _modifierRepository.AddModifierGroup(modifierGroup);
 
-            // Add mappings for each selected modifier
-            if (model.SelectedModifierIds != null && model.SelectedModifierIds.Count > 0)
+        // Add mappings for each selected modifier
+        if (model.SelectedModifierIds != null && model.SelectedModifierIds.Count > 0)
+        {
+            foreach (var modifierId in model.SelectedModifierIds)
             {
-                foreach (var modifierId in model.SelectedModifierIds)
+                var mapping = new ModifierGroupModifierMapping
                 {
-                    var mapping = new ModifierGroupModifierMapping
-                    {
-                        ModifierGroupId = modifierGroupId,
-                        ModifierId = modifierId
-                    };
+                    ModifierGroupId = modifierGroupId,
+                    ModifierId = modifierId
+                };
 
-                    await _modifierRepository.AddMappings(mapping);
-                }
+                await _modifierRepository.AddMappings(mapping);
             }
-
-            return modifierGroupId;
         }
+
+        return modifierGroupId;
+    }
     public async Task<int> EditModifierGroup(ModifierGroupViewModel model)
+    {
+        // Create new modifier group
+        var modifierGroup = new Modifiergroup
         {
-            // Create new modifier group
-            var modifierGroup = new Modifiergroup
-            {
-                Modifiergroupid = model.Modifiergroupid,
-                Modifiergroupname = model.Modifiergroupname,
-                Description = model.Description,
-                Modifiedat = DateTime.Now,
-            };
+            Modifiergroupid = model.Modifiergroupid,
+            Modifiergroupname = model.Modifiergroupname,
+            Description = model.Description,
+            Modifiedat = DateTime.Now,
+        };
 
-            _modifierRepository.UpdateModifierGroup(modifierGroup);
-            await _modifierRepository.DeleteMappings(model.Modifiergroupid);
+        _modifierRepository.UpdateModifierGroup(modifierGroup);
+        await _modifierRepository.DeleteMappings(model.Modifiergroupid);
 
-            // Add mappings for each selected modifier
-            if (model.SelectedModifierIds != null && model.SelectedModifierIds.Count > 0)
+        // Add mappings for each selected modifier
+        if (model.SelectedModifierIds != null && model.SelectedModifierIds.Count > 0)
+        {
+            foreach (var modifierId in model.SelectedModifierIds)
             {
-                foreach (var modifierId in model.SelectedModifierIds)
+                var mapping = new ModifierGroupModifierMapping
                 {
-                    var mapping = new ModifierGroupModifierMapping
-                    {
-                        ModifierGroupId = model.Modifiergroupid,
-                        ModifierId = modifierId
-                    };
+                    ModifierGroupId = model.Modifiergroupid,
+                    ModifierId = modifierId
+                };
 
-                    await _modifierRepository.AddMappings(mapping);
-                }
+                await _modifierRepository.AddMappings(mapping);
             }
-
-            return model.Modifiergroupid;
         }
+
+        return model.Modifiergroupid;
+    }
 
     public async Task<ModifierGroupViewModel> GetSelectedModifiers(int modifierGroupId)
     {
@@ -352,12 +361,14 @@ public class MenuService : IMenuService
         var modifiers = _modifierRepository.GetByModifierGroupId(modifierGroupId);
         var modifierIds = new List<Modifier>();
 
-        foreach(var id in modifiers){
+        foreach (var id in modifiers)
+        {
             var modifier = await _modifierRepository.GetModifierByIdAsync(id.ModifierId);
             modifierIds.Add(modifier);
         }
 
-        var model = new ModifierGroupViewModel{
+        var model = new ModifierGroupViewModel
+        {
             Modifiergroupname = Groupdata.Modifiergroupname,
             Modifiergroupid = modifierGroupId,
             Description = Groupdata.Description,
@@ -365,5 +376,103 @@ public class MenuService : IMenuService
         };
 
         return model;
+    }
+
+    public async Task<int> SaveModifier(ModifierViewModel model)
+    {
+        // Create new modifier group
+        var modifier = new Modifier
+        {
+            Modifiergroupid = model.SelectedModifierGroups[0],
+            Modifiername = model.Modifiername,
+            Description = model.Description,
+            Isdeleted = false,
+            Createdat = DateTime.Now,
+            Modifiedat = DateTime.Now,
+            Unitid = model.Unitid,
+            Rate = model.Rate,
+            Quantity = model.Quantity
+        };
+
+        int modifierId = await _modifierRepository.AddModifier(modifier);
+
+        if (model.SelectedModifierGroups != null && model.SelectedModifierGroups.Count > 0)
+        {
+            foreach (var modifierGroupId in model.SelectedModifierGroups)
+            {
+                var mapping = new ModifierGroupModifierMapping
+                {
+                    ModifierGroupId = modifierGroupId,
+                    ModifierId = modifierId
+                };
+
+                await _modifierRepository.AddMappings(mapping);
+            }
+        }
+
+        return modifier.Modifiergroupid;
+    }
+
+    public async Task<ModifierViewModel> GetModifierDetails(int modifierId)
+    {
+        Modifier modifier = await _modifierRepository.GetModifierByIdAsync(modifierId);
+
+        var mappings = _modifierRepository.GetMappingsByModifierId(modifierId);
+
+        ModifierViewModel model = new ModifierViewModel{
+            Modifierid = modifier.Modifierid,
+            Modifiername = modifier.Modifiername,
+            Rate = modifier.Rate,
+            Quantity = modifier.Quantity,
+            Description = modifier.Description,
+            Unitid = modifier.Unitid,
+            ModifierGroups = await _modifierRepository.GetAllmodifierGroups(),
+            Units = await _unitRepository.GetUnitsListAsync()
+        };
+
+        var modifierGroupIds = new List<Modifiergroup>();
+        var Ids = new List<int>();
+
+        foreach(var mapping in mappings){
+            Ids.Add(mapping.ModifierGroupId);
+              var modifierGroup = await _modifierRepository.GetModifierGroupByIdAsync(mapping.ModifierGroupId);
+              modifierGroupIds.Add(modifierGroup);
+        }
+
+        model.Groups = modifierGroupIds;
+        model.SelectedModifierGroups = Ids;
+
+        return model;
+    }
+
+    public async Task EditModifier(ModifierViewModel model)
+    {
+        // Create new modifier group
+        var modifier = await _modifierRepository.GetModifierByIdAsync(model.Modifierid);
+
+        modifier.Modifiername = model.Modifiername;
+        modifier.Rate = model.Rate;
+        modifier.Quantity = model.Quantity;
+        modifier.Description = model.Description;
+        modifier.Unitid = model.Unitid;
+        modifier.Modifiergroupid = model.SelectedModifierGroups[0];
+
+        await _modifierRepository.UpdateModifier(modifier);
+
+        await _modifierRepository.RemoveMappings(model.Modifierid);
+
+        if (model.SelectedModifierGroups != null && model.SelectedModifierGroups.Count > 0)
+        {
+            foreach (var modifierGroupId in model.SelectedModifierGroups)
+            {
+                var mapping = new ModifierGroupModifierMapping
+                {
+                    ModifierGroupId = modifierGroupId,
+                    ModifierId = model.Modifierid
+                };
+
+                await _modifierRepository.AddMappings(mapping);
+            }
+        }
     }
 }

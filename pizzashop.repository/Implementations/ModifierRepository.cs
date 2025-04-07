@@ -22,11 +22,11 @@ public class ModifierRepository : IModifierRepository
         return model;
     }
 
-     public async Task<Modifiergroup> GetModifierGroupByIdAsync(int modifierGroupId)
-        {
-            return await _context.Modifiergroups.FirstOrDefaultAsync(u => u.Modifiergroupid == modifierGroupId);
+    public async Task<Modifiergroup> GetModifierGroupByIdAsync(int modifierGroupId)
+    {
+        return await _context.Modifiergroups.FirstOrDefaultAsync(u => u.Modifiergroupid == modifierGroupId);
 
-        }
+    }
 
     public async Task<List<ModifierGroupModifierMapping>> GetModifierByGroupAsync(int ModifierGroupId)
     {
@@ -87,27 +87,53 @@ public class ModifierRepository : IModifierRepository
     }
 
     public async Task AddMappings(ModifierGroupModifierMapping mapping)
-        {
-            _context.ModifierGroupModifierMappings.Add(mapping);
-            _context.SaveChanges();
-        }
+    {
+        _context.ModifierGroupModifierMappings.Add(mapping);
+        _context.SaveChanges();
+    }
     public async Task DeleteMappings(int modifierGroupId)
-        {
-            var mappings = await _context.ModifierGroupModifierMappings.Where(m => m.ModifierGroupId == modifierGroupId).ToListAsync();
-            _context.ModifierGroupModifierMappings.RemoveRange(mappings);
-            _context.SaveChanges();
-        }
+    {
+        var mappings = await _context.ModifierGroupModifierMappings.Where(m => m.ModifierGroupId == modifierGroupId).ToListAsync();
+        _context.ModifierGroupModifierMappings.RemoveRange(mappings);
+        _context.SaveChanges();
+    }
+    public async Task RemoveMappings(int modifierId)
+    {
+        var mappings = await _context.ModifierGroupModifierMappings.Where(m => m.ModifierId == modifierId).ToListAsync();
+        _context.ModifierGroupModifierMappings.RemoveRange(mappings);
+        _context.SaveChanges();
+    }
 
-        public IEnumerable<ModifierGroupModifierMapping> GetByModifierGroupId(int modifierGroupId)
-        {
-            return _context.ModifierGroupModifierMappings
-                .Where(m => m.ModifierGroupId == modifierGroupId)
-                .ToList();
-        }
+    public IEnumerable<ModifierGroupModifierMapping> GetByModifierGroupId(int modifierGroupId)
+    {
+        return _context.ModifierGroupModifierMappings
+            .Where(m => m.ModifierGroupId == modifierGroupId)
+            .ToList();
+    }
 
-        public async Task<Modifier> GetModifierByIdAsync(int modifierId){
-            return await _context.Modifiers.FirstOrDefaultAsync(m => m.Modifierid == modifierId);
-        }
+    public async Task<Modifier> GetModifierByIdAsync(int modifierId)
+    {
+        return await _context.Modifiers.FirstOrDefaultAsync(m => m.Modifierid == modifierId);
+    }
+
+    public async Task<int> AddModifier(Modifier modifier)
+    {
+        await _context.Modifiers.AddAsync(modifier);
+        await _context.SaveChangesAsync();
+        return modifier.Modifierid;
+    }
+    public async Task UpdateModifier(Modifier modifier)
+    {
+        _context.Modifiers.Update(modifier);
+        await _context.SaveChangesAsync();
+    }
+
+    public IEnumerable<ModifierGroupModifierMapping> GetMappingsByModifierId(int modifierId)
+    {
+        return _context.ModifierGroupModifierMappings
+            .Where(m => m.ModifierId == modifierId)
+            .ToList();
+    }
 }
 
 

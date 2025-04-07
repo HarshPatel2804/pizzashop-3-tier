@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using pizzashop.repository.Models;
 
-namespace pizzashop.repository.Models;
+namespace pizzashop.repository.ViewModels;
 
 public partial class ModifierViewModel
 {
@@ -30,6 +32,14 @@ public partial class ModifierViewModel
     public DateTime? Modifiedat { get; set; }
 
     public int? Modifiedby { get; set; }
+
+    public List<SelectListItem> ModifierGroups{get;set;}
+
+    public List<SelectListItem> Units{get;set;}
+
+    public List<Modifiergroup> Groups{get; set;}
+
+    public List<int> SelectedModifierGroups{get;set;}
 
     public virtual Modifiergroup Modifiergroup { get; set; } = null!;
 

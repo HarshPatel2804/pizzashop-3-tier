@@ -272,6 +272,7 @@ li {
     align-items: center;
     margin-right: 5px;
     font-size: 14px;
+    margin-bottom: -20px !important;
 }
 
 .tag-remove {

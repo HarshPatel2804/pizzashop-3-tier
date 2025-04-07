@@ -67,6 +67,11 @@ public class MenuController : Controller
         var model = await _menuService.GetItemDetails();
         return PartialView("_AddItem", model);
     }
+    public async Task<IActionResult> AddNewModifier()
+    {
+        var model = await _menuService.GetModifierGroups();
+        return PartialView("_AddNewModifier", model);
+    }
 
     [HttpPost]
     public async Task<IActionResult> AddNewItem(AddEditItemViewModel addEditItemViewModel, IFormFile ProfileImage)
@@ -277,6 +282,26 @@ public class MenuController : Controller
     public async Task<IActionResult> GetModifierGroupDetails(int modifierGroupId){
         var model = await _menuService.GetSelectedModifiers(modifierGroupId);
         return Json(new { success = true , Data = model});
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> SaveModifier([FromBody] ModifierViewModel model)
+    {
+        int modifierId = await _menuService.SaveModifier(model);
+        return Json(new { success = true });
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetModifierDetails(int modifierId){
+        var model = await _menuService.GetModifierDetails(modifierId);
+        return PartialView("_EditModifier", model);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> EditModifier([FromBody] ModifierViewModel model)
+    {
+        await _menuService.EditModifier(model);
+        return Json(new { success = true , modifierId = model.Modifierid});
     }
 
 }

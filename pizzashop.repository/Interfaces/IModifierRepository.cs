@@ -30,4 +30,12 @@ public interface IModifierRepository
 
     Task DeleteMappings(int modifierGroupId);
 
+    Task<int> AddModifier(Modifier modifier);
+
+    IEnumerable<ModifierGroupModifierMapping> GetMappingsByModifierId(int modifierId);
+
+    Task UpdateModifier(Modifier modifier);
+
+    Task RemoveMappings(int modifierId);
+
 }

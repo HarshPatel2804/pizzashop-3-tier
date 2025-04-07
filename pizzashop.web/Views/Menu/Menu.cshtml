@@ -224,12 +224,10 @@
                                 style="border-radius: 3px; border: 1px solid black">
                             <button type="button" class="btn" style="width: 50px; border: 1px solid black"><img
                                     src="~/images/trash.svg"></button>
-                            <a href="" type="button"
-                                class="btn col-md-auto col-3 ms-1 align-items-center d-flex item-button"
-                                style="border-radius: 2px; border: 1px solid black; background-color: rgb(85, 85, 247); color: white  !important;"
-                                data-bs-toggle="modal" data-bs-target="#addNewModifier">
+                            <button class="btn col-md-auto col-3 ms-1 align-items-center d-flex addModifier"
+                                style="border-radius: 2px; border: 1px solid black; background-color: rgb(85, 85, 247); color: white  !important;">
                                 + New Modifier
-                            </a>
+                            </button>
                         </div>
                         <div class="row table-responsive pt-4 ms-2 me-2" id="Modifier">
 
@@ -405,102 +403,11 @@
         </div>
     </div>
     <div class="modal-addNewModifier">
-    <div class="modal fade" id="addNewModifier" tabindex="-1" aria-labelledby="addNewModifier" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addNewModifier">Add New Modifier</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
 
-                <div class="modal-body">
-                    <!-- first row -->
-                    <div>
-                        <div class="container-fluid">
-                            <div class="row">
-                                <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
-                                    <div class="form-floating position-relative">
-                                        <div class="selected-options-display" id="selectedModifiersDisplay">
-                                            <span id="modifierPlaceholder"></span>
-                                            <!-- Selected options will appear here -->
-                                        </div>
-                                        <div class="dropdown-menu modifier-checkbox-dropdown" id="modifierDropdown">
-                                            <div class="modifier-checkbox-container">
-                                                <div class="form-check">
-                                                    <input class="form-check-input modifier-checkbox" type="checkbox" value="1" id="pastaModifier">
-                                                    <label class="form-check-label" for="pastaModifier">Pasta</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input modifier-checkbox" type="checkbox" value="2" id="pizzaModifier">
-                                                    <label class="form-check-label" for="pizzaModifier">Pizza</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input modifier-checkbox" type="checkbox" value="3" id="dessertsModifier">
-                                                    <label class="form-check-label" for="dessertsModifier">Desserts</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <label for="selectedModifiersDisplay">Select Modifier Group(s)</label>
-                                        <!-- Hidden input to store selected values -->
-                                        <input type="hidden" id="selectedModifiers" name="selectedModifiers">
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
-                                    <div class="form-floating">
-                                        <input type="text" class="form-control" id="floatingInput"
-                                            placeholder="Name" required>
-                                        <label for="floatingInput">Name*</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="container-fluid ">
-                        <div class="row">
-                            <div class="col-lg-4 col-md-4 col-sm-12 mb-3">
-                                <div class="form-floating">
-                                    <input type="text" class="form-control" id="floatingInput" placeholder="Rate"
-                                        required value="0">
-                                    <label for="floatingInput">Rate*</label>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-4 col-sm-12">
-                                <div class="form-floating">
-                                    <input type="text" class="form-control" id="floatingInput"
-                                        placeholder="Quantity" required value="0">
-                                    <label for="floatingInput">Quantity*</label>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-4 col-sm-12 doted-border">
-                                <div class="form-floating">
-                                    <select class="form-select" id="floatingSelect" aria-label="Item type" required>
-                                        <option selected>Select a Unit</option>
-                                        <option value="1">Pasta</option>
-                                        <option value="2">Pizza</option>
-                                        <option value="3">Desserts</option>
-                                    </select>
-                                    <label for="floatingSelect">Unit*</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="container form-floating">
-                        <textarea class="form-control" placeholder="Give Description of this Modifier"
-                            id="floatingTextarea"></textarea>
-                        <label for="floatingTextarea" style="left: 10px !important;">Description</label>
-                    </div>
-                </div>
-
-                <div class="modal-footer d-flex justify-content-end gap-2">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Save</button>
-                    <button type="button" class="btn btn-danger">Cancel</button>
-                </div>
-            </div>
-        </div>
     </div>
-</div>
+    <div class="modal-editModifier">
+
+    </div>
 
     <div class="modal fade modal-addModifiersGroup" id="addModifiersGroup" tabindex="-1"
         aria-labelledby="AddNewCategory" aria-hidden="true">
@@ -611,6 +518,7 @@
 
     $(document).ready(function () {
         let lastSelectedCategoryId = 0;
+        let lastSelectedModifierGroupId = 0;
         const selectedGroups = new Map();
         let selectedModifiers = [];
 
@@ -847,6 +755,7 @@
         });
         $(document).on("click", ".selectedModifierGroup", function () {
             var modifierGroupId = $(this).data("id");
+            lastSelectedModifierGroupId = modifierGroupId;
             modifierList(modifierGroupId);
         });
         $(document).on("click", ".edit-btn", function () {
@@ -1450,94 +1359,201 @@
             });
         });
 
-        const selectedModifiersDisplay = document.getElementById('selectedModifiersDisplay');
-const modifierDropdown = document.getElementById('modifierDropdown');
-const checkboxes = document.querySelectorAll('.modifier-checkbox');
-const selectedModifiersInput = document.getElementById('selectedModifiers');
-const modifierPlaceholder = document.getElementById('modifierPlaceholder');
+        function initializeModifierFunctionality() {
+            const selectedModifiersDisplay = document.getElementById('selectedModifiersDisplay');
+            const modifierDropdown = document.getElementById('modifierDropdown');
+            const checkboxes = document.querySelectorAll('.modifier-checkbox');
+            const selectedModifiersInput = document.getElementById('selectedModifiers');
+            const modifierPlaceholder = document.getElementById('modifierPlaceholder');
 
-// Array to store selected modifiers
-let selectedModifierGroups = [];
+            // Array to store selected modifiers
+            let selectedModifierGroups = [];
 
-// Toggle dropdown when clicking on the display area
-selectedModifiersDisplay.addEventListener('click', function() {
-  modifierDropdown.classList.toggle('show');
-});
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    console.log("checked")
+                    const value = checkbox.value;
+                    const label = checkbox.nextElementSibling.textContent;
+                    selectedModifierGroups.push({ value, label });
+                }
+            });
 
-// Close dropdown when clicking outside
-document.addEventListener('click', function(event) {
-  if (!selectedModifiersDisplay.contains(event.target) && !modifierDropdown.contains(event.target)) {
-    modifierDropdown.classList.remove('show');
-  }
-});
+            updateDisplay();
 
-// Handle checkbox changes
-checkboxes.forEach(checkbox => {
-  checkbox.addEventListener('change', function() {
-    const value = this.value;
-    const label = this.nextElementSibling.textContent;
-    
-    if (this.checked) {
-      // Add to selected modifiers
-      selectedModifierGroups.push({value, label});
-    } else {
-      // Remove from selected modifiers
-      selectedModifierGroups = selectedModifierGroups.filter(item => item.value !== value);
-    }
-    
-    updateDisplay();
-  });
-});
+            // Toggle dropdown when clicking on the display area
+            selectedModifiersDisplay.addEventListener('click', function () {
+                modifierDropdown.classList.toggle('show');
+            });
 
-// Update the display and hidden input
-function updateDisplay() {
-  // Clear current display except placeholder
-  const tags = selectedModifiersDisplay.querySelectorAll('.selected-tag');
-  tags.forEach(tag => tag.remove());
-  
-  if (selectedModifierGroups.length > 0) {
-    // Hide placeholder
-    modifierPlaceholder.style.display = 'none';
-    
-    // Create first tag
-    const firstTag = document.createElement('span');
-    firstTag.className = 'selected-tag';
-    firstTag.innerHTML = `${selectedModifierGroups[0].label} <span class="tag-remove" data-value="${selectedModifierGroups[0].value}">×</span>`;
-    selectedModifiersDisplay.appendChild(firstTag);
-    
-    // Add +N if there are more
-    if (selectedModifierGroups.length > 1) {
-      const moreTag = document.createElement('span');
-      moreTag.className = 'selected-tag';
-      moreTag.textContent = `+${selectedModifierGroups.length - 1}`;
-      selectedModifiersDisplay.appendChild(moreTag);
-    }
-  } else {
-    // Show placeholder if no selections
-    modifierPlaceholder.style.display = 'block';
-  }
-  
-  // Update hidden input value
-  selectedModifiersInput.value = JSON.stringify(selectedModifierGroups.map(item => item.value));
-  
-  // Add event listeners to remove buttons
-  const removeButtons = selectedModifiersDisplay.querySelectorAll('.tag-remove');
-  removeButtons.forEach(button => {
-    button.addEventListener('click', function(e) {
-      e.stopPropagation();
-      const valueToRemove = this.getAttribute('data-value');
-      
-      // Uncheck the corresponding checkbox
-      const checkbox = document.querySelector(`.modifier-checkbox[value="${valueToRemove}"]`);
-      if (checkbox) checkbox.checked = false;
-      
-      // Remove from array
-      selectedModifierGroups = selectedModifierGroups.filter(item => item.value !== valueToRemove);
-      
-      updateDisplay();
-    });
-  });
-}
+            // Close dropdown when clicking outside
+            $(document).on('click', function (event) {
+                if (!selectedModifiersDisplay.contains(event.target) && !modifierDropdown.contains(event.target)) {
+                    modifierDropdown.classList.remove('show');
+                }
+            });
 
+            // Handle checkbox changes
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function () {
+                    const value = this.value;
+                    const label = this.nextElementSibling.textContent;
+
+                    if (this.checked) {
+                        // Add to selected modifiers
+                        selectedModifierGroups.push({ value, label });
+                    } else {
+                        // Remove from selected modifiers
+                        selectedModifierGroups = selectedModifierGroups.filter(item => item.value !== value);
+                    }
+
+                    updateDisplay();
+                });
+            });
+
+            // Update the display and hidden input
+            function updateDisplay() {
+                // Clear current display except placeholder
+                const tags = selectedModifiersDisplay.querySelectorAll('.selected-tag');
+                tags.forEach(tag => tag.remove());
+
+                if (selectedModifierGroups.length > 0) {
+                    // Hide placeholder
+                    modifierPlaceholder.style.display = 'none';
+
+                    // Create first tag
+                    const firstTag = document.createElement('span');
+                    firstTag.className = 'selected-tag';
+                    firstTag.innerHTML = `${selectedModifierGroups[0].label} <span class="tag-remove" data-value="${selectedModifierGroups[0].value}">×</span>`;
+                    selectedModifiersDisplay.appendChild(firstTag);
+
+                    // Add +N if there are more
+                    if (selectedModifierGroups.length > 1) {
+                        const moreTag = document.createElement('span');
+                        moreTag.className = 'selected-tag';
+                        moreTag.textContent = `+${selectedModifierGroups.length - 1}`;
+                        selectedModifiersDisplay.appendChild(moreTag);
+                    }
+                } else {
+                    // Show placeholder if no selections
+                    modifierPlaceholder.style.display = 'block';
+                }
+
+                // Update hidden input value
+                selectedModifiersInput.value = JSON.stringify(selectedModifierGroups.map(item => item.value));
+
+                // Add event listeners to remove buttons
+                const removeButtons = selectedModifiersDisplay.querySelectorAll('.tag-remove');
+                removeButtons.forEach(button => {
+                    button.addEventListener('click', function (e) {
+                        e.stopPropagation();
+                        const valueToRemove = this.getAttribute('data-value');
+
+                        // Uncheck the corresponding checkbox
+                        const checkbox = document.querySelector(`.modifier-checkbox[value="${valueToRemove}"]`);
+                        if (checkbox) checkbox.checked = false;
+
+                        // Remove from array
+                        selectedModifierGroups = selectedModifierGroups.filter(item => item.value !== valueToRemove);
+                        console.log(selectedModifierGroups);
+
+                        updateDisplay();
+                    });
+                });
+            }
+
+            $('.Save-Modifier').on('click', function () {
+                // Collect form data
+                console.log('Hii');
+                const formData = {
+                    SelectedModifierGroups: selectedModifierGroups.map(item => parseInt(item.value)),
+                    Modifiername: $('#floatingInput').val(),
+                    Rate: parseFloat($('.form-floating input[placeholder="Rate"]').val()),
+                    Quantity: parseInt($('.form-floating input[placeholder="Quantity"]').val()),
+                    Unitid: $('#floatingSelect').val(),
+                    Description: $('#floatingTextarea').val()
+                };
+
+                // Send data to controller using AJAX
+                $.ajax({
+                    url: '/Menu/SaveModifier',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData),
+                    success: function (response) {
+                        // Handle success
+                        console.log('Success:', response);
+
+                        modifierList(lastSelectedModifierGroupId);
+                        $('#addNewModifier').modal('hide');
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle error
+                        console.error('Error:', error);
+                        alert('Failed to save modifier. Please try again.');
+                    }
+                });
+            });
+            $('.Edit-Modifier').on('click', function () {
+                const formData = {
+                    SelectedModifierGroups: selectedModifierGroups.map(item => parseInt(item.value)),
+                    Modifiername: $('#floatingInput-Name').val(),
+                    Rate: parseFloat($('.form-floating input[placeholder="Rate"]').val()),
+                    Quantity: parseInt($('.form-floating input[placeholder="Quantity"]').val()),
+                    Unitid: $('#floatingSelect').val(),
+                    Description: $('#floatingTextarea').val(),
+                    Modifierid: $('#modifierId').val()
+                };
+
+                // Send data to controller using AJAX
+                $.ajax({
+                    url: '/Menu/EditModifier',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData),
+                    success: function (response) {
+                        // Handle success
+                        console.log('Success:', response);
+
+                        modifierList(lastSelectedModifierGroupId);
+                        $('#editModifierModal').modal('hide');
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle error
+                        console.error('Error:', error);
+                        alert('Failed to save modifier. Please try again.');
+                    }
+                });
+            });
+        }
+
+        $(document).on("click", ".addModifier", function () {
+            console.log("clicked");
+            $.ajax({
+                url: "/Menu/AddNewModifier",
+                type: "GET",
+                success: function (response) {
+                    $(".modal-addNewModifier").html(response);
+                    $("#addNewModifier").modal("show");
+                    initializeModifierFunctionality();
+                    modifierList(lastSelectedModifierGroupId);
+                }
+            });
+        });
+
+        $(document).on("click", ".EditModifier", function () {
+            console.log("clicked");
+            var Id = $(this).data("id");
+            $.ajax({
+                url: "/Menu/GetModifierDetails",
+                type: "GET",
+                data: { modifierId: Id },
+                success: function (response) {
+                    $(".modal-editModifier").html(response);
+                    initializeModifierFunctionality();
+                    $("#editModifierModal").modal("show");
+                    modifierList(lastSelectedModifierGroupId);
+                }
+            });
+        });
     });
 </script>

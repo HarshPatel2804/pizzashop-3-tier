@@ -42,4 +42,12 @@ public interface IMenuService
     Task<ModifierGroupViewModel> GetSelectedModifiers(int modifierGroupId);
 
     Task<int> EditModifierGroup(ModifierGroupViewModel model);
+
+    Task<ModifierViewModel> GetModifierGroups();
+
+    Task<int> SaveModifier(ModifierViewModel model);
+
+    Task<ModifierViewModel> GetModifierDetails(int modifierId);
+
+    Task EditModifier(ModifierViewModel model);
 }
