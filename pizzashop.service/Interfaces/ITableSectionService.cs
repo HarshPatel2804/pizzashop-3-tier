@@ -27,4 +27,6 @@ public interface ITableSectionService
     Task EditTable(TableViewModel tableViewModel);
 
     Task UpdateSectionSortOrder(List<int> sortOrder);
+
+    Task DeleteMultipleTables(List<int> itemIds);
 }

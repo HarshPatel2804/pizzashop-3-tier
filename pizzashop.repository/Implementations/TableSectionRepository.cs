@@ -103,4 +103,10 @@ public class TableSectionRepository : ITableSectionRepository
         await _context.SaveChangesAsync();
     }
 
+    public async Task MassDeleteTable(List<int> Tableid)
+    {
+        await _context.Tables.Where(u => Tableid.Contains(u.Tableid)).ForEachAsync(u => u.Isdeleted = true);
+        await _context.SaveChangesAsync();
+    }
+
 }

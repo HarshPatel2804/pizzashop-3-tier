@@ -15,19 +15,32 @@ public class ItemRepository : IItemRepository
     }
 
     public async Task DeleteItemsByCategory(int Categoryid)
-    {
-        // Console.WriteLine(Categoryid + "items");
-        await _context.Items.Where(u => u.Categoryid== Categoryid).ForEachAsync(u => u.Isdeleted = true);
+    {      
+        var itemIds = await _context.Items
+        .Where(u => u.Categoryid == Categoryid && u.Isdeleted == false)
+        .Select(u => u.Itemid)
+        .ToListAsync();
+
+        await MassDeleteItem(itemIds);
         await _context.SaveChangesAsync();
     }
 
     public async Task DeleteItem(int Itemid)
     {
-        // Console.WriteLine(Categoryid + "items");
-        await _context.Items.Where(u => u.Itemid== Itemid).ForEachAsync(u => u.Isdeleted = true);
+        await _context.Items.Where(u => u.Itemid == Itemid).ForEachAsync(u => u.Isdeleted = true);
+        var mappings = await _context.Itemmodifiergroupmaps.Where(m => m.Itemid == Itemid).ToListAsync();
+        _context.Itemmodifiergroupmaps.RemoveRange(mappings);
         await _context.SaveChangesAsync();
     }
 
+    public async Task MassDeleteItem(List<int> Itemid)
+    {
+        await _context.Items.Where(u => Itemid.Contains(u.Itemid)).ForEachAsync(u => u.Isdeleted = true);
+        var mappings = await _context.Itemmodifiergroupmaps.Where(m => Itemid.Contains(m.Itemid)).ToListAsync();
+        _context.Itemmodifiergroupmaps.RemoveRange(mappings);
+        await _context.SaveChangesAsync();
+
+    }
 
     public async Task<(List<Item> users, int totalItems)> GetItemsByCategoryAsync(int CategoryId , int page, int pageSize, string search)
     {

@@ -12,7 +12,7 @@ public interface IModifierRepository
 
     Task<List<ModifierGroupModifierMapping>> GetModifierByGroupAsync(int ModifierGroupId);
 
-    Task DeleteModifier(int modifierId);
+    Task DeleteModifier(int modifierId , int modifierGroupId);
 
     Task<List<SelectListItem>> GetAllmodifierGroups();
 

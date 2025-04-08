@@ -50,9 +50,9 @@ public class MenuService : IMenuService
         await _itemRepository.DeleteItem(Itemid);
     }
 
-    public async Task DeleteModifier(int modifierId)
+    public async Task DeleteModifier(int modifierId , int modifierGroupId)
     {
-        await _modifierRepository.DeleteModifier(modifierId);
+        await _modifierRepository.DeleteModifier(modifierId , modifierGroupId);
     }
 
     public async Task EditCategory(CategoryViewModel model)
@@ -419,7 +419,8 @@ public class MenuService : IMenuService
 
         var mappings = _modifierRepository.GetMappingsByModifierId(modifierId);
 
-        ModifierViewModel model = new ModifierViewModel{
+        ModifierViewModel model = new ModifierViewModel
+        {
             Modifierid = modifier.Modifierid,
             Modifiername = modifier.Modifiername,
             Rate = modifier.Rate,
@@ -433,10 +434,11 @@ public class MenuService : IMenuService
         var modifierGroupIds = new List<Modifiergroup>();
         var Ids = new List<int>();
 
-        foreach(var mapping in mappings){
+        foreach (var mapping in mappings)
+        {
             Ids.Add(mapping.ModifierGroupId);
-              var modifierGroup = await _modifierRepository.GetModifierGroupByIdAsync(mapping.ModifierGroupId);
-              modifierGroupIds.Add(modifierGroup);
+            var modifierGroup = await _modifierRepository.GetModifierGroupByIdAsync(mapping.ModifierGroupId);
+            modifierGroupIds.Add(modifierGroup);
         }
 
         model.Groups = modifierGroupIds;
@@ -473,6 +475,18 @@ public class MenuService : IMenuService
 
                 await _modifierRepository.AddMappings(mapping);
             }
+        }
+    }
+
+    public async Task DeleteMultipleItems(List<int> itemIds)
+    {
+            await _itemRepository.MassDeleteItem(itemIds);
+    }
+
+     public async Task DeleteMultipleModifiers(List<int> itemIds , int modifierGroupId)
+    {
+        foreach(var id in itemIds){
+            await _modifierRepository.DeleteModifier(id , modifierGroupId);
         }
     }
 }

@@ -1,5 +1,5 @@
-D:\pizzashop\pizzashop.repository\bin\Debug\net7.0\pizzashop.repository.deps.json
-D:\pizzashop\pizzashop.repository\bin\Debug\net7.0\pizzashop.repository.runtimeconfig.json
+d:\pizzashop\pizzashop.repository\bin\Debug\net7.0\pizzashop.repository.deps.json
+d:\pizzashop\pizzashop.repository\bin\Debug\net7.0\pizzashop.repository.runtimeconfig.json
 D:\pizzashop\pizzashop.repository\bin\Debug\net7.0\pizzashop.repository.dll
 D:\pizzashop\pizzashop.repository\bin\Debug\net7.0\pizzashop.repository.pdb
 D:\pizzashop\pizzashop.repository\obj\Debug\net7.0\pizzashop.repository.csproj.AssemblyReference.cache
@@ -10,5 +10,5 @@ D:\pizzashop\pizzashop.repository\obj\Debug\net7.0\pizzashop.repository.csproj.C
 D:\pizzashop\pizzashop.repository\obj\Debug\net7.0\pizzashop.repository.dll
 D:\pizzashop\pizzashop.repository\obj\Debug\net7.0\refint\pizzashop.repository.dll
 D:\pizzashop\pizzashop.repository\obj\Debug\net7.0\pizzashop.repository.pdb
-D:\pizzashop\pizzashop.repository\obj\Debug\net7.0\pizzashop.repository.genruntimeconfig.cache
-D:\pizzashop\pizzashop.repository\obj\Debug\net7.0\ref\pizzashop.repository.dll
+d:\pizzashop\pizzashop.repository\obj\Debug\net7.0\pizzashop.repository.genruntimeconfig.cache
+d:\pizzashop\pizzashop.repository\obj\Debug\net7.0\ref\pizzashop.repository.dll

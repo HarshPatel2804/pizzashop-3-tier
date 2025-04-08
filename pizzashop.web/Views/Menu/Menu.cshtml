@@ -79,8 +79,8 @@
                         <div class="row justify-content-end ms-lg-5 me-lg-5 me-2 mt-2" style="height: 50px;">
                             <input type="search" class="col-md-auto col-6 me-1 " id="searchInput" placeholder="search"
                                 style="border-radius: 3px; border: 1px solid black">
-                            <button type="button" class="btn" style="width: 50px; border: 1px solid black"><img
-                                    src="~/images/trash.svg"></button>
+                            <button type="button" class="btn MassItemDelete"
+                                style="width: 50px; border: 1px solid black" data-bs-toggle="modal" data-bs-target="#MassDeleteItemModal"><img src="~/images/trash.svg"></button>
                             <button type="button"
                                 class="btn col-md-auto col-3 ms-1 align-items-center d-flex item-button addItem"
                                 style="border-radius: 2px; border: 1px solid black; background-color: rgb(85, 85, 247); color: white  !important;">
@@ -222,7 +222,7 @@
                         <div class="row justify-content-end ms-lg-5 me-lg-5 me-2 mt-2" style="height: 50px;">
                             <input type="search" class="col-md-auto col-6 me-1 " id="search" placeholder="search"
                                 style="border-radius: 3px; border: 1px solid black">
-                            <button type="button" class="btn" style="width: 50px; border: 1px solid black"><img
+                            <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#MassDeletemodifierModal" style="width: 50px; border: 1px solid black"><img
                                     src="~/images/trash.svg"></button>
                             <button class="btn col-md-auto col-3 ms-1 align-items-center d-flex addModifier"
                                 style="border-radius: 2px; border: 1px solid black; background-color: rgb(85, 85, 247); color: white  !important;">
@@ -402,6 +402,54 @@
             </div>
         </div>
     </div>
+    <div class="fade modal" id="MassDeleteItemModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="width: 400px;">
+            <div class="modal-content">
+                <div class="row mx-1 mt-2">
+                    <h5 class="modal-title col" id="staticBackdropLabel">Delete confirmation</h5>
+                    <button type="button" class="btn-close col-auto me-1" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="d-flex justify-content-center align-items-center mt-4 flex-column">
+                    <img src="~/images/caution.png" style="height: 40px; width: 40px;">
+                    <span>Are you sure you want to delete these items?</span>
+                    <form id="deleteItemForm">
+                        <div class="d-flex justify-content-center align-items-center mt-2 mb-4">
+                            <button type="submit" class="btn btn-primary MassItemDeleteBtn" data-bs-dismiss="modal"
+                                style="border-radius: 3px; width: 60px;">Yes</button>
+                            <button type="button" class="btn ms-2 border"
+                                style="border-radius: 3px; width: 60px;">No</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="fade modal" id="MassDeletemodifierModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="width: 400px;">
+            <div class="modal-content">
+                <div class="row mx-1 mt-2">
+                    <h5 class="modal-title col" id="staticBackdropLabel">Delete confirmation</h5>
+                    <button type="button" class="btn-close col-auto me-1" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="d-flex justify-content-center align-items-center mt-4 flex-column">
+                    <img src="~/images/caution.png" style="height: 40px; width: 40px;">
+                    <span>Are you sure you want to delete these modifiers?</span>
+                    <form>
+                        <div class="d-flex justify-content-center align-items-center mt-2 mb-4">
+                            <button type="submit" class="btn btn-primary MassModifierDeleteBtn" data-bs-dismiss="modal"
+                                style="border-radius: 3px; width: 60px;">Yes</button>
+                            <button type="button" class="btn ms-2 border"
+                                style="border-radius: 3px; width: 60px;">No</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal-addNewModifier">
 
     </div>
@@ -564,6 +612,7 @@
                 data: { page: page, pageSize: pageSize, search: search, categoryId: categoryId },
                 success: function (data) {
                     $('#itemByCategory').html(data);
+                    itemMassDelete();
                 }
             });
         };
@@ -611,6 +660,7 @@
                 data: { ModifierGroupId: ModifierGroupId },
                 success: function (data) {
                     $('#Modifier').html(data);
+                    modifierMassDelete();
                 }
             });
         };
@@ -736,12 +786,12 @@
         $("#deleteModifierForm").submit(function (e) {
             e.preventDefault(); // Prevent page refresh
             var modifierId = $("#modifier").val();
-            var modifierGroupId = $("#modifierGroup").val();
+            var modifierGroupId = lastSelectedModifierGroupId;
             console.log(modifierGroupId + "delete");
             $.ajax({
                 type: "POST",
                 url: '/Menu/DeleteModifier',
-                data: { modifierId: modifierId },
+                data: { modifierId: modifierId , modifierGroupId : modifierGroupId },
                 success: function (response) {
                     modifierList(modifierGroupId);
                 }
@@ -1207,7 +1257,7 @@
         $('form').on('submit', function (e) {
             if (selectedModifiers.length === 0) {
                 e.preventDefault();
-                alert('Please select at least one modifier');
+                @* alert('Please select at least one modifier'); *@
                 return;
             }
 
@@ -1330,6 +1380,8 @@
                             name: modifier.modifiername
                         });
                     });
+
+                    console.log(selectedModifiers[0].id + "Array");
 
                     $('#editModifiersGroup .existing-modifiers').remove();
 
@@ -1555,5 +1607,222 @@
                 }
             });
         });
+
+
+        function itemMassDelete() {
+            let selectedItemIds = [];
+
+            // Master checkbox click handler
+            $("#MasterCheckBoxDelete").on('click', function () {
+                console.log("checked");
+                const isChecked = $(this).prop('checked');
+
+                // Set all visible item checkboxes to match master checkbox
+                $("tbody #ModifierCheckBoxDelete").each(function () {
+                    $(this).prop('checked', isChecked);
+
+                    // Get item ID from the row
+                    const itemId = getItemIdFromRow($(this).closest('tr'));
+
+                    if (isChecked && !selectedItemIds.includes(itemId)) {
+                        // Add ID to array if checked and not already in array
+                        selectedItemIds.push(itemId);
+                    } else if (!isChecked) {
+                        // Remove ID from array if unchecked
+                        selectedItemIds = selectedItemIds.filter(id => id !== itemId);
+                    }
+                });
+
+                console.log("Selected Item IDs:", selectedItemIds);
+            });
+
+            // Individual checkbox click handler
+            $("tbody").on('click', "#ModifierCheckBoxDelete", function () {
+                const isChecked = $(this).prop('checked');
+                const itemId = getItemIdFromRow($(this).closest('tr'));
+
+                // Add or remove item ID from array
+                if (isChecked && !selectedItemIds.includes(itemId)) {
+                    selectedItemIds.push(itemId);
+                } else if (!isChecked) {
+                    selectedItemIds = selectedItemIds.filter(id => id !== itemId);
+                }
+
+                updateMasterCheckbox();
+                console.log("Selected Item IDs:", selectedItemIds);
+            });
+
+            // Function to get item ID from the table row
+            function getItemIdFromRow(row) {
+                const editItemElement = row.find('.editItem');
+                const deleteItemElement = row.find('.deleteItem');
+
+                if (editItemElement.length > 0) {
+                    return editItemElement.data('id');
+                } else if (deleteItemElement.length > 0) {
+                    return deleteItemElement.data('id');
+                }
+
+                // If no ID found, use the row index as fallback
+                return row.index();
+            }
+
+            function updateMasterCheckbox() {
+                const checkboxes = $("tbody #ModifierCheckBoxDelete");
+                const checkedCount = $("tbody #ModifierCheckBoxDelete:checked").length;
+
+                if (checkedCount === 0) {
+                    // No checkboxes are checked
+                    $("#masterModifierCheckBoxDelete").prop({
+                        'checked': false,
+                        'indeterminate': false
+                    });
+                } else if (checkedCount === checkboxes.length) {
+                    // All checkboxes are checked
+                    $("#masterModifierCheckBoxDelete").prop({
+                        'checked': true,
+                        'indeterminate': false
+                    });
+                } else {
+                    // Some checkboxes are checked
+                    $("#masterModifierCheckBoxDelete").prop({
+                        'checked': false,
+                        'indeterminate': true
+                    });
+                }
+            }
+
+            // Initialize master checkbox state on page load
+            updateMasterCheckbox();
+
+            $(document).on('click', '.MassItemDeleteBtn', function (e) {
+                e.preventDefault();
+                console.log(selectedItemIds);
+
+                    $.ajax({
+                        url: '/Menu/MassDeleteItems', 
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(
+                            selectedItemIds
+                        ),
+                        success: function (response) {
+                            if (response.success) {
+                                ItemList(lastSelectedCategoryId,1);
+                                selectedItemIds = [];
+                            } 
+                        }
+                    });
+            });
+        }
+
+        //Mass Delete Modifiers
+        function modifierMassDelete() {
+            let selectedItemIds = [];
+
+            // Master checkbox click handler
+            $("#MasterCheckBoxDelete").on('click', function () {
+                console.log("checked");
+                const isChecked = $(this).prop('checked');
+
+                // Set all visible item checkboxes to match master checkbox
+                $("tbody #ModifierCheckBoxDelete").each(function () {
+                    $(this).prop('checked', isChecked);
+
+                    // Get item ID from the row
+                    const itemId = getItemIdFromRow($(this).closest('tr'));
+
+                    if (isChecked && !selectedItemIds.includes(itemId)) {
+                        // Add ID to array if checked and not already in array
+                        selectedItemIds.push(itemId);
+                    } else if (!isChecked) {
+                        // Remove ID from array if unchecked
+                        selectedItemIds = selectedItemIds.filter(id => id !== itemId);
+                    }
+                });
+
+                console.log("Selected Item IDs:", selectedItemIds);
+            });
+
+            // Individual checkbox click handler
+            $("tbody").on('click', "#ModifierCheckBoxDelete", function () {
+                const isChecked = $(this).prop('checked');
+                const itemId = getItemIdFromRow($(this).closest('tr'));
+
+                // Add or remove item ID from array
+                if (isChecked && !selectedItemIds.includes(itemId)) {
+                    selectedItemIds.push(itemId);
+                } else if (!isChecked) {
+                    selectedItemIds = selectedItemIds.filter(id => id !== itemId);
+                }
+
+                updateMasterCheckbox();
+                console.log("Selected Item IDs:", selectedItemIds);
+            });
+
+            // Function to get item ID from the table row
+            function getItemIdFromRow(row) {
+                const editItemElement = row.find('.EditModifier');
+                const deleteItemElement = row.find('.deleteModifier');
+
+                if (editItemElement.length > 0) {
+                    return editItemElement.data('id');
+                } else if (deleteItemElement.length > 0) {
+                    return deleteItemElement.data('id');
+                }
+
+                // If no ID found, use the row index as fallback
+                return row.index();
+            }
+
+            function updateMasterCheckbox() {
+                const checkboxes = $("tbody #ModifierCheckBoxDelete");
+                const checkedCount = $("tbody #ModifierCheckBoxDelete:checked").length;
+
+                if (checkedCount === 0) {
+                    // No checkboxes are checked
+                    $("#MasterCheckBoxDelete").prop({
+                        'checked': false,
+                        'indeterminate': false
+                    });
+                } else if (checkedCount === checkboxes.length) {
+                    // All checkboxes are checked
+                    $("#MasterCheckBoxDelete").prop({
+                        'checked': true,
+                        'indeterminate': false
+                    });
+                } else {
+                    // Some checkboxes are checked
+                    $("#MasterCheckBoxDelete").prop({
+                        'checked': false,
+                        'indeterminate': true
+                    });
+                }
+            }
+
+            // Initialize master checkbox state on page load
+            updateMasterCheckbox();
+
+            $(document).on('click', '.MassModifierDeleteBtn', function (e) {
+                e.preventDefault();
+                console.log(typeof(selectedItemIds));
+
+                    $.ajax({
+                        url: '/Menu/MassDeleteModifiers', 
+                        type: 'POST',
+                        data: {
+                            selectedIds : selectedItemIds ,
+                            modifierGroupid : lastSelectedModifierGroupId
+                            }
+                        ,
+                        success: function (response) {
+                            if (response.success) {
+                                modifierList(lastSelectedModifierGroupId,1);
+                                selectedItemIds = [];
+                            } 
+                        }
+                    });
+            });
+        }
     });
 </script>

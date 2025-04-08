@@ -24,7 +24,7 @@ public interface IMenuService
 
     Task DeleteItem(int Itemid);
 
-    Task DeleteModifier(int modifierId);
+    Task DeleteModifier(int modifierId , int modifierGroupId);
 
     Task<AddEditItemViewModel> GetEditItemDetails(int itemId);
 
@@ -50,4 +50,8 @@ public interface IMenuService
     Task<ModifierViewModel> GetModifierDetails(int modifierId);
 
     Task EditModifier(ModifierViewModel model);
+
+    Task DeleteMultipleItems(List<int> itemIds);
+
+    Task DeleteMultipleModifiers(List<int> itemIds , int modifierGroupId);
 }

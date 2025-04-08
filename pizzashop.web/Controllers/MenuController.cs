@@ -166,10 +166,10 @@ public class MenuController : Controller
     }
 
     [HttpPost]
-    public async Task DeleteModifier(int modifierId)
+    public async Task DeleteModifier(int modifierId , int modifierGroupId)
     {
         Console.WriteLine(modifierId + "id");
-        await _menuService.DeleteModifier(modifierId);
+        await _menuService.DeleteModifier(modifierId , modifierGroupId);
     }
 
     [HttpGet]
@@ -269,19 +269,20 @@ public class MenuController : Controller
     public async Task<IActionResult> CreateModifierGroup([FromBody] ModifierGroupViewModel model)
     {
         int modifierGroupId = await _menuService.AddModifierGroup(model);
-        return Json(new { success = true , ID = modifierGroupId});
+        return Json(new { success = true, ID = modifierGroupId });
     }
     [HttpPost]
     public async Task<IActionResult> UpdateModifierGroup([FromBody] ModifierGroupViewModel model)
     {
         int modifierGroupId = await _menuService.EditModifierGroup(model);
-        return Json(new { success = true , ID = modifierGroupId});
+        return Json(new { success = true, ID = modifierGroupId });
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetModifierGroupDetails(int modifierGroupId){
+    public async Task<IActionResult> GetModifierGroupDetails(int modifierGroupId)
+    {
         var model = await _menuService.GetSelectedModifiers(modifierGroupId);
-        return Json(new { success = true , Data = model});
+        return Json(new { success = true, Data = model });
     }
 
     [HttpPost]
@@ -292,7 +293,8 @@ public class MenuController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetModifierDetails(int modifierId){
+    public async Task<IActionResult> GetModifierDetails(int modifierId)
+    {
         var model = await _menuService.GetModifierDetails(modifierId);
         return PartialView("_EditModifier", model);
     }
@@ -301,7 +303,21 @@ public class MenuController : Controller
     public async Task<IActionResult> EditModifier([FromBody] ModifierViewModel model)
     {
         await _menuService.EditModifier(model);
-        return Json(new { success = true , modifierId = model.Modifierid});
+        return Json(new { success = true, modifierId = model.Modifierid });
+    }
+
+    [HttpPost]
+    public async Task<JsonResult> MassDeleteItems([FromBody] List<int> selectedIds)
+    {
+       await _menuService.DeleteMultipleItems(selectedIds);
+        return Json(new { success = true, message = "Items deleted successfully" });
+    }
+
+    [HttpPost]
+    public async Task<JsonResult> MassDeleteModifiers(List<int> selectedIds , int modifierGroupid)
+    {
+       await _menuService.DeleteMultipleModifiers(selectedIds , modifierGroupid);
+        return Json(new { success = true, message = "Modifiers deleted successfully" });
     }
 
 }

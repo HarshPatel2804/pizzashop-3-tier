@@ -144,4 +144,9 @@ public class TableSectionService : ITableSectionService
     public async Task UpdateSectionSortOrder(List<int> sortOrder){
         await _tableSectionRepository.UpdateSortOrderOfSection(sortOrder);
     }
+
+    public async Task DeleteMultipleTables(List<int> itemIds)
+    {
+        await _tableSectionRepository.MassDeleteTable(itemIds);
+    }
 }

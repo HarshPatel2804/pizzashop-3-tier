@@ -28,4 +28,6 @@ public interface ITableSectionRepository
     Task EditTableAsync(Table table);
 
     Task UpdateSortOrderOfSection(List<int> sortOrder);
+
+    Task MassDeleteTable(List<int> Tableid);
 }

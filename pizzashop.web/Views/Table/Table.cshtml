@@ -33,7 +33,7 @@
                     </div>
                     <input type="search" class="col-md-auto col-6 me-1 ms-auto " id="search" placeholder="search"
                         style="border-radius: 3px; border: 1px solid black">
-                    <button type="button" class="btn" style="width: 50px; border: 1px solid black"><img
+                    <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#MassDeleteTableModal" style="width: 50px; border: 1px solid black"><img
                             src="~/images/trash.svg"></button>
                     <button type="button" class="btn col-md-auto col-3 ms-1 align-items-center d-flex addTable"
                         style="border-radius: 2px; border: 1px solid black; background-color: rgb(85, 85, 247); color: white  !important;">
@@ -195,235 +195,367 @@
     <div id="TableModal" tabindex="-1" aria-labelledby="addTableLabel" aria-hidden="true">
 
     </div>
+
+    <div class="fade modal" id="MassDeleteTableModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="width: 400px;">
+            <div class="modal-content">
+                <div class="row mx-1 mt-2">
+                    <h5 class="modal-title col" id="staticBackdropLabel">Delete confirmation</h5>
+                    <button type="button" class="btn-close col-auto me-1" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="d-flex justify-content-center align-items-center mt-4 flex-column">
+                    <img src="~/images/caution.png" style="height: 40px; width: 40px;">
+                    <span>Are you sure you want to delete these tables?</span>
+                    <form id="deleteModifierForm">
+                        <div class="d-flex justify-content-center align-items-center mt-2 mb-4">
+                            <button type="submit" class="btn btn-primary MassItemDeleteBtn" data-bs-dismiss="modal"
+                                style="border-radius: 3px; width: 60px;">Yes</button>
+                            <button type="button" class="btn ms-2 border"
+                                style="border-radius: 3px; width: 60px;">No</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
-    <script>
-        $(document).ready(function () {
-            let lastSelectedSectionId = 0;
+<script>
+    $(document).ready(function () {
+        let lastSelectedSectionId = 0;
 
-            $(document).on("click", ".delete-section", function () {
-                var Id = $(this).data("id");
-                $("#hiddenField").val(Id);
-            });
+        $(document).on("click", ".delete-section", function () {
+            var Id = $(this).data("id");
+            $("#hiddenField").val(Id);
+        });
 
-            function sectionList() {
-                $.ajax({
-                    url: '/Table/Section',
-                    type: 'GET',
-                    success: function (data) {
-                        $('#Sections').html(data);
-                    }
-                });
-            };
-
-            function TableList(sectionId, page) {
-                let pageSize = $("#pageSizeSelect").val();
-                let search = $("#search").val();
-                $.ajax({
-                    type: "GET",
-                    url: '/Table/Tables',
-                    contentType: "application/json",
-                    data: { page: page, pageSize: pageSize, search: search, sectionId: sectionId },
-                    success: function (data) {
-                        $('#TablesBySection').html(data);
-                    }
-                });
-            };
-
-            $("#TablesBySection").on("click", ".pagination-link", function (e) {
-                e.preventDefault();
-                let page = $(this).data("page");
-                let sectionId = $("#sectionId").val();
-                if (page > 0) {
-                    TableList(sectionId, page);
+        function sectionList() {
+            $.ajax({
+                url: '/Table/Section',
+                type: 'GET',
+                success: function (data) {
+                    $('#Sections').html(data);
                 }
             });
+        };
 
-            $("#TablesBySection").on("change", "#pageSizeSelect", function () {
-                let sectionId = $("#sectionId").val();
-                TableList(sectionId, 1);
+        function TableList(sectionId, page) {
+            let pageSize = $("#pageSizeSelect").val();
+            let search = $("#search").val();
+            $.ajax({
+                type: "GET",
+                url: '/Table/Tables',
+                contentType: "application/json",
+                data: { page: page, pageSize: pageSize, search: search, sectionId: sectionId },
+                success: function (data) {
+                    $('#TablesBySection').html(data);
+                    tableMassDelete();
+                }
             });
+        };
 
-            let searchTimer;
-            $("#search").on("input", function () {
-                clearTimeout(searchTimer);
-                let sectionId = $("#sectionId").val();
-                searchTimer = setTimeout(function () {
-                    TableList(sectionId || lastSelectedSectionId, 1);
-                }, 100);
-            });
-
-            $(document).on("click", ".selectedSection", function () {
-                var sectionId = $(this).data("id");
-                console.log(sectionId + "section");
-                lastSelectedSectionId = sectionId;
-                TableList(sectionId, 1);
-            });
-
-            $("#addSectionForm").submit(function (e) {
-                e.preventDefault(); // Prevent page refresh
-
-                var formData = {
-                    Sectionname: $("#SectionName").val(),
-                    Description: $("#SectionDescription").val()
-                };
-                console.log(formData);
-                $.ajax({
-                    type: "POST",
-                    url: '/Table/AddSection',
-                    contentType: "application/json",
-                    data: JSON.stringify(formData),
-                    success: function (response) {
-                        $("#SectionName").val("");
-                        $("#SectionDescription").val("");
-                        sectionList();
-                    }
-                });
-            });
-
-            $(document).on("click", ".edit-btn", function () {
-                var sectionId = $(this).data("id");
-                $.ajax({
-                    type: "GET",
-                    url: '/Table/EditSectionById',
-                    contentType: "application/json",
-                    data: { sectionId: sectionId },
-                    success: function (data) {
-                        console.log(data);
-                        $("#Sectionid").val(data.sectionid);
-                        $('#EditSectionname').val(data.sectionname);
-                        $('#EditDescription').val(data.description);
-                    }
-                });
-            });
-            $("#editSectionForm").submit(function (e) {
-                e.preventDefault(); // Prevent page refresh
-
-                var formData = {
-                    Sectionid: $("#Sectionid").val(),
-                    Sectionname: $("#EditSectionname").val(),
-                    Description: $("#EditDescription").val()
-                };
-                console.log(formData);
-                $.ajax({
-                    type: "POST",
-                    url: '/Table/EditSectionById',
-                    contentType: "application/json",
-                    data: JSON.stringify(formData),
-                    success: function (response) {
-                        sectionList();
-                    }
-                });
-            });
-
-            $("#deleteSectionForm").submit(function (e) {
-                e.preventDefault(); // Prevent page refresh
-                var sectionId = $("#hiddenField").val();
-                console.log(sectionId + "section");
-                $.ajax({
-                    type: "POST",
-                    url: '/Table/DeleteSection',
-                    data: { sectionId: sectionId },
-                    success: function (response) {
-                        sectionList();
-                        TableList(sectionId, 1);
-                    }
-                });
-            });
-
-            $(document).on("click", ".addTable", function () {
-                console.log("clicked");
-                $.ajax({
-                    url: "/Table/AddNewTable",
-                    type: "GET",
-                    success: function (response) {
-                        $("#TableModal").html(response);
-                        $("#AddTableModal").modal("show");
-                    }
-                });
-            });
-
-            $(document).on("click", "#SaveTable", function (e) {
-                e.preventDefault();
-                console.log("clicked");
-                var formData = new FormData($("#addTableForm")[0]);
-                var sectionId = $("#SectionId").val();
-                console.log(formData + "Hii");
-                $.ajax({
-                    url: "/Table/AddNewTable",
-                    type: "POST",
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    dataType: "json",
-                    success: function (response) {
-                        TableList(sectionId, 1);
-                    },
-                    error: function (error) {
-
-                    }
-                });
-            });
-
-            $(document).on("click", ".deleteTable", function () {
-                var table = $(this).data("id");
-                console.log(table + "delete");
-                var section = $(this).data("sectionid");
-                $("#table").val(table);
-                $("#section").val(section);
-            });
-
-            $("#deleteTableForm").submit(function (e) {
-                e.preventDefault(); // Prevent page refresh
-                var tableId = $("#table").val();
-                var sectionId = $("#section").val();
-                console.log(tableId + "delete");
-                $.ajax({
-                    type: "POST",
-                    url: '/Table/DeleteTable',
-                    data: { tableId: tableId },
-                    success: function (response) {
-                        TableList(sectionId, 1);
-                    }
-                });
-            });
-
-            $(document).on("click", ".editTable", function () {
-                var tableId = $(this).data("id");
-                console.log("clicked");
-                $.ajax({
-                    url: "/Table/editTable",
-                    type: "GET",
-                    data: { tableId: tableId },
-                    success: function (response) {
-                        $("#TableModal").html(response);
-                        $("#EditTableModal").modal("show");
-                    }
-                });
-            });
-
-            $(document).on("click", "#SaveEditTable", function (e) {
-                e.preventDefault();
-                console.log("clicked");
-                var formData = new FormData($("#editTableForm")[0]);
-                var Sectionid = $("#SectionId").val();
-                console.log(Sectionid + "section");
-                console.log(formData + "Hii");
-                $.ajax({
-                    url: "/Table/editTable",
-                    type: "POST",
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    dataType: "json",
-                    success: function (response) {
-                        TableList(Sectionid, 1);
-                    },
-                    error: function (error) {
-
-                    }
-                });
-            });
-
-            sectionList();
+        $("#TablesBySection").on("click", ".pagination-link", function (e) {
+            e.preventDefault();
+            let page = $(this).data("page");
+            let sectionId = $("#sectionId").val();
+            if (page > 0) {
+                TableList(sectionId, page);
+            }
         });
-    </script>
+
+        $("#TablesBySection").on("change", "#pageSizeSelect", function () {
+            let sectionId = $("#sectionId").val();
+            TableList(sectionId, 1);
+        });
+
+        let searchTimer;
+        $("#search").on("input", function () {
+            clearTimeout(searchTimer);
+            let sectionId = $("#sectionId").val();
+            searchTimer = setTimeout(function () {
+                TableList(sectionId || lastSelectedSectionId, 1);
+            }, 100);
+        });
+
+        $(document).on("click", ".selectedSection", function () {
+            var sectionId = $(this).data("id");
+            console.log(sectionId + "section");
+            lastSelectedSectionId = sectionId;
+            TableList(sectionId, 1);
+        });
+
+        $("#addSectionForm").submit(function (e) {
+            e.preventDefault(); // Prevent page refresh
+
+            var formData = {
+                Sectionname: $("#SectionName").val(),
+                Description: $("#SectionDescription").val()
+            };
+            console.log(formData);
+            $.ajax({
+                type: "POST",
+                url: '/Table/AddSection',
+                contentType: "application/json",
+                data: JSON.stringify(formData),
+                success: function (response) {
+                    $("#SectionName").val("");
+                    $("#SectionDescription").val("");
+                    sectionList();
+                }
+            });
+        });
+
+        $(document).on("click", ".edit-btn", function () {
+            var sectionId = $(this).data("id");
+            $.ajax({
+                type: "GET",
+                url: '/Table/EditSectionById',
+                contentType: "application/json",
+                data: { sectionId: sectionId },
+                success: function (data) {
+                    console.log(data);
+                    $("#Sectionid").val(data.sectionid);
+                    $('#EditSectionname').val(data.sectionname);
+                    $('#EditDescription').val(data.description);
+                }
+            });
+        });
+        $("#editSectionForm").submit(function (e) {
+            e.preventDefault(); // Prevent page refresh
+
+            var formData = {
+                Sectionid: $("#Sectionid").val(),
+                Sectionname: $("#EditSectionname").val(),
+                Description: $("#EditDescription").val()
+            };
+            console.log(formData);
+            $.ajax({
+                type: "POST",
+                url: '/Table/EditSectionById',
+                contentType: "application/json",
+                data: JSON.stringify(formData),
+                success: function (response) {
+                    sectionList();
+                }
+            });
+        });
+
+        $("#deleteSectionForm").submit(function (e) {
+            e.preventDefault(); // Prevent page refresh
+            var sectionId = $("#hiddenField").val();
+            console.log(sectionId + "section");
+            $.ajax({
+                type: "POST",
+                url: '/Table/DeleteSection',
+                data: { sectionId: sectionId },
+                success: function (response) {
+                    sectionList();
+                    TableList(sectionId, 1);
+                }
+            });
+        });
+
+        $(document).on("click", ".addTable", function () {
+            console.log("clicked");
+            $.ajax({
+                url: "/Table/AddNewTable",
+                type: "GET",
+                success: function (response) {
+                    $("#TableModal").html(response);
+                    $("#AddTableModal").modal("show");
+                }
+            });
+        });
+
+        $(document).on("click", "#SaveTable", function (e) {
+            e.preventDefault();
+            console.log("clicked");
+            var formData = new FormData($("#addTableForm")[0]);
+            var sectionId = $("#SectionId").val();
+            console.log(formData + "Hii");
+            $.ajax({
+                url: "/Table/AddNewTable",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                dataType: "json",
+                success: function (response) {
+                    TableList(sectionId, 1);
+                },
+                error: function (error) {
+
+                }
+            });
+        });
+
+        $(document).on("click", ".deleteTable", function () {
+            var table = $(this).data("id");
+            console.log(table + "delete");
+            var section = $(this).data("sectionid");
+            $("#table").val(table);
+            $("#section").val(section);
+        });
+
+        $("#deleteTableForm").submit(function (e) {
+            e.preventDefault(); // Prevent page refresh
+            var tableId = $("#table").val();
+            var sectionId = $("#section").val();
+            console.log(tableId + "delete");
+            $.ajax({
+                type: "POST",
+                url: '/Table/DeleteTable',
+                data: { tableId: tableId },
+                success: function (response) {
+                    TableList(sectionId, 1);
+                }
+            });
+        });
+
+        $(document).on("click", ".editTable", function () {
+            var tableId = $(this).data("id");
+            console.log("clicked");
+            $.ajax({
+                url: "/Table/editTable",
+                type: "GET",
+                data: { tableId: tableId },
+                success: function (response) {
+                    $("#TableModal").html(response);
+                    $("#EditTableModal").modal("show");
+                }
+            });
+        });
+
+        $(document).on("click", "#SaveEditTable", function (e) {
+            e.preventDefault();
+            console.log("clicked");
+            var formData = new FormData($("#editTableForm")[0]);
+            var Sectionid = $("#SectionId").val();
+            console.log(Sectionid + "section");
+            console.log(formData + "Hii");
+            $.ajax({
+                url: "/Table/editTable",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                dataType: "json",
+                success: function (response) {
+                    TableList(Sectionid, 1);
+                },
+                error: function (error) {
+
+                }
+            });
+        });
+
+        sectionList();
+
+        function tableMassDelete() {
+            let selectedItemIds = [];
+
+            // Master checkbox click handler
+            $("#masterTableCheckbox").on('click', function () {
+                console.log("checked");
+                const isChecked = $(this).prop('checked');
+
+                // Set all visible item checkboxes to match master checkbox
+                $("tbody #TableCheckbox").each(function () {
+                    $(this).prop('checked', isChecked);
+
+                    // Get item ID from the row
+                    const itemId = getItemIdFromRow($(this).closest('tr'));
+
+                    if (isChecked && !selectedItemIds.includes(itemId)) {
+                        // Add ID to array if checked and not already in array
+                        selectedItemIds.push(itemId);
+                    } else if (!isChecked) {
+                        // Remove ID from array if unchecked
+                        selectedItemIds = selectedItemIds.filter(id => id !== itemId);
+                    }
+                });
+
+                console.log("Selected Item IDs:", selectedItemIds);
+            });
+
+            // Individual checkbox click handler
+            $("tbody").on('click', "#TableCheckbox", function () {
+                const isChecked = $(this).prop('checked');
+                const itemId = getItemIdFromRow($(this).closest('tr'));
+
+                // Add or remove item ID from array
+                if (isChecked && !selectedItemIds.includes(itemId)) {
+                    selectedItemIds.push(itemId);
+                } else if (!isChecked) {
+                    selectedItemIds = selectedItemIds.filter(id => id !== itemId);
+                }
+
+                updateMasterCheckbox();
+                console.log("Selected Item IDs:", selectedItemIds);
+            });
+
+            // Function to get item ID from the table row
+            function getItemIdFromRow(row) {
+                const editItemElement = row.find('.editTable');
+                const deleteItemElement = row.find('.deleteTable');
+
+                if (editItemElement.length > 0) {
+                    return editItemElement.data('id');
+                } else if (deleteItemElement.length > 0) {
+                    return deleteItemElement.data('id');
+                }
+
+                // If no ID found, use the row index as fallback
+                return row.index();
+            }
+
+            function updateMasterCheckbox() {
+                const checkboxes = $("tbody #TableCheckbox");
+                const checkedCount = $("tbody #TableCheckbox:checked").length;
+
+                if (checkedCount === 0) {
+                    // No checkboxes are checked
+                    $("#masterTableCheckbox").prop({
+                        'checked': false,
+                        'indeterminate': false
+                    });
+                } else if (checkedCount === checkboxes.length) {
+                    // All checkboxes are checked
+                    $("#masterTableCheckbox").prop({
+                        'checked': true,
+                        'indeterminate': false
+                    });
+                } else {
+                    // Some checkboxes are checked
+                    $("#masterTableCheckbox").prop({
+                        'checked': false,
+                        'indeterminate': true
+                    });
+                }
+            }
+
+            updateMasterCheckbox();
+
+            $(document).on('click', '.MassItemDeleteBtn', function (e) {
+                e.preventDefault();
+                console.log(selectedItemIds);
+
+                $.ajax({
+                    url: '/Table/MassDeleteTables',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(
+                        selectedItemIds
+                    ),
+                    success: function (response) {
+                        if (response.success) {
+                            TableList(lastSelectedSectionId, 1);
+                            selectedItemIds = [];
+                        }
+                    }
+                });
+            });
+        }
+    });
+</script>

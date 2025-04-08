@@ -89,4 +89,11 @@ public class TableController : Controller
     public async Task UpdateSectionOrder(List<int> sortOrder){
         await _tableSectionService.UpdateSectionSortOrder(sortOrder);
     }
+
+    [HttpPost]
+    public async Task<JsonResult> MassDeleteTables([FromBody] List<int> selectedIds)
+    {
+       await _tableSectionService.DeleteMultipleTables(selectedIds);
+        return Json(new { success = true, message = "Items deleted successfully" });
+    }
 }

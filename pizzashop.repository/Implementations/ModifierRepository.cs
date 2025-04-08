@@ -35,9 +35,17 @@ public class ModifierRepository : IModifierRepository
                     .ToListAsync();
     }
 
-    public async Task DeleteModifier(int modifierId)
+    public async Task DeleteModifier(int modifierId , int modifierGroupId)
     {
+        var mappings = await _context.ModifierGroupModifierMappings.Where(u => u.ModifierGroupId == modifierGroupId && u.ModifierId == modifierId)
+                    .Include(u => u.Modifier)
+                    .ToListAsync();
+        _context.ModifierGroupModifierMappings.RemoveRange(mappings);
+        await _context.SaveChangesAsync();
+        var count = await _context.ModifierGroupModifierMappings.Where(u => u.ModifierId == modifierId).CountAsync();
+        if(count == 0){
         await _context.Modifiers.Where(u => u.Modifierid == modifierId).ForEachAsync(u => u.Isdeleted = true);
+        }
         await _context.SaveChangesAsync();
     }
 
