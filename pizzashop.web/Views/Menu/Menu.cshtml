@@ -307,7 +307,7 @@
                     </div>
                     <input type="hidden" id="Categoryid" />
                     <div class="d-flex justify-content-end align-items-center mt-5 mb-4">
-                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal"
+                        <button type="submit" class="btn btn-primary"
                             style="border-radius: 3px;" id="Save">Save</button>
                         <button type="button" class="btn ms-2 border" data-bs-dismiss="modal"
                             style="border-radius: 3px; ">Cancel</button>
@@ -338,7 +338,7 @@
                         <label for="Description" class="label-pad">Description</label>
                     </div>
                     <div class="d-flex justify-content-end align-items-center mt-5 mb-4">
-                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal"
+                        <button type="submit" class="btn btn-primary"
                             style="border-radius: 3px;" id="Save">Save</button>
                         <button type="button" class="btn ms-2 border" data-bs-dismiss="modal"
                             style="border-radius: 3px; ">Cancel</button>
@@ -469,8 +469,7 @@
                     <div class="modal-body ">
 
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="modifierGroupName" placeholder="Category name"
-                                required>
+                            <input type="text" class="form-control" id="modifierGroupName" placeholder="Category name">
                             <label for="modifierGroupName">Name*</label>
                         </div>
 
@@ -485,7 +484,7 @@
 
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary sav-btn" data-bs-dismiss="modal">Save</button>
+                        <button type="submit" class="btn btn-primary sav-btn">Save</button>
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
                     </div>
                 </form>
@@ -507,7 +506,7 @@
 
                         <div class="form-floating mb-3">
                             <input type="text" class="form-control" id="editmodifierGroupName"
-                                placeholder="Category name" required>
+                                placeholder="Category name">
                             <label for="editmodifierGroupName">Name*</label>
                         </div>
 
@@ -522,7 +521,7 @@
 
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary sav-btn" data-bs-dismiss="modal">Save</button>
+                        <button type="submit" class="btn btn-primary sav-btn">Save</button>
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
                     </div>
                 </form>
@@ -734,11 +733,20 @@
         });
 
         $("#addCategoryForm").submit(function (e) {
-            e.preventDefault(); // Prevent page refresh
+            e.preventDefault(); 
+
+            $(".error-message").remove();
+    
+            var categoryName = $("#Categoryname").val();
+            var description = $("#Description").val();
+            if (!categoryName.trim()) {
+        $("#Categoryname").after('<div class="error-message text-danger mt-1">Category name is required</div>');
+        return;
+    }
 
             var formData = {
-                Categoryname: $("#Categoryname").val(),
-                Description: $("#Description").val()
+                Categoryname: categoryName,
+                Description: description
             };
             console.log(formData);
             $.ajax({
@@ -747,10 +755,15 @@
                 contentType: "application/json",
                 data: JSON.stringify(formData),
                 success: function (response) {
-                    $("#Categoryname").val("");
-                    $("#Description").val("");
-                    categoryList();
-                }
+                  if (response.success) {
+                $("#Categoryname").val("");
+                $("#Description").val("");
+                $("#Add-Category").modal('hide');
+                categoryList();
+            } else {
+                $("#Categoryname").after('<div class="error-message text-danger mt-1">' + response.message + '</div>');
+            }
+            }
             });
         });
         $("#deleteCategoryForm").submit(function (e) {
@@ -824,7 +837,16 @@
             });
         });
         $("#editCategoryForm").submit(function (e) {
-            e.preventDefault(); // Prevent page refresh
+            e.preventDefault(); 
+
+            $(".error-message").remove();
+    
+            var categoryName = $("#EditCategoryname").val();
+            var description = $("#EditDescription").val();
+            if (!categoryName.trim()) {
+        $("#EditCategoryname").after('<div class="error-message text-danger mt-1">Category name is required</div>');
+        return;
+    }
 
             var formData = {
                 Categoryid: $("#Categoryid").val(),
@@ -838,7 +860,12 @@
                 contentType: "application/json",
                 data: JSON.stringify(formData),
                 success: function (response) {
-                    categoryList();
+                    if (response.success) {
+                $("#Edit-Category").modal('hide');
+                categoryList();
+            } else {
+                $("#EditCategoryname").after('<div class="error-message text-danger mt-1">' + response.message + '</div>');
+            }
                 }
             });
         });
@@ -1172,7 +1199,6 @@
                     checkbox.attr('checked', 'checked');
                 }
             } else {
-                // Remove modifier from selected list
                 selectedModifiers = selectedModifiers.filter(m => m.id !== modifierId);
                 checkbox.removeAttr('checked');
             }
@@ -1180,7 +1206,6 @@
             updateCheckboxStates();
         });
 
-        // Handle master checkbox (select/deselect all)
         $(document).on('change', '#MasterCheckBox', function () {
             const isChecked = $(this).is(':checked');
 
@@ -1215,13 +1240,10 @@
             $('#addModifiersGroup .existing-modifiers').remove();
             $('#editModifiersGroup .existing-modifiers').remove();
 
-            // Create a container for selected modifiers
             const addModifiersContainer = $('<div class="existing-modifiers d-flex flex-wrap gap-2 mt-2"></div>');
 
-            // Create modifiers for the Edit modal
             const editModifiersContainer = $('<div class="existing-modifiers d-flex flex-wrap gap-2 mt-2"></div>');
 
-            // Add selected modifiers to both containers
             selectedModifiers.forEach(function (modifier) {
                 const addBadge = $(`
             <span class="badge bg-primary d-flex align-items-center" data-modifier-id="${modifier.id}">
@@ -1241,7 +1263,6 @@
                 editModifiersContainer.append(editBadge);
             });
 
-            // Insert into respective modals
             $('#AddModifierGroupBtn').after(addModifiersContainer);
             $('#EditModifierGroupBtn').after(editModifiersContainer);
         });
@@ -1253,7 +1274,6 @@
             selectedModifiers = selectedModifiers.filter(m => m.id != modifierId);
         });
 
-        // Optional: Prepare data for form submission
         $('form').on('submit', function (e) {
             if (selectedModifiers.length === 0) {
                 e.preventDefault();
@@ -1261,7 +1281,6 @@
                 return;
             }
 
-            // Create hidden inputs for form submission
             const hiddenInputsContainer = $('<div class="selected-modifiers-inputs"></div>');
             selectedModifiers.forEach((modifier, index) => {
                 hiddenInputsContainer.append(`
@@ -1270,7 +1289,6 @@
             `);
             });
 
-            // Remove any existing hidden inputs and append new ones
             $('.selected-modifiers-inputs').remove();
             $('form').append(hiddenInputsContainer);
         });
@@ -1278,9 +1296,14 @@
         $(".modal-addModifiersGroup form").submit(function (e) {
             e.preventDefault();
 
-            // Get form values
-            const modifierGroupName = $("#modifierGroupName").val();
+            $(".error-message").remove();
+    
+    const modifierGroupName = $("#modifierGroupName").val();
             const description = $("#modifierGroupDescription").val();
+    if (!modifierGroupName.trim()) {
+        $("#modifierGroupName").after('<div class="error-message text-danger mt-1">Modifier group name is required</div>');
+        return;
+    }
 
             console.log(modifierGroupName + "name");
 
@@ -1303,61 +1326,64 @@
                 success: function (response) {
                     if (response.success) {
 
-                        $("#floatingInput").val('');
-                        $("#floatingTextarea").val('');
+                        $("#modifierGroupName").val('');
+                        $("#modifierGroupDescription").val('');
                         selectedModifiers = [];
 
                         $('#addModifiersGroup').modal('hide');
                         console.log(response);
                         modifierGroupList();
                         modifierList(response.id);
-                    }
+                    }else {
+                $("#modifierGroupName").after('<div class="error-message text-danger mt-1">' + response.message + '</div>');
+            }
                 }
             });
         });
 
         $(".modal-updateModifiersGroup form").submit(function (e) {
-            e.preventDefault();
+    e.preventDefault();
 
-            // Get form values
-            const modifierGroupName = $("#editmodifierGroupName").val();
-            const description = $("#editmodifierGroupDescription").val();
-            const Modifiergroupid = $('#editmodifierGroupId').val();
+    $(".error-message").remove();
+    
+    const modifierGroupName = $("#editmodifierGroupName").val();
+    const description = $("#editmodifierGroupDescription").val();
+    const modifierGroupId = $('#editmodifierGroupId').val();
+    
+    if (!modifierGroupName.trim()) {
+        $("#editmodifierGroupName").after('<div class="error-message text-danger mt-1">Modifier group name is required</div>');
+        return;
+    }
 
-            console.log(modifierGroupName + "name");
+    const selectedModifierIds = selectedModifiers.map(m => m.id);
 
-            // Extract just the IDs for the API call
-            const selectedModifierIds = selectedModifiers.map(m => m.id);
+    const data = {
+        Modifiergroupid: modifierGroupId,
+        Modifiergroupname: modifierGroupName,
+        Description: description,
+        SelectedModifierIds: selectedModifierIds
+    };
 
-            // Create data object
-            const data = {
-                Modifiergroupid: Modifiergroupid,
-                Modifiergroupname: modifierGroupName,
-                Description: description,
-                SelectedModifierIds: selectedModifierIds
-            };
+    $.ajax({
+        url: '/Menu/UpdateModifierGroup',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(data),
+        success: function (response) {
+            if (response.success) {
+                $("#editmodifierGroupName").val('');
+                $("#editmodifierGroupDescription").val('');
+                selectedModifiers = [];
 
-            // Send AJAX request
-            $.ajax({
-                url: '/Menu/UpdateModifierGroup',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(data),
-                success: function (response) {
-                    if (response.success) {
-
-                        $("#floatingInput").val('');
-                        $("#floatingTextarea").val('');
-                        selectedModifiers = [];
-
-                        $('#addModifiersGroup').modal('hide');
-                        console.log(response);
-                        modifierGroupList();
-                        modifierList(response.id);
-                    }
-                }
-            });
-        });
+                $('.modal-updateModifiersGroup').modal('hide');
+                modifierGroupList();
+                modifierList(response.id);
+            } else {
+                $("#editmodifierGroupName").after('<div class="error-message text-danger mt-1">' + response.message + '</div>');
+            }
+        }
+    });
+});
 
         $('#ModifierGroup').on('click', '.edit-modifierGroup-btn', function () {
             const modifierGroupId = $(this).data('id');
@@ -1381,9 +1407,8 @@
                         });
                     });
 
-                    console.log(selectedModifiers[0].id + "Array");
-
                     $('#editModifiersGroup .existing-modifiers').remove();
+                    $(".error-message").remove();
 
                     const modifiersContainer = $('<div class="existing-modifiers d-flex flex-wrap gap-2 mt-2"></div>');
 

@@ -54,4 +54,8 @@ public interface IMenuService
     Task DeleteMultipleItems(List<int> itemIds);
 
     Task DeleteMultipleModifiers(List<int> itemIds , int modifierGroupId);
+
+    Task<Category> GetCategoryByName(CategoryViewModel model);
+
+    Task<Modifiergroup> GetModifierGroupByName(string name, int id);
 }

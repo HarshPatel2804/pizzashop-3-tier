@@ -34,8 +34,18 @@ public class MenuController : Controller
     [HttpPost]
     public async Task<IActionResult> Category([FromBody] CategoryViewModel model)
     {
+        if (string.IsNullOrEmpty(model.Categoryname))
+            {
+                return Json(new { success = false, message = "Category name is required" });
+            }
+        var existingCategory = await _menuService.GetCategoryByName(model);
+                if (existingCategory != null)
+                {
+                    return Json(new { success = false, message = "Category with this name already exists" });
+                }
         Console.WriteLine(model.Categoryname + "name");
         await _menuService.AddCategory(model);
+         return Json(new { success = true });
         return RedirectToAction("Menu", "Menu");
     }
 
@@ -146,10 +156,19 @@ public class MenuController : Controller
     }
 
     [HttpPost]
-    public async Task<CategoryViewModel> EditCategoryById([FromBody] CategoryViewModel model)
+    public async Task<IActionResult> EditCategoryById([FromBody] CategoryViewModel model)
     {
+        if (string.IsNullOrEmpty(model.Categoryname))
+            {
+                return Json(new { success = false, message = "Category name is required" });
+            }
+        var existingCategory = await _menuService.GetCategoryByName(model);
+                if (existingCategory != null)
+                {
+                    return Json(new { success = false, message = "Category with this name already exists" });
+                }
         await _menuService.EditCategory(model);
-        return model;
+        return Json(new{ success = true});
     }
 
     [HttpPost]
@@ -268,12 +287,34 @@ public class MenuController : Controller
     [HttpPost]
     public async Task<IActionResult> CreateModifierGroup([FromBody] ModifierGroupViewModel model)
     {
+        if (string.IsNullOrEmpty(model.Modifiergroupname))
+            {
+                return Json(new { success = false, message = "Modifier group name is required" });
+            }
+        var existingGroup = await _menuService.GetModifierGroupByName(
+                    model.Modifiergroupname, 0);
+                    
+                if (existingGroup != null)
+                {
+                    return Json(new { success = false, message = "A modifier group with this name already exists" });
+                }
         int modifierGroupId = await _menuService.AddModifierGroup(model);
         return Json(new { success = true, ID = modifierGroupId });
     }
     [HttpPost]
     public async Task<IActionResult> UpdateModifierGroup([FromBody] ModifierGroupViewModel model)
     {
+        if (string.IsNullOrEmpty(model.Modifiergroupname))
+            {
+                return Json(new { success = false, message = "Modifier group name is required" });
+            }
+        var existingGroup = await _menuService.GetModifierGroupByName(
+                    model.Modifiergroupname, model.Modifiergroupid);
+                    
+                if (existingGroup != null)
+                {
+                    return Json(new { success = false, message = "A modifier group with this name already exists" });
+                }
         int modifierGroupId = await _menuService.EditModifierGroup(model);
         return Json(new { success = true, ID = modifierGroupId });
     }

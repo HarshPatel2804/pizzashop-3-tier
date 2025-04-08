@@ -16,4 +16,6 @@ public interface ICategoryRepository
     Task EditCategoryAsync(Category model);
 
     Task DeleteCategoryAsync(int Categoryid);
+
+    Task<Category> GetCategoryByName(CategoryViewModel model);
 }

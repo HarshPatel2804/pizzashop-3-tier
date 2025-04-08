@@ -142,6 +142,15 @@ public class ModifierRepository : IModifierRepository
             .Where(m => m.ModifierId == modifierId)
             .ToList();
     }
+
+    public async Task<Modifiergroup> GetModifierGroupByName(string name, int id)
+        {
+            return await _context.Modifiergroups
+                .FirstOrDefaultAsync(mg => 
+                    mg.Modifiergroupname.ToLower() == name.ToLower() && 
+                    mg.Modifiergroupid != id && 
+                    mg.Isdeleted != true);
+        }
 }
 
 

@@ -38,4 +38,5 @@ public interface IModifierRepository
 
     Task RemoveMappings(int modifierId);
 
+    Task<Modifiergroup> GetModifierGroupByName(string name, int id);
 }

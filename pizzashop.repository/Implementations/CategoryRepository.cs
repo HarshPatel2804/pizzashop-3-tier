@@ -61,4 +61,10 @@ public class CategoryRepository : ICategoryRepository
         _context.Categories.Update(category);
         await _context.SaveChangesAsync();
     }
+
+    public async Task<Category> GetCategoryByName(CategoryViewModel model)
+        {
+            return await _context.Categories
+                .FirstOrDefaultAsync(c => c.Categoryname.ToLower() == model.Categoryname.ToLower() && c.Isdeleted != true && c.Categoryid != model.Categoryid);
+        }
 }

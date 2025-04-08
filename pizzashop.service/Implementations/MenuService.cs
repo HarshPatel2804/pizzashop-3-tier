@@ -489,4 +489,14 @@ public class MenuService : IMenuService
             await _modifierRepository.DeleteModifier(id , modifierGroupId);
         }
     }
+
+    public async Task<Category> GetCategoryByName(CategoryViewModel model)
+        {
+            return await _categoryRepository.GetCategoryByName(model);
+        }
+
+    public async Task<Modifiergroup> GetModifierGroupByName(string name, int id)
+        {
+            return await _modifierRepository.GetModifierGroupByName(name, id);
+        }
 }

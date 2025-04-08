@@ -1,25 +1,31 @@
 {
   "format": 1,
   "restore": {
-    "D:\\pizzashop\\pizzashop.service\\pizzashop.service.csproj": {}
+    "D:\\Harsh_Pizzashop\\pizzashop.service\\pizzashop.service.csproj": {}
   },
   "projects": {
-    "D:\\pizzashop\\pizzashop.repository\\pizzashop.repository.csproj": {
+    "D:\\Harsh_Pizzashop\\pizzashop.repository\\pizzashop.repository.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\pizzashop\\pizzashop.repository\\pizzashop.repository.csproj",
+        "projectUniqueName": "D:\\Harsh_Pizzashop\\pizzashop.repository\\pizzashop.repository.csproj",
         "projectName": "pizzashop.repository",
-        "projectPath": "D:\\pizzashop\\pizzashop.repository\\pizzashop.repository.csproj",
-        "packagesPath": "C:\\Users\\pce29\\.nuget\\packages\\",
-        "outputPath": "D:\\pizzashop\\pizzashop.repository\\obj\\",
+        "projectPath": "D:\\Harsh_Pizzashop\\pizzashop.repository\\pizzashop.repository.csproj",
+        "packagesPath": "C:\\Users\\dell_\\.nuget\\packages\\",
+        "outputPath": "D:\\Harsh_Pizzashop\\pizzashop.repository\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\pce29\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\dell_\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -73,30 +79,36 @@
         }
       }
     },
-    "D:\\pizzashop\\pizzashop.service\\pizzashop.service.csproj": {
+    "D:\\Harsh_Pizzashop\\pizzashop.service\\pizzashop.service.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\pizzashop\\pizzashop.service\\pizzashop.service.csproj",
+        "projectUniqueName": "D:\\Harsh_Pizzashop\\pizzashop.service\\pizzashop.service.csproj",
         "projectName": "pizzashop.service",
-        "projectPath": "D:\\pizzashop\\pizzashop.service\\pizzashop.service.csproj",
-        "packagesPath": "C:\\Users\\pce29\\.nuget\\packages\\",
-        "outputPath": "D:\\pizzashop\\pizzashop.service\\obj\\",
+        "projectPath": "D:\\Harsh_Pizzashop\\pizzashop.service\\pizzashop.service.csproj",
+        "packagesPath": "C:\\Users\\dell_\\.nuget\\packages\\",
+        "outputPath": "D:\\Harsh_Pizzashop\\pizzashop.service\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\pce29\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\dell_\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "D:\\pizzashop\\pizzashop.repository\\pizzashop.repository.csproj": {
-                "projectPath": "D:\\pizzashop\\pizzashop.repository\\pizzashop.repository.csproj"
+              "D:\\Harsh_Pizzashop\\pizzashop.repository\\pizzashop.repository.csproj": {
+                "projectPath": "D:\\Harsh_Pizzashop\\pizzashop.repository\\pizzashop.repository.csproj"
               }
             }
           }
