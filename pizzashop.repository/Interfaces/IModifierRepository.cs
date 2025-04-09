@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using pizzashop.repository.Models;
+using pizzashop.repository.ViewModels;
 using Pizzashop.repository.Models;
 
 namespace pizzashop.repository.Interfaces;
@@ -10,7 +11,7 @@ public interface IModifierRepository
 
     Task<Modifiergroup> GetModifierGroupByIdAsync(int modifierGroupId);
 
-    Task<List<ModifierGroupModifierMapping>> GetModifierByGroupAsync(int ModifierGroupId);
+    Task<(List<ModifierGroupModifierMapping> , int totalModifiers)> GetModifierByGroupAsync(int ModifierGroupId,int page, int pageSize, string search);
 
     Task DeleteModifier(int modifierId , int modifierGroupId);
 
@@ -39,4 +40,6 @@ public interface IModifierRepository
     Task RemoveMappings(int modifierId);
 
     Task<Modifiergroup> GetModifierGroupByName(string name, int id);
+
+    Task<Modifier> GetModifierByName(ModifierViewModel model);
 }

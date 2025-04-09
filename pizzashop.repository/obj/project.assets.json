@@ -8126,31 +8126,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\dell_\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\pce29\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Harsh_Pizzashop\\pizzashop.repository\\pizzashop.repository.csproj",
+      "projectUniqueName": "D:\\PizzaShop_3tier\\pizzashop.repository\\pizzashop.repository.csproj",
       "projectName": "pizzashop.repository",
-      "projectPath": "D:\\Harsh_Pizzashop\\pizzashop.repository\\pizzashop.repository.csproj",
-      "packagesPath": "C:\\Users\\dell_\\.nuget\\packages\\",
-      "outputPath": "D:\\Harsh_Pizzashop\\pizzashop.repository\\obj\\",
+      "projectPath": "D:\\PizzaShop_3tier\\pizzashop.repository\\pizzashop.repository.csproj",
+      "packagesPath": "C:\\Users\\pce29\\.nuget\\packages\\",
+      "outputPath": "D:\\PizzaShop_3tier\\pizzashop.repository\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\dell_\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\pce29\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net7.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {

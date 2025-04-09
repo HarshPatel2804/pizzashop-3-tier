@@ -1,3 +1,4 @@
+using pizzashop.repository.Models;
 using pizzashop.repository.ViewModels;
 
 namespace pizzashop.service.Interfaces;
@@ -11,4 +12,6 @@ public interface ITaxService
     Task<bool> CreateTax(TaxViewModel viewModel);
     Task<bool> UpdateTax(TaxViewModel viewModel);
     Task<bool> DeleteTax(int id);
+
+    Task<Taxis> GetTaxByName(TaxViewModel model);
 }

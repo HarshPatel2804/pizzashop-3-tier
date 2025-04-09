@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using pizzashop.repository.Models;
 
@@ -7,12 +8,17 @@ public partial class TableViewModel
 {
     public int Tableid { get; set; }
 
+    [Required(ErrorMessage = "Table Name is required.")]
+    [StringLength(10, MinimumLength = 2, ErrorMessage = "Table name must be between 2 and 10 characters.")]
     public string Tablename { get; set; } = null!;
 
+    [Required(ErrorMessage = "Section is required.")]
     public int? Sectionid { get; set; }
 
+    [Required(ErrorMessage = "Capacity is required.")]
     public decimal Capacity { get; set; }
 
+    [Required(ErrorMessage = "Table status is required.")]
     public tablestatus Tablestatus { get; set; }
 
     public bool? Isdeleted { get; set; }

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using pizzashop.repository.Interfaces;
 using pizzashop.repository.Models;
+using pizzashop.repository.ViewModels;
 
 namespace pizzashop.repository.Implementations;
 
@@ -16,10 +17,10 @@ public class TableSectionRepository : ITableSectionRepository
 
     public async Task<List<Section>> GetAllSetionsAsync()
     {
-        return await _context.Sections.Where(u => u.Isdeleted != true).OrderBy(u=> u.OrderField).ToListAsync();
+        return await _context.Sections.Where(u => u.Isdeleted != true).OrderBy(u => u.OrderField).ToListAsync();
     }
 
-    public async Task<(List<Table> tables, int totalTables)> GetTablesBySectionAsync(int Sectionid , int page, int pageSize, string search)
+    public async Task<(List<Table> tables, int totalTables)> GetTablesBySectionAsync(int Sectionid, int page, int pageSize, string search)
     {
         var query = _context.Tables
         .Where(u => u.Sectionid == Sectionid && u.Isdeleted != true)
@@ -36,13 +37,14 @@ public class TableSectionRepository : ITableSectionRepository
         return (tables, totalTables);
     }
 
-    public async Task AddSectionAsync(Section model){
+    public async Task AddSectionAsync(Section model)
+    {
         await _context.Sections.AddAsync(model);
         await _context.SaveChangesAsync();
 
     }
 
-     public async Task<Section> GetSectionById(int sectionId)
+    public async Task<Section> GetSectionById(int sectionId)
     {
         return await _context.Sections.FirstOrDefaultAsync(u => u.Sectionid == sectionId);
     }
@@ -61,20 +63,21 @@ public class TableSectionRepository : ITableSectionRepository
 
     public async Task<List<SelectListItem>> GetSectionListAsync()
     {
-        return _context.Sections.Where(u=> u.Isdeleted != true).OrderBy(u=>u.Sectionid).Select(c => new SelectListItem
-            {
-                Value = c.Sectionid.ToString(),
-                Text = c.Sectionname
-            }).ToList();
+        return _context.Sections.Where(u => u.Isdeleted != true).OrderBy(u => u.Sectionid).Select(c => new SelectListItem
+        {
+            Value = c.Sectionid.ToString(),
+            Text = c.Sectionname
+        }).ToList();
     }
 
-    public async Task AddTableAsync(Table model){
+    public async Task AddTableAsync(Table model)
+    {
         await _context.Tables.AddAsync(model);
         await _context.SaveChangesAsync();
 
     }
 
-     public async Task DeleteTableAsync(int tableId)
+    public async Task DeleteTableAsync(int tableId)
     {
         await _context.Tables.Where(u => u.Tableid == tableId).ForEachAsync(u => u.Isdeleted = true);
         await _context.SaveChangesAsync();
@@ -91,13 +94,16 @@ public class TableSectionRepository : ITableSectionRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task UpdateSortOrderOfSection(List<int> sortOrder){
+    public async Task UpdateSortOrderOfSection(List<int> sortOrder)
+    {
 
-        for(int i = 0 ; i < sortOrder.Count ; i++){
+        for (int i = 0; i < sortOrder.Count; i++)
+        {
             Section section = _context.Sections.FirstOrDefault(s => s.Sectionid == sortOrder[i]);
 
-            if(section != null){
-                section.OrderField = i+1;
+            if (section != null)
+            {
+                section.OrderField = i + 1;
             }
         }
         await _context.SaveChangesAsync();
@@ -107,6 +113,26 @@ public class TableSectionRepository : ITableSectionRepository
     {
         await _context.Tables.Where(u => Tableid.Contains(u.Tableid)).ForEachAsync(u => u.Isdeleted = true);
         await _context.SaveChangesAsync();
+    }
+
+    public async Task<Table> GetTableByName(TableViewModel model)
+    {
+        return await _context.Tables
+            .FirstOrDefaultAsync(mg =>
+                mg.Tablename.ToLower() == model.Tablename.ToLower() &&
+                mg.Tableid != model.Tableid &&
+                mg.Isdeleted != true);
+    }
+
+    public async Task<int> GetSectionIdWithLeastOrderField()
+    {
+        var sectionId = await _context.Sections
+            .Where(s => s.OrderField.HasValue && s.Isdeleted == false)
+            .OrderBy(s => s.OrderField.Value)
+            .Select(s => s.Sectionid)
+            .FirstOrDefaultAsync();
+
+        return sectionId;
     }
 
 }

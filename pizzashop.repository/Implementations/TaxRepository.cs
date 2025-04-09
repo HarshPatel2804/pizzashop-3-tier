@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using pizzashop.repository.Interfaces;
 using pizzashop.repository.Models;
+using pizzashop.repository.ViewModels;
 
 namespace pizzashop.repository.Implementations;
 
@@ -71,4 +72,13 @@ public class TaxRepository : ITaxRepository
 
         return await UpdateTaxAsync(tax);
     }
+
+    public async Task<Taxis> GetTaxByName(TaxViewModel model)
+        {
+            return await _context.Taxes
+                .FirstOrDefaultAsync(mg => 
+                    mg.Taxname.ToLower() == model.Taxname.ToLower() && 
+                    mg.Taxid != model.Taxid && 
+                    mg.Isdeleted != true);
+        }
 }

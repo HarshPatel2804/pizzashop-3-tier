@@ -1,4 +1,5 @@
 using pizzashop.repository.Models;
+using pizzashop.repository.ViewModels;
 
 namespace pizzashop.repository.Interfaces;
 
@@ -12,4 +13,6 @@ public interface ITaxRepository
     Task<bool> CreateTaxAsync(Taxis tax);
     Task<bool> UpdateTaxAsync(Taxis tax);
     Task<bool> DeleteTaxAsync(int id);
+
+    Task<Taxis> GetTaxByName(TaxViewModel model);
 }

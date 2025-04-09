@@ -1,3 +1,4 @@
+using pizzashop.repository.Models;
 using pizzashop.repository.ViewModels;
 
 namespace pizzashop.service.Interfaces;
@@ -29,4 +30,8 @@ public interface ITableSectionService
     Task UpdateSectionSortOrder(List<int> sortOrder);
 
     Task DeleteMultipleTables(List<int> itemIds);
+
+    Task<Table> GetTableByName(TableViewModel model);
+
+    Task<int> FirstSectionId();
 }

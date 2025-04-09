@@ -26,3 +26,17 @@ D:\Harsh_Pizzashop\pizzashop.repository\obj\Debug\net7.0\refint\pizzashop.reposi
 D:\Harsh_Pizzashop\pizzashop.repository\obj\Debug\net7.0\pizzashop.repository.pdb
 D:\Harsh_Pizzashop\pizzashop.repository\obj\Debug\net7.0\pizzashop.repository.genruntimeconfig.cache
 D:\Harsh_Pizzashop\pizzashop.repository\obj\Debug\net7.0\ref\pizzashop.repository.dll
+D:\PizzaShop_3tier\pizzashop.repository\bin\Debug\net7.0\pizzashop.repository.deps.json
+D:\PizzaShop_3tier\pizzashop.repository\bin\Debug\net7.0\pizzashop.repository.runtimeconfig.json
+D:\PizzaShop_3tier\pizzashop.repository\bin\Debug\net7.0\pizzashop.repository.dll
+D:\PizzaShop_3tier\pizzashop.repository\bin\Debug\net7.0\pizzashop.repository.pdb
+D:\PizzaShop_3tier\pizzashop.repository\obj\Debug\net7.0\pizzashop.repository.csproj.AssemblyReference.cache
+D:\PizzaShop_3tier\pizzashop.repository\obj\Debug\net7.0\pizzashop.repository.GeneratedMSBuildEditorConfig.editorconfig
+D:\PizzaShop_3tier\pizzashop.repository\obj\Debug\net7.0\pizzashop.repository.AssemblyInfoInputs.cache
+D:\PizzaShop_3tier\pizzashop.repository\obj\Debug\net7.0\pizzashop.repository.AssemblyInfo.cs
+D:\PizzaShop_3tier\pizzashop.repository\obj\Debug\net7.0\pizzashop.repository.csproj.CoreCompileInputs.cache
+D:\PizzaShop_3tier\pizzashop.repository\obj\Debug\net7.0\pizzashop.repository.dll
+D:\PizzaShop_3tier\pizzashop.repository\obj\Debug\net7.0\refint\pizzashop.repository.dll
+D:\PizzaShop_3tier\pizzashop.repository\obj\Debug\net7.0\pizzashop.repository.pdb
+D:\PizzaShop_3tier\pizzashop.repository\obj\Debug\net7.0\pizzashop.repository.genruntimeconfig.cache
+D:\PizzaShop_3tier\pizzashop.repository\obj\Debug\net7.0\ref\pizzashop.repository.dll

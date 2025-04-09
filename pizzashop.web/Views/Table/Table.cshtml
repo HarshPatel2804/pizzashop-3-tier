@@ -33,8 +33,8 @@
                     </div>
                     <input type="search" class="col-md-auto col-6 me-1 ms-auto " id="search" placeholder="search"
                         style="border-radius: 3px; border: 1px solid black">
-                    <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#MassDeleteTableModal" style="width: 50px; border: 1px solid black"><img
-                            src="~/images/trash.svg"></button>
+                    <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#MassDeleteTableModal"
+                        style="width: 50px; border: 1px solid black"><img src="~/images/trash.svg"></button>
                     <button type="button" class="btn col-md-auto col-3 ms-1 align-items-center d-flex addTable"
                         style="border-radius: 2px; border: 1px solid black; background-color: rgb(85, 85, 247); color: white  !important;">
                         + New Table
@@ -221,6 +221,7 @@
         </div>
     </div>
 </section>
+
 <script>
     $(document).ready(function () {
         let lastSelectedSectionId = 0;
@@ -243,6 +244,7 @@
         function TableList(sectionId, page) {
             let pageSize = $("#pageSizeSelect").val();
             let search = $("#search").val();
+            console.log(sectionId + "section");
             $.ajax({
                 type: "GET",
                 url: '/Table/Tables',
@@ -254,6 +256,18 @@
                 }
             });
         };
+
+        function getFirstSectionId() {
+            return $.ajax({
+                url: "/Table/FirstSectionId", 
+                type: "GET",
+                dataType: "json",
+                success: function (sectionId) {
+                    console.log("First Section ID:", sectionId);
+                    return sectionId;
+                }
+            });
+        }
 
         $("#TablesBySection").on("click", ".pagination-link", function (e) {
             e.preventDefault();
@@ -364,28 +378,7 @@
                 success: function (response) {
                     $("#TableModal").html(response);
                     $("#AddTableModal").modal("show");
-                }
-            });
-        });
-
-        $(document).on("click", "#SaveTable", function (e) {
-            e.preventDefault();
-            console.log("clicked");
-            var formData = new FormData($("#addTableForm")[0]);
-            var sectionId = $("#SectionId").val();
-            console.log(formData + "Hii");
-            $.ajax({
-                url: "/Table/AddNewTable",
-                type: "POST",
-                data: formData,
-                processData: false,
-                contentType: false,
-                dataType: "json",
-                success: function (response) {
-                    TableList(sectionId, 1);
-                },
-                error: function (error) {
-
+                    addTable();
                 }
             });
         });
@@ -423,34 +416,78 @@
                 success: function (response) {
                     $("#TableModal").html(response);
                     $("#EditTableModal").modal("show");
+                    editTable();
                 }
             });
         });
 
-        $(document).on("click", "#SaveEditTable", function (e) {
-            e.preventDefault();
-            console.log("clicked");
-            var formData = new FormData($("#editTableForm")[0]);
-            var Sectionid = $("#SectionId").val();
-            console.log(Sectionid + "section");
-            console.log(formData + "Hii");
-            $.ajax({
-                url: "/Table/editTable",
-                type: "POST",
-                data: formData,
-                processData: false,
-                contentType: false,
-                dataType: "json",
-                success: function (response) {
-                    TableList(Sectionid, 1);
-                },
-                error: function (error) {
+        function addTable() {
+            $('#addTableForm').on('submit', function (e) {
+                e.preventDefault();
+                console.log("Form submission intercepted");
+                if ($(this).valid()) {
 
+                    var formData = new FormData($("#addTableForm")[0]);
+                    var sectionId = $("#SectionId").val();
+                    console.log(sectionId + " - Section ID");
+
+                    $.ajax({
+                        url: "/Table/AddNewTable",
+                        type: "POST",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (response) {
+                            console.log("AJAX response received:", response);
+                            if (response.success) {
+                                $('#AddTableModal').modal('hide');
+                                TableList(sectionId, 1);
+                            } else {
+                                // Clear any existing error messages first
+                                $(".error-message").remove();
+                                $("#Name").after('<div class="error-message text-danger mt-1">' + response.message + '</div>');
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("AJAX error:", error);
+                        }
+                    });
                 }
             });
-        });
+        }
+
+        function editTable() {
+            $('#editTableForm').on('submit', function (e) {
+                e.preventDefault();
+                console.log("clicked");
+                if ($(this).valid()) {
+                    var formData = new FormData($("#editTableForm")[0]);
+                    var Sectionid = $("#SectionId").val();
+                    console.log(Sectionid + "section");
+                    console.log(formData + "Hii");
+                    $.ajax({
+                        url: "/Table/editTable",
+                        type: "POST",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        dataType: "json",
+                        success: function (response) {
+                            if (response.success) {
+                                TableList(Sectionid, 1);
+                                $('#EditTableModal').modal('hide');
+                            } else {
+                                $("#Name").after('<div class="error-message text-danger mt-1">' + response.message + '</div>');
+                            }
+                        }
+                    });
+                }
+            });
+        }
 
         sectionList();
+        var sectionId = getFirstSectionId();
+        TableList(sectionId, 1);
 
         function tableMassDelete() {
             let selectedItemIds = [];

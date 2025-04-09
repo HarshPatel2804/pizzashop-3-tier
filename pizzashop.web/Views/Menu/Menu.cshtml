@@ -80,7 +80,8 @@
                             <input type="search" class="col-md-auto col-6 me-1 " id="searchInput" placeholder="search"
                                 style="border-radius: 3px; border: 1px solid black">
                             <button type="button" class="btn MassItemDelete"
-                                style="width: 50px; border: 1px solid black" data-bs-toggle="modal" data-bs-target="#MassDeleteItemModal"><img src="~/images/trash.svg"></button>
+                                style="width: 50px; border: 1px solid black" data-bs-toggle="modal"
+                                data-bs-target="#MassDeleteItemModal"><img src="~/images/trash.svg"></button>
                             <button type="button"
                                 class="btn col-md-auto col-3 ms-1 align-items-center d-flex item-button addItem"
                                 style="border-radius: 2px; border: 1px solid black; background-color: rgb(85, 85, 247); color: white  !important;">
@@ -222,8 +223,9 @@
                         <div class="row justify-content-end ms-lg-5 me-lg-5 me-2 mt-2" style="height: 50px;">
                             <input type="search" class="col-md-auto col-6 me-1 " id="search" placeholder="search"
                                 style="border-radius: 3px; border: 1px solid black">
-                            <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#MassDeletemodifierModal" style="width: 50px; border: 1px solid black"><img
-                                    src="~/images/trash.svg"></button>
+                            <button type="button" class="btn" data-bs-toggle="modal"
+                                data-bs-target="#MassDeletemodifierModal"
+                                style="width: 50px; border: 1px solid black"><img src="~/images/trash.svg"></button>
                             <button class="btn col-md-auto col-3 ms-1 align-items-center d-flex addModifier"
                                 style="border-radius: 2px; border: 1px solid black; background-color: rgb(85, 85, 247); color: white  !important;">
                                 + New Modifier
@@ -307,8 +309,8 @@
                     </div>
                     <input type="hidden" id="Categoryid" />
                     <div class="d-flex justify-content-end align-items-center mt-5 mb-4">
-                        <button type="submit" class="btn btn-primary"
-                            style="border-radius: 3px;" id="Save">Save</button>
+                        <button type="submit" class="btn btn-primary" style="border-radius: 3px;"
+                            id="Save">Save</button>
                         <button type="button" class="btn ms-2 border" data-bs-dismiss="modal"
                             style="border-radius: 3px; ">Cancel</button>
                     </div>
@@ -338,8 +340,8 @@
                         <label for="Description" class="label-pad">Description</label>
                     </div>
                     <div class="d-flex justify-content-end align-items-center mt-5 mb-4">
-                        <button type="submit" class="btn btn-primary"
-                            style="border-radius: 3px;" id="Save">Save</button>
+                        <button type="submit" class="btn btn-primary" style="border-radius: 3px;"
+                            id="Save">Save</button>
                         <button type="button" class="btn ms-2 border" data-bs-dismiss="modal"
                             style="border-radius: 3px; ">Cancel</button>
                     </div>
@@ -426,8 +428,8 @@
             </div>
         </div>
     </div>
-    <div class="fade modal" id="MassDeletemodifierModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="fade modal" id="MassDeletemodifierModal" data-bs-backdrop="static" data-bs-keyboard="false"
+        tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" style="width: 400px;">
             <div class="modal-content">
                 <div class="row mx-1 mt-2">
@@ -561,6 +563,8 @@
 </section>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js">
 </script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 <script>
 
     $(document).ready(function () {
@@ -651,18 +655,42 @@
             });
         };
 
-        function modifierList(ModifierGroupId) {
+        function modifierList(ModifierGroupId , page=1) {
+            let pageSize = $("#pageSizeSelect").val();
+            let search = $("#search").val();
             $.ajax({
                 type: "GET",
                 url: '/Menu/Modifiers',
                 contentType: "application/json",
-                data: { ModifierGroupId: ModifierGroupId },
+                data: { page: page, pageSize: pageSize, search: search , ModifierGroupId: ModifierGroupId },
                 success: function (data) {
                     $('#Modifier').html(data);
                     modifierMassDelete();
                 }
             });
         };
+
+        $("#Modifier").on("click", ".pagination-link", function (e) {
+            e.preventDefault();
+            let page = $(this).data("page");
+            let CategoryId = $("#ModifierGroupId").val();
+            if (page > 0) {
+                modifierList(CategoryId, page);
+            }
+        });
+
+        $("#Modifier").on("change", "#pageSizeSelect", function () {
+            let CategoryId = $("#ModifierGroupId").val();
+            modifierList(CategoryId, 1);
+        });
+
+        $("#search").on("input", function () {
+            clearTimeout(searchTimer);
+            let CategoryId = $("#ModifierGroupId").val();
+            searchTimer = setTimeout(function () {
+                modifierList(CategoryId || lastSelectedModifierGroupId, 1);
+            }, 100);
+        });
 
         categoryList();
         modifierGroupList();
@@ -698,6 +726,7 @@
         $(document).on("click", "#EditItem", function (e) {
             e.preventDefault();
             console.log("clicked");
+            if($('#editItemForm').valid()){
             var formData = new FormData($("#editItemForm")[0]);
             var catid = $("#categoryid").val();
 
@@ -724,25 +753,31 @@
                 contentType: false,
                 dataType: "json",
                 success: function (response) {
+                    if(response.success){
                     ItemList(catid, 1);
+                    $('#editItem').modal('hide');
+                    } else {
+                            $("#Name").after('<div class="error-message text-danger mt-1">' + response.message + '</div>');
+                        }
                 },
                 error: function (error) {
 
                 }
             });
+            }
         });
 
         $("#addCategoryForm").submit(function (e) {
-            e.preventDefault(); 
+            e.preventDefault();
 
             $(".error-message").remove();
-    
+
             var categoryName = $("#Categoryname").val();
             var description = $("#Description").val();
             if (!categoryName.trim()) {
-        $("#Categoryname").after('<div class="error-message text-danger mt-1">Category name is required</div>');
-        return;
-    }
+                $("#Categoryname").after('<div class="error-message text-danger mt-1">Category name is required</div>');
+                return;
+            }
 
             var formData = {
                 Categoryname: categoryName,
@@ -755,15 +790,15 @@
                 contentType: "application/json",
                 data: JSON.stringify(formData),
                 success: function (response) {
-                  if (response.success) {
-                $("#Categoryname").val("");
-                $("#Description").val("");
-                $("#Add-Category").modal('hide');
-                categoryList();
-            } else {
-                $("#Categoryname").after('<div class="error-message text-danger mt-1">' + response.message + '</div>');
-            }
-            }
+                    if (response.success) {
+                        $("#Categoryname").val("");
+                        $("#Description").val("");
+                        $("#Add-Category").modal('hide');
+                        categoryList();
+                    } else {
+                        $("#Categoryname").after('<div class="error-message text-danger mt-1">' + response.message + '</div>');
+                    }
+                }
             });
         });
         $("#deleteCategoryForm").submit(function (e) {
@@ -804,7 +839,7 @@
             $.ajax({
                 type: "POST",
                 url: '/Menu/DeleteModifier',
-                data: { modifierId: modifierId , modifierGroupId : modifierGroupId },
+                data: { modifierId: modifierId, modifierGroupId: modifierGroupId },
                 success: function (response) {
                     modifierList(modifierGroupId);
                 }
@@ -837,16 +872,16 @@
             });
         });
         $("#editCategoryForm").submit(function (e) {
-            e.preventDefault(); 
+            e.preventDefault();
 
             $(".error-message").remove();
-    
+
             var categoryName = $("#EditCategoryname").val();
             var description = $("#EditDescription").val();
             if (!categoryName.trim()) {
-        $("#EditCategoryname").after('<div class="error-message text-danger mt-1">Category name is required</div>');
-        return;
-    }
+                $("#EditCategoryname").after('<div class="error-message text-danger mt-1">Category name is required</div>');
+                return;
+            }
 
             var formData = {
                 Categoryid: $("#Categoryid").val(),
@@ -861,11 +896,11 @@
                 data: JSON.stringify(formData),
                 success: function (response) {
                     if (response.success) {
-                $("#Edit-Category").modal('hide');
-                categoryList();
-            } else {
-                $("#EditCategoryname").after('<div class="error-message text-danger mt-1">' + response.message + '</div>');
-            }
+                        $("#Edit-Category").modal('hide');
+                        categoryList();
+                    } else {
+                        $("#EditCategoryname").after('<div class="error-message text-danger mt-1">' + response.message + '</div>');
+                    }
                 }
             });
         });
@@ -1000,6 +1035,7 @@
         $('#SaveItem').on('click', function (e) {
             e.preventDefault();
             console.log("clicked");
+            if($('#addItemForm').valid()){
             var formData = new FormData($("#addItemForm")[0]);
             var catid = $("#categoryid").val();
 
@@ -1015,10 +1051,8 @@
 
             console.log('Modifier Groups:', JSON.stringify(groupsData));
 
-            // Add JSON data of selected groups
             formData.append('SelectedModifierGroups', JSON.stringify(groupsData));
 
-            // Submit the form data via AJAX
             $.ajax({
                 url: '/Menu/AddNewItem',
                 type: 'POST',
@@ -1028,17 +1062,17 @@
                 success: function (data) {
                     if (data.success) {
                         ItemList(catid, 1);
-
-                        // Optionally reload page or update UI
+                        $('#addItem').modal('hide');
                     } else {
-                        alert(data.message);
-                    }
+                            $("#AddName").after('<div class="error-message text-danger mt-1">' + response.message + '</div>');
+                        }
                 },
                 error: function (error) {
                     console.error('Error:', error);
                     alert('An error occurred while saving the item.');
                 }
             });
+            }
         });
 
         function fetchExistingModifierGroups(itemId) {
@@ -1277,7 +1311,7 @@
         $('form').on('submit', function (e) {
             if (selectedModifiers.length === 0) {
                 e.preventDefault();
-                @* alert('Please select at least one modifier'); *@
+    @* alert('Please select at least one modifier'); *@
                 return;
             }
 
@@ -1297,13 +1331,13 @@
             e.preventDefault();
 
             $(".error-message").remove();
-    
-    const modifierGroupName = $("#modifierGroupName").val();
+
+            const modifierGroupName = $("#modifierGroupName").val();
             const description = $("#modifierGroupDescription").val();
-    if (!modifierGroupName.trim()) {
-        $("#modifierGroupName").after('<div class="error-message text-danger mt-1">Modifier group name is required</div>');
-        return;
-    }
+            if (!modifierGroupName.trim()) {
+                $("#modifierGroupName").after('<div class="error-message text-danger mt-1">Modifier group name is required</div>');
+                return;
+            }
 
             console.log(modifierGroupName + "name");
 
@@ -1334,56 +1368,56 @@
                         console.log(response);
                         modifierGroupList();
                         modifierList(response.id);
-                    }else {
-                $("#modifierGroupName").after('<div class="error-message text-danger mt-1">' + response.message + '</div>');
-            }
+                    } else {
+                        $("#modifierGroupName").after('<div class="error-message text-danger mt-1">' + response.message + '</div>');
+                    }
                 }
             });
         });
 
         $(".modal-updateModifiersGroup form").submit(function (e) {
-    e.preventDefault();
+            e.preventDefault();
 
-    $(".error-message").remove();
-    
-    const modifierGroupName = $("#editmodifierGroupName").val();
-    const description = $("#editmodifierGroupDescription").val();
-    const modifierGroupId = $('#editmodifierGroupId').val();
-    
-    if (!modifierGroupName.trim()) {
-        $("#editmodifierGroupName").after('<div class="error-message text-danger mt-1">Modifier group name is required</div>');
-        return;
-    }
+            $(".error-message").remove();
 
-    const selectedModifierIds = selectedModifiers.map(m => m.id);
+            const modifierGroupName = $("#editmodifierGroupName").val();
+            const description = $("#editmodifierGroupDescription").val();
+            const modifierGroupId = $('#editmodifierGroupId').val();
 
-    const data = {
-        Modifiergroupid: modifierGroupId,
-        Modifiergroupname: modifierGroupName,
-        Description: description,
-        SelectedModifierIds: selectedModifierIds
-    };
-
-    $.ajax({
-        url: '/Menu/UpdateModifierGroup',
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(data),
-        success: function (response) {
-            if (response.success) {
-                $("#editmodifierGroupName").val('');
-                $("#editmodifierGroupDescription").val('');
-                selectedModifiers = [];
-
-                $('.modal-updateModifiersGroup').modal('hide');
-                modifierGroupList();
-                modifierList(response.id);
-            } else {
-                $("#editmodifierGroupName").after('<div class="error-message text-danger mt-1">' + response.message + '</div>');
+            if (!modifierGroupName.trim()) {
+                $("#editmodifierGroupName").after('<div class="error-message text-danger mt-1">Modifier group name is required</div>');
+                return;
             }
-        }
-    });
-});
+
+            const selectedModifierIds = selectedModifiers.map(m => m.id);
+
+            const data = {
+                Modifiergroupid: modifierGroupId,
+                Modifiergroupname: modifierGroupName,
+                Description: description,
+                SelectedModifierIds: selectedModifierIds
+            };
+
+            $.ajax({
+                url: '/Menu/UpdateModifierGroup',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (response) {
+                    if (response.success) {
+                        $("#editmodifierGroupName").val('');
+                        $("#editmodifierGroupDescription").val('');
+                        selectedModifiers = [];
+
+                        $('.modal-updateModifiersGroup').modal('hide');
+                        modifierGroupList();
+                        modifierList(response.id);
+                    } else {
+                        $("#editmodifierGroupName").after('<div class="error-message text-danger mt-1">' + response.message + '</div>');
+                    }
+                }
+            });
+        });
 
         $('#ModifierGroup').on('click', '.edit-modifierGroup-btn', function () {
             const modifierGroupId = $(this).data('id');
@@ -1436,12 +1470,12 @@
             });
         });
 
-        function initializeModifierFunctionality() {
-            const selectedModifiersDisplay = document.getElementById('selectedModifiersDisplay');
-            const modifierDropdown = document.getElementById('modifierDropdown');
-            const checkboxes = document.querySelectorAll('.modifier-checkbox');
-            const selectedModifiersInput = document.getElementById('selectedModifiers');
-            const modifierPlaceholder = document.getElementById('modifierPlaceholder');
+        function initializeModifierFunctionality(container) {
+            const selectedModifiersDisplay = container.querySelector('#selectedModifiersDisplay');
+            const modifierDropdown = container.querySelector('#modifierDropdown');
+            const checkboxes = container.querySelectorAll('.modifier-checkbox');
+            const selectedModifiersInput = container.querySelector('#selectedModifiers');
+            const modifierPlaceholder = container.querySelector('#modifierPlaceholder');
 
             // Array to store selected modifiers
             let selectedModifierGroups = [];
@@ -1454,6 +1488,8 @@
                     selectedModifierGroups.push({ value, label });
                 }
             });
+
+            console.log(selectedModifierGroups);
 
             updateDisplay();
 
@@ -1538,69 +1574,78 @@
                 });
             }
 
-            $('.Save-Modifier').on('click', function () {
-                // Collect form data
+            $('#AddModifierForm').on('submit', function (e) {
+                e.preventDefault();
+                var SelectedModifierGroups = selectedModifierGroups.map(item => parseInt(item.value));
+                $('.error-message').remove();
+                if (SelectedModifierGroups.length == 0) {
+                    $("#modifierDropdown").after('<div class="error-message text-danger mt-1">Please select at least one modifier group</div>');
+                    return;
+                }
+                if ($(this).valid()) {
                 console.log('Hii');
-                const formData = {
-                    SelectedModifierGroups: selectedModifierGroups.map(item => parseInt(item.value)),
-                    Modifiername: $('#floatingInput').val(),
-                    Rate: parseFloat($('.form-floating input[placeholder="Rate"]').val()),
-                    Quantity: parseInt($('.form-floating input[placeholder="Quantity"]').val()),
-                    Unitid: $('#floatingSelect').val(),
-                    Description: $('#floatingTextarea').val()
-                };
+                $('.error-message').remove();
 
-                // Send data to controller using AJAX
+                var formData = new FormData($("#AddModifierForm")[0]);
+
+                
+                formData.append('SelectedModifierGroups', SelectedModifierGroups);
+
                 $.ajax({
                     url: '/Menu/SaveModifier',
                     type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(formData),
+                    data: formData,
+                    processData: false,
+                    contentType: false,
                     success: function (response) {
-                        // Handle success
+                        if(response.success){
                         console.log('Success:', response);
 
                         modifierList(lastSelectedModifierGroupId);
                         $('#addNewModifier').modal('hide');
-                    },
-                    error: function (xhr, status, error) {
-                        // Handle error
-                        console.error('Error:', error);
-                        alert('Failed to save modifier. Please try again.');
+                        } else {
+                            $("#Modifiername").after('<div class="error-message text-danger mt-1">' + response.message + '</div>');
+                        }
                     }
                 });
+                }
             });
-            $('.Edit-Modifier').on('click', function () {
-                const formData = {
-                    SelectedModifierGroups: selectedModifierGroups.map(item => parseInt(item.value)),
-                    Modifiername: $('#floatingInput-Name').val(),
-                    Rate: parseFloat($('.form-floating input[placeholder="Rate"]').val()),
-                    Quantity: parseInt($('.form-floating input[placeholder="Quantity"]').val()),
-                    Unitid: $('#floatingSelect').val(),
-                    Description: $('#floatingTextarea').val(),
-                    Modifierid: $('#modifierId').val()
-                };
+            $('#EditModifierForm').on('submit', function (e) {
+                e.preventDefault();
+                $('.error-message').remove();
+                var SelectedModifierGroups = selectedModifierGroups.map(item => parseInt(item.value));
+                if (SelectedModifierGroups.length == 0) {
+                    $("#modifierDropdown").after('<div class="error-message text-danger mt-1">Please select at least one modifier group</div>');
+                    return;
+                }
+                if ($(this).valid()) {
+                
+                $('.error-message').remove();
 
-                // Send data to controller using AJAX
+                var formData = new FormData($("#EditModifierForm")[0]);
+
+                
+                formData.append('SelectedModifierGroups', SelectedModifierGroups);
                 $.ajax({
                     url: '/Menu/EditModifier',
                     type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(formData),
+                    data: formData,
+                    processData: false,
+                    contentType: false,
                     success: function (response) {
-                        // Handle success
+                        if(response.success){
                         console.log('Success:', response);
 
                         modifierList(lastSelectedModifierGroupId);
                         $('#editModifierModal').modal('hide');
-                    },
-                    error: function (xhr, status, error) {
-                        // Handle error
-                        console.error('Error:', error);
-                        alert('Failed to save modifier. Please try again.');
+                        } else {
+                            $("#Modifiername").after('<div class="error-message text-danger mt-1">' + response.message + '</div>');
+                        }
                     }
                 });
+                }
             });
+            
         }
 
         $(document).on("click", ".addModifier", function () {
@@ -1611,7 +1656,7 @@
                 success: function (response) {
                     $(".modal-addNewModifier").html(response);
                     $("#addNewModifier").modal("show");
-                    initializeModifierFunctionality();
+                    initializeModifierFunctionality(document.querySelector('#addNewModifier'));
                     modifierList(lastSelectedModifierGroupId);
                 }
             });
@@ -1626,8 +1671,8 @@
                 data: { modifierId: Id },
                 success: function (response) {
                     $(".modal-editModifier").html(response);
-                    initializeModifierFunctionality();
                     $("#editModifierModal").modal("show");
+                    initializeModifierFunctionality(document.querySelector('#editModifierModal'));
                     modifierList(lastSelectedModifierGroupId);
                 }
             });
@@ -1724,20 +1769,20 @@
                 e.preventDefault();
                 console.log(selectedItemIds);
 
-                    $.ajax({
-                        url: '/Menu/MassDeleteItems', 
-                        type: 'POST',
-                        contentType: 'application/json',
-                        data: JSON.stringify(
-                            selectedItemIds
-                        ),
-                        success: function (response) {
-                            if (response.success) {
-                                ItemList(lastSelectedCategoryId,1);
-                                selectedItemIds = [];
-                            } 
+                $.ajax({
+                    url: '/Menu/MassDeleteItems',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(
+                        selectedItemIds
+                    ),
+                    success: function (response) {
+                        if (response.success) {
+                            ItemList(lastSelectedCategoryId, 1);
+                            selectedItemIds = [];
                         }
-                    });
+                    }
+                });
             });
         }
 
@@ -1830,23 +1875,23 @@
 
             $(document).on('click', '.MassModifierDeleteBtn', function (e) {
                 e.preventDefault();
-                console.log(typeof(selectedItemIds));
+                console.log(typeof (selectedItemIds));
 
-                    $.ajax({
-                        url: '/Menu/MassDeleteModifiers', 
-                        type: 'POST',
-                        data: {
-                            selectedIds : selectedItemIds ,
-                            modifierGroupid : lastSelectedModifierGroupId
-                            }
-                        ,
-                        success: function (response) {
-                            if (response.success) {
-                                modifierList(lastSelectedModifierGroupId,1);
-                                selectedItemIds = [];
-                            } 
+                $.ajax({
+                    url: '/Menu/MassDeleteModifiers',
+                    type: 'POST',
+                    data: {
+                        selectedIds: selectedItemIds,
+                        modifierGroupid: lastSelectedModifierGroupId
+                    }
+                    ,
+                    success: function (response) {
+                        if (response.success) {
+                            modifierList(lastSelectedModifierGroupId, 1);
+                            selectedItemIds = [];
                         }
-                    });
+                    }
+                });
             });
         }
     });

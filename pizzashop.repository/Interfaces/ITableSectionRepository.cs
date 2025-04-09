@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using pizzashop.repository.Models;
+using pizzashop.repository.ViewModels;
 
 namespace pizzashop.repository.Interfaces;
 
@@ -30,4 +31,8 @@ public interface ITableSectionRepository
     Task UpdateSortOrderOfSection(List<int> sortOrder);
 
     Task MassDeleteTable(List<int> Tableid);
+
+    Task<Table> GetTableByName(TableViewModel model);
+
+    Task<int> GetSectionIdWithLeastOrderField();
 }

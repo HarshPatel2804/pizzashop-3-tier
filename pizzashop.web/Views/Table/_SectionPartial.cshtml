@@ -1,9 +1,9 @@
-<ul class="sortableSection">
+<ul class="sortSection">
     @foreach (var sections in Model)
     {
         <li class="d-flex selectedSection items" tabindex="0" data-id="@sections.Sectionid">
             <div class="d-flex align-items-center" style="padding-top: 5px; padding-bottom: 5px;">
-                <img src="~/images/dots-graphic.png" class="six-dots-icon">
+                <img src="~/images/dots-graphic.png" class="sort-icon">
                 <div style="width: 130px;" class="text-wrap ms-1 fw-bold">
                     @sections.Sectionname
                 </div>
@@ -22,19 +22,18 @@
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 <script>
     $(document).ready(function () {
-        $(".sortableSection").sortable({
-            handle: ".six-dots-icon",  
+        $(".sortSection").sortable({
+            handle: ".sort-icon",  
             update: function (event, ui) {
                 let sortedIds = [];
-                $(".sortableSection li:visible").each(function () {
+                $(".sortSection li:visible").each(function () {
                     sortedIds.push($(this).data("id"));
                 });
 
                 console.log(sortedIds + "Hii");
 
-                // Send the new order to the server
                 $.ajax({
-                    url: "/Table/UpdateSectionOrder", // Adjust based on your controller route
+                    url: "/Table/UpdateSectionOrder", 
                     type: "POST",
                     data: { sortOrder: sortedIds },
                     success: function (response) {
@@ -46,7 +45,5 @@
                 });
             }
         });
-
-        $(".sortableSection").disableSelection();
     });
 </script>

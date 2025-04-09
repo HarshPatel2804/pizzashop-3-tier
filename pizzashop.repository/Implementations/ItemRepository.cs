@@ -125,4 +125,13 @@ public class ItemRepository : IItemRepository
         
     }
 
+    public async Task<Item> GetItemByName(AddEditItemViewModel model)
+        {
+            return await _context.Items
+                .FirstOrDefaultAsync(mg => 
+                    mg.Itemname.ToLower() == model.Itemname.ToLower() && 
+                    mg.Itemid != model.Itemid && 
+                    mg.Isdeleted != true);
+        }
+
 }

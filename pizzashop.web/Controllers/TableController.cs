@@ -40,6 +40,10 @@ public class TableController : Controller
         return Json(new { success = true });
     }
 
+    public async Task<int> FirstSectionId(){
+        return await _tableSectionService.FirstSectionId();
+    }
+
     public async Task<SectionViewModel> EditSectionById(int sectionId){
         var model = await _tableSectionService.GetSectionById(sectionId);
         return model;
@@ -64,6 +68,12 @@ public class TableController : Controller
 
     [HttpPost]
     public async Task<IActionResult> AddNewTable(TableViewModel model){
+        Console.WriteLine("Hii" + model.Sectionid);
+        var existingTable = await _tableSectionService.GetTableByName(model);
+        if (existingTable != null)
+        {
+            return Json(new { success = false, message = "Table with this name already exists" });
+        }
         await _tableSectionService.AddTable(model);
         return Json(new { success = true });
     }
@@ -75,12 +85,18 @@ public class TableController : Controller
     }
 
     public async Task<IActionResult> editTable(int tableId){
+
         var model = await _tableSectionService.GetTableById(tableId);
         return PartialView("_EditTablePartial" , model);
     }
 
     [HttpPost]
     public async Task<IActionResult> editTable(TableViewModel tableViewModel){
+        var existingTable = await _tableSectionService.GetTableByName(tableViewModel);
+        if (existingTable != null)
+        {
+            return Json(new { success = false, message = "Table with this name already exists" });
+        }
         await _tableSectionService.EditTable(tableViewModel);
         return Json(new{success = true,message="Table Edited Successfully"});
     }

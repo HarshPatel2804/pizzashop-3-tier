@@ -58,6 +58,11 @@ public class TaxesController : Controller
         Console.WriteLine("Save");
         bool success;
         
+        var existingTable = await _taxService.GetTaxByName(viewModel);
+        if (existingTable != null)
+        {
+            return Json(new { success = false, message = "Tax with this name already exists" });
+        }
         if (viewModel.Taxid > 0)
         {
             success = await _taxService.UpdateTax(viewModel);

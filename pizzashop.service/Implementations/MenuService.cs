@@ -253,13 +253,13 @@ public class MenuService : IMenuService
         }
     }
 
-    public async Task<List<ModifierViewModel>> GetModifiersByGroup(int ModifierGroupId)
+    public async Task<(List<ModifierViewModel> modifiers, int totalModifiers, int totalPages)> GetModifiersByGroup(int ModifierGroupId,int page, int pageSize, string search)
     {
-        var model = await _modifierRepository.GetModifierByGroupAsync(ModifierGroupId);
+        var (modifiers, totalModifiers) = await _modifierRepository.GetModifierByGroupAsync(ModifierGroupId,page,pageSize,search);
 
         var modifierModel = new List<ModifierViewModel>();
 
-        foreach (var u in model)
+        foreach (var u in modifiers)
         {
             var unitName = await _unitRepository.GetUnit(u.Modifier.Unitid);
 
@@ -274,7 +274,9 @@ public class MenuService : IMenuService
             });
         }
 
-        return modifierModel;
+        int totalPages = (int)System.Math.Ceiling((double)totalModifiers / pageSize);
+
+        return (modifierModel, totalModifiers, totalPages);
     }
 
     public async Task<List<ItemModifierGroupMapping>> GetItemModifierGroupsAsync(int itemId)
@@ -498,5 +500,13 @@ public class MenuService : IMenuService
     public async Task<Modifiergroup> GetModifierGroupByName(string name, int id)
         {
             return await _modifierRepository.GetModifierGroupByName(name, id);
+        }
+    public async Task<Modifier> GetModifierByName(ModifierViewModel model)
+        {
+            return await _modifierRepository.GetModifierByName(model);
+        }
+    public async Task<Item> GetItemByName(AddEditItemViewModel model)
+        {
+            return await _itemRepository.GetItemByName(model);
         }
 }

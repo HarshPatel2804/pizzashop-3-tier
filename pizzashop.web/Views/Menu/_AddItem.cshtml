@@ -21,16 +21,18 @@
                                         <div class="form-floating">
                                             <select class="form-select" asp-for="Categoryid" asp-items="Model.Category"
                                                 id="categoryid" aria-label="Floating label select example">
-                                                <option selected>Select Category</option>
+                                                <option value="">Select Category</option>
                                             </select>
                                             <label for="categoryid">Categories</label>
+                                            <span class="text-danger" asp-validation-for="Categoryid"></span>
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
                                         <div class="form-floating">
-                                            <input type="text" class="form-control" id="floatingInput"
-                                                placeholder="Name" asp-for="Itemname" required>
-                                            <label for="floatingInput">Name*</label>
+                                            <input type="text" class="form-control" id="AddName"
+                                                placeholder="Name" asp-for="Itemname">
+                                            <label for="AddName">Name*</label>
+                                            <span class="text-danger" asp-validation-for="Itemname"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -43,7 +45,7 @@
                                 <div class=" col-xxl-3 col-lg-6 col-md-6 col-sm-6 col-12 mb-3">
                                     <div class="form-floating">
                                         <select class="form-select" asp-for="ItemType" id="floatingSelect"
-                                            aria-label="Item type" required>
+                                            aria-label="Item type">
                                             @foreach (var type in
                                             Enum.GetValues(typeof(itemtype)).Cast<itemtype>())
                                             {
@@ -53,22 +55,25 @@
                                             }
                                         </select>
                                         <label for="floatingSelect">Item Type*</label>
+                                        <span class="text-danger" asp-validation-for="ItemType"></span>
                                     </div>
                                 </div>
 
                                 <div class="col-xxl-3 col-lg-6 col-md-6  col-sm-6 col-12 mb-3">
                                     <div class="form-floating">
                                         <input type="text" class="form-control" asp-for="Rate" id="floatingInput"
-                                            placeholder="Rate" required value="0">
+                                            placeholder="Rate" value="">
                                         <label for="floatingInput">Rate*</label>
+                                        <span class="text-danger" asp-validation-for="Rate"></span>
                                     </div>
                                 </div>
 
                                 <div class="col-xxl-3 col-lg-6 col-md-6 col-sm-6 col-12 mb-3">
                                     <div class="form-floating">
                                         <input type="text" class="form-control" asp-for="Quantity" id="floatingInput"
-                                            placeholder="Quantity" required value="0">
+                                            placeholder="Quantity">
                                         <label for="floatingInput">Quantity*</label>
+                                        <span class="text-danger" asp-validation-for="Quantity"></span>
                                     </div>
                                 </div>
 
@@ -76,9 +81,10 @@
                                     <div class="form-floating">
                                         <select class="form-select" asp-for="Unitid" asp-items="Model.Units"
                                             id="floatingSelect" aria-label="Item type" required>
-                                            <option selected>Select a Unit</option>
+                                            <option value="">Select a Unit</option>
                                         </select>
                                         <label for="floatingSelect">Unit*</label>
+                                        <span class="text-danger" asp-validation-for="Unitid"></span>
                                     </div>
                                 </div>
                             </div>
@@ -179,7 +185,7 @@
                 </div>
 
                 <div class="modal-footer d-flex justify-content-end gap-2">
-                    <button type="button" class="btn btn-primary" id="SaveItem" data-bs-dismiss="modal">Save</button>
+                    <button type="button" class="btn btn-primary" id="SaveItem">Save</button>
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
                 </div>
             </div>
@@ -381,6 +387,7 @@
         $('#SaveItem').on('click', function (e) {
            e.preventDefault();
             console.log("clicked");
+            if($('#addItemForm').valid()){
             var formData = new FormData($("#addItemForm")[0]);
             var catid = $("#categoryid").val();
 
@@ -420,10 +427,13 @@
                     alert('An error occurred while saving the item.');
                 }
             });
+            }
         });
         
     });
 </script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 
 <style>
     .right-side-addItem {

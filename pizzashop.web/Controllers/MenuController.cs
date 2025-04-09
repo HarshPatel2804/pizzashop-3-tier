@@ -35,18 +35,17 @@ public class MenuController : Controller
     public async Task<IActionResult> Category([FromBody] CategoryViewModel model)
     {
         if (string.IsNullOrEmpty(model.Categoryname))
-            {
-                return Json(new { success = false, message = "Category name is required" });
-            }
+        {
+            return Json(new { success = false, message = "Category name is required" });
+        }
         var existingCategory = await _menuService.GetCategoryByName(model);
-                if (existingCategory != null)
-                {
-                    return Json(new { success = false, message = "Category with this name already exists" });
-                }
+        if (existingCategory != null)
+        {
+            return Json(new { success = false, message = "Category with this name already exists" });
+        }
         Console.WriteLine(model.Categoryname + "name");
         await _menuService.AddCategory(model);
-         return Json(new { success = true });
-        return RedirectToAction("Menu", "Menu");
+        return Json(new { success = true });
     }
 
     [HttpGet]
@@ -56,9 +55,13 @@ public class MenuController : Controller
         return PartialView("_ModifierGrouppartial", model);
     }
 
-    public async Task<IActionResult> Modifiers(int ModifierGroupId)
+    public async Task<IActionResult> Modifiers(int ModifierGroupId , int page = 1, int pageSize = 5, string search = "")
     {
-        var model = await _menuService.GetModifiersByGroup(ModifierGroupId);
+        var (model, totalUsers, totalPages) = await _menuService.GetModifiersByGroup(ModifierGroupId,page, pageSize, search);
+        ViewBag.CurrentPage = page;
+        ViewBag.PageSize = pageSize;
+        ViewBag.TotalUsers = totalUsers;
+        ViewBag.TotalPages = totalPages;
         return PartialView("_ModifierPartial", model);
     }
 
@@ -96,10 +99,8 @@ public class MenuController : Controller
                 return Json(new { success = false, message = "Invalid JSON format" });
             }
 
-            // Extract the JSON array substring
             string cleanedJson = jsonString.Substring(arrayStartIndex);
 
-            // Deserialize the cleaned JSON
             var selectedModifierGroups = JsonConvert.DeserializeObject<List<ItemModifierGroupMapping>>(cleanedJson);
             addEditItemViewModel.SelectedModifierGroups = selectedModifierGroups;
         }
@@ -112,6 +113,11 @@ public class MenuController : Controller
                 Console.WriteLine(group.Modifiergroupid + "id");
                 Console.WriteLine($"Modifier Group ID: {group.Modifiergroupid}, Min Selection: {group.Minselectionrequired}, Max Selection: {group.Maxselectionallowed}");
             }
+        }
+        var existingItem = await _menuService.GetItemByName(addEditItemViewModel);
+        if (existingItem != null)
+        {
+            return Json(new { success = false, message = "Item with this name already exists" });
         }
         await _menuService.AddItemAsync(addEditItemViewModel, ProfileImage);
         return Json(new { success = true, message = "added successfully" });
@@ -144,6 +150,11 @@ public class MenuController : Controller
             var selectedModifierGroups = JsonConvert.DeserializeObject<List<ItemModifierGroupMapping>>(cleanedJson);
             addEditItemViewModel.SelectedModifierGroups = selectedModifierGroups;
         }
+        var existingItem = await _menuService.GetItemByName(addEditItemViewModel);
+        if (existingItem != null)
+        {
+            return Json(new { success = false, message = "Item with this name already exists" });
+        }
         await _menuService.EditItemAsync(addEditItemViewModel, ProfileImage);
         return Json(new { success = true, message = "added successfully" });
     }
@@ -159,16 +170,16 @@ public class MenuController : Controller
     public async Task<IActionResult> EditCategoryById([FromBody] CategoryViewModel model)
     {
         if (string.IsNullOrEmpty(model.Categoryname))
-            {
-                return Json(new { success = false, message = "Category name is required" });
-            }
+        {
+            return Json(new { success = false, message = "Category name is required" });
+        }
         var existingCategory = await _menuService.GetCategoryByName(model);
-                if (existingCategory != null)
-                {
-                    return Json(new { success = false, message = "Category with this name already exists" });
-                }
+        if (existingCategory != null)
+        {
+            return Json(new { success = false, message = "Category with this name already exists" });
+        }
         await _menuService.EditCategory(model);
-        return Json(new{ success = true});
+        return Json(new { success = true });
     }
 
     [HttpPost]
@@ -185,10 +196,10 @@ public class MenuController : Controller
     }
 
     [HttpPost]
-    public async Task DeleteModifier(int modifierId , int modifierGroupId)
+    public async Task DeleteModifier(int modifierId, int modifierGroupId)
     {
         Console.WriteLine(modifierId + "id");
-        await _menuService.DeleteModifier(modifierId , modifierGroupId);
+        await _menuService.DeleteModifier(modifierId, modifierGroupId);
     }
 
     [HttpGet]
@@ -288,16 +299,16 @@ public class MenuController : Controller
     public async Task<IActionResult> CreateModifierGroup([FromBody] ModifierGroupViewModel model)
     {
         if (string.IsNullOrEmpty(model.Modifiergroupname))
-            {
-                return Json(new { success = false, message = "Modifier group name is required" });
-            }
+        {
+            return Json(new { success = false, message = "Modifier group name is required" });
+        }
         var existingGroup = await _menuService.GetModifierGroupByName(
                     model.Modifiergroupname, 0);
-                    
-                if (existingGroup != null)
-                {
-                    return Json(new { success = false, message = "A modifier group with this name already exists" });
-                }
+
+        if (existingGroup != null)
+        {
+            return Json(new { success = false, message = "A modifier group with this name already exists" });
+        }
         int modifierGroupId = await _menuService.AddModifierGroup(model);
         return Json(new { success = true, ID = modifierGroupId });
     }
@@ -305,16 +316,16 @@ public class MenuController : Controller
     public async Task<IActionResult> UpdateModifierGroup([FromBody] ModifierGroupViewModel model)
     {
         if (string.IsNullOrEmpty(model.Modifiergroupname))
-            {
-                return Json(new { success = false, message = "Modifier group name is required" });
-            }
+        {
+            return Json(new { success = false, message = "Modifier group name is required" });
+        }
         var existingGroup = await _menuService.GetModifierGroupByName(
                     model.Modifiergroupname, model.Modifiergroupid);
-                    
-                if (existingGroup != null)
-                {
-                    return Json(new { success = false, message = "A modifier group with this name already exists" });
-                }
+
+        if (existingGroup != null)
+        {
+            return Json(new { success = false, message = "A modifier group with this name already exists" });
+        }
         int modifierGroupId = await _menuService.EditModifierGroup(model);
         return Json(new { success = true, ID = modifierGroupId });
     }
@@ -327,8 +338,25 @@ public class MenuController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> SaveModifier([FromBody] ModifierViewModel model)
+    public async Task<IActionResult> SaveModifier(ModifierViewModel model)
     {
+        var jsonString = Request.Form["SelectedModifierGroups"];
+        Console.WriteLine($"Raw value received: {jsonString}");
+
+        if (!string.IsNullOrEmpty(jsonString))
+        {
+            var values = jsonString.ToString().Split(',');
+            model.SelectedModifierGroups = values.Select(int.Parse).ToList();
+        }
+        else
+        {
+            return Json(new { success = false, message = "Please select at least one modifier group" });
+        }
+        var existingModifier = await _menuService.GetModifierByName(model);
+        if (existingModifier != null)
+        {
+            return Json(new { success = false, message = "Modifier with this name already exists" });
+        }
         int modifierId = await _menuService.SaveModifier(model);
         return Json(new { success = true });
     }
@@ -341,8 +369,25 @@ public class MenuController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> EditModifier([FromBody] ModifierViewModel model)
+    public async Task<IActionResult> EditModifier(ModifierViewModel model)
     {
+        var jsonString = Request.Form["SelectedModifierGroups"];
+        Console.WriteLine($"Raw value received: {jsonString}");
+
+        if (!string.IsNullOrEmpty(jsonString))
+        {
+            var values = jsonString.ToString().Split(',');
+            model.SelectedModifierGroups = values.Select(int.Parse).ToList();
+        }
+        else
+        {
+            return Json(new { success = false, message = "Please select at least one modifier group" });
+        }
+        var existingModifier = await _menuService.GetModifierByName(model);
+        if (existingModifier != null)
+        {
+            return Json(new { success = false, message = "Modifier with this name already exists" });
+        }
         await _menuService.EditModifier(model);
         return Json(new { success = true, modifierId = model.Modifierid });
     }
@@ -350,14 +395,14 @@ public class MenuController : Controller
     [HttpPost]
     public async Task<JsonResult> MassDeleteItems([FromBody] List<int> selectedIds)
     {
-       await _menuService.DeleteMultipleItems(selectedIds);
+        await _menuService.DeleteMultipleItems(selectedIds);
         return Json(new { success = true, message = "Items deleted successfully" });
     }
 
     [HttpPost]
-    public async Task<JsonResult> MassDeleteModifiers(List<int> selectedIds , int modifierGroupid)
+    public async Task<JsonResult> MassDeleteModifiers(List<int> selectedIds, int modifierGroupid)
     {
-       await _menuService.DeleteMultipleModifiers(selectedIds , modifierGroupid);
+        await _menuService.DeleteMultipleModifiers(selectedIds, modifierGroupid);
         return Json(new { success = true, message = "Modifiers deleted successfully" });
     }
 

@@ -118,4 +118,9 @@ public class TaxService : ITaxService
     {
         return await _taxRepository.DeleteTaxAsync(id);
     }
+
+    public async Task<Taxis> GetTaxByName(TaxViewModel model)
+        {
+            return await _taxRepository.GetTaxByName(model);
+        }
 }

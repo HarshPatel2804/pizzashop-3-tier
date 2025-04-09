@@ -149,4 +149,13 @@ public class TableSectionService : ITableSectionService
     {
         await _tableSectionRepository.MassDeleteTable(itemIds);
     }
+
+    public async Task<Table> GetTableByName(TableViewModel model)
+        {
+            return await _tableSectionRepository.GetTableByName(model);
+        }
+
+    public async Task<int> FirstSectionId(){
+        return await _tableSectionRepository.GetSectionIdWithLeastOrderField();
+    }
 }

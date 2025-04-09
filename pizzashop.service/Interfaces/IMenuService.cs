@@ -14,7 +14,7 @@ public interface IMenuService
 
     Task<(List<ItemViewModel> itemModel, int totalItems, int totalPages)> GetItemsByCategory(int CategoryId , int page, int pageSize, string search);
 
-    Task<List<ModifierViewModel>> GetModifiersByGroup(int ModifierGroupId);
+    Task<(List<ModifierViewModel> modifiers, int totalModifiers, int totalPages)> GetModifiersByGroup(int ModifierGroupId,int page, int pageSize, string search);
 
     Task<CategoryViewModel> GetCategoryById(int categoryId);
 
@@ -58,4 +58,8 @@ public interface IMenuService
     Task<Category> GetCategoryByName(CategoryViewModel model);
 
     Task<Modifiergroup> GetModifierGroupByName(string name, int id);
+
+    Task<Modifier> GetModifierByName(ModifierViewModel model);
+
+    Task<Item> GetItemByName(AddEditItemViewModel model);
 }

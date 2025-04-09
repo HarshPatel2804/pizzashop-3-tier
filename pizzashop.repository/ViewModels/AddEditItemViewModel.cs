@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using pizzashop.repository.Models;
 
@@ -7,16 +8,22 @@ public class AddEditItemViewModel
 {
     public int Itemid { get; set; }
 
+    [Required(ErrorMessage = "Item Name is required.")]
+    [StringLength(30, MinimumLength = 2, ErrorMessage = "Item Name must be between 2 and 30 characters.")]
     public string Itemname { get; set; } = null!;
 
     public int ModifierGroupId {get; set;}
 
+    [Required(ErrorMessage = "Category is required.")]
     public int Categoryid { get; set; }
 
+    [Required(ErrorMessage = "Rate is required.")]
     public decimal Rate { get; set; }
 
+    [Required(ErrorMessage = "Quantity is required.")]
     public short? Quantity { get; set; }
 
+    [Required(ErrorMessage = "Unit id is required.")]
     public int Unitid { get; set; }
 
     public bool Isavailable { get; set; }

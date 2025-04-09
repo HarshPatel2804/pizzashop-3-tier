@@ -121,6 +121,8 @@
         });
 
         $(document).on("click", "#SaveTax", function (e) {
+
+            if($('#addEditTaxForm').valid()){
             e.preventDefault();
 
             var formData = new FormData($("#addEditTaxForm")[0]);
@@ -135,12 +137,17 @@
                 success: function (response) {
                     if (response.success) {
                         TaxList(1);
+                        $('#AddTaxModal').modal('hide');
+                    }
+                    else{
+                        $("#Taxname").after('<div class="error-message text-danger mt-1">' + response.message + '</div>');
                     }
                 },
                 error: function (error) {
                     console.error("Error saving tax:", error);
                 }
             });
+            }
         });
 
         $(document).on("click", ".deleteTax", function () {

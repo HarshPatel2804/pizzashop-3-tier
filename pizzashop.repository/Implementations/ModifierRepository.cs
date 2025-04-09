@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using pizzashop.repository.Interfaces;
 using pizzashop.repository.Models;
+using pizzashop.repository.ViewModels;
 using Pizzashop.repository.Models;
 
 namespace pizzashop.repository.Implementations;
@@ -28,11 +29,24 @@ public class ModifierRepository : IModifierRepository
 
     }
 
-    public async Task<List<ModifierGroupModifierMapping>> GetModifierByGroupAsync(int ModifierGroupId)
+    public async Task<(List<ModifierGroupModifierMapping> , int totalModifiers)> GetModifierByGroupAsync(int ModifierGroupId,int page, int pageSize, string search)
     {
-        return await _context.ModifierGroupModifierMappings.Where(u => u.ModifierGroupId == ModifierGroupId)
+        var query = _context.ModifierGroupModifierMappings.Where(u => u.ModifierGroupId == ModifierGroupId)
                     .Include(u => u.Modifier)
-                    .ToListAsync();
+                    .Where(u => u.Modifier.Isdeleted == false)
+                    .OrderBy(u => u.Modifier.Modifierid)
+                    .Where(u => string.IsNullOrEmpty(search) ||
+                        u.Modifier.Modifiername.ToLower().Contains(search.ToLower()) ||
+                        u.Modifier.Rate.ToString().Contains(search.ToLower()));
+
+        int totalModifiers = await query.CountAsync();
+
+        var modifiers = await query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return (modifiers, totalModifiers);
     }
 
     public async Task DeleteModifier(int modifierId , int modifierGroupId)
@@ -149,6 +163,14 @@ public class ModifierRepository : IModifierRepository
                 .FirstOrDefaultAsync(mg => 
                     mg.Modifiergroupname.ToLower() == name.ToLower() && 
                     mg.Modifiergroupid != id && 
+                    mg.Isdeleted != true);
+        }
+    public async Task<Modifier> GetModifierByName(ModifierViewModel model)
+        {
+            return await _context.Modifiers
+                .FirstOrDefaultAsync(mg => 
+                    mg.Modifiername.ToLower() == model.Modifiername.ToLower() && 
+                    mg.Modifierid != model.Modifierid && 
                     mg.Isdeleted != true);
         }
 }

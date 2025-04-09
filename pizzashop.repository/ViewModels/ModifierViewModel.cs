@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using pizzashop.repository.Models;
 
@@ -9,14 +10,19 @@ public partial class ModifierViewModel
 {
     public int Modifierid { get; set; }
 
+    [Required(ErrorMessage = "Modifier Name is required.")]
+    [StringLength(30, MinimumLength = 2, ErrorMessage = "Modifier Name must be between 2 and 30 characters.")]
     public string Modifiername { get; set; } = null!;
 
     public int Modifiergroupid { get; set; }
 
+    [Required(ErrorMessage = "Rate is required.")]
     public decimal Rate { get; set; }
 
+    [Required(ErrorMessage = "Quantity is required.")]
     public short? Quantity { get; set; }
 
+    [Required(ErrorMessage = "Unit is required.")]
     public int Unitid { get; set; }
 
     public string UnitName {get; set;}

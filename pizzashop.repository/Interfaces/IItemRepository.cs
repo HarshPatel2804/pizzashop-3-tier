@@ -24,4 +24,6 @@ public interface IItemRepository
     Task RemoveItemModifierGroupMappingsAsync(int itemId);
 
     Task MassDeleteItem(List<int> Itemid);
+
+    Task<Item> GetItemByName(AddEditItemViewModel model);
 }

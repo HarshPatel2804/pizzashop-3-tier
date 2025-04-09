@@ -16,6 +16,7 @@
                                 <input asp-for="Tablename" type="text" class="form-control input-height" id="Name"
                                     placeholder="Name*">
                                 <label for="Name">Name*</label>
+                                <span class="text-danger" asp-validation-for="Tablename"></span>
                             </div>
                         </div>
                         <div class="col-12 col-lg-6 mb-3">
@@ -25,6 +26,7 @@
                                     <option value="">Select Section</option>
                                 </select>
                                 <label for="SectionId">Section*</label>
+                                <span class="text-danger" asp-validation-for="Sectionid"></span>
                             </div>
                         </div>
                     </div>
@@ -34,6 +36,7 @@
                                 <input asp-for="Capacity" type="text" class="form-control input-height" id="Capacity"
                                     placeholder="Name*">
                                 <label for="Capacity">Capacity*</label>
+                                <span class="text-danger" asp-validation-for="Capacity"></span>
                             </div>
                         </div>
                         <div class="col-12 col-lg-6 mb-3">
@@ -46,12 +49,13 @@
                                     }
                                 </select>
                                 <label for="Type">Status*</label>
+                                <span class="text-danger" asp-validation-for="Tablestatus"></span>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" id="SaveEditTable" class="btn btn-primary p-2" data-bs-dismiss="modal">Save</button>
+                    <button type="submit" id="SaveEditTable" class="btn btn-primary p-2">Save</button>
                     <button type="button" class="btn border-primary text-primary p-2"
                         data-bs-dismiss="modal">Cancel</button>
                 </div>
@@ -59,3 +63,9 @@
         </div>
     </div>
 </div>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+<script>
+    
+
+</script>

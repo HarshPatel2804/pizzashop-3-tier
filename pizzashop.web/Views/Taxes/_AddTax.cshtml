@@ -19,7 +19,7 @@
                             <input type="hidden" asp-for="Taxid" id="Taxid" />
                             <input type="text" class="form-control" asp-for="Taxname" id="Taxname" placeholder="">
                             <label for="Taxname" style="background: none;">Name*</label>
-                            <span class="text-danger"></span>
+                            <span class="text-danger" asp-validation-for="Taxname"></span>
                         </div>
                         </div>
                     </div>
@@ -31,13 +31,14 @@
                                 <option value="">Select TaxType</option>
                             </select>
                             <label for="TaxType">Tax Type*</label>
+                            <span class="text-danger" asp-validation-for="TaxTypeId"></span>
                         </div>
                         </div>
                         <div class="col-md-6 col">
                         <div class="form-floating">
                             <input type="text" class="form-control" asp-for="Taxvalue" id="Taxvalue" placeholder="">
                             <label for="Taxvalue" >Tax Amount*</label>
-                            <span class="text-danger"></span>
+                            <span class="text-danger" asp-validation-for="Taxvalue"></span>
                         </div>
                         </div>
                     </div>
@@ -61,7 +62,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="submit" id="SaveTax" class="btn btn-primary p-2" data-bs-dismiss="modal" data-id="@Model.Taxid">Save</button>
+                    <button type="submit" id="SaveTax" class="btn btn-primary p-2" data-id="@Model.Taxid">Save</button>
                     <button type="button" class="btn border-primary text-primary p-2"
                         data-bs-dismiss="modal">Cancel</button>
                 </div>
@@ -69,3 +70,5 @@
         </div>
     </div>
 </div>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>

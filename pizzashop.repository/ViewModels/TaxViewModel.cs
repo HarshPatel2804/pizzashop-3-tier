@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using pizzashop.repository.Models;
@@ -8,14 +9,19 @@ public class TaxViewModel
 {
     public int Taxid { get; set; }
 
+    [Required(ErrorMessage = "Tax Name is required.")]
+    [StringLength(30, MinimumLength = 2, ErrorMessage = "Tax Name must be between 2 and 30 characters.")]
     public string Taxname { get; set; } = null!;
 
     public bool Isenabled { get; set; }
 
     public bool Isdefault { get; set; }
+    [Required(ErrorMessage = "Tax Type is required.")]
     public int TaxTypeId { get; set; }
 
     public string TaxTypeName { get; set; }
+
+    [Required(ErrorMessage = "Tax Value is required.")]
     public string Taxvalue { get; set; } = null!;
 
     public bool Isdeleted { get; set; }

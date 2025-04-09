@@ -7,7 +7,7 @@
                 <h5 class="modal-title" id="addNewModifier">Add New Modifier</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-
+            <form id="AddModifierForm">
             <div class="modal-body">
                 <!-- first row -->
                 <div>
@@ -37,9 +37,9 @@
                             </div>
                             <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control" id="floatingInput" placeholder="Name"
-                                        required>
-                                    <label for="floatingInput">Name*</label>
+                                    <input type="text" class="form-control" asp-for="Modifiername" id="Modifiername" placeholder="Name">
+                                    <label for="Modifiername">Name*</label>
+                                    <span class="text-danger" asp-validation-for="Modifiername"></span>
                                 </div>
                             </div>
                         </div>
@@ -50,41 +50,45 @@
                     <div class="row">
                         <div class="col-lg-4 col-md-4 col-sm-12 mb-3">
                             <div class="form-floating">
-                                <input type="text" class="form-control" id="floatingInput" placeholder="Rate" required
-                                    value="0">
+                                <input type="text" class="form-control" asp-for="Rate" id="floatingInput" placeholder="Rate" value="">
                                 <label for="floatingInput">Rate*</label>
+                                <span class="text-danger" asp-validation-for="Rate"></span>
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-4 col-sm-12">
                             <div class="form-floating">
-                                <input type="text" class="form-control" id="floatingInput" placeholder="Quantity"
-                                    required value="0">
+                                <input type="text" class="form-control" asp-for="Quantity" id="floatingInput" placeholder="Quantity">
                                 <label for="floatingInput">Quantity*</label>
+                                <span class="text-danger" asp-validation-for="Quantity"></span>
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-4 col-sm-12 doted-border">
                             <div class="form-floating">
                                 <select class="form-select" asp-for="Unitid" asp-items="Model.Units" id="floatingSelect"
-                                    aria-label="Item type" required>
-                                    <option selected>Select a Unit</option>
+                                    aria-label="Item type">
+                                    <option value="">Select a Unit</option>
                                 </select>
                                 <label for="floatingSelect">Unit*</label>
+                                <span class="text-danger" asp-validation-for="Unitid"></span>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="container form-floating">
-                    <textarea class="form-control" placeholder="Give Description of this Modifier"
+                    <textarea class="form-control" asp-for="Description" placeholder="Give Description of this Modifier"
                         id="floatingTextarea"></textarea>
                     <label for="floatingTextarea" style="left: 10px !important;">Description</label>
                 </div>
             </div>
 
             <div class="modal-footer d-flex justify-content-end gap-2">
-                <button type="button" class="btn btn-primary Save-Modifier" data-bs-dismiss="modal">Save</button>
+                <button type="submit" class="btn btn-primary Save-Modifier">Save</button>
                 <button type="button" class="btn btn-danger">Cancel</button>
             </div>
+            </form>
         </div>
     </div>
 </div>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
