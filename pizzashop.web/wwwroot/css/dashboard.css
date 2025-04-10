@@ -38,7 +38,7 @@ main>section.row{
 }
 
 .activeItem .text{
-    color: #0066A7 !important;
+    color: rgb(0, 102, 167) !important;
 }
 
 .activeItem .black{
@@ -69,4 +69,8 @@ main>section.row{
     .menu{
         height:35px;
     }
+}
+
+.navbar{
+    --bs-navbar-padding-y: 0rem !important;
 }

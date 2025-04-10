@@ -104,6 +104,14 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWVudVxfTW9kaWZpZXJQYXJ0aWFsLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/PizzaShop_3tier/pizzashop.web/Views/OrderKOT/KOT.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJLT1RcS09ULmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/PizzaShop_3tier/pizzashop.web/Views/OrderMenu/Menu.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJNZW51XE1lbnUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/PizzaShop_3tier/pizzashop.web/Views/Orders/Order.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJzXE9yZGVyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -120,6 +128,14 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJzXF9PcmRlcnZpZXcuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/PizzaShop_3tier/pizzashop.web/Views/OrderTable/Table.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJUYWJsZVxUYWJsZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/PizzaShop_3tier/pizzashop.web/Views/OrderWaitingList/WaitingList.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJXYWl0aW5nTGlzdFxXYWl0aW5nTGlzdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/PizzaShop_3tier/pizzashop.web/Views/Role/Permission.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUm9sZVxQZXJtaXNzaW9uLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -134,6 +150,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [D:/PizzaShop_3tier/pizzashop.web/Views/Shared/_IndexLayout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9JbmRleExheW91dC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/PizzaShop_3tier/pizzashop.web/Views/Shared/_OrderAppLayout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9PcmRlckFwcExheW91dC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/PizzaShop_3tier/pizzashop.web/Views/Shared/_Toast.cshtml]

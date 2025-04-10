@@ -230,6 +230,11 @@ li {
     display: block !important;
 }
 
+.items:focus-within {
+    color: #0066a7;
+    background-color: #f2f2f2;
+}
+
 .items>.btn {
     --bs-btn-padding-x: 0rem !important;
 }

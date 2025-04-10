@@ -1,0 +1,168 @@
+@{
+    Layout = "_OrderAppLayout";
+    ViewData["Title"] = "OrderAppTable";
+}
+<style>
+        .status-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        .available {
+            background-color: #dee2e6;
+        }
+        .selected {
+            background-color: #a3e635;
+        }
+        .assigned {
+            background-color: #22c55e;
+        }
+        .running {
+            background-color: #7dd3fc;
+        }
+        .table-card {
+            border-radius: 6px;
+            padding: 12px;
+        }
+        .table-blue {
+            background-color: #e0f2fe;
+        }
+        .table-green {
+            background-color: #dcfce7;
+        }
+        .accordion-button:focus {
+            box-shadow: none;
+        }
+        
+</style>
+    <div class="container-fluid py-4">
+        <div class="d-flex justify-content-between align-items-center mb-3 ms-3 me-3">
+            <div class="h3 text-color" style="font-weight: bold;">Table View</div>
+            <div class="d-flex flex-wrap gap-3">
+                <div><span class="status-dot available"></span> Available</div>
+                <div><span class="status-dot selected"></span> Selected</div>
+                <div><span class="status-dot assigned"></span> Assigned</div>
+                <div><span class="status-dot running"></span> Running</div>
+            </div>
+        </div>
+
+       <div class="accordion mb-4 ms-3 me-3" id="floorAccordion">
+            <div class="accordion-item mb-3 border rounded shadow-sm bg-white">
+                    <button class="accordion-button custom-accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#groundFloorContent" aria-expanded="true" aria-controls="groundFloorContent">
+                        <div class="d-flex align-items-center justify-content-between w-100">
+                            <div class="d-flex align-items-center">
+                                <span class="text-color fs-4 ms-2">Ground Floor</span>
+                            </div>
+                            <div class="d-flex">
+                            <div class="d-flex gap-2">
+                                <div class="d-flex align-items-center ms-auto me-3">
+                                    <div class="d-flex align-items-center me-3">
+                                        <span class="status-dot available"></span>
+                                        <span>3</span>
+                                    </div>
+                                    <div class="d-flex align-items-center me-3">
+                                        <span class="status-dot selected"></span>
+                                        <span>1</span>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <span class="status-dot running"></span>
+                                        <span>1</span>
+                                    </div>
+                                </div>
+                                <div type="button" class="btn btn-border-color btn-sm" onclick="event.stopPropagation();">
+                                    <i class="bi bi-plus"></i> Waiting Token
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </button>
+                <div id="groundFloorContent" class="accordion-collapse collapse show" data-bs-parent="#floorAccordion">
+                    <div class="accordion-body">
+                        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-5 g-3 mb-3">
+                            <div class="col">
+                                <div class="table-card table-blue">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <h6 class="mb-0">T2</h6>
+                                        <span class="text-muted">€309.40</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <div><i class="bi bi-people"></i> 6</div>
+                                        <div class="d-flex flex-column align-items-center">
+                                            <div><i class="bi bi-alarm"></i></div>
+                                            <div class="small">24 days 5 hours</div>
+                                            <div class="small">33 min 1 sec</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <button class="btn btn-color" disabled>Assign</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+
+<style>
+    .custom-accordion-button:not(.collapsed),
+.custom-accordion-button:focus {
+    background-color: #fff !important;
+    box-shadow: none !important;
+    color: inherit !important;
+}
+.accordion-button::after {
+    margin-left: 0;
+    position: absolute;
+    left: 1rem;
+    width: 25px;
+    height: 25px;
+    background-size: 16px;
+    border-radius: 50%;
+    border: 1px solid #f2f2f2;
+    background-position: center;
+}
+.accordion-button:not(.collapsed)::after {
+    border: 1px solid #0066a7 !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%230066a7'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e") !important;
+}
+
+.accordion-button {
+    padding-left: 2.5rem;
+}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if Bootstrap's JS is loaded
+    if (typeof bootstrap !== 'undefined') {
+        // Initialize all accordions
+        var accordionElements = document.querySelectorAll('.accordion');
+        accordionElements.forEach(function(accordion) {
+            var accordionItems = accordion.querySelectorAll('.accordion-item');
+            accordionItems.forEach(function(item) {
+                var header = item.querySelector('.accordion-header');
+                var button = header.querySelector('.accordion-button');
+                var target = button.getAttribute('data-bs-target');
+                var content = document.querySelector(target);
+                
+                button.addEventListener('click', function() {
+                    if (content.classList.contains('show')) {
+                        content.classList.remove('show');
+                        button.classList.add('collapsed');
+                        button.setAttribute('aria-expanded', 'false');
+                    } else {
+                        content.classList.add('show');
+                        button.classList.remove('collapsed');
+                        button.setAttribute('aria-expanded', 'true');
+                    }
+                });
+            });
+        });
+    } else {
+        console.error('Bootstrap JS is not loaded. Please include it in your project.');
+    }
+});
+</script>

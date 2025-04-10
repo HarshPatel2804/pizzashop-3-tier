@@ -33,9 +33,12 @@
     if(user != null) {
      var Id = user.Id;
      var ProfileData = await ProfileService.GetProfileData((int)Id);
-     profileImageUrl = @Url.Content("~/images/uploads/" + ProfileData.Profileimg) ??"~/images/default-profile.png";
+     profileImageUrl = ProfileData.Profileimg != null ? @Url.Content("~/images/uploads/" + ProfileData.Profileimg) : @Url.Content("~/images/Default_pfp.svg.png");
+     Console.WriteLine(profileImageUrl);
      Username = ProfileData.Username;
      }
+
+     var role = User.FindFirstValue(ClaimTypes.Role);
 }
 <body>
     <main class="d-flex flex-column w-100">
@@ -43,11 +46,11 @@
             <aside
                 class="col-auto d-flex justify-content-start align-items-center flex-column offcanvas-lg offcanvas-start px-4"
                 id=sidebar>
-                <div class="w-100 menu mt-3">
+                <div class="w-100 menu mt-3 d-flex justify-content-center">
                     <div class="me-1">
-                        <img src="~/images/logos/pizzashop_logo.png" alt="logo" style="width: 40px;">
+                        <img src="~/images/logos/pizzashop_logo.png" alt="logo" style="width: 60px;">
                     </div>
-                    <span style="color: rgb(101, 101, 224); font-weight: 700;">PIZZASHOP</span>
+                    <span style="color: rgb(0, 102, 167); font-weight: 500; font-size: 20px;">PIZZASHOP</span>
                     <button type="button" class="btn-close text-reset ms-auto d-lg-none" data-bs-dismiss="offcanvas"
                         data-bs-target="#sidebar" aria-label="Close"></button>
                 </div>
@@ -97,7 +100,13 @@
                     style="max-height: 50px; height: 100%; position:sticky; background-color: rgb(0, 100, 153);">
                     <img src="~/images/menu-bar.svg" data-bs-toggle="offcanvas" data-bs-target="#sidebar"
                         alt="menu-bar-image" class="ms-4 d-lg-none">
-                    <div class="dropdown ms-auto">
+                     @if (@role == "Account Manager")
+                            {
+                                <a target="_blank" asp-controller="OrderTable" asp-action="Table" class="ms-auto me-3">
+                                    <div><i class="bi bi-phone fs-2 text-white"></i></div>
+                                </a>
+                            }
+                    <div class="dropdown @((role != "Account Manager") ? "ms-auto" : "")">
                             <img src=@profileImageUrl class="dropdown-toggle me-2" id="dropdownMenuButton1"
                             data-bs-toggle="dropdown" aria-expanded="false" style="width:30px; height: 30px;">                        
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
