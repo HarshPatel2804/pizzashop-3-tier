@@ -11,4 +11,8 @@ public interface ICustomerRepository
     Task<Customer> GetCustomerById(int customerId);
 
     Task<(List<Customer>, int totalCustomers)> GetCustomersForExport(string searchInput, DateTime? fromDate, DateTime? toDate);
+
+    Task<Customer> GetCustomerByEmail(string Email);
+
+    Task<int> AddCustomer(Customer model);
 }

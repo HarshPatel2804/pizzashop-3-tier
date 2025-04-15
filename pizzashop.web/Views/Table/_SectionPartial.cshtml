@@ -26,11 +26,11 @@
             handle: ".sort-icon",  
             update: function (event, ui) {
                 let sortedIds = [];
-                $(".sortSection li:visible").each(function () {
+                $(".sortSection li").each(function () {
                     sortedIds.push($(this).data("id"));
                 });
 
-                console.log(sortedIds + "Hii");
+                console.log(sortedIds);
 
                 $.ajax({
                     url: "/Table/UpdateSectionOrder", 

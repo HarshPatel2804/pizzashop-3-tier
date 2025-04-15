@@ -3,166 +3,185 @@
     ViewData["Title"] = "OrderAppTable";
 }
 <style>
-        .status-dot {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            margin-right: 5px;
-        }
-        .available {
-            background-color: #dee2e6;
-        }
-        .selected {
-            background-color: #a3e635;
-        }
-        .assigned {
-            background-color: #22c55e;
-        }
-        .running {
-            background-color: #7dd3fc;
-        }
-        .table-card {
-            border-radius: 6px;
-            padding: 12px;
-        }
-        .table-blue {
-            background-color: #e0f2fe;
-        }
-        .table-green {
-            background-color: #dcfce7;
-        }
-        .accordion-button:focus {
-            box-shadow: none;
-        }
-        
-</style>
-    <div class="container-fluid py-4">
-        <div class="d-flex justify-content-between align-items-center mb-3 ms-3 me-3">
-            <div class="h3 text-color" style="font-weight: bold;">Table View</div>
-            <div class="d-flex flex-wrap gap-3">
-                <div><span class="status-dot available"></span> Available</div>
-                <div><span class="status-dot selected"></span> Selected</div>
-                <div><span class="status-dot assigned"></span> Assigned</div>
-                <div><span class="status-dot running"></span> Running</div>
-            </div>
-        </div>
+    .status-dot {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin-right: 5px;
+    }
 
-       <div class="accordion mb-4 ms-3 me-3" id="floorAccordion">
-            <div class="accordion-item mb-3 border rounded shadow-sm bg-white">
-                    <button class="accordion-button custom-accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#groundFloorContent" aria-expanded="true" aria-controls="groundFloorContent">
-                        <div class="d-flex align-items-center justify-content-between w-100">
-                            <div class="d-flex align-items-center">
-                                <span class="text-color fs-4 ms-2">Ground Floor</span>
-                            </div>
-                            <div class="d-flex">
-                            <div class="d-flex gap-2">
-                                <div class="d-flex align-items-center ms-auto me-3">
-                                    <div class="d-flex align-items-center me-3">
-                                        <span class="status-dot available"></span>
-                                        <span>3</span>
-                                    </div>
-                                    <div class="d-flex align-items-center me-3">
-                                        <span class="status-dot selected"></span>
-                                        <span>1</span>
-                                    </div>
-                                    <div class="d-flex align-items-center">
-                                        <span class="status-dot running"></span>
-                                        <span>1</span>
-                                    </div>
-                                </div>
-                                <div type="button" class="btn btn-border-color btn-sm" onclick="event.stopPropagation();">
-                                    <i class="bi bi-plus"></i> Waiting Token
-                                </div>
-                                </div>
-                            </div>
-                        </div>
-                    </button>
-                <div id="groundFloorContent" class="accordion-collapse collapse show" data-bs-parent="#floorAccordion">
-                    <div class="accordion-body">
-                        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-5 g-3 mb-3">
-                            <div class="col">
-                                <div class="table-card table-blue">
-                                    <div class="d-flex justify-content-between mb-2">
-                                        <h6 class="mb-0">T2</h6>
-                                        <span class="text-muted">€309.40</span>
-                                    </div>
-                                    <div class="d-flex justify-content-between">
-                                        <div><i class="bi bi-people"></i> 6</div>
-                                        <div class="d-flex flex-column align-items-center">
-                                            <div><i class="bi bi-alarm"></i></div>
-                                            <div class="small">24 days 5 hours</div>
-                                            <div class="small">33 min 1 sec</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="text-end">
-                            <button class="btn btn-color" disabled>Assign</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    .available {
+        background-color: #dee2e6;
+    }
+
+    .selected {
+        background-color: #a3e635;
+    }
+
+    .assigned {
+        background-color: #22c55e;
+    }
+
+    .running {
+        background-color: #7dd3fc;
+    }
+
+    .table-card {
+        border-radius: 6px;
+        padding: 12px;
+    }
+
+    .table-blue {
+        background-color: #e0f2fe;
+    }
+
+    .table-green {
+        background-color: #dcfce7;
+    }
+
+    .table-gray {
+        background-color: #cecccc;
+    }
+
+    .accordion-button:focus {
+        box-shadow: none;
+    }
+</style>
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3 ms-3 me-3">
+        <div class="h3 text-color" style="font-weight: bold;">Table View</div>
+        <div class="d-flex flex-wrap gap-3">
+            <div><span class="status-dot available"></span> Available</div>
+            <div><span class="status-dot selected"></span> Selected</div>
+            <div><span class="status-dot assigned"></span> Assigned</div>
+            <div><span class="status-dot running"></span> Running</div>
         </div>
+    </div>
+
+    <div class="accordion mb-4 ms-3 me-3" id="floorAccordion">
+
+    </div>
+
+    <div id="WaitingToken">
+
+    </div>
 </div>
 
 <style>
-    .custom-accordion-button:not(.collapsed),
-.custom-accordion-button:focus {
-    background-color: #fff !important;
-    box-shadow: none !important;
-    color: inherit !important;
-}
-.accordion-button::after {
-    margin-left: 0;
-    position: absolute;
-    left: 1rem;
-    width: 25px;
-    height: 25px;
-    background-size: 16px;
-    border-radius: 50%;
-    border: 1px solid #f2f2f2;
-    background-position: center;
-}
-.accordion-button:not(.collapsed)::after {
-    border: 1px solid #0066a7 !important;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%230066a7'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e") !important;
-}
+    .accordion .accordion-button::after {
+        order: -1;
+        margin-left: 0;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #bcb9b4;
+        border-radius: 50%;
+        padding: 5px;
 
-.accordion-button {
-    padding-left: 2.5rem;
-}
+    }
+
+    .accordion .accordion-button:not(.collapsed)::after {
+        border-color: #3083b7;
+    }
+
+    .accordion {
+        --bs-accordion-btn-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-5 -5 24 24' fill='none' stroke='%23bcb9b4' stroke-linecap='round' stroke-linejoin='round'%3e%3cpath d='M5 2L11 8L5 14'/%3e%3c/svg%3e");
+        --bs-accordion-btn-active-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-5 -5 24 24' fill='none' stroke='%233083b7' stroke-linecap='round' stroke-linejoin='round'%3e%3cpath d='M5 2L11 8L5 14'/%3e%3c/svg%3e");
+        --bs-accordion-btn-icon-transform: rotate(+90deg);
+        --bs-accordion-btn-focus-box-shadow: none;
+    }
+
+    .accordion-button:not(.collapsed) {
+        background-color: transparent !important;
+        box-shadow: none !important;
+    }
 </style>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Check if Bootstrap's JS is loaded
-    if (typeof bootstrap !== 'undefined') {
-        // Initialize all accordions
-        var accordionElements = document.querySelectorAll('.accordion');
-        accordionElements.forEach(function(accordion) {
-            var accordionItems = accordion.querySelectorAll('.accordion-item');
-            accordionItems.forEach(function(item) {
-                var header = item.querySelector('.accordion-header');
-                var button = header.querySelector('.accordion-button');
-                var target = button.getAttribute('data-bs-target');
-                var content = document.querySelector(target);
-                
-                button.addEventListener('click', function() {
-                    if (content.classList.contains('show')) {
-                        content.classList.remove('show');
-                        button.classList.add('collapsed');
-                        button.setAttribute('aria-expanded', 'false');
+    $(document).ready(function () {
+        $('.accordion').each(function () {
+            var accordion = $(this);
+            accordion.find('.accordion-item').each(function () {
+                var item = $(this);
+                var header = item.find('.accordion-header');
+                var button = header.find('.accordion-button');
+                var target = button.attr('data-bs-target');
+                var content = $(target);
+
+                button.on('click', function () {
+                    if (content.hasClass('show')) {
+                        content.removeClass('show');
+                        button.addClass('collapsed');
+                        button.attr('aria-expanded', 'false');
                     } else {
-                        content.classList.add('show');
-                        button.classList.remove('collapsed');
-                        button.setAttribute('aria-expanded', 'true');
+                        content.addClass('show');
+                        button.removeClass('collapsed');
+                        button.attr('aria-expanded', 'true');
                     }
                 });
             });
         });
-    } else {
-        console.error('Bootstrap JS is not loaded. Please include it in your project.');
+    });
+</script>
+<script>
+    $(document).ready(function () {
+
+        function sectionList() {
+            $.ajax({
+                url: '/OrderTable/Sections',
+                type: 'GET',
+                success: function (data) {
+                    $('#floorAccordion').html(data);
+
+                    $('.accordion-button').addClass('collapsed').attr('aria-expanded', 'false');
+                    $('.accordion-collapse').removeClass('show');
+                    afterLoadSection();
+                }
+
+            });
+        };
+        sectionList();
+
+        function WaitingList(){
+        $("#addWaitingTokenForm").submit(function (e) {
+            e.preventDefault();
+            console.log("submitted");
+
+            if ($("#addWaitingTokenForm").valid()) {
+                var formData = new FormData($("#addWaitingTokenForm")[0]);
+
+                $.ajax({
+                    url: "/OrderTable/AddWaitingToken",
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        $("#waitingToken").modal("hide");
+                    }
+                });
+                }
+            });
+            }
+
+            function afterLoadSection() {
+
+                $(document).on("click", "#SaveToken", function () {
+                    console.log("clicked");
+                    var section = $(this).data("id");
+                    $.ajax({
+                        url: "/OrderTable/AddWaitingToken",
+                        type: "GET",
+                        data: { section: section },
+                        success: function (response) {
+                            $("#WaitingToken").html(response);
+                            $("#waitingToken").modal("show");
+                            WaitingList();
+                        }
+                    });
+                });
     }
-});
+    });
 </script>

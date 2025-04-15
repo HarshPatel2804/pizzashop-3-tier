@@ -135,4 +135,15 @@ public class TableSectionRepository : ITableSectionRepository
         return sectionId;
     }
 
+     public async Task<List<Section>> GetAllSectionsWithTablesAndOrdersAsync()
+        {
+            return await _context.Sections
+                .Where(s => s.Isdeleted != true)
+                .Include(s => s.Tables.Where(t => t.Isdeleted != true))
+                    .ThenInclude(t => t.Ordertables)
+                        .ThenInclude(ot => ot.Order)
+                .OrderBy(s => s.OrderField)
+                .ToListAsync();
+        }
+
 }

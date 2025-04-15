@@ -205,21 +205,9 @@
 
         <div class="d-flex align-items-center justify-content-center my-1">
             <select class="form-select form-select-sm min-selection-select min-max me-4">
-                <option value="0" selected>0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
             </select>
 
             <select class="form-select form-select-sm max-selection-select min-max">
-                <option value="0" selected>0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
             </select>
         </div>
 
@@ -358,6 +346,17 @@
             $groupContainer.find('.modifier-group-container').attr('data-group-id', groupId);
             $groupContainer.find('.group-name').text(groupName);
             $groupContainer.find('.group-id-input').val(groupId);
+
+            const count = modifiers.length;
+            const minSelect = $groupContainer.find('.min-selection-select');
+            const maxSelect = $groupContainer.find('.max-selection-select');
+            console.log(count + "count");
+
+            for (let i = 0; i <= count; i++) {
+                const option = `<option value="${i}">${i}</option>`;
+                minSelect.append(option);
+                maxSelect.append(option);
+            }
 
             // Set names for selects to be used in form submission
             $groupContainer.find('.min-selection-select').attr('name', `modifierGroups[${groupId}].minSelection`);

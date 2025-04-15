@@ -77,6 +77,26 @@
         let sortOrder = "asc";
         let fromDate = '';
         let toDate = '';
+        const $fromDate = $('#FromDate');
+        const $toDate = $('#ToDate');
+
+        $fromDate.on('change', function () {
+            const fromVal = $(this).val();
+            if (fromVal) {
+                $toDate.attr('min', fromVal);
+            } else {
+                $toDate.removeAttr('min');
+            }
+        });
+
+        $toDate.on('change', function () {
+            const toVal = $(this).val();
+            if (toVal) {
+                $fromDate.attr('max', toVal);
+            } else {
+                $fromDate.removeAttr('max');
+            }
+        });
 
         function loadCustomerTable(page) {
             let pageSize = $("#pageSizeSelect").val();

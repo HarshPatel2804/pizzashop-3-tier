@@ -10,4 +10,8 @@ public interface ICustomerService
     Task<CustomerViewModel> GetCustomerHistory(int customerId);
 
     Task<(string fileName, byte[] fileContent)> GenerateCustomerExcel(string searchString, DateTime? fromDate, DateTime? toDate);
+
+    Task<Customer> GetCustomerByEmail(string Email);
+
+    Task<int> AddCustomer(Customer model);
 }

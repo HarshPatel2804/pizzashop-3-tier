@@ -62,4 +62,12 @@ public interface IMenuService
     Task<Modifier> GetModifierByName(ModifierViewModel model);
 
     Task<Item> GetItemByName(AddEditItemViewModel model);
+
+    Task<List<ModifierViewModel>> GetModifiersBymodifierGroup(int id);
+
+    Task UpdateCategorySortOrder(List<int> sortOrder);
+
+    Task UpdateModifierGroupSortOrder(List<int> sortOrder);
+
+    Task<int> FirstCategoryId();
 }

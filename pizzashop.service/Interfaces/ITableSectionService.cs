@@ -34,4 +34,8 @@ public interface ITableSectionService
     Task<Table> GetTableByName(TableViewModel model);
 
     Task<int> FirstSectionId();
+
+    Task<List<OrderSectionViewModel>> GetAllSectionsWithTablesAsync();
+
+    Task<WaitingtokenViewModel> GetSectionList();
 }

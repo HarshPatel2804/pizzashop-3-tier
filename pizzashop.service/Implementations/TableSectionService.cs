@@ -99,6 +99,15 @@ public class TableSectionService : ITableSectionService
         return model;
     }
 
+    public async Task<WaitingtokenViewModel> GetSectionList()
+    {   
+        var model = new WaitingtokenViewModel
+        {
+            Sections = await _tableSectionRepository.GetSectionListAsync()
+        };
+        return model;
+    }
+
      public async Task AddTable(TableViewModel model)
     {
         var Table = new Table
@@ -158,4 +167,69 @@ public class TableSectionService : ITableSectionService
     public async Task<int> FirstSectionId(){
         return await _tableSectionRepository.GetSectionIdWithLeastOrderField();
     }
+
+     public async Task<List<OrderSectionViewModel>> GetAllSectionsWithTablesAsync()
+        {
+            var sections = await _tableSectionRepository.GetAllSectionsWithTablesAndOrdersAsync();
+            return sections.Select(MapSectionToViewModel).ToList();
+        }
+
+         private OrderSectionViewModel MapSectionToViewModel(Section section)
+        {
+            var viewModel = new OrderSectionViewModel
+            {
+                SectionId = section.Sectionid,
+                SectionName = section.Sectionname,
+                Description = section.Description,
+                Tables = section.Tables.Select(t => new OrderTableViewModel
+                {
+                    TableId = t.Tableid,
+                    TableName = t.Tablename,
+                    Capacity = t.Capacity,
+                    Status = DetermineTableStatus(t),
+                    CurrentOrderAmount = GetCurrentOrderAmount(t),
+                    NumberOfPersons = GetNumberOfPersons(t),
+                }).ToList(),
+                AvailableCount = section.Tables.Count(t => DetermineTableStatus(t) == TableViewStatus.Available),
+                AssignedCount = section.Tables.Count(t => DetermineTableStatus(t) == TableViewStatus.Assigned),
+                RunningCount = section.Tables.Count(t => DetermineTableStatus(t) == TableViewStatus.Running),
+            };
+
+            return viewModel;
+        }
+
+        private TableViewStatus DetermineTableStatus(Table table)
+        {
+            bool hasInProgressOrders = table.Ordertables.Any(ot => ot.Order.OrderStatus == orderstatus.InProgress || ot.Order.OrderStatus == orderstatus.Served);
+            bool hasPendingOrders = table.Ordertables.Any(ot => ot.Order.OrderStatus == orderstatus.Pending);
+
+            if (hasInProgressOrders)
+                return TableViewStatus.Running;
+            else if (hasPendingOrders)
+                return TableViewStatus.Assigned;
+            
+            return TableViewStatus.Available;
+        }
+
+        private decimal GetCurrentOrderAmount(Table table)
+        {
+            var activeOrder = table.Ordertables
+                .Select(ot => ot.Order)
+                .Where(o => o.OrderStatus == orderstatus.InProgress || o.OrderStatus == orderstatus.Pending || o.OrderStatus == orderstatus.Served)
+                .OrderByDescending(o => o.Orderdate)
+                .FirstOrDefault();
+
+            return activeOrder?.Totalamount ?? 0;
+        }
+
+        private int GetNumberOfPersons(Table table)
+        {
+            var activeOrder = table.Ordertables
+                .Select(ot => ot.Order)
+                .Where(o => o.OrderStatus == orderstatus.InProgress || o.OrderStatus == orderstatus.Pending || o.OrderStatus == orderstatus.Served)
+                .OrderByDescending(o => o.Orderdate)
+                .FirstOrDefault();
+
+            return activeOrder?.Noofperson ?? 0;
+        }
 }

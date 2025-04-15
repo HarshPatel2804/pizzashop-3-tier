@@ -42,4 +42,8 @@ public interface IModifierRepository
     Task<Modifiergroup> GetModifierGroupByName(string name, int id);
 
     Task<Modifier> GetModifierByName(ModifierViewModel model);
+
+    Task<List<Modifier>> GetModifiersBymodifierGroup(int id);
+
+    Task UpdateSortOrderOfModifierGroup(List<int> sortOrder);
 }

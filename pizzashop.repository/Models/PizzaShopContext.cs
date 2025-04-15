@@ -148,6 +148,7 @@ public partial class PizzaShopContext : DbContext
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("modifiedat");
             entity.Property(e => e.Modifiedby).HasColumnName("modifiedby");
+            entity.Property(e => e.SortOrder).HasColumnName("sortOrder");
         });
 
         modelBuilder.Entity<City>(entity =>
@@ -456,6 +457,7 @@ public partial class PizzaShopContext : DbContext
             entity.Property(e => e.Modifiergroupname)
                 .HasMaxLength(30)
                 .HasColumnName("modifiergroupname");
+                entity.Property(e => e.SortOrder).HasColumnName("sortOrder");
         });
 
         modelBuilder.Entity<Order>(entity =>

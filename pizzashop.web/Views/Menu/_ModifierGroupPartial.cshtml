@@ -1,9 +1,9 @@
-<ul>
+<ul class="sortModifierGroup">
     @foreach (var modifier in Model)
     {
         <li class="d-flex items selectedModifierGroup" tabindex="0" data-id="@modifier.Modifiergroupid">
             <div class="d-flex align-items-center" style="padding-top: 5px; padding-bottom: 5px;">
-                <img src="~/images/dots-graphic.png">
+                <img src="~/images/dots-graphic.png" class="sort-icon">
                 <div style="width: 130px;" class="text-wrap ms-1 fw-bold">
                     @modifier.Modifiergroupname</div>
             </div>
@@ -18,3 +18,29 @@
     }
 
 </ul>
+
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $(".sortModifierGroup").sortable({
+            handle: ".sort-icon",  
+            update: function (event, ui) {
+                let sortOrder = [];
+                $(".sortModifierGroup li").each(function () {
+                    sortOrder.push($(this).data("id"));
+                });
+
+                console.log(sortOrder);
+
+                $.ajax({
+                    url: "/Menu/UpdateModifierGroupOrder", 
+                    type: "POST",
+                    data: { sortOrder: sortOrder },
+                    success: function (response) {
+                        console.log("modifier Group Order updated successfully");
+                    }
+                });
+            }
+        });
+    });
+</script>

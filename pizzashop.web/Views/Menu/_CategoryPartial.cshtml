@@ -1,9 +1,9 @@
-<ul>
+<ul class="sortCategory">
     @foreach (var category in Model)
     {
         <li class="d-flex items selectedCategory" tabindex="0" data-id="@category.Categoryid">
             <div class="d-flex align-items-center" style="padding-top: 5px; padding-bottom: 5px;">
-                <img src="~/images/dots-graphic.png">
+                <img src="~/images/dots-graphic.png" class="sort-icon">
                 <div style="width: 130px;" class="text-wrap ms-1 fw-bold">
                     @category.Categoryname</div>
             </div>
@@ -17,4 +17,29 @@
         </li>
     }
 </ul>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $(".sortCategory").sortable({
+            handle: ".sort-icon",  
+            update: function (event, ui) {
+                let sortOrder = [];
+                $(".sortCategory li").each(function () {
+                    sortOrder.push($(this).data("id"));
+                });
+
+                console.log(sortOrder);
+
+                $.ajax({
+                    url: "/Menu/UpdateCategoryOrder", 
+                    type: "POST",
+                    data: { sortOrder: sortOrder },
+                    success: function (response) {
+                        console.log("Category Order updated successfully");
+                    }
+                });
+            }
+        });
+    });
+</script>
 

@@ -82,6 +82,26 @@
         let searchQuery = "@ViewBag.SearchQuery" || "";
         let sortColumn = "";
         let sortOrder = "asc";
+        const $fromDate = $('#fromDate');
+        const $toDate = $('#toDate');
+
+        $fromDate.on('change', function () {
+            const fromVal = $(this).val();
+            if (fromVal) {
+                $toDate.attr('min', fromVal);
+            } else {
+                $toDate.removeAttr('min');
+            }
+        });
+
+        $toDate.on('change', function () {
+            const toVal = $(this).val();
+            if (toVal) {
+                $fromDate.attr('max', toVal);
+            } else {
+                $fromDate.removeAttr('max');
+            }
+        });
 
         function loadOrderTable(page) {
             let pageSize = $("#pageSizeSelect").val();

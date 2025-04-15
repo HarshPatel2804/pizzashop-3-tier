@@ -110,4 +110,16 @@ public class CustomerRepository : ICustomerRepository
 
         return (orders, totalCustomers);
     }
+
+    public async Task<Customer> GetCustomerByEmail(string Email){
+        return await _context.Customers.FirstOrDefaultAsync(c => c.Email == Email);
+    }
+
+    public async Task<int> AddCustomer(Customer model){
+        await _context.Customers.AddAsync(model);
+        await _context.SaveChangesAsync();
+
+        return model.Customerid;
+    }
+
 }

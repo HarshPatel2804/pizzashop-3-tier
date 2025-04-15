@@ -50,9 +50,9 @@ public class MenuService : IMenuService
         await _itemRepository.DeleteItem(Itemid);
     }
 
-    public async Task DeleteModifier(int modifierId , int modifierGroupId)
+    public async Task DeleteModifier(int modifierId, int modifierGroupId)
     {
-        await _modifierRepository.DeleteModifier(modifierId , modifierGroupId);
+        await _modifierRepository.DeleteModifier(modifierId, modifierGroupId);
     }
 
     public async Task EditCategory(CategoryViewModel model)
@@ -253,9 +253,9 @@ public class MenuService : IMenuService
         }
     }
 
-    public async Task<(List<ModifierViewModel> modifiers, int totalModifiers, int totalPages)> GetModifiersByGroup(int ModifierGroupId,int page, int pageSize, string search)
+    public async Task<(List<ModifierViewModel> modifiers, int totalModifiers, int totalPages)> GetModifiersByGroup(int ModifierGroupId, int page, int pageSize, string search)
     {
-        var (modifiers, totalModifiers) = await _modifierRepository.GetModifierByGroupAsync(ModifierGroupId,page,pageSize,search);
+        var (modifiers, totalModifiers) = await _modifierRepository.GetModifierByGroupAsync(ModifierGroupId, page, pageSize, search);
 
         var modifierModel = new List<ModifierViewModel>();
 
@@ -482,31 +482,60 @@ public class MenuService : IMenuService
 
     public async Task DeleteMultipleItems(List<int> itemIds)
     {
-            await _itemRepository.MassDeleteItem(itemIds);
+        await _itemRepository.MassDeleteItem(itemIds);
     }
 
-     public async Task DeleteMultipleModifiers(List<int> itemIds , int modifierGroupId)
+    public async Task DeleteMultipleModifiers(List<int> itemIds, int modifierGroupId)
     {
-        foreach(var id in itemIds){
-            await _modifierRepository.DeleteModifier(id , modifierGroupId);
+        foreach (var id in itemIds)
+        {
+            await _modifierRepository.DeleteModifier(id, modifierGroupId);
         }
     }
 
     public async Task<Category> GetCategoryByName(CategoryViewModel model)
-        {
-            return await _categoryRepository.GetCategoryByName(model);
-        }
+    {
+        return await _categoryRepository.GetCategoryByName(model);
+    }
 
     public async Task<Modifiergroup> GetModifierGroupByName(string name, int id)
-        {
-            return await _modifierRepository.GetModifierGroupByName(name, id);
-        }
+    {
+        return await _modifierRepository.GetModifierGroupByName(name, id);
+    }
     public async Task<Modifier> GetModifierByName(ModifierViewModel model)
-        {
-            return await _modifierRepository.GetModifierByName(model);
-        }
+    {
+        return await _modifierRepository.GetModifierByName(model);
+    }
     public async Task<Item> GetItemByName(AddEditItemViewModel model)
+    {
+        return await _itemRepository.GetItemByName(model);
+    }
+
+    public async Task<List<ModifierViewModel>> GetModifiersBymodifierGroup(int id)
+    {
+        var data = await _modifierRepository.GetModifiersBymodifierGroup(id);
+
+        var Modifiers = data.Select(m => new ModifierViewModel
         {
-            return await _itemRepository.GetItemByName(model);
-        }
+            Modifierid = m.Modifierid,
+            Modifiername = m.Modifiername,
+            Rate = m.Rate,
+            Quantity = m.Quantity,
+        }).ToList();
+
+        return Modifiers;
+
+    }
+
+     public async Task UpdateCategorySortOrder(List<int> sortOrder){
+        await _categoryRepository.UpdateSortOrderOfCategory(sortOrder);
+    }
+
+    public async Task UpdateModifierGroupSortOrder(List<int> sortOrder){
+        await _modifierRepository.UpdateSortOrderOfModifierGroup(sortOrder);
+    }
+
+    public async Task<int> FirstCategoryId(){
+        return await _categoryRepository.GetFirstCategoryId();
+    }
 }

@@ -55,9 +55,9 @@ public class MenuController : Controller
         return PartialView("_ModifierGrouppartial", model);
     }
 
-    public async Task<IActionResult> Modifiers(int ModifierGroupId , int page = 1, int pageSize = 5, string search = "")
+    public async Task<IActionResult> Modifiers(int ModifierGroupId, int page = 1, int pageSize = 5, string search = "")
     {
-        var (model, totalUsers, totalPages) = await _menuService.GetModifiersByGroup(ModifierGroupId,page, pageSize, search);
+        var (model, totalUsers, totalPages) = await _menuService.GetModifiersByGroup(ModifierGroupId, page, pageSize, search);
         ViewBag.CurrentPage = page;
         ViewBag.PageSize = pageSize;
         ViewBag.TotalUsers = totalUsers;
@@ -205,36 +205,9 @@ public class MenuController : Controller
     [HttpGet]
     public async Task<IActionResult> GetModifiers(int id)
     {
-        try
-        {
-            // Check if modifier group exists
-            var modifierGroup = await _context.Modifiergroups
-                .FirstOrDefaultAsync(mg => mg.Modifiergroupid == id);
 
-            if (modifierGroup == null)
-            {
-                return Json(new { success = false, message = "Modifier group not found" });
-            }
-
-            // Get all modifiers for the group
-            var modifiers = await _context.Modifiers
-                .Where(m => m.Modifiergroupid == id && (!m.Isdeleted.HasValue || !m.Isdeleted.Value))
-                .Select(m => new
-                {
-                    modifierid = m.Modifierid,
-                    modifiername = m.Modifiername,
-                    rate = m.Rate,
-                    quantity = m.Quantity,
-                    unitName = m.Unit.Unitname
-                })
-                .ToListAsync();
-
-            return Json(new { success = true, modifiers });
-        }
-        catch (Exception ex)
-        {
-            return Json(new { success = false, message = ex.Message });
-        }
+        var modifiers = await _menuService.GetModifiersBymodifierGroup(id);
+        return Json(new { success = true, modifiers });
     }
 
     public async Task<IActionResult> AddItemModal()
@@ -404,6 +377,20 @@ public class MenuController : Controller
     {
         await _menuService.DeleteMultipleModifiers(selectedIds, modifierGroupid);
         return Json(new { success = true, message = "Modifiers deleted successfully" });
+    }
+
+    [HttpPost]
+    public async Task UpdateCategoryOrder(List<int> sortOrder){
+        await _menuService.UpdateCategorySortOrder(sortOrder);
+    }
+
+    [HttpPost]
+    public async Task UpdateModifierGroupOrder(List<int> sortOrder){
+        await _menuService.UpdateModifierGroupSortOrder(sortOrder);
+    }
+
+    public async Task<int> FirstCategoryId(){
+        return await _menuService.FirstCategoryId();
     }
 
 }

@@ -18,4 +18,8 @@ public interface ICategoryRepository
     Task DeleteCategoryAsync(int Categoryid);
 
     Task<Category> GetCategoryByName(CategoryViewModel model);
+
+    Task UpdateSortOrderOfCategory(List<int> sortOrder);
+
+    Task<int> GetFirstCategoryId();
 }

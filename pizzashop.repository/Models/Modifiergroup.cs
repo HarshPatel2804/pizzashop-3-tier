@@ -16,6 +16,8 @@ public partial class Modifiergroup
 
     public DateTime? Createdat { get; set; }
 
+    public int? SortOrder {get; set;}
+
     public int Createdby { get; set; }
 
     public DateTime? Modifiedat { get; set; }

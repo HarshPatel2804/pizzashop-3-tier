@@ -112,4 +112,6 @@ public class TableController : Controller
        await _tableSectionService.DeleteMultipleTables(selectedIds);
         return Json(new { success = true, message = "Items deleted successfully" });
     }
+
+    
 }

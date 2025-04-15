@@ -18,7 +18,7 @@ public class ModifierRepository : IModifierRepository
 
     public async Task<List<Modifiergroup>> GetAllModifierGroupAsync()
     {
-        var model = await _context.Modifiergroups.Where(u => u.Isdeleted != true).OrderBy(u => u.Modifiergroupid).ToListAsync();
+        var model = await _context.Modifiergroups.Where(u => u.Isdeleted != true).OrderBy(u => u.SortOrder).ToListAsync();
 
         return model;
     }
@@ -27,6 +27,21 @@ public class ModifierRepository : IModifierRepository
     {
         return await _context.Modifiergroups.FirstOrDefaultAsync(u => u.Modifiergroupid == modifierGroupId);
 
+    }
+
+    public async Task UpdateSortOrderOfModifierGroup(List<int> sortOrder)
+    {
+
+        for (int i = 0; i < sortOrder.Count; i++)
+        {
+            Modifiergroup modifiergroup = _context.Modifiergroups.FirstOrDefault(s => s.Modifiergroupid == sortOrder[i]);
+
+            if (modifiergroup != null)
+            {
+                modifiergroup.SortOrder = i + 1;
+            }
+        }
+        await _context.SaveChangesAsync();
     }
 
     public async Task<(List<ModifierGroupModifierMapping> , int totalModifiers)> GetModifierByGroupAsync(int ModifierGroupId,int page, int pageSize, string search)
@@ -173,6 +188,16 @@ public class ModifierRepository : IModifierRepository
                     mg.Modifierid != model.Modifierid && 
                     mg.Isdeleted != true);
         }
+
+    public async Task<List<Modifier>> GetModifiersBymodifierGroup(int id){
+        var modifiers =  await _context.ModifierGroupModifierMappings
+            .Where(mg => mg.ModifierGroupId == id)
+            .Select(mg => mg.Modifier)
+            .Where(m => m.Isdeleted == false)
+            .ToListAsync();
+
+        return modifiers;
+    }
 }
 
 

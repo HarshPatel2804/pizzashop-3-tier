@@ -452,6 +452,30 @@
             </div>
         </div>
     </div>
+    <div class="fade modal" id="DeleteModifierGroupModal" data-bs-backdrop="static" data-bs-keyboard="false"
+        tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="width: 400px;">
+            <div class="modal-content">
+                <div class="row mx-1 mt-2">
+                    <h5 class="modal-title col" id="staticBackdropLabel">Delete confirmation</h5>
+                    <button type="button" class="btn-close col-auto me-1" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="d-flex justify-content-center align-items-center mt-4 flex-column">
+                    <img src="~/images/caution.png" style="height: 40px; width: 40px;">
+                    <span>Are you sure you want to delete this modifier group?</span>
+                    <form>
+                        <div class="d-flex justify-content-center align-items-center mt-2 mb-4">
+                            <button type="submit" class="btn btn-primary ModifierGroupDeleteBtn" data-bs-dismiss="modal"
+                                style="border-radius: 3px; width: 60px;">Yes</button>
+                            <button type="button" class="btn ms-2 border"
+                                style="border-radius: 3px; width: 60px;">No</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal-addNewModifier">
 
     </div>
@@ -620,6 +644,18 @@
             });
         };
 
+        function getFirstCategoryId() {
+             $.ajax({
+                url: "/Menu/FirstCategoryId", 
+                type: "GET",
+                dataType: "json",
+                success: function (categoryId) {
+                    console.log("First Category ID:", categoryId);
+                    ItemList(categoryId, 1);
+                }
+            });
+        }
+
         $("#itemByCategory").on("click", ".pagination-link", function (e) {
             e.preventDefault();
             let page = $(this).data("page");
@@ -651,18 +687,21 @@
                 type: 'GET',
                 success: function (data) {
                     $('#ModifierGroup').html(data);
+
+                    var firstModifierGroup = $(".selectedModifierGroup:first").data("id");
+                    modifierList(firstModifierGroup,1);
                 }
             });
         };
 
-        function modifierList(ModifierGroupId , page=1) {
+        function modifierList(ModifierGroupId, page = 1) {
             let pageSize = $("#pageSizeSelect").val();
             let search = $("#search").val();
             $.ajax({
                 type: "GET",
                 url: '/Menu/Modifiers',
                 contentType: "application/json",
-                data: { page: page, pageSize: pageSize, search: search , ModifierGroupId: ModifierGroupId },
+                data: { page: page, pageSize: pageSize, search: search, ModifierGroupId: ModifierGroupId },
                 success: function (data) {
                     $('#Modifier').html(data);
                     modifierMassDelete();
@@ -694,6 +733,7 @@
 
         categoryList();
         modifierGroupList();
+        getFirstCategoryId();
 
         $(document).on("click", ".addItem", function () {
             console.log("clicked");
@@ -726,44 +766,44 @@
         $(document).on("click", "#EditItem", function (e) {
             e.preventDefault();
             console.log("clicked");
-            if($('#editItemForm').valid()){
-            var formData = new FormData($("#editItemForm")[0]);
-            var catid = $("#categoryid").val();
+            if ($('#editItemForm').valid()) {
+                var formData = new FormData($("#editItemForm")[0]);
+                var catid = $("#categoryid").val();
 
-            let groupsData = [];
-            selectedGroups.forEach((group, groupId) => {
-                groupsData.push({
-                    modifiergroupid: parseInt(groupId),
-                    minselectionrequired: group.minSelection,
-                    maxselectionallowed: group.maxSelection
+                let groupsData = [];
+                selectedGroups.forEach((group, groupId) => {
+                    groupsData.push({
+                        modifiergroupid: parseInt(groupId),
+                        minselectionrequired: group.minSelection,
+                        maxselectionallowed: group.maxSelection
+                    });
                 });
-            });
 
-            console.log('Modifier Groups:', JSON.stringify(groupsData));
+                console.log('Modifier Groups:', JSON.stringify(groupsData));
 
-            // Add JSON data of selected groups
-            formData.append('SelectedModifierGroups', JSON.stringify(groupsData));
+                // Add JSON data of selected groups
+                formData.append('SelectedModifierGroups', JSON.stringify(groupsData));
 
-            console.log(formData + "Hii");
-            $.ajax({
-                url: "/Menu/editItem",
-                type: "POST",
-                data: formData,
-                processData: false,
-                contentType: false,
-                dataType: "json",
-                success: function (response) {
-                    if(response.success){
-                    ItemList(catid, 1);
-                    $('#editItem').modal('hide');
-                    } else {
+                console.log(formData + "Hii");
+                $.ajax({
+                    url: "/Menu/editItem",
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    dataType: "json",
+                    success: function (response) {
+                        if (response.success) {
+                            ItemList(catid, 1);
+                            $('#editItem').modal('hide');
+                        } else {
                             $("#Name").after('<div class="error-message text-danger mt-1">' + response.message + '</div>');
                         }
-                },
-                error: function (error) {
+                    },
+                    error: function (error) {
 
-                }
-            });
+                    }
+                });
             }
         });
 
@@ -935,30 +975,45 @@
             $groupContainer.remove();
         });
 
-        // Handle min/max selection changes
         $(document).on('change', '.min-selection-select, .max-selection-select', function () {
             const $groupContainer = $(this).closest('.modifier-group-container');
             const groupId = $groupContainer.data('group-id');
 
+            const $minSelect = $groupContainer.find('.min-selection-select');
+            const $maxSelect = $groupContainer.find('.max-selection-select');
+
+            const selectedMin = parseInt($minSelect.val());
+            const selectedMax = parseInt($maxSelect.val());
+            console.log(selectedMin + "min");
+
+            const totalOptions = $groupContainer.find('.modifier-items-list li').length;
+
+            function repopulateSelect($select, rangeStart, rangeEnd) {
+                $select.empty();
+                for (let i = rangeStart; i <= rangeEnd; i++) {
+                    $select.append(`<option value="${i}">${i}</option>`);
+                }
+            }
+
+            if ($(this).hasClass('min-selection-select')) {
+                repopulateSelect($maxSelect, selectedMin, totalOptions);
+                $maxSelect.val(Math.max(selectedMin, selectedMax));
+            } else {
+                repopulateSelect($minSelect, 0, selectedMax);
+                $minSelect.val(Math.min(selectedMin, selectedMax));
+            }
+
             if (selectedGroups.has(groupId)) {
                 const group = selectedGroups.get(groupId);
-                const isMinSelect = $(this).hasClass('min-selection-select');
-
-                if (isMinSelect) {
-                    group.minSelection = parseInt($(this).val());
-                } else {
-                    group.maxSelection = parseInt($(this).val());
-                }
+                group.minSelection = parseInt($minSelect.val());
+                group.maxSelection = parseInt($maxSelect.val());
             }
         });
 
-        // Function to fetch modifier group data
         function fetchModifierGroupData(groupId, groupName) {
-            // Show loading indicator
             const loadingHtml = `<div id="loading-${groupId}" class="text-center p-3"><span>Loading modifiers...</span></div>`;
             $('#selectedModifierGroups').append(loadingHtml);
 
-            // Fetch modifiers from the backend
             $.ajax({
                 url: `/Menu/GetModifiers/${groupId}`,
                 type: 'GET',
@@ -1007,14 +1062,23 @@
             $groupContainer.find('.group-name').text(groupName);
             $groupContainer.find('.group-id-input').val(groupId);
 
-            // Set names for selects to be used in form submission
+            const count = modifiers.length;
+            const minSelect = $groupContainer.find('.min-selection-select');
+            const maxSelect = $groupContainer.find('.max-selection-select');
+
+            for (let i = 0; i <= count; i++) {
+                const option = `<option value="${i}">${i}</option>`;
+                minSelect.append(option);
+                maxSelect.append(option);
+            }
+
             $groupContainer.find('.min-selection-select').attr('name', `modifierGroups[${groupId}].minSelection`);
             $groupContainer.find('.max-selection-select').attr('name', `modifierGroups[${groupId}].maxSelection`);
 
-            // Add modifiers to the list
             const $modifiersList = $groupContainer.find('.modifier-items-list');
             if (modifiers && modifiers.length > 0) {
                 modifiers.forEach((modifier, index) => {
+                    console.log(modifier);
                     const modifierHtml = `
                 <li>
                     <span class="modifier-name">${modifier.modifiername}</span>
@@ -1035,43 +1099,43 @@
         $('#SaveItem').on('click', function (e) {
             e.preventDefault();
             console.log("clicked");
-            if($('#addItemForm').valid()){
-            var formData = new FormData($("#addItemForm")[0]);
-            var catid = $("#categoryid").val();
+            if ($('#addItemForm').valid()) {
+                var formData = new FormData($("#addItemForm")[0]);
+                var catid = $("#categoryid").val();
 
-            // Add selected modifier groups to form data
-            let groupsData = [];
-            selectedGroups.forEach((group, groupId) => {
-                groupsData.push({
-                    modifiergroupid: parseInt(groupId),
-                    minselectionrequired: group.minSelection,
-                    maxselectionallowed: group.maxSelection
+                // Add selected modifier groups to form data
+                let groupsData = [];
+                selectedGroups.forEach((group, groupId) => {
+                    groupsData.push({
+                        modifiergroupid: parseInt(groupId),
+                        minselectionrequired: group.minSelection,
+                        maxselectionallowed: group.maxSelection
+                    });
                 });
-            });
 
-            console.log('Modifier Groups:', JSON.stringify(groupsData));
+                console.log('Modifier Groups:', JSON.stringify(groupsData));
 
-            formData.append('SelectedModifierGroups', JSON.stringify(groupsData));
+                formData.append('SelectedModifierGroups', JSON.stringify(groupsData));
 
-            $.ajax({
-                url: '/Menu/AddNewItem',
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (data) {
-                    if (data.success) {
-                        ItemList(catid, 1);
-                        $('#addItem').modal('hide');
-                    } else {
+                $.ajax({
+                    url: '/Menu/AddNewItem',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        if (data.success) {
+                            ItemList(catid, 1);
+                            $('#addItem').modal('hide');
+                        } else {
                             $("#AddName").after('<div class="error-message text-danger mt-1">' + response.message + '</div>');
                         }
-                },
-                error: function (error) {
-                    console.error('Error:', error);
-                    alert('An error occurred while saving the item.');
-                }
-            });
+                    },
+                    error: function (error) {
+                        console.error('Error:', error);
+                        alert('An error occurred while saving the item.');
+                    }
+                });
             }
         });
 
@@ -1100,9 +1164,8 @@
                             group.modifiers
                         );
 
-                        // Set min and max selection dropdowns
-                        $(`[data-group-id="${group.modifiergroupid}"] .min-selection-select`).val(group.minselectionrequired);
-                        $(`[data-group-id="${group.modifiergroupid}"] .max-selection-select`).val(group.maxselectionallowed);
+                        $(`[data-group-id="${group.modifiergroupid}"] .min-selection-select`).val(group.minselectionrequired).trigger('change');
+                        $(`[data-group-id="${group.modifiergroupid}"] .max-selection-select`).val(group.maxselectionallowed).trigger('change');
                     });
                 },
                 error: function (error) {
@@ -1583,31 +1646,31 @@
                     return;
                 }
                 if ($(this).valid()) {
-                console.log('Hii');
-                $('.error-message').remove();
+                    console.log('Hii');
+                    $('.error-message').remove();
 
-                var formData = new FormData($("#AddModifierForm")[0]);
+                    var formData = new FormData($("#AddModifierForm")[0]);
 
-                
-                formData.append('SelectedModifierGroups', SelectedModifierGroups);
 
-                $.ajax({
-                    url: '/Menu/SaveModifier',
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (response) {
-                        if(response.success){
-                        console.log('Success:', response);
+                    formData.append('SelectedModifierGroups', SelectedModifierGroups);
 
-                        modifierList(lastSelectedModifierGroupId);
-                        $('#addNewModifier').modal('hide');
-                        } else {
-                            $("#Modifiername").after('<div class="error-message text-danger mt-1">' + response.message + '</div>');
+                    $.ajax({
+                        url: '/Menu/SaveModifier',
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (response) {
+                            if (response.success) {
+                                console.log('Success:', response);
+
+                                modifierList(lastSelectedModifierGroupId);
+                                $('#addNewModifier').modal('hide');
+                            } else {
+                                $("#Modifiername").after('<div class="error-message text-danger mt-1">' + response.message + '</div>');
+                            }
                         }
-                    }
-                });
+                    });
                 }
             });
             $('#EditModifierForm').on('submit', function (e) {
@@ -1619,33 +1682,33 @@
                     return;
                 }
                 if ($(this).valid()) {
-                
-                $('.error-message').remove();
 
-                var formData = new FormData($("#EditModifierForm")[0]);
+                    $('.error-message').remove();
 
-                
-                formData.append('SelectedModifierGroups', SelectedModifierGroups);
-                $.ajax({
-                    url: '/Menu/EditModifier',
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (response) {
-                        if(response.success){
-                        console.log('Success:', response);
+                    var formData = new FormData($("#EditModifierForm")[0]);
 
-                        modifierList(lastSelectedModifierGroupId);
-                        $('#editModifierModal').modal('hide');
-                        } else {
-                            $("#Modifiername").after('<div class="error-message text-danger mt-1">' + response.message + '</div>');
+
+                    formData.append('SelectedModifierGroups', SelectedModifierGroups);
+                    $.ajax({
+                        url: '/Menu/EditModifier',
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (response) {
+                            if (response.success) {
+                                console.log('Success:', response);
+
+                                modifierList(lastSelectedModifierGroupId);
+                                $('#editModifierModal').modal('hide');
+                            } else {
+                                $("#Modifiername").after('<div class="error-message text-danger mt-1">' + response.message + '</div>');
+                            }
                         }
-                    }
-                });
+                    });
                 }
             });
-            
+
         }
 
         $(document).on("click", ".addModifier", function () {

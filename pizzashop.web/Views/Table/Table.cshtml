@@ -258,13 +258,13 @@
         };
 
         function getFirstSectionId() {
-            return $.ajax({
+             $.ajax({
                 url: "/Table/FirstSectionId", 
                 type: "GET",
                 dataType: "json",
                 success: function (sectionId) {
                     console.log("First Section ID:", sectionId);
-                    return sectionId;
+                    TableList(sectionId, 1);
                 }
             });
         }
@@ -486,8 +486,8 @@
         }
 
         sectionList();
-        var sectionId = getFirstSectionId();
-        TableList(sectionId, 1);
+        getFirstSectionId();
+
 
         function tableMassDelete() {
             let selectedItemIds = [];

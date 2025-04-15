@@ -96,32 +96,34 @@ public class ItemRepository : IItemRepository
      public async Task<List<ItemModifierGroupMapping>> GetItemModifierGroupsAsync(int itemId)
     {
             var itemModifierGroups = await _context.Itemmodifiergroupmaps
-                .Where(img => img.Itemid == itemId)
-                .Select(img => new ItemModifierGroupMapping
-                {
-                    Itemmodifiergroupid = img.Itemmodifiergroupid,
-                    Itemid = img.Itemid,
-                    Modifiergroupid = img.Modifiergroupid,
-                    ModifiergroupName = img.Modifiergroup.Modifiergroupname,
-                    Minselectionrequired = img.Minselectionrequired,
-                    Maxselectionallowed = img.Maxselectionallowed,
-                    Modifiers = _context.Modifiers
-                        .Where(m => m.Modifiergroupid == img.Modifiergroupid && m.Isdeleted != true)
-                        .Select(m => new Modifier
-                        {
-                            Modifierid = m.Modifierid,
-                            Modifiername = m.Modifiername,
-                            Modifiergroupid = m.Modifiergroupid,
-                            Rate = m.Rate,
-                            Quantity = m.Quantity,
-                            Unitid = m.Unitid,
-                            Description = m.Description
-                        })
-                        .ToList()
-                })
-                .ToListAsync();
+    .Where(img => img.Itemid == itemId)
+    .Select(img => new ItemModifierGroupMapping
+    {
+        Itemmodifiergroupid = img.Itemmodifiergroupid,
+        Itemid = img.Itemid,
+        Modifiergroupid = img.Modifiergroupid,
+        ModifiergroupName = img.Modifiergroup.Modifiergroupname,
+        Minselectionrequired = img.Minselectionrequired,
+        Maxselectionallowed = img.Maxselectionallowed,
+        Modifiers = _context.ModifierGroupModifierMappings
+            .Where(mg => mg.ModifierGroupId == img.Modifiergroupid)
+            .Select(mg => mg.Modifier)
+            .Where(m => m.Isdeleted != true)
+            .Select(m => new Modifier
+            {
+                Modifierid = m.Modifierid,
+                Modifiername = m.Modifiername,
+                Modifiergroupid = m.Modifiergroupid,
+                Rate = m.Rate,
+                Quantity = m.Quantity,
+                Unitid = m.Unitid,
+                Description = m.Description
+            })
+            .ToList()
+    })
+    .ToListAsync();
 
-            return itemModifierGroups;
+return itemModifierGroups;
         
     }
 

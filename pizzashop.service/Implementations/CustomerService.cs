@@ -25,6 +25,15 @@ public class CustomerService : ICustomerService
         return (customers, totalCustomers, totalPages);
     }
 
+    public async Task<Customer> GetCustomerByEmail(string Email){
+        return await _customerRepository.GetCustomerByEmail(Email);
+    }
+
+    public async Task<int> AddCustomer(Customer model)
+    {
+        return await _customerRepository.AddCustomer(model);
+    }
+
     public async Task<CustomerViewModel> GetCustomerHistory(int customerId){
         var customer = await _customerRepository.GetCustomerById(customerId);
 
