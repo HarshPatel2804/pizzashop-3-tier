@@ -287,7 +287,7 @@
             </div>
         </div>
     </div>
-    <div class="fade modal" id="Edit-Category" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    <div class="fade modal" id="Edit-Category" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" style="width: 500px;">
             <div class="modal-content ps-3 pe-3">
@@ -319,7 +319,7 @@
             </div>
         </div>
     </div>
-    <div class="fade modal" id="Add-Category" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    <div class="fade modal" id="Add-Category" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" style="width: 500px;">
             <div class="modal-content ps-3 pe-3">
@@ -351,7 +351,7 @@
         </div>
     </div>
 
-    <div class="fade modal" id="DeleteItemModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    <div class="fade modal" id="DeleteItemModal" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" style="width: 400px;">
             <div class="modal-content">
@@ -378,7 +378,7 @@
         </div>
     </div>
 
-    <div class="fade modal" id="DeleteModifierModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    <div class="fade modal" id="DeleteModifierModal" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" style="width: 400px;">
             <div class="modal-content">
@@ -404,7 +404,7 @@
             </div>
         </div>
     </div>
-    <div class="fade modal" id="MassDeleteItemModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    <div class="fade modal" id="MassDeleteItemModal" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" style="width: 400px;">
             <div class="modal-content">
@@ -428,7 +428,7 @@
             </div>
         </div>
     </div>
-    <div class="fade modal" id="MassDeletemodifierModal" data-bs-backdrop="static" data-bs-keyboard="false"
+    <div class="fade modal" id="MassDeletemodifierModal" data-bs-keyboard="false"
         tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" style="width: 400px;">
             <div class="modal-content">
@@ -452,7 +452,7 @@
             </div>
         </div>
     </div>
-    <div class="fade modal" id="DeleteModifierGroupModal" data-bs-backdrop="static" data-bs-keyboard="false"
+    <div class="fade modal" id="DeleteModifierGroupModal" data-bs-keyboard="false"
         tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" style="width: 400px;">
             <div class="modal-content">
@@ -1740,6 +1740,24 @@
                 }
             });
         });
+
+        $(document).on('click', '.ModifierGroupDeleteBtn', function (e) {
+                e.preventDefault();
+
+                $.ajax({
+                    url: '/Menu/DeleteModifierGroup',
+                    type: 'POST',
+                    data: {
+                        modifierGroupid: lastSelectedModifierGroupId
+                    }
+                    ,
+                    success: function (response) {
+                        if (response.success) {
+                            modifierGroupList();
+                        }
+                    }
+                });
+            });
 
 
         function itemMassDelete() {

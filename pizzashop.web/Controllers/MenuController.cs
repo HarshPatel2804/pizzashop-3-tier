@@ -393,4 +393,10 @@ public class MenuController : Controller
         return await _menuService.FirstCategoryId();
     }
 
+    [HttpPost]
+    public async Task<JsonResult> DeleteModifierGroup(int modifierGroupid){
+        await _menuService.DeleteModifiergroup(modifierGroupid);
+         return Json(new { success = true, message = "Modifier Group deleted successfully" });
+    }
+
 }

@@ -13,4 +13,6 @@ public interface IOrderService
     Task<(string fileName, byte[] fileContent)> GenerateOrderExcel(string searchString, orderstatus? status, DateTime? fromDate, DateTime? toDate);
 
     Task<OrderDetailsView> GetOrderDetailsViewService(int orderid);
+
+    Task<bool> HasCustomerActiveOrder(int customerId);
 }

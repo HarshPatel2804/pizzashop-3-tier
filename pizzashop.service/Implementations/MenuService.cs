@@ -538,4 +538,14 @@ public class MenuService : IMenuService
     public async Task<int> FirstCategoryId(){
         return await _categoryRepository.GetFirstCategoryId();
     }
+
+    public async Task DeleteModifiergroup(int modifierGroupId){
+        var mappings = _modifierRepository.GetByModifierGroupId(modifierGroupId);
+
+        foreach( var mapping in mappings ){
+            await _modifierRepository.DeleteModifier(mapping.ModifierId , modifierGroupId);
+        }
+
+        await _modifierRepository.DeleteModifierGroupAsync(modifierGroupId);
+    }
 }

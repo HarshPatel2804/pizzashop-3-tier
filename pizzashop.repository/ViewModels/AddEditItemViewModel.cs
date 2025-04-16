@@ -18,9 +18,11 @@ public class AddEditItemViewModel
     public int Categoryid { get; set; }
 
     [Required(ErrorMessage = "Rate is required.")]
+    [Range(0.01, double.MaxValue, ErrorMessage = "Rate must be greater than zero.")]
     public decimal Rate { get; set; }
 
     [Required(ErrorMessage = "Quantity is required.")]
+    [Range(1, short.MaxValue, ErrorMessage = "Quantity must be greater than zero.")]
     public short? Quantity { get; set; }
 
     [Required(ErrorMessage = "Unit id is required.")]

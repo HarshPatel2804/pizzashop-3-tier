@@ -2,6 +2,7 @@
     Layout = "_OrderAppLayout";
     ViewData["Title"] = "OrderAppTable";
 }
+@* @await Html.PartialAsync("_Toast") *@
 <style>
     .status-dot {
         display: inline-block;
@@ -30,18 +31,29 @@
     .table-card {
         border-radius: 6px;
         padding: 12px;
+        height: 140px;
+        width: 300px;
+        margin-right: 5px;
+    }
+
+    .selected-table {
+        border: 2px solid #28a745 !important;
+        box-shadow: 0 0 0 1px #28a745 !important;
     }
 
     .table-blue {
-        background-color: #e0f2fe;
+        background-color: rgba(30, 150, 250, 0.13);
+        border: 2px solid rgba(30, 150, 250, 0.3);
     }
 
     .table-green {
-        background-color: #dcfce7;
+        background-color: rgba(70, 190, 80, 0.13);
+        border: 2px solid rgba(70, 190, 80, 0.3);
     }
 
     .table-gray {
-        background-color: #cecccc;
+        background-color: rgba(233, 236, 239, 0.4);
+        border: 2px solid rgba(233, 236, 239, 0.9);
     }
 
     .accordion-button:focus {
@@ -64,6 +76,10 @@
     </div>
 
     <div id="WaitingToken">
+
+    </div>
+
+    <div id="AssignModal">
 
     </div>
 </div>
@@ -144,44 +160,68 @@
         };
         sectionList();
 
-        function WaitingList(){
-        $("#addWaitingTokenForm").submit(function (e) {
-            e.preventDefault();
-            console.log("submitted");
+        function WaitingList() {
+            $("#addWaitingTokenForm").submit(function (e) {
+                e.preventDefault();
+                console.log("submitted");
 
-            if ($("#addWaitingTokenForm").valid()) {
-                var formData = new FormData($("#addWaitingTokenForm")[0]);
+                if ($('#addWaitingTokenForm').valid()) {
+                    var formData = new FormData($("#addWaitingTokenForm")[0]);
 
-                $.ajax({
-                    url: "/OrderTable/AddWaitingToken",
-                    type: "POST",
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (response) {
-                        $("#waitingToken").modal("hide");
-                    }
-                });
-                }
-            });
-            }
-
-            function afterLoadSection() {
-
-                $(document).on("click", "#SaveToken", function () {
-                    console.log("clicked");
-                    var section = $(this).data("id");
                     $.ajax({
                         url: "/OrderTable/AddWaitingToken",
-                        type: "GET",
-                        data: { section: section },
+                        type: "POST",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
                         success: function (response) {
-                            $("#WaitingToken").html(response);
-                            $("#waitingToken").modal("show");
-                            WaitingList();
+                            if (response.success) {
+                                $("#waitingToken").modal("hide");
+                            }
+                            else {
+                                @* $("#waitingToken").modal("hide"); *@
+                                toastr.error(response.message);
+                            }
                         }
                     });
+                }
+            });
+        }
+
+        function afterLoadSection() {
+
+            $(document).on("click", "#SaveToken", function () {
+                console.log("clicked");
+                var section = $(this).data("id");
+                $.ajax({
+                    url: "/OrderTable/AddWaitingToken",
+                    type: "GET",
+                    data: { section: section },
+                    success: function (response) {
+                        $("#WaitingToken").html(response);
+                        $("#waitingToken").modal("show");
+                        WaitingList();
+                    }
                 });
-    }
+            });
+        }
+
+        $(document).on('click', '.assign-btn', function () {
+            var Id = $(this).data('id');
+            $.ajax({
+                url: "/OrderTable/GetWaitingDetails",
+                type: "GET",
+                data: { section: Id },
+                success: function (response) {
+                    $("#AssignModal").html(response);
+                    var offcanvasElement = document.getElementById('AssignTableModal');
+                    var bsOffcanvas = new bootstrap.Offcanvas(offcanvasElement);
+                    bsOffcanvas.show();
+
+                }
+            });
+        });
     });
 </script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>

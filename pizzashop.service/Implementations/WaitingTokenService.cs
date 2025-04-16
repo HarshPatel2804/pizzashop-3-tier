@@ -41,4 +41,25 @@ public class WaitingTokenService : IWaitingTokenService
         return await _waitingTokenRepository.SaveWaitingToken(WaitingTokenModel);
     }
 
+     public async Task<IEnumerable<WaitingtokenViewModel>> GetAllWaitingTokens(int section)
+    {
+        var tokens = await _waitingTokenRepository.GetAllWaitingTokensWithCustomer(section);
+
+        var result = tokens.Select(token => new WaitingtokenViewModel
+        {
+            Waitingtokenid = token.Waitingtokenid,
+            Noofpeople = token.Noofpeople,
+            Email = token.Customer.Email,
+            Phoneno = token.Customer.Phoneno,
+            Customername = token.Customer.Customername
+        }).ToList();
+
+        return result;
+    }
+
+    public async Task<bool> IsCustomerInWaitingList(int customerId)
+    {
+        return await _waitingTokenRepository.IsCustomerInWaitingList(customerId);
+    }
+
 }

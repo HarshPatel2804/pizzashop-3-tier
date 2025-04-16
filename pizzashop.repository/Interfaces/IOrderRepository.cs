@@ -10,4 +10,6 @@ public interface IOrderRepository
     Task<(List<Order>, int totalOrders)> GetOrdersForExport( DateTime? fromDate, DateTime? toDate , orderstatus? status,string searchInput);
 
    Task<OrderDetailsView> GetOrderDetailsView(int orderId);
+
+   Task<bool> HasCustomerActiveOrder(int customerId);
 }

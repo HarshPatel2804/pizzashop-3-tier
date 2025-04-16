@@ -8,4 +8,6 @@ public class OrderWaitingListController : Controller
     public ActionResult WaitingList(){
         return View();
     }
+
+    
 }

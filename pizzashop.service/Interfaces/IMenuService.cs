@@ -70,4 +70,6 @@ public interface IMenuService
     Task UpdateModifierGroupSortOrder(List<int> sortOrder);
 
     Task<int> FirstCategoryId();
+
+    Task DeleteModifiergroup(int modifierGroupId);
 }

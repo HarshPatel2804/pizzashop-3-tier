@@ -32,4 +32,6 @@ public partial class WaitingtokenViewModel
 
     public List<SelectListItem> Sections { get; set; }
 
+    public int Waitingtokenid { get; set; }
+
 }

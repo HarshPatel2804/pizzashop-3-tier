@@ -14,7 +14,7 @@ public class CustomerController : Controller
     private readonly ICustomerService _customerService;
     private readonly PizzaShopContext _context;
 
-    public CustomerController(ICustomerService customerService , PizzaShopContext context)
+    public CustomerController(ICustomerService customerService, PizzaShopContext context)
     {
         _customerService = customerService;
         _context = context;
@@ -24,10 +24,10 @@ public class CustomerController : Controller
         return View();
     }
 
-    public async Task<IActionResult> CustomerList(int page = 1, int pageSize = 5, string search = "", string sortColumn = "", string sortOrder = "", DateTime? fromDate = null , DateTime? toDate = null)
+    public async Task<IActionResult> CustomerList(int page = 1, int pageSize = 5, string search = "", string sortColumn = "", string sortOrder = "", DateTime? fromDate = null, DateTime? toDate = null)
     {
 
-        var (customers, totalUsers, totalPages) = await _customerService.GetPaginatedCustomersAsync(page, pageSize, search, sortColumn, sortOrder,fromDate,toDate);
+        var (customers, totalUsers, totalPages) = await _customerService.GetPaginatedCustomersAsync(page, pageSize, search, sortColumn, sortOrder, fromDate, toDate);
         ViewBag.CurrentPage = page;
         ViewBag.PageSize = pageSize;
         ViewBag.TotalUsers = totalUsers;
@@ -43,13 +43,33 @@ public class CustomerController : Controller
     }
 
     [HttpGet]
-        public async Task<IActionResult> ForExportExcel(string searchString = "", DateTime? fromDate = null , DateTime? toDate = null)
+    public async Task<IActionResult> ForExportExcel(string searchString = "", DateTime? fromDate = null, DateTime? toDate = null)
+    {
+        var (fileName, fileContent) = await _customerService.GenerateCustomerExcel(searchString, fromDate, toDate);
+        return File(
+            fileContent,
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            fileName
+        );
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetCustomerByEmail(string email)
+    {
+        var customer = await _customerService.GetCustomerByEmail(email);
+        if (customer == null)
         {
-                var (fileName, fileContent) = await _customerService.GenerateCustomerExcel(searchString, fromDate, toDate);
-                return File(
-                    fileContent,
-                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                    fileName
-                );
+            return Json(new { success = false });
         }
+
+        return Json(new
+        {
+            success = true,
+            data = new
+            {
+                customername = customer.Customername,
+                phoneno = customer.Phoneno
+            }
+        });
+    }
 }

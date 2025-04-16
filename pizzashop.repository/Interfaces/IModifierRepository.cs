@@ -46,4 +46,6 @@ public interface IModifierRepository
     Task<List<Modifier>> GetModifiersBymodifierGroup(int id);
 
     Task UpdateSortOrderOfModifierGroup(List<int> sortOrder);
+
+    Task DeleteModifierGroupAsync(int modifierGroupId);
 }

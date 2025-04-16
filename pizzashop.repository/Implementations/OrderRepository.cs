@@ -168,5 +168,14 @@ public class OrderRepository : IOrderRepository
 
         return orderDetailsView;
     }
+
+    public async Task<bool> HasCustomerActiveOrder(int customerId)
+    {
+        return await _context.Orders
+            .AnyAsync(o => o.Customerid == customerId && 
+                          (o.OrderStatus == orderstatus.InProgress || 
+                           o.OrderStatus == orderstatus.Pending || 
+                           o.OrderStatus == orderstatus.Served));
+    }
 }
 

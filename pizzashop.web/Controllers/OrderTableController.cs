@@ -9,32 +9,63 @@ public class OrderTableController : Controller
 {
     private readonly ITableSectionService _tableSectionService;
 
-     private readonly IWaitingTokenService _waitingTokenService;
+    private readonly IWaitingTokenService _waitingTokenService;
 
-    public OrderTableController(ITableSectionService tableSectionService , IWaitingTokenService waitingTokenService)
+    private readonly IOrderService _orderService;
+
+    private readonly ICustomerService _customerService;
+
+    public OrderTableController(ITableSectionService tableSectionService, IWaitingTokenService waitingTokenService, IOrderService orderService, ICustomerService customerService)
     {
-       _tableSectionService = tableSectionService;
-       _waitingTokenService = waitingTokenService;
-
+        _tableSectionService = tableSectionService;
+        _waitingTokenService = waitingTokenService;
+        _orderService = orderService;
+        _customerService = customerService;
     }
 
-    public async Task<ActionResult> Table(){
+    public async Task<ActionResult> Table()
+    {
         return View();
     }
-    public async Task<ActionResult> Sections(){
+    public async Task<ActionResult> Sections()
+    {
         var sections = await _tableSectionService.GetAllSectionsWithTablesAsync();
-        return PartialView("_OrderTablePartial",sections);
+        return PartialView("_OrderTablePartial", sections);
     }
 
     [HttpGet]
-    public async Task<IActionResult> AddWaitingToken(int section){
+    public async Task<IActionResult> AddWaitingToken(int section)
+    {
         var model = await _tableSectionService.GetSectionList();
         model.Sectionid = section;
-        return PartialView("_WaitingTokenPartial" , model);
+        return PartialView("_WaitingTokenPartial", model);
     }
     [HttpPost]
-    public async Task<IActionResult> AddWaitingToken(WaitingtokenViewModel model){
+    public async Task<IActionResult> AddWaitingToken(WaitingtokenViewModel model)
+    {
+        var customer = await _customerService.GetCustomerByEmail(model.Email);
+        if (customer != null)
+        {
+            var hasActiveOrder = await _orderService.HasCustomerActiveOrder(customer.Customerid);
+            if (hasActiveOrder)
+            {
+                return Json(new { success = false, message = "Customer already has an active order." });
+            }
+
+            var isInWaitingList = await _waitingTokenService.IsCustomerInWaitingList(customer.Customerid);
+            if (isInWaitingList)
+            {
+                return Json(new { success = false, message = "Customer is already in the waiting list." });
+            }
+        }
+
         await _waitingTokenService.SaveWaitingToken(model);
-        return Json(new{success = true,message="Waiting Token Added Successfully"});
+        return Json(new { success = true, message = "Waiting Token Added Successfully" });
+    }
+
+    public async Task<IActionResult> GetWaitingDetails(int section)
+    {
+        var tokens = await _waitingTokenService.GetAllWaitingTokens(section);
+        return PartialView("_AssignTablePartial", tokens);
     }
 }
