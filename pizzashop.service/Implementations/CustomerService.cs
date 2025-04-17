@@ -33,6 +33,10 @@ public class CustomerService : ICustomerService
     {
         return await _customerRepository.AddCustomer(model);
     }
+    public async Task<int> UpdateCustomer(Customer model)
+    {
+        return await _customerRepository.UpdateCustomer(model);
+    }
 
     public async Task<CustomerViewModel> GetCustomerHistory(int customerId){
         var customer = await _customerRepository.GetCustomerById(customerId);

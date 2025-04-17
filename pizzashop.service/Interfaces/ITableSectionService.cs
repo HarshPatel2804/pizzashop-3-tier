@@ -38,4 +38,6 @@ public interface ITableSectionService
     Task<List<OrderSectionViewModel>> GetAllSectionsWithTablesAsync();
 
     Task<WaitingtokenViewModel> GetSectionList();
+
+    Task<string> AssignTable(AssignTableViewModel model);
 }

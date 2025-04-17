@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using pizzashop.repository.Interfaces;
 using pizzashop.repository.Models;
 using pizzashop.repository.ViewModels;
@@ -8,10 +9,18 @@ namespace pizzashop.service.Implementations;
 public class TableSectionService : ITableSectionService
 {
     private readonly ITableSectionRepository _tableSectionRepository;
+    private readonly ICustomerService _customerService;
 
-    public TableSectionService(ITableSectionRepository tableSectionRepository)
+    private readonly IOrderService _orderService;
+
+    private readonly IWaitingTokenService _waitingTokenService;
+
+    public TableSectionService(ITableSectionRepository tableSectionRepository, ICustomerService customerService, IOrderService orderService, IWaitingTokenService waitingTokenService)
     {
         _tableSectionRepository = tableSectionRepository;
+        _customerService = customerService;
+        _orderService = orderService;
+        _waitingTokenService = waitingTokenService;
     }
 
     public async Task<List<SectionViewModel>> GetAllSections()
@@ -20,28 +29,28 @@ public class TableSectionService : ITableSectionService
 
         var viewModel = model.Select(u => new SectionViewModel
         {
-            Sectionid = u.Sectionid ,
-            Sectionname = u.Sectionname ,
+            Sectionid = u.Sectionid,
+            Sectionname = u.Sectionname,
             Description = u.Description
 
         }).ToList();
 
         return viewModel;
-       
+
     }
 
-     public async Task<(List<TableViewModel> tableModel, int totalTables, int totalPages)> GetTablesBySection(int sectionId , int page, int pageSize, string search)
+    public async Task<(List<TableViewModel> tableModel, int totalTables, int totalPages)> GetTablesBySection(int sectionId, int page, int pageSize, string search)
     {
-        var (model ,  totalTables) = await _tableSectionRepository.GetTablesBySectionAsync(sectionId,page, pageSize, search);
+        var (model, totalTables) = await _tableSectionRepository.GetTablesBySectionAsync(sectionId, page, pageSize, search);
 
         int totalPages = (int)System.Math.Ceiling((double)totalTables / pageSize);
 
         var tableModel = model.Select(u => new TableViewModel
         {
-            Tableid = u.Tableid , 
-            Tablename = u.Tablename ,
-            Tablestatus = u.Tablestatus ,
-            Capacity = u.Capacity ,
+            Tableid = u.Tableid,
+            Tablename = u.Tablename,
+            Tablestatus = u.Tablestatus,
+            Capacity = u.Capacity,
             Sectionid = u.Sectionid
         }).ToList();
 
@@ -81,7 +90,7 @@ public class TableSectionService : ITableSectionService
         await _tableSectionRepository.EditSectionAsync(section);
     }
 
-     public async Task DeleteSection(int sectionId)
+    public async Task DeleteSection(int sectionId)
     {
         var section = await _tableSectionRepository.GetSectionById(sectionId);
         section.Isdeleted = true;
@@ -91,7 +100,7 @@ public class TableSectionService : ITableSectionService
     }
 
     public async Task<TableViewModel> GetSections()
-    {   
+    {
         var model = new TableViewModel
         {
             Sections = await _tableSectionRepository.GetSectionListAsync()
@@ -100,7 +109,7 @@ public class TableSectionService : ITableSectionService
     }
 
     public async Task<WaitingtokenViewModel> GetSectionList()
-    {   
+    {
         var model = new WaitingtokenViewModel
         {
             Sections = await _tableSectionRepository.GetSectionListAsync()
@@ -108,23 +117,24 @@ public class TableSectionService : ITableSectionService
         return model;
     }
 
-     public async Task AddTable(TableViewModel model)
+    public async Task AddTable(TableViewModel model)
     {
         var Table = new Table
         {
-            Tablename = model.Tablename ,
-            Tablestatus = model.Tablestatus ,
-            Sectionid = model.Sectionid ,
+            Tablename = model.Tablename,
+            Tablestatus = model.Tablestatus,
+            Sectionid = model.Sectionid,
             Capacity = model.Capacity
         };
         await _tableSectionRepository.AddTableAsync(Table);
     }
 
-    public async Task DeleteTable(int tableId){
+    public async Task DeleteTable(int tableId)
+    {
         await _tableSectionRepository.DeleteTableAsync(tableId);
     }
 
-     public async Task<TableViewModel> GetTableById(int tableId)
+    public async Task<TableViewModel> GetTableById(int tableId)
     {
         var table = await _tableSectionRepository.GetTableById(tableId);
         var model = new TableViewModel
@@ -139,7 +149,8 @@ public class TableSectionService : ITableSectionService
         return model;
     }
 
-    public async Task EditTable(TableViewModel tableViewModel){
+    public async Task EditTable(TableViewModel tableViewModel)
+    {
         var table = await _tableSectionRepository.GetTableById(tableViewModel.Tableid);
 
         table.Tablename = tableViewModel.Tablename;
@@ -150,7 +161,8 @@ public class TableSectionService : ITableSectionService
         await _tableSectionRepository.EditTableAsync(table);
     }
 
-    public async Task UpdateSectionSortOrder(List<int> sortOrder){
+    public async Task UpdateSectionSortOrder(List<int> sortOrder)
+    {
         await _tableSectionRepository.UpdateSortOrderOfSection(sortOrder);
     }
 
@@ -160,76 +172,141 @@ public class TableSectionService : ITableSectionService
     }
 
     public async Task<Table> GetTableByName(TableViewModel model)
-        {
-            return await _tableSectionRepository.GetTableByName(model);
-        }
+    {
+        return await _tableSectionRepository.GetTableByName(model);
+    }
 
-    public async Task<int> FirstSectionId(){
+    public async Task<int> FirstSectionId()
+    {
         return await _tableSectionRepository.GetSectionIdWithLeastOrderField();
     }
 
-     public async Task<List<OrderSectionViewModel>> GetAllSectionsWithTablesAsync()
-        {
-            var sections = await _tableSectionRepository.GetAllSectionsWithTablesAndOrdersAsync();
-            return sections.Select(MapSectionToViewModel).ToList();
-        }
+    public async Task<List<OrderSectionViewModel>> GetAllSectionsWithTablesAsync()
+    {
+        var sections = await _tableSectionRepository.GetAllSectionsWithTablesAndOrdersAsync();
+        return sections.Select(MapSectionToViewModel).ToList();
+    }
 
-         private OrderSectionViewModel MapSectionToViewModel(Section section)
+    private OrderSectionViewModel MapSectionToViewModel(Section section)
+    {
+        var viewModel = new OrderSectionViewModel
         {
-            var viewModel = new OrderSectionViewModel
+            SectionId = section.Sectionid,
+            SectionName = section.Sectionname,
+            Description = section.Description,
+            Tables = section.Tables.Select(t => new OrderTableViewModel
             {
-                SectionId = section.Sectionid,
-                SectionName = section.Sectionname,
-                Description = section.Description,
-                Tables = section.Tables.Select(t => new OrderTableViewModel
-                {
-                    TableId = t.Tableid,
-                    TableName = t.Tablename,
-                    Capacity = t.Capacity,
-                    Status = DetermineTableStatus(t),
-                    CurrentOrderAmount = GetCurrentOrderAmount(t),
-                    NumberOfPersons = GetNumberOfPersons(t),
-                }).ToList(),
-                AvailableCount = section.Tables.Count(t => DetermineTableStatus(t) == TableViewStatus.Available),
-                AssignedCount = section.Tables.Count(t => DetermineTableStatus(t) == TableViewStatus.Assigned),
-                RunningCount = section.Tables.Count(t => DetermineTableStatus(t) == TableViewStatus.Running),
-            };
+                TableId = t.Tableid,
+                TableName = t.Tablename,
+                Capacity = t.Capacity,
+                Status = DetermineTableStatus(t),
+                CurrentOrderAmount = GetCurrentOrderAmount(t),
+                NumberOfPersons = GetNumberOfPersons(t),
+                OrderDate = t.Ordertables
+                                .Where(ot => ot.Order != null)
+                                .OrderByDescending(ot => ot.Order.Orderdate)
+                                .Select(ot => ot.Order.Orderdate)
+                                .FirstOrDefault()
+            }).ToList(),
+            AvailableCount = section.Tables.Count(t => DetermineTableStatus(t) == TableViewStatus.Available),
+            AssignedCount = section.Tables.Count(t => DetermineTableStatus(t) == TableViewStatus.Assigned),
+            RunningCount = section.Tables.Count(t => DetermineTableStatus(t) == TableViewStatus.Running),
+        };
 
-            return viewModel;
-        }
+        return viewModel;
+    }
 
-        private TableViewStatus DetermineTableStatus(Table table)
+    private TableViewStatus DetermineTableStatus(Table table)
+    {
+        bool hasInProgressOrders = table.Ordertables.Any(ot => ot.Order.OrderStatus == orderstatus.InProgress || ot.Order.OrderStatus == orderstatus.Served);
+        bool hasPendingOrders = table.Ordertables.Any(ot => ot.Order.OrderStatus == orderstatus.Pending);
+
+        if (hasInProgressOrders)
+            return TableViewStatus.Running;
+        else if (hasPendingOrders)
+            return TableViewStatus.Assigned;
+
+        return TableViewStatus.Available;
+    }
+
+    private decimal GetCurrentOrderAmount(Table table)
+    {
+        var activeOrder = table.Ordertables
+            .Select(ot => ot.Order)
+            .Where(o => o.OrderStatus == orderstatus.InProgress || o.OrderStatus == orderstatus.Pending || o.OrderStatus == orderstatus.Served)
+            .OrderByDescending(o => o.Orderdate)
+            .FirstOrDefault();
+
+        return activeOrder?.Totalamount ?? 0;
+    }
+
+    private int GetNumberOfPersons(Table table)
+    {
+        var activeOrder = table.Ordertables
+            .Select(ot => ot.Order)
+            .Where(o => o.OrderStatus == orderstatus.InProgress || o.OrderStatus == orderstatus.Pending || o.OrderStatus == orderstatus.Served)
+            .OrderByDescending(o => o.Orderdate)
+            .FirstOrDefault();
+
+        return activeOrder?.Noofperson ?? 0;
+    }
+
+    public async Task<string> AssignTable(AssignTableViewModel model)
+    {
+        int totalCapacity = 0;
+        foreach (int tableId in model.selectedTableIds)
         {
-            bool hasInProgressOrders = table.Ordertables.Any(ot => ot.Order.OrderStatus == orderstatus.InProgress || ot.Order.OrderStatus == orderstatus.Served);
-            bool hasPendingOrders = table.Ordertables.Any(ot => ot.Order.OrderStatus == orderstatus.Pending);
-
-            if (hasInProgressOrders)
-                return TableViewStatus.Running;
-            else if (hasPendingOrders)
-                return TableViewStatus.Assigned;
-            
-            return TableViewStatus.Available;
+            var tableDetails = await GetTableById(tableId);
+            totalCapacity += (int)tableDetails.Capacity;
         }
 
-        private decimal GetCurrentOrderAmount(Table table)
+        if (totalCapacity < model.Noofpeople)
         {
-            var activeOrder = table.Ordertables
-                .Select(ot => ot.Order)
-                .Where(o => o.OrderStatus == orderstatus.InProgress || o.OrderStatus == orderstatus.Pending || o.OrderStatus == orderstatus.Served)
-                .OrderByDescending(o => o.Orderdate)
-                .FirstOrDefault();
-
-            return activeOrder?.Totalamount ?? 0;
+            var result = $"Selected tables don't have enough capacity. Required: {model.Noofpeople}, Available: {totalCapacity}";
+            return result;
         }
-
-        private int GetNumberOfPersons(Table table)
+        //Add or update Customer details
+        var customer = await _customerService.GetCustomerByEmail(model.Email);
+        int customerId = 0;
+        var CustomerModel = new Customer
         {
-            var activeOrder = table.Ordertables
-                .Select(ot => ot.Order)
-                .Where(o => o.OrderStatus == orderstatus.InProgress || o.OrderStatus == orderstatus.Pending || o.OrderStatus == orderstatus.Served)
-                .OrderByDescending(o => o.Orderdate)
-                .FirstOrDefault();
-
-            return activeOrder?.Noofperson ?? 0;
+            Customername = model.Customername,
+            Email = model.Email,
+            Phoneno = model.Phoneno,
+        };
+        if (customer == null)
+        {
+            customerId = await _customerService.AddCustomer(CustomerModel);
         }
+        else
+        {
+            customerId = await _customerService.UpdateCustomer(CustomerModel);
+        }
+
+        //Create Order
+        int orderId = await _orderService.createOrderbycustomerId(customerId);
+
+        //Order Table mapping
+        List<Ordertable> orderTables = new List<Ordertable>();
+        foreach (int tableId in model.selectedTableIds)
+        {
+            orderTables.Add(new Ordertable
+            {
+                Orderid = orderId,
+                Tableid = tableId
+            });
+
+            //update Table status to occupied
+            await _tableSectionRepository.UpdateTableStatusToOccupied(tableId);
+        }
+
+        await _tableSectionRepository.AddOrderTables(orderTables);
+
+        if (model.Waitingtokenid != null)
+        {
+            await _waitingTokenService.WaitingToAssign((int)model.Waitingtokenid);
+        }
+
+        return "true";
+    }
 }

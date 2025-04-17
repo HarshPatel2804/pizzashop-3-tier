@@ -9,4 +9,6 @@ public interface IWaitingTokenService
     Task<IEnumerable<WaitingtokenViewModel>> GetAllWaitingTokens(int section);
 
     Task<bool> IsCustomerInWaitingList(int customerId);
+
+    Task WaitingToAssign(int tokenId);
 }

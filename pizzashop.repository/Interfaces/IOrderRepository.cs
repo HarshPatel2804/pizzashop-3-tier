@@ -12,4 +12,6 @@ public interface IOrderRepository
    Task<OrderDetailsView> GetOrderDetailsView(int orderId);
 
    Task<bool> HasCustomerActiveOrder(int customerId);
+
+   Task<int> createOrder(Order order);
 }

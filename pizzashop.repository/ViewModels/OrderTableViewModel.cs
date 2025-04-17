@@ -16,5 +16,7 @@ public class OrderTableViewModel
         public TableViewStatus Status { get; set; }
         public decimal CurrentOrderAmount { get; set; }
         public int NumberOfPersons { get; set; }
+
+        public DateTime? OrderDate {get; set;}
     }
 }

@@ -219,18 +219,32 @@
     </div>
 </template>
 <script>
-    // File upload preview
-    document.getElementById('files').addEventListener('change', function (e) {
+    $('#files').on('change', function (e) {
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = function (event) {
-                document.getElementById('profileImg').src = event.target.result;
-                document.getElementById('profileImg').style.display = 'block';
+                $('#profileImg').attr('src', event.target.result);
+                $('#BrowseImage').addClass('d-none');
+                $('#imagePreviewContainer').removeClass('d-none');
             };
             reader.readAsDataURL(file);
         }
     });
+
+    $('#editImageBtn').on('click', function (e) {
+        e.preventDefault();
+        $('#files').click();
+    });
+
+    $('#deleteImageBtn').on('click', function (e) {
+        e.preventDefault();
+        $('#files').val('');
+        $('#imagePreviewContainer').addClass('d-none');
+        $('#uploadPrompt').removeClass('d-none');
+    });
+</script>
+<script>
 
     $(document).ready(function () {
         // Map to store selected modifier groups data

@@ -1,4 +1,4 @@
-@model List<pizzashop.repository.ViewModels.WaitingtokenViewModel>;
+@model pizzashop.repository.ViewModels.AssignTablePageViewModel;
 <div class="offcanvas offcanvas-end" tabindex="-1" id="AssignTableModal" aria-labelledby="waitingListOffcanvasLabel">
     <div class="offcanvas-header">
         <h5 class="offcanvas-title text-color" id="waitingListOffcanvasLabel">Waiting List</h5>
@@ -16,13 +16,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if (Model.Count == 0)
+                    @if (Model.WaitingCustomers.Count == 0)
                     {
                         <tr>
                             <td class="text-center" colspan="6">Waiting List is empty</td>
                         </tr>
                     }
-                    @foreach (var token in Model)
+                    @foreach (var token in Model.WaitingCustomers)
                     {
                         <tr>
                             <td>
@@ -42,28 +42,35 @@
         </div>
 
         <h5 class="text-color mb-3">Customer Details</h5>
-        <form>
+        <form id="AssignTableForm">
+
+            <input type="hidden" id="selectedTableIds" name="selectedTableIds" value="">
+            <input type="hidden" id="waitingTokenId" name="waitingTokenId" value="">
+
             <div class="d-flex flex-column mt-3 mb-3">
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control input-height" id="Email" placeholder="">
+                    <input type="text" class="form-control input-height" id="Email" asp-for="AssignTableForm.Email" placeholder="">
                     <label for="Email">Email*</label>
+                    <span asp-validation-for="AssignTableForm.Email" id="tab-name" class="text-danger"></span>
                 </div>
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control input-height" id="Name" placeholder="">
+                    <input type="text" class="form-control input-height" id="Name" asp-for="AssignTableForm.Customername" placeholder="">
                     <label for="Name">Name*</label>
+                    <span asp-validation-for="AssignTableForm.Customername" id="tab-name" class="text-danger"></span>
                 </div>
                 <div class="form-floating mb-2">
-                    <input type="text" class="form-control input-height" id="mobile" placeholder="">
+                    <input type="text" class="form-control input-height" id="mobile" asp-for="AssignTableForm.Phoneno" placeholder="">
                     <label for="mobile">Mobilenumber*</label>
+                    <span asp-validation-for="AssignTableForm.Phoneno" id="tab-name" class="text-danger"></span>
                 </div>
             </div>
             <div class="row">
                 <div class="col-12 col-lg-6 mb-3">
                     <div class="form-floating">
-                        <input type="text" class="form-control input-height" id="NoOfPerson" placeholder="">
+                        <input type="text" class="form-control input-height" asp-for="AssignTableForm.Noofpeople" id="NoOfPerson" placeholder="">
                         <label for="NoOfPerson">No Of Persons*</label>
                     </div>
-                    @* <span asp-validation-for="Tablename" id="tab-name" class="text-danger"></span> *@
+                    <span asp-validation-for="AssignTableForm.Noofpeople" id="tab-name" class="text-danger"></span>
                 </div>
                 <div class="col-12 col-lg-6 mb-3">
                     <div class="form-floating">
@@ -85,15 +92,63 @@
 <script>
     $(document).ready(function () {
         $('input[name="waitingCustomer"]').on('change', function () {
+            console.log("redio");
             const name = $(this).data('name');
             const email = $(this).data('email');
             const phone = $(this).data('phone');
             const persons = $(this).data('persons');
+            const tokenId = $(this).data('token');
 
             $('#Name').val(name);
             $('#Email').val(email);
             $('#mobile').val(phone);
             $('#NoOfPerson').val(persons);
+            $('#waitingTokenId').val(tokenId);
+        });
+
+         $('#AssignTableForm').on('submit', function (e) {
+            e.preventDefault();
+            console.log("Assign Table");
+
+            let selectedTableIds = [];
+            selectedTableIds = JSON.parse($('#selectedTableIds').val() || '[]');
+
+            if($(this).valid()){
+
+            const formData = {
+                Email: $('#Email').val(),
+                Customername: $('#Name').val(),
+                Phoneno: $('#mobile').val(),
+                Noofpeople: parseInt($('#NoOfPerson').val()) || 0,
+                selectedTableIds: selectedTableIds
+            };
+
+            const waitingTokenId = $('#waitingTokenId').val();
+            if (waitingTokenId) {
+                formData.Waitingtokenid = parseInt(waitingTokenId);
+            }
+
+            $.ajax({
+                url: '/OrderTable/AssignTable',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success) {
+                        var offcanvasElement = document.getElementById('AssignTableModal');
+                        var bsOffcanvas = bootstrap.Offcanvas.getInstance(offcanvasElement);
+                        bsOffcanvas.hide();
+
+                        toastr.success('Table assigned successfully');
+                    } else {
+                        toastr.error(response.message || 'Failed to assign table');
+                    }
+                }
+            });
+            }
         });
     });
 </script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>

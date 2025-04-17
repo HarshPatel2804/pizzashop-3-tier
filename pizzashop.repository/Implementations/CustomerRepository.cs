@@ -21,7 +21,7 @@ public class CustomerRepository : ICustomerRepository
                u.Email.ToLower().Contains(searchInput.ToLower()) ||
                u.Phoneno.ToLower().Contains(searchInput.ToLower()) ||
                u.Createdat.ToString().Contains(searchInput.ToLower()) ||
-               u.Totalorder.ToString().Contains(searchInput.ToLower())               
+               u.Totalorder.ToString().Contains(searchInput.ToLower())
                );
 
         switch (sortColumn)
@@ -65,17 +65,19 @@ public class CustomerRepository : ICustomerRepository
         return (orders, totalCustomers);
     }
 
-    public async Task<Customer> GetCustomerById(int customerId){
+    public async Task<Customer> GetCustomerById(int customerId)
+    {
         return await _context.Customers.FirstOrDefaultAsync(c => c.Customerid == customerId);
     }
 
-    public async Task<List<Order>> GetOrdersByCustomer(int customerId){
+    public async Task<List<Order>> GetOrdersByCustomer(int customerId)
+    {
         return await _context.Orders
                 .Where(o => o.Customerid == customerId)
                 .Include(o => o.Ordereditems).ToListAsync();
     }
 
-     public async Task<(List<Customer>, int totalCustomers)> GetCustomersForExport(string searchInput, DateTime? fromDate, DateTime? toDate)
+    public async Task<(List<Customer>, int totalCustomers)> GetCustomersForExport(string searchInput, DateTime? fromDate, DateTime? toDate)
     {
         var query = _context.Customers
            .OrderBy(u => u.Customerid)
@@ -84,7 +86,7 @@ public class CustomerRepository : ICustomerRepository
                u.Email.ToLower().Contains(searchInput.ToLower()) ||
                u.Phoneno.ToLower().Contains(searchInput.ToLower()) ||
                u.Createdat.ToString().Contains(searchInput.ToLower()) ||
-               u.Totalorder.ToString().Contains(searchInput.ToLower())               
+               u.Totalorder.ToString().Contains(searchInput.ToLower())
                );
 
         if (fromDate.HasValue && toDate.HasValue)
@@ -111,15 +113,29 @@ public class CustomerRepository : ICustomerRepository
         return (orders, totalCustomers);
     }
 
-    public async Task<Customer> GetCustomerByEmail(string Email){
+    public async Task<Customer> GetCustomerByEmail(string Email)
+    {
         return await _context.Customers.FirstOrDefaultAsync(c => c.Email == Email);
     }
 
-    public async Task<int> AddCustomer(Customer model){
+    public async Task<int> AddCustomer(Customer model)
+    {
         await _context.Customers.AddAsync(model);
         await _context.SaveChangesAsync();
 
         return model.Customerid;
+    }
+
+    public async Task<int> UpdateCustomer(Customer model)
+    {
+        Customer customer = await _context.Customers.FirstOrDefaultAsync(c => c.Email == model.Email);
+        customer.Email = model.Email;
+        customer.Phoneno = model.Phoneno;
+        customer.Customername = model.Customername;
+
+        await _context.SaveChangesAsync();
+
+        return customer.Customerid;
     }
 
 }

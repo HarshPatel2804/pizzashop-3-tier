@@ -37,4 +37,8 @@ public interface ITableSectionRepository
     Task<int> GetSectionIdWithLeastOrderField();
 
      Task<List<Section>> GetAllSectionsWithTablesAndOrdersAsync();
+
+     Task AddOrderTables(List<Ordertable> orderTables);
+
+     Task UpdateTableStatusToOccupied(int tableId);
 }

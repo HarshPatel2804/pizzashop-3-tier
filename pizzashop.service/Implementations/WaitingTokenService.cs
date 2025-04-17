@@ -51,7 +51,7 @@ public class WaitingTokenService : IWaitingTokenService
             Noofpeople = token.Noofpeople,
             Email = token.Customer.Email,
             Phoneno = token.Customer.Phoneno,
-            Customername = token.Customer.Customername
+            Customername = token.Customer.Customername,
         }).ToList();
 
         return result;
@@ -60,6 +60,10 @@ public class WaitingTokenService : IWaitingTokenService
     public async Task<bool> IsCustomerInWaitingList(int customerId)
     {
         return await _waitingTokenRepository.IsCustomerInWaitingList(customerId);
+    }
+
+    public async Task WaitingToAssign(int tokenId){
+        await _waitingTokenRepository.WaitingToAssign(tokenId);
     }
 
 }

@@ -135,15 +135,32 @@ public class TableSectionRepository : ITableSectionRepository
         return sectionId;
     }
 
-     public async Task<List<Section>> GetAllSectionsWithTablesAndOrdersAsync()
+    public async Task<List<Section>> GetAllSectionsWithTablesAndOrdersAsync()
+    {
+        return await _context.Sections
+            .Where(s => s.Isdeleted != true)
+            .Include(s => s.Tables.Where(t => t.Isdeleted != true))
+                .ThenInclude(t => t.Ordertables)
+                    .ThenInclude(ot => ot.Order)
+            .OrderBy(s => s.OrderField)
+            .ToListAsync();
+    }
+
+    public async Task AddOrderTables(List<Ordertable> orderTables)
+    {
+        await _context.Ordertables.AddRangeAsync(orderTables);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task UpdateTableStatusToOccupied(int tableId)
+    {
+        var table = await _context.Tables.FirstOrDefaultAsync(t => t.Tableid == tableId);
+        if (table != null)
         {
-            return await _context.Sections
-                .Where(s => s.Isdeleted != true)
-                .Include(s => s.Tables.Where(t => t.Isdeleted != true))
-                    .ThenInclude(t => t.Ordertables)
-                        .ThenInclude(ot => ot.Order)
-                .OrderBy(s => s.OrderField)
-                .ToListAsync();
+            table.Tablestatus = tablestatus.Occupied; 
+            _context.Tables.Update(table);
+            await _context.SaveChangesAsync();
         }
+    }
 
 }

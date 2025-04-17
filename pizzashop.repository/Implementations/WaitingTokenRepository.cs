@@ -24,7 +24,7 @@ public class WaitingTokenRepository : IWaitingTokenRepository
      public async Task<IEnumerable<Waitingtoken>> GetAllWaitingTokensWithCustomer(int section)
     {
         return await _context.Waitingtokens
-                        .Where(u => u.Sectionid == section)
+                        .Where(u => u.Sectionid == section && u.Isassigned == false)
                        .Include(w => w.Customer)
                        .ToListAsync();
     }
@@ -33,5 +33,11 @@ public class WaitingTokenRepository : IWaitingTokenRepository
     {
         return await _context.Waitingtokens
             .AnyAsync(w => w.Customerid == customerId && w.Isassigned == false);
+    }
+
+    public async Task WaitingToAssign(int tokenId){
+        var token = await _context.Waitingtokens.FirstOrDefaultAsync(w => w.Waitingtokenid == tokenId);
+        token.Isassigned = true;
+        await _context.SaveChangesAsync();
     }
 }

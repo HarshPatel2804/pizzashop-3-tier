@@ -15,4 +15,6 @@ public interface ICustomerRepository
     Task<Customer> GetCustomerByEmail(string Email);
 
     Task<int> AddCustomer(Customer model);
+
+    Task<int> UpdateCustomer(Customer model);
 }

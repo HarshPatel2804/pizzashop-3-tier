@@ -179,7 +179,6 @@
                                 $("#waitingToken").modal("hide");
                             }
                             else {
-                                @* $("#waitingToken").modal("hide"); *@
                                 toastr.error(response.message);
                             }
                         }
@@ -204,23 +203,74 @@
                     }
                 });
             });
+
+            $(document).ready(function () {
+                $('.assign-btn').prop('disabled', true);
+
+                let selectedTablesPerSection = {};
+
+                $(document).on('click', '.table-card', function () {
+
+                    const tableId = $(this).data('table-id');
+                    const sectionId = $(this).closest('.accordion-item').find('.assign-btn').data('id');
+
+                    if ($(this).hasClass('table-gray')) {
+                        if (!selectedTablesPerSection[sectionId]) {
+                            selectedTablesPerSection[sectionId] = [];
+                        }
+
+                        if ($(this).hasClass('selected-table')) {
+                            $(this).removeClass('selected-table');
+                            selectedTablesPerSection[sectionId] = selectedTablesPerSection[sectionId].filter(id => id !== tableId);
+                        } else {
+                            $(this).addClass('selected-table');
+                            selectedTablesPerSection[sectionId].push(tableId);
+                        }
+
+                        $(`.assign-btn[data-id="${sectionId}"]`).prop('disabled',
+                            selectedTablesPerSection[sectionId].length === 0);
+                    }
+                });
+
+                $('.accordion-collapse').on('hidden.bs.collapse', function () {
+                    const sectionId = $(this).closest('.accordion-item').find('.assign-btn').data('id');
+
+                    if (selectedTablesPerSection[sectionId]) {
+                        selectedTablesPerSection[sectionId].forEach(tableId => {
+                            $(`[data-table-id="${tableId}"]`).removeClass('selected-table');
+                        });
+
+                        selectedTablesPerSection[sectionId] = [];
+
+                        $(`.assign-btn[data-id="${sectionId}"]`).prop('disabled', true);
+                    }
+                });
+            });
         }
 
         $(document).on('click', '.assign-btn', function () {
             var Id = $(this).data('id');
+            const selectedTables = [];
+            $(this).closest('.accordion-item').find('.table-card.selected-table').each(function () {
+                selectedTables.push($(this).data('table-id'));
+            });
+
+            const selectedTableIds = JSON.stringify(selectedTables);
             $.ajax({
                 url: "/OrderTable/GetWaitingDetails",
                 type: "GET",
                 data: { section: Id },
                 success: function (response) {
                     $("#AssignModal").html(response);
+                    $("#selectedTableIds").val(selectedTableIds);
                     var offcanvasElement = document.getElementById('AssignTableModal');
                     var bsOffcanvas = new bootstrap.Offcanvas(offcanvasElement);
                     bsOffcanvas.show();
-
                 }
             });
         });
+
+       
     });
 </script>
 <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>

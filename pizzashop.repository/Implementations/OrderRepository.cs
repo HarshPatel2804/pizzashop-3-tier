@@ -177,5 +177,11 @@ public class OrderRepository : IOrderRepository
                            o.OrderStatus == orderstatus.Pending || 
                            o.OrderStatus == orderstatus.Served));
     }
+
+    public async Task<int> createOrder(Order order){
+        await _context.AddAsync(order);
+        await _context.SaveChangesAsync();
+        return order.Orderid;
+    }
 }
 

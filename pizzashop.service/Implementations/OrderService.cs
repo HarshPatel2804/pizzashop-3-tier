@@ -22,6 +22,16 @@ public class OrderService : IOrderService
     {
         return await _orderRepository.HasCustomerActiveOrder(customerId);
     }
+
+    public async Task<int> createOrderbycustomerId(int customerId){
+
+        Order order = new Order{
+            Customerid = customerId,
+            OrderStatus = orderstatus.Pending,
+            Createdat = DateTime.Now
+        };
+        return await _orderRepository.createOrder(order);
+    }
     
     public async Task<(List<Order> orders, int totalOrders, int totalPages)> GetPaginatedOrdersAsync(int page, int pageSize, string search, string sortColumn, string sortOrder, orderstatus? status, DateTime? fromDate, DateTime? toDate)
     {
