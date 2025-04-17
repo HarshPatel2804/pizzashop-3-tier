@@ -87,6 +87,8 @@
                         </div>
                     </div>
                 </label>
+                <span id="fileError" class="text-danger  d-none">Only image files (jpg, jpeg, png, gif) are allowed.</span>
+
                 <input id="files" type="file" class="upload-file d-none" name="ProfileImage" />
             </div>
 
@@ -191,7 +193,19 @@
 <script>
     $('#files').on('change', function (e) {
         const file = e.target.files[0];
+        const fileError = $('#fileError');
         if (file) {
+            const validImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg'];
+
+        if (!validImageTypes.includes(file.type)) {
+            $('#files').val('');
+            fileError.removeClass('d-none');
+            $('#imagePreviewContainer').addClass('d-none');
+            $('#BrowseImage').removeClass('d-none');
+            return;
+        }
+
+        fileError.addClass('d-none');
             const reader = new FileReader();
             reader.onload = function (event) {
                 $('#profileImg').attr('src', event.target.result);
@@ -212,5 +226,6 @@
         $('#files').val('');
         $('#imagePreviewContainer').addClass('d-none');
         $('#BrowseImage').removeClass('d-none');
+         $('#fileError').addClass('d-none');
     });
 </script>
