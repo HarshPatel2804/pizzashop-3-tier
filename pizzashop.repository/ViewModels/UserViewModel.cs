@@ -47,7 +47,7 @@ public class UserViewModel
         [Required(ErrorMessage = "Role is required.")]
         public int Role { get; set; }
 
-        public string Rolename{get; set;}
+        public string? Rolename{get; set;}
 
         [Required(ErrorMessage = "Email is required.")]
         [EmailAddress(ErrorMessage = "Please Enter Valid Email")]
@@ -77,12 +77,12 @@ public class UserViewModel
         public string Profileimg { get; set; }
 
         public bool IsSameUser {get; set;}
-        public List<SelectListItem> Countries { get; set; }
+        public List<SelectListItem>? Countries { get; set; }
 
-        public List<SelectListItem> States { get; set; }
+        public List<SelectListItem>? States { get; set; }
 
-        public List<SelectListItem> Cities { get; set; }
+        public List<SelectListItem>? Cities { get; set; }
 
-        public List<SelectListItem> Roles { get; set; }
+        public List<SelectListItem>? Roles { get; set; }
 
 }

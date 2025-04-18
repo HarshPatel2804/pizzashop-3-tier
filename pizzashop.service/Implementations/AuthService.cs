@@ -21,8 +21,6 @@ public class AuthService : IAuthService
 
     private readonly IUserService _userService;
 
-    private static HashSet<string> _usedTokens = new HashSet<string>();
-
     public AuthService(IUsersLoginService usersloginService, IJwtService jwtService, IRoleService roleService, IUsersloginRepository usersloginRepository , IUserService userService)
     {
         _usersloginService = usersloginService;
@@ -67,10 +65,6 @@ public class AuthService : IAuthService
 
     public async Task<bool> ResetPasswordAsync(ResetPasswordViewModel model)
     {
-        if (_usedTokens.Contains(model.Token))
-        {
-            return false;
-        }
         if (model.Password == model.ConfirmPassword)
         {
             var principal = _jwtService.ValidateToken(model.Token);
@@ -79,9 +73,15 @@ public class AuthService : IAuthService
 
             var usersLogin = await _usersloginService.GetUserByEmail(emailClaim.Value);
             if (usersLogin == null) return false;
+
+            if(usersLogin.ResetToken != model.Token) return false;
+            if(usersLogin.IsfirstLogin == true){
+                usersLogin.IsfirstLogin = false;
+            } 
+
             usersLogin.Passwordhash = model.Password;
             await _usersloginRepository.UpdateUserLoginDetails(usersLogin);
-            _usedTokens.Add(model.Token);
+            await _usersloginService.SetResetTokenAsync(emailClaim.Value , null);
             return true;
         }
         return false;

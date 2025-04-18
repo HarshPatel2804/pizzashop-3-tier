@@ -67,4 +67,8 @@ public class UsersLoginService : IUsersLoginService
 
         await _UsersloginRepository.UpdateUserLoginDetails(userloginDetailsById);
     }
+
+    public async Task<bool> SetResetTokenAsync(string email, string resetToken){
+        return await _UsersloginRepository.SetResetTokenAsync(email , resetToken);
+    }
 }

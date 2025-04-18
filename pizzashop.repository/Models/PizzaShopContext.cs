@@ -76,7 +76,7 @@ public partial class PizzaShopContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("Host=localhost;Database=PizzaShop;Username=postgres; password=Shiv@#4486");
+        => optionsBuilder.UseNpgsql("Host=localhost;Database=PizzaShop;Username=postgres; password=Tatva@123");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -457,7 +457,7 @@ public partial class PizzaShopContext : DbContext
             entity.Property(e => e.Modifiergroupname)
                 .HasMaxLength(30)
                 .HasColumnName("modifiergroupname");
-                entity.Property(e => e.SortOrder).HasColumnName("sortOrder");
+            entity.Property(e => e.SortOrder).HasColumnName("sortOrder");
         });
 
         modelBuilder.Entity<Order>(entity =>
@@ -561,7 +561,7 @@ public partial class PizzaShopContext : DbContext
                 .HasForeignKey(d => d.Ordereditemid)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("ordereditemmodifer_ordereditemid_fkey");
-                
+
             entity.HasOne(d => d.Modifiers).WithMany(p => p.Ordereditemmodifers)
                 .HasForeignKey(d => d.Modifierid)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -883,6 +883,14 @@ public partial class PizzaShopContext : DbContext
             entity.HasIndex(e => e.Refreshtoken, "userslogin_refreshtoken_key").IsUnique();
 
             entity.HasIndex(e => e.Username, "userslogin_username_key").IsUnique();
+
+            entity.Property(e => e.ResetToken)
+                .HasColumnName("resettoken")
+                .HasColumnType("text");
+
+            entity.Property(e => e.IsfirstLogin)
+                .HasColumnName("isfirstlogin")
+                .HasDefaultValue(true);
 
             entity.Property(e => e.Userloginid).HasColumnName("userloginid");
             entity.Property(e => e.Email)

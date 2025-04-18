@@ -23,6 +23,10 @@ public partial class Userslogin
 
     public string Username { get; set; } = null!;
 
+    public string? ResetToken { get; set; }
+
+    public bool IsfirstLogin { get; set; }
+
     public statustype status { get; set; }
 
     public virtual Role Role { get; set; } = null!;

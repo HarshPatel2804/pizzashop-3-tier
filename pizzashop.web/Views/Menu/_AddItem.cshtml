@@ -356,9 +356,8 @@
 
         // Function to add a modifier group to the UI
         function addModifierGroupUI(groupId, groupName, modifiers) {
-            // Clone the template
             if ($(`[data-group-id="${groupId}"]`).length > 0) {
-                return; // Prevent duplicate groups
+                return; 
                 }
             const template = document.getElementById('modifier-group-template');
             const $groupContainer = $(template.content.cloneNode(true));
@@ -426,7 +425,6 @@
             // Add JSON data of selected groups
             formData.append('SelectedModifierGroups', JSON.stringify(groupsData));
 
-            // Submit the form data via AJAX
             $.ajax({
                 url: '/Menu/AddNewItem',
                 type: 'POST',
@@ -436,8 +434,6 @@
                 success: function (data) {
                     if (data.success) {
                         ItemList(catid,1);
-                        
-                        // Optionally reload page or update UI
                     } else {
                         alert(data.message);
                     }

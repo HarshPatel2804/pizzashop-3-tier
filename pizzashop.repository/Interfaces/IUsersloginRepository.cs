@@ -15,4 +15,6 @@ public interface IUsersloginRepository
 
     bool CheckEmail(string Email, int? Id = null);
     Task<(List<Userslogin> users, int totalUsers)> GetPaginatedUsersAsync(int page, int pageSize, string search, string sortColumn, string sortOrder);
+
+    Task<bool> SetResetTokenAsync(string email, string resetToken);
 }

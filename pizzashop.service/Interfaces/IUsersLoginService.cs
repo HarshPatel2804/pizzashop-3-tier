@@ -16,4 +16,6 @@ public interface IUsersLoginService
     bool CheckUsername(string Username , int? Id = null);
 
     bool CheckEmail(string Email, int? Id = null);
+
+    Task<bool> SetResetTokenAsync(string email, string resetToken);
 }

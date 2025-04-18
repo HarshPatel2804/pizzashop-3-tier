@@ -19,12 +19,15 @@ public class HomeController : Controller
 
     private readonly IJwtService _JwtService;
 
-    public HomeController(IConfiguration config, IAuthService AuthService, IEmailService EmailService, IJwtService JwtService)
+    private readonly IUsersLoginService _usersLoginService;
+
+    public HomeController(IConfiguration config, IAuthService AuthService, IEmailService EmailService, IJwtService JwtService, IUsersLoginService usersLoginService)
     {
         _config = config;
         _AuthService = AuthService;
         _EmailService = EmailService;
         _JwtService = JwtService;
+        _usersLoginService = usersLoginService;
     }
     [AllowAnonymous]
     [HttpGet]
@@ -51,11 +54,20 @@ public class HomeController : Controller
                 ViewBag.ErrorMessage = "Email and password are required";
                 return View();
             }
+
+            var userLogin = await _usersLoginService.GetUserByEmail(loginViewModel.Email);
+
             var user = await _AuthService.AuthenticateUser(loginViewModel, HttpContext);
 
             TempData["LoginEmail"] = loginViewModel.Email;
             if (user == true)
             {
+                if (userLogin.IsfirstLogin == true)
+                {
+                    var token = _JwtService.GenerateJwtResetToken(loginViewModel.Email);
+                    await _usersLoginService.SetResetTokenAsync(loginViewModel.Email, token);
+                    return RedirectToAction("ResetPassword", new { Token = token });
+                }
                 return RedirectToAction("Dashboard", "Dashboard");
             }
             else
@@ -90,6 +102,7 @@ public class HomeController : Controller
         if (user)
         {
             var token = _JwtService.GenerateJwtResetToken(model.email);
+            await _usersLoginService.SetResetTokenAsync(model.email, token);
             var url = Url.ActionLink("ResetPassword", "Home", new { Token = token }, Request.Scheme);
             await _EmailService.SendResetPasswordEmailAsync(model.email, url);
             TempData["SuccessMessage"] = "Email sent successfully!";
@@ -135,18 +148,20 @@ public class HomeController : Controller
         return View();
     }
 
-    public IActionResult AccessDenied(int statusCode ,string  permissionType)
+    public IActionResult AccessDenied(int statusCode, string permissionType)
     {
         var PreviousURL = "";
-        if(permissionType == "CanAddEdit"){
+        if (permissionType == "CanAddEdit")
+        {
             TempData["ErrorMessage"] = "You do not have the required permission to perform add or edit action.";
             PreviousURL = Request.Headers["Referer"].ToString();
-        } 
+        }
 
-        if(permissionType == "CanDelete"){
+        if (permissionType == "CanDelete")
+        {
             TempData["ErrorMessage"] = "You do not have the required permission to perform delete action.";
             PreviousURL = Request.Headers["Referer"].ToString();
-        } 
+        }
 
         if (!string.IsNullOrEmpty(PreviousURL))
         {

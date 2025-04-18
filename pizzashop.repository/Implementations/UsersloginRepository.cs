@@ -113,4 +113,16 @@ public class UsersloginRepository : IUsersloginRepository
         return userLogin;
     }
 
+    public async Task<bool> SetResetTokenAsync(string email, string resetToken)
+    {
+        var user = await _context.Userslogins.FirstOrDefaultAsync(u => u.Email == email);
+        if (user == null)
+            return false;
+            
+        user.ResetToken = resetToken;
+        _context.Update(user);
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
 }
