@@ -1,8 +1,54 @@
+@model pizzashop.repository.ViewModels.KOTViewModel
 @{
     Layout = "_OrderAppLayout";
-    ViewData["Title"] = "Table Page";
+    ViewData["Title"] = "KOT Page";
 }
+<head>
+    <link rel="stylesheet" href="~/css/OrderKOT.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-MX5EkfBl...==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-<section style="min-height: 100vh;background-color: #fafafa;">
-KOT
-</section>
+</head>
+
+<div class="content w-100 ms-2 py-2 px-5" id="content">
+    <div>
+        <h3 class="for-color">
+            KOT
+        </h3>
+    </div>
+    <ul class="nav list-unstyled mt-2 tab-item bg-white me-4 shadow rounded w-100 mb-4" id="kot-tabs-cont" role="tablist">
+        <li class="nav-item for-point categories-kot" role="presentation">
+            <div class="selected-tab d-flex text-center h-100 align-items-center justify-content-center w-100 fs-5 kot-categories"
+                data-categoryid="-1" data-category-name="All">
+                <p class="m-0">All</p>
+            </div>
+        </li>
+        @foreach (var category in Model.categories)
+        {
+            <li class="nav-item for-point categories-kot" role="presentation">
+                <div class="b-0 d-flex text-center align-items-center justify-content-center h-100 w-100 fs-5 kot-categories"
+                    data-categoryid="@category.Categoryid" data-category-name="@category.Categoryname">
+                    <p class="m-0">@category.Categoryname</p>
+                </div>
+            </li>
+        }
+    </ul>
+    <div class="d-flex flex-column col  bg-white shadow rounded p-4">
+        <div class="d-flex justify-content-between row mb-2">
+            <h4 class="for-color col" id="show-category-kot">ALL</h4>
+            <div class="d-flex col justify-content-end" id="status-cont">
+                <div class="btn btn-prime imp mx-2" data-status="InProgress">In Progress</div>
+                <div class="btn btn-border-prime me-2" data-status="Ready">Ready</div>
+                <button class="btn-border-prime me-2 btn" id="prev"><i class="fa fa-angle-left"
+                        aria-hidden="true"></i></button>
+                <button class="btn-border-prime btn" id="next"><i class="fa fa-angle-right" aria-hidden="true"></i></button>
+            </div>
+        </div>
+        @* <div class="" id="card-container-kot">
+            @Html.Partial("_OrdersKOT", Model.orders)
+        </div> *@
+    </div>
+</div>
+
+<script>
+
+</script>

@@ -1,0 +1,105 @@
+@* @using PizzaShop.Repository.ViewModels
+@model List<PizzaShop.Repository.ViewModels.OrderViewModelInKOT>
+ @if (!Model.Any())
+{
+    <div class="w-100 d-flex justify-content-center">
+        <p>There is no record to show.</p>
+    </div>
+}
+
+
+    <div class="swiper">
+        <div class="swiper-wrapper">
+            @foreach (OrderViewModelInKOT order in Model)
+            {
+
+                <div class=" swiper-slide card-kot card  p-0" data-orderid="@order.orderId">
+                    <div class="w-100 kot-card-header card-header">
+                        <div class="d-flex justify-content-between">
+                            <p class="for-color fw-bold ms-1">#@order.orderId</p>
+                            <p class="for-kot-time time" data-createdtime="@order.Createdtime.ToString("O")"></p>
+                        </div>
+                        <div>
+                            <p class="m-0 ms-1">@order.orderSection - @order.orderTable</p>
+                        </div>
+                    </div>
+                    <div class="card-body p-0 pb-1 overflow-auto">
+                        <ul class="list-unstyled  h-100">
+                            @foreach (ItemViewModelInKOT item in order.items)
+                            {
+                                <li class="for-kot-time">
+                                    <div class="d-flex justify-content-between p-2 items-container-kot">
+                                        <p class="m-0">
+                                            @item.itemName
+                                        </p>
+                                        <p class="fw-bold text-dark">
+                                            @item.totalItems
+                                        </p>
+                                    </div>
+                                    <ul style="list-style-type: disc;">
+                                        @foreach (string modifier in item.itemsModifiers)
+                                        {
+                                            <li>
+                                                @modifier
+                                            </li>
+                                        }
+                                        <li class="list-style">
+                                            <div class="d-flex">
+                                                <p class="text-info fw-semibold m-0">Instruction:</p> @item.itemInstruction
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    <div class="card-footer text-info fw-semibold" style="height: 3.5rem;">
+                        <span>Order Instruction:</span>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+<script>
+    $(document).ready(function () {
+         $(".card-kot").click(function (e) {
+            var temp = $("#status-cont").find(".imp");
+            var categoryid = $("#kot-tabs-cont").find(".selected-tab").data("categoryid");
+            status = temp.data("status");
+            $.ajax({
+                url : "/KOT/GetOrder",
+                data : {
+                    orderid : $(this).data("orderid"),
+                    status : status,
+                    categoryid : categoryid
+                },
+                success : (response) => {
+                    $("#modal-content-detail").html(response);
+                }
+            })
+            $("#kot-order-modal").modal("show");
+        })
+   })
+    swiper = new Swiper('.swiper', {
+        // Default parameters
+        slidesPerView: 1,
+        spaceBetween: 10,
+        // Responsive breakpoints
+        breakpoints: {
+            576: {
+                slidesPerView: 2,
+            },
+            992: {
+                slidesPerView: 3,
+            },
+            1400: {
+                slidesPerView: 4,
+            }
+        },
+        // Navigation arrows
+        navigation: {
+            nextEl: '#next',
+            prevEl: '#prev',
+        },
+    });
+</script> *@

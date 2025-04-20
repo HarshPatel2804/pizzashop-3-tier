@@ -1,0 +1,15 @@
+.nav-item {
+    width: 10rem;
+}
+
+.for-point {
+    cursor: pointer !important;
+}
+
+.categories-kot {
+    height: 45px !important;
+}
+
+.for-color{
+    color: #0066A7;
+  }

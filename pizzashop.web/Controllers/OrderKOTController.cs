@@ -1,11 +1,20 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using pizzashop.service.Attributes;
+using pizzashop.repository.Models;
+using pizzashop.repository.ViewModels;
+using pizzashop.service.Interfaces;
 
 namespace pizzashop.web.Controllers;
+public class OrderKOTController:Controller{
 
-public class OrderKOTController : Controller
-{
-    public ActionResult KOT(){
-        return View();
+    private readonly IKOTService _KotService;
+    
+    public OrderKOTController(IKOTService kOTService){
+        _KotService = kOTService;
     }
+    public async Task<IActionResult> KOT(){
+        KOTViewModel kOTViewModel = await _KotService.GetKOTViewModel();
+        return View(kOTViewModel);
+    }
+
 }
