@@ -8,4 +8,4 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = pizzashop.service
-build_property.ProjectDir = D:\Harsh_pizzashop\pizzashop.service\
+build_property.ProjectDir = D:\PizzaShop_3tier\pizzashop.service\

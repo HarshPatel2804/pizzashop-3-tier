@@ -1,40 +1,60 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using pizzashop.repository.Interfaces;
 using pizzashop.repository.Models;
 using pizzashop.repository.ViewModels;
-using pizzashop.repository.Interfaces;
 using pizzashop.service.Interfaces;
 
-namespace pizzashop.service.Implementations;
-
-public class KOTService : IKOTService
+namespace pizzashop.service.Services
 {
-    private readonly IMenuService _menuService;
-
-    public KOTService(IMenuService menuService)
+    public class KOTService : IKOTService
     {
-        _menuService = menuService;
-    }
+        private readonly IKOTRepository _kotRepository;
+        private readonly IMenuService _menuService;
 
-    public async Task<KOTViewModel> GetKOTViewModel(int categoryFil = -1)
-    {
-        try
+        public KOTService(IKOTRepository kotRepository, IMenuService menuService)
         {
-            KOTViewModel kOTViewModel = new KOTViewModel { };
-
-            List<CategoryViewModel> categories = await _menuService.GetAllCategories();
-            kOTViewModel.categories = categories;
-
-            // kOTViewModel.orders = GetOrderViewModelForKOT(categoryFil, "InProgress");
-            return kOTViewModel;
+            _kotRepository = kotRepository;
+            _menuService = menuService;
         }
-        catch (Exception e)
+
+        public async Task<KOTViewModel> GetKOTViewModel()
         {
-            return new KOTViewModel { };
+            var categories = await _menuService.GetAllCategories();
+
+            var viewModel = new KOTViewModel
+            {
+                categories = categories.Select(c => new CategoryViewModel
+                {
+                    Categoryid = c.Categoryid,
+                    Categoryname = c.Categoryname
+                }).ToList()
+            };
+
+            return viewModel;
         }
+
+        public async Task<List<KOTOrdersViewModel>> GetKOTOrders(string categoryId, string status, int page, int itemsPerPage)
+        {
+
+            int? categoryIdInt = null;
+            if (categoryId != "all" && int.TryParse(categoryId, out int parsedCategoryId))
+            {
+                categoryIdInt = parsedCategoryId;
+            }
+
+            var skip = (page - 1) * itemsPerPage;
+
+            var orders = await _kotRepository.GetKOTOrdersByCategoryAndStatus(categoryIdInt, status, skip, itemsPerPage);
+
+            return orders;
+        }
+
+        public void UpdatePreparedQuantities(List<PreparedItemviewModel> updates , string status)
+        {
+            _kotRepository.UpdatePreparedQuantities(updates , status);
+        }
+
     }
-
-   
-
-
-
-    
 }

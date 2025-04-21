@@ -3,10 +3,11 @@
     Layout = "_OrderAppLayout";
     ViewData["Title"] = "KOT Page";
 }
+
 <head>
     <link rel="stylesheet" href="~/css/OrderKOT.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-MX5EkfBl...==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        integrity="sha512-MX5EkfBl..." crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 <div class="content w-100 ms-2 py-2 px-5" id="content">
@@ -15,40 +16,324 @@
             KOT
         </h3>
     </div>
-    <ul class="nav list-unstyled mt-2 tab-item bg-white me-4 shadow rounded w-100 mb-4" id="kot-tabs-cont" role="tablist">
-        <li class="nav-item for-point categories-kot" role="presentation">
-            <div class="selected-tab d-flex text-center h-100 align-items-center justify-content-center w-100 fs-5 kot-categories"
-                data-categoryid="-1" data-category-name="All">
-                <p class="m-0">All</p>
-            </div>
-        </li>
-        @foreach (var category in Model.categories)
-        {
-            <li class="nav-item for-point categories-kot" role="presentation">
-                <div class="b-0 d-flex text-center align-items-center justify-content-center h-100 w-100 fs-5 kot-categories"
-                    data-categoryid="@category.Categoryid" data-category-name="@category.Categoryname">
-                    <p class="m-0">@category.Categoryname</p>
-                </div>
-            </li>
-        }
-    </ul>
-    <div class="d-flex flex-column col  bg-white shadow rounded p-4">
+    <nav class="bg-white pt-3 shadow rounded">
+        <div class="nav nav-tabs flex-nowrap overflow-auto" id="nav-tab" role="tablist" style="white-space: nowrap;">
+            <button class="ms-4 ps-3 pe-3 me-4 pb-3 border-0 bg-white menu-btn active" id="nav-home-tab"
+                data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home"
+                aria-selected="false">All</button>
+            @foreach (var category in Model.categories)
+            {
+                <button class="ps-3 pe-3 pb-3 me-4 border-0 menu-btn bg-white" id="nav-profile-tab" data-bs-toggle="tab"
+                    data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile"
+                    data-category-id="@category.Categoryid" aria-selected="true">@category.Categoryname</button>
+            }
+        </div>
+    </nav>
+    <div class="d-flex flex-column col mt-3 bg-white shadow rounded p-4">
         <div class="d-flex justify-content-between row mb-2">
             <h4 class="for-color col" id="show-category-kot">ALL</h4>
             <div class="d-flex col justify-content-end" id="status-cont">
-                <div class="btn btn-prime imp mx-2" data-status="InProgress">In Progress</div>
+                <div class="btn btn-prime mx-2" data-status="InProgress">In Progress</div>
                 <div class="btn btn-border-prime me-2" data-status="Ready">Ready</div>
                 <button class="btn-border-prime me-2 btn" id="prev"><i class="fa fa-angle-left"
                         aria-hidden="true"></i></button>
-                <button class="btn-border-prime btn" id="next"><i class="fa fa-angle-right" aria-hidden="true"></i></button>
+                <button class="btn-border-prime btn" id="next"><i class="fa fa-angle-right"
+                        aria-hidden="true"></i></button>
             </div>
         </div>
-        @* <div class="" id="card-container-kot">
-            @Html.Partial("_OrdersKOT", Model.orders)
-        </div> *@
+        <div class="row g-3" id="Order-Card-Container">
+
+        </div>
+    </div>
+</div>
+@* Order Modal *@
+<div class="modal fade" id="orderModal" aria-modal="true" role="dialog" aria-labelledby="orderModalLabel"
+    aria-describedby="orderModalDesc" style="background-color: rgba(0,0,0,0.3);">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
+        <div class="modal-content" style="font-family: Arial, sans-serif;">
+            <div class="modal-header">
+                <h5 class="modal-title fw-semibold" id="orderModalLabel">Order ID: <span class="fw-bold">#229</span>
+                </h5>
+                <button type="button" class="btn-close" aria-label="Close" data-bs-toggle="modal"
+                    data-bs-target="orderModal"></button>
+            </div>
+            <div class="modal-body p-4 pt-2">
+                <div class="d-flex justify-content-between text-secondary fw-semibold small header-row">
+                    <div>Item</div>
+                    <div class="text-end">Quantity</div>
+                </div>
+
+                <form>
+                    <label class="d-flex align-items-start justify-content-between w-100">
+                        <div class="form-check d-flex flex-column">
+                            <div class="d-flex align-items-start">
+                                <input type="checkbox" checked class="form-check-input mt-1" />
+                                <div class="ms-2">
+                                    <div class="text-dark fs-6 fw-normal">Grilled burger</div>
+                                    <ul class="subitem-list mb-0">
+                                        <li>Tomato</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="quantity-control d-flex align-items-center">
+                            <button type="button" tabindex="-1">−</button>
+                            <span>1</span>
+                            <button type="button" tabindex="-1">+</button>
+                        </div>
+                    </label>
+                    <hr class="my-3" />
+
+                    <label class="d-flex align-items-start justify-content-between w-100">
+                        <div class="form-check d-flex flex-column">
+                            <div class="d-flex align-items-start">
+                                <input type="checkbox" class="form-check-input mt-1" />
+                                <div class="ms-2">
+                                    <div class="text-dark fs-6 fw-normal">Margherita</div>
+                                    <ul class="subitem-list mb-0">
+                                        <li>test</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="quantity-control d-flex align-items-center">
+                            <button type="button" tabindex="-1">−</button>
+                            <span>2</span>
+                            <button type="button" tabindex="-1">+</button>
+                        </div>
+                    </label>
+                    <hr class="my-3" />
+
+                    <label class="d-flex align-items-start justify-content-between w-100">
+                        <div class="form-check d-flex flex-column">
+                            <div class="d-flex align-items-start">
+                                <input type="checkbox" class="form-check-input mt-1" />
+                                <div class="ms-2">
+                                    <div class="text-dark fs-6 fw-normal">Grilled burger</div>
+                                    <ul class="subitem-list mb-0">
+                                        <li>Babycorn</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="quantity-control d-flex align-items-center">
+                            <button type="button" tabindex="-1">−</button>
+                            <span>1</span>
+                            <button type="button" tabindex="-1">+</button>
+                        </div>
+                    </label>
+                    <hr class="my-3" />
+
+                    <div class="d-flex justify-content-end gap-3 mt-4">
+                        <button type="submit" class="btn btn-prime px-3 fw-semibold">Mark as Prepared</button>
+                        <button type="button" class="btn btn-outline-prime fw-normal px-3">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 
 <script>
+    $(document).ready(function () {
+        let currentCategory = "all";
+        let currentStatus = "InProgress";
+        let currentPage = 1;
+        const itemsPerPage = 4;
 
+        loadKOTOrders(currentCategory, currentStatus, currentPage);
+
+        $('.menu-btn').on('click', function () {
+            $('.menu-btn').removeClass('active');
+            $(this).addClass('active');
+
+            if ($(this).text().trim() === "All") {
+                currentCategory = "all";
+                $('#show-category-kot').text("ALL");
+            } else {
+                currentCategory = $(this).data('category-id');
+                $('#show-category-kot').text($(this).text().trim());
+            }
+
+            currentPage = 1;
+            loadKOTOrders(currentCategory, currentStatus, currentPage);
+        });
+
+        $('#status-cont .btn').on('click', function () {
+            $('#status-cont .btn').removeClass('btn-prime').addClass('btn-border-prime');
+
+            $(this).removeClass('btn-border-prime').addClass('btn-prime');
+            currentStatus = $(this).data('status');
+            console.log(currentStatus);
+            currentPage = 1;
+            loadKOTOrders(currentCategory, currentStatus, currentPage);
+        });
+
+        $('#prev').on('click', function () {
+            if (currentPage > 1) {
+                currentPage--;
+                loadKOTOrders(currentCategory, currentStatus, currentPage);
+            }
+        });
+
+        $('#next').on('click', function () {
+            currentPage++;
+            loadKOTOrders(currentCategory, currentStatus, currentPage);
+        });
+
+        function loadKOTOrders(categoryId, status, page) {
+            $.ajax({
+                url: '/OrderKOT/GetKOTOrdersPartial',
+                type: 'GET',
+                data: {
+                    categoryId: categoryId,
+                    status: status,
+                    page: page,
+                    itemsPerPage: itemsPerPage
+                },
+                success: function (response) {
+                    $('#Order-Card-Container').html(response);
+
+                    updatePaginationButtons(response);
+                },
+                error: function (error) {
+                    console.error("Error loading KOT orders:", error);
+                }
+            });
+        }
+
+        function updatePaginationButtons(response) {
+            const hasMore = $('#hasMore').data('has-more') === true;
+
+            if (!hasMore) {
+                $('#next').prop('disabled', true);
+            } else {
+                $('#next').prop('disabled', false);
+            }
+
+            if (currentPage === 1) {
+                $('#prev').prop('disabled', true);
+            } else {
+                $('#prev').prop('disabled', false);
+            }
+        }
+
+        function populateOrderModal(order) {
+            const $formBody = $('#orderModal .modal-body form');
+            $formBody.empty();
+            console.log(order);
+
+            $('#orderModalLabel span').text(`#${order.orderId}`);
+
+            order.items.forEach(item => {
+                let modifierList = item.modifiers?.map(mod => `<li>${mod.modifiername}</li>`).join('') || '';
+                let itemLabel = `
+            <label class="d-flex align-items-start justify-content-between w-100">
+                <div class="form-check d-flex flex-column">
+                    <div class="d-flex align-items-start">
+                        <input type="checkbox" class="form-check-input mt-1 item-checkbox" data-id="${item.ordereditemid}" />
+                        <div class="ms-2">
+                            <div class="text-dark fs-6 fw-normal">${item.itemName}</div>
+                            <ul class="subitem-list mb-0">${modifierList}</ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="quantity-control d-flex align-items-center">
+                    <button type="button" class="btn-decrement">−</button>
+                    <span class="item-qty" data-id="${item.ordereditemid}" data-qty="${item.quantity}">${item.quantity}</span>
+                    <button type="button" class="btn-increment">+</button>
+                </div>
+            </label>
+            <hr class="my-3" />
+        `;
+                $formBody.append(itemLabel);
+            });
+            const actionButtons = `
+        <div class="d-flex justify-content-end gap-3 mt-4">
+            <button type="submit" class="btn btn-prime px-3 fw-semibold">${currentStatus == "Ready" ? "Mark as In Progress": "Mark as Prepared"} </button>
+            <button type="button" class="btn btn-border-prime fw-normal px-3" data-bs-dismiss="modal">Cancel</button>
+        </div>
+    `;
+            $formBody.append(actionButtons);
+        }
+
+        let selectedOrder = null;
+
+        $('#Order-Card-Container').on('click', '.order-clickable', function () {
+            const orderData = $(this).data('order');
+            selectedOrder = orderData;
+
+            populateOrderModal(orderData);
+            $('#orderModal').modal('show');
+        });
+
+        let preparedItems = {};
+
+        $(document).on('change', '.item-checkbox', function () {
+            const id = $(this).data('id');
+            const $qty = $(`.item-qty[data-id='${id}']`);
+            let val = parseInt($qty.text());
+            if (this.checked) {
+                preparedItems[id] = val;
+            } else {
+                delete preparedItems[id];
+            }
+        });
+
+        $(document).on('click', '.btn-increment', function () {
+            const $qty = $(this).siblings('.item-qty');
+            const value = $qty.data('qty');
+            const id = $qty.data('id');
+            let val = parseInt($qty.text());
+            if (val < value) {
+                console.log(val);
+                $qty.text(++val);
+                if (preparedItems[id] !== undefined) {
+                    preparedItems[id] = val;
+                }
+            }
+        });
+
+        $(document).on('click', '.btn-decrement', function () {
+            const $qty = $(this).siblings('.item-qty');
+            const id = $qty.data('id');
+            const value = $qty.data('qty');
+            let val = parseInt($qty.text());
+            if (val > 1) {
+                $qty.text(--val);
+                if (preparedItems[id] !== undefined) {
+                    preparedItems[id] = val;
+                }
+            }
+        });
+
+        $(document).on('submit', '#orderModal form', function (e) {
+            e.preventDefault();
+
+            const updateModel = {
+        items: Object.entries(preparedItems).map(([id, qty]) => ({
+            OrderedItemId: parseInt(id),
+            ReadyQuantity: qty
+        })),
+        status: currentStatus
+    };
+
+            $.ajax({
+                url: '/OrderKOT/UpdatePreparedItems',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(updateModel),
+                success: function (res) {
+                    $('#orderModal').modal('hide');
+                    preparedItems = {};
+                    loadKOTOrders(currentCategory, currentStatus, currentPage);
+                },
+                error: function (err) {
+                    console.error("Update failed", err);
+                }
+            });
+        });
+
+
+    });
 </script>
