@@ -21,6 +21,10 @@
       "PackagePath": "staticwebassets\\css\\OrderKOT.css"
     },
     {
+      "Id": "D:\\PizzaShop_3tier\\pizzashop.web\\wwwroot\\css\\OrderMenu.css",
+      "PackagePath": "staticwebassets\\css\\OrderMenu.css"
+    },
+    {
       "Id": "D:\\PizzaShop_3tier\\pizzashop.web\\wwwroot\\css\\bootstrap.min.css",
       "PackagePath": "staticwebassets\\css\\bootstrap.min.css"
     },

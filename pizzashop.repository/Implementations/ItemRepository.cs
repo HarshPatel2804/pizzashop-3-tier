@@ -136,4 +136,62 @@ return itemModifierGroups;
                     mg.Isdeleted != true);
         }
 
+         public async Task<List<ItemViewModel>> GetMenuItemsbyCategoryAsync(string categoryId, string searchText)
+        {
+            var query = _context.Items.Where(i => i.Isdeleted != true).AsQueryable();
+            
+            if (!string.IsNullOrEmpty(categoryId))
+            {
+                if (categoryId == "FAV")
+                {
+                    query = query.Where(i => i.Isfavourite == true);
+                }
+                else if (categoryId != "ALL")
+                {
+                    if (int.TryParse(categoryId, out int catId))
+                    {
+                        query = query.Where(i => i.Categoryid == catId);
+                    }
+                }
+            }
+            
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                query = query.Where(i => i.Itemname.ToLower().Contains(searchText.ToLower()));
+            }
+            
+            return await query
+                .Select(i => new ItemViewModel
+                {
+                    Itemname = i.Itemname,
+                    Rate = i.Rate,
+                    Isfavourite = i.Isfavourite,
+                    Itemid = i.Itemid,
+                    Itemimg = i.Itemimg,
+                    Itemtype = i.Itemtype,
+                    Isavailable = i.Isavailable
+                })
+                .ToListAsync();
+        }
+
+        public async Task<bool> ToggleFavoriteAsync(int itemId, bool isFavorite)
+        {
+            try
+            {
+                var menuItem = await _context.Items.FirstOrDefaultAsync(i => i.Itemid == itemId);
+                if (menuItem == null)
+                {
+                    return false;
+                }
+                
+                menuItem.Isfavourite = isFavorite;
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
 }

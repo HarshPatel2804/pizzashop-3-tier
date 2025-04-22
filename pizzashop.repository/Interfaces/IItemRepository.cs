@@ -26,4 +26,8 @@ public interface IItemRepository
     Task MassDeleteItem(List<int> Itemid);
 
     Task<Item> GetItemByName(AddEditItemViewModel model);
+
+    Task<List<ItemViewModel>> GetMenuItemsbyCategoryAsync(string categoryId, string searchText);
+
+    Task<bool> ToggleFavoriteAsync(int itemId, bool isFavorite);
 }

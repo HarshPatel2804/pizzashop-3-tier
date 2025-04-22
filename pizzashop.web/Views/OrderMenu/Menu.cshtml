@@ -2,7 +2,128 @@
     Layout = "_OrderAppLayout";
     ViewData["Title"] = "Table Page";
 }
+@using pizzashop.repository.ViewModels;
+@model List<CategoryViewModel>;
 
-<section style="min-height: 100vh;background-color: #fafafa;">
-Menu
+<head>
+    <link rel="stylesheet" href="~/css/OrderMenu.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        integrity="sha512-MX5EkfBl..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<section style="background-color: #fcfcfc;" class="row w-100">
+    <aside class="col-auto d-flex justify-content-start align-items-center flex-column offcanvas-lg offcanvas-start"
+        id=sidebar style="background-color: #f4f4f4 !important; min-width: 250px; min-height: 100vh;">
+        <div class="w-100 mt-3 mb-3">
+            <span class="fw-bold ms-4" style="font-size: 20px;">Category</span>
+            <button type="button" class="btn-close text-reset ms-auto d-lg-none" data-bs-dismiss="offcanvas"
+                data-bs-target="#sidebar" aria-label="Close"></button>
+        </div>
+        <a class='menu w-100' data-id="FAV">
+            <span style="font-weight: 600;" class="text ms-4">Favorite Items</span>
+        </a>
+        <a class='menu w-100  Categoey-active' data-id="ALL">
+            <span style="font-weight: 600;" class="text ms-4">All</span>
+        </a>
+        @foreach (var category in Model)
+        {
+            <a class="menu w-100" data-id="@category.Categoryid">
+                <span style="font-weight: 600;" class="text ms-4">@category.Categoryname</span>
+            </a>
+        }
+
+    </aside>
+    <section class="col" style="height:100%; max-height: 100%;">
+        <div class="w-100 d-flex justify-content-between ms-3 mt-4">
+            <div class="search-input-group">
+                <input type="text" class="form-control search-input" placeholder="Search">
+                <div class="search-icon">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+            </div>
+            <div class="food-type me-4">
+                <div class="type-option">
+                    <div class="indicator vegetarian"></div>
+                    <span>Vegetarian</span>
+                </div>
+                <div class="type-option">
+                    <div class="indicator non-vegetarian"></div>
+                    <span>Non-Vegetarian</span>
+                </div>
+                <div class="type-option">
+                    <div class="indicator vegan"></div>
+                    <span>Vegan</span>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex flex-wrap ms-4 mt-4 MenuItems overflow-auto">
+            @* partial *@
+        </div>
+    </section>
 </section>
+<script>
+    $(document).ready(function () {
+        let currentCategory = "ALL";
+        let searchText = "";
+
+        function loadMenuItems() {
+            searchText = $('.search-input').val().trim();
+            $.ajax({
+                url: '/OrderMenu/GetMenuItems',
+                type: 'GET',
+                data: {
+                    categoryId: currentCategory,
+                    searchText: searchText
+                },
+                success: function (result) {
+                    $('.MenuItems').html(result);
+                    initializeMenuItems();
+                },
+                error: function (error) {
+                    console.error('Error loading menu items:', error);
+                }
+            });
+        }
+
+        $('.menu').on('click', function () {
+            const categoryId = $(this).data('id');
+            currentCategory = categoryId;
+
+            $('.menu').removeClass('Categoey-active');
+            $(this).addClass('Categoey-active');
+
+            loadMenuItems();
+        });
+
+        $('.search-input').on('input', function () {
+            searchText = $(this).val().trim();
+            loadMenuItems();
+        });
+
+        function initializeMenuItems() {
+            $('.heart-btn').on('click', function () {
+                const itemId = $(this).data('itemid');
+                const isFavorite = $(this).hasClass('favorite');
+                console.log(isFavorite);
+
+                $.ajax({
+                    url: '/OrderMenu/ToggleFavorite',
+                    type: 'POST',
+                    data: {
+                        itemId: itemId,
+                        isFavorite: !isFavorite
+                    },
+                    success: function (result) {
+                        loadMenuItems();
+                    },
+                    error: function (error) {
+                        console.error('Error updating favorite status:', error);
+                    }
+                });
+            });
+        }
+
+
+        loadMenuItems();
+    });
+</script>

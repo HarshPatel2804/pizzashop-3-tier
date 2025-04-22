@@ -79,13 +79,14 @@
         let toDate = '';
         const $fromDate = $('#FromDate');
         const $toDate = $('#ToDate');
+        let today = new Date().toISOString().slice(0, 10);
+        $toDate.attr('max', today);
+        $fromDate.attr('max', today);
 
         $fromDate.on('change', function () {
             const fromVal = $(this).val();
             if (fromVal) {
                 $toDate.attr('min', fromVal);
-            } else {
-                $toDate.removeAttr('min');
             }
         });
 
@@ -93,9 +94,13 @@
             const toVal = $(this).val();
             if (toVal) {
                 $fromDate.attr('max', toVal);
-            } else {
-                $fromDate.removeAttr('max');
             }
+        });
+
+        $('#customDate').on('hidden.bs.modal', function () {
+            $fromDate.val('');
+            $toDate.val('');
+            $toDate.removeAttr('min');
         });
 
         function loadCustomerTable(page) {
@@ -192,16 +197,13 @@
                     break;
 
                 case "5":
-
-                $('#customDate').modal('show');
-                
-                        
+                    $('#customDate').modal('show');
             }
 
             console.log("Date range set to:", fromDate, "to", toDate);
             loadCustomerTable(1);
         });
-        
+
 
         $("#serachDate").click(function () {
             fromDate = $("#FromDate").val();

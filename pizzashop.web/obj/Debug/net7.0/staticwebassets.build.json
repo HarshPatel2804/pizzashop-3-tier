@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "Gv7F9Qh41Z6SH8pIRGiogf/Gwq+qf9xRI+Y384QEJug=",
+  "Hash": "bcHcsUQmpG/4Fxy12tFAmEHN74gFRoXlM1RwHIS4Ce4=",
   "Source": "pizzashop.web",
   "BasePath": "_content/pizzashop.web",
   "Mode": "Default",
@@ -117,6 +117,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\OrderKOT.css"
+    },
+    {
+      "Identity": "D:\\PizzaShop_3tier\\pizzashop.web\\wwwroot\\css\\OrderMenu.css",
+      "SourceId": "pizzashop.web",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\PizzaShop_3tier\\pizzashop.web\\wwwroot\\",
+      "BasePath": "_content/pizzashop.web",
+      "RelativePath": "css/OrderMenu.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\OrderMenu.css"
     },
     {
       "Identity": "D:\\PizzaShop_3tier\\pizzashop.web\\wwwroot\\css\\site.css",

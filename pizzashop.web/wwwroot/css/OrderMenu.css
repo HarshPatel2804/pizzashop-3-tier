@@ -1,0 +1,152 @@
+body{
+    overflow-x: hidden;
+}
+
+.Categoey-active {
+    background-color: #0066a7;
+    border-top-right-radius: 50px;
+    border-bottom-right-radius: 50px;
+}
+
+.Categoey-active .text {
+    color: #fafafa;
+}
+
+.row {
+    --bs-gutter-x: 0rem;
+}
+
+.text {
+    color: #8a8c8d;
+}
+
+.search-input-group {
+    position: relative;
+    flex-grow: 1;
+    max-width: 500px;
+}
+
+.search-input {
+    border-radius: 4px;
+    padding-right: 40px;
+    height: 50px;
+    font-size: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.search-icon {
+    position: absolute;
+    right: 15px;
+    top: 13px;
+    color: #aaa;
+    pointer-events: none;
+}
+
+.food-type {
+    display: flex;
+    align-items: center;
+}
+
+.type-option {
+    display: flex;
+    align-items: center;
+    margin-left: 15px;
+    font-size: 14px;
+}
+
+.indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 6px;
+}
+
+.vegetarian {
+    background-color: #28a745;
+}
+
+.non-vegetarian {
+    background-color: #dc3545;
+}
+
+.vegan {
+    background-color: #fd7e14;
+}
+
+.card-custom {
+    width: 270px;
+    height: 90px;
+    border-radius: 1rem;
+    border-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    position: relative;
+    overflow: visible;
+    background-color: white;
+}
+
+.image-container {
+    margin-left: 1rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-left: 0px !important;
+}
+
+.card-img-custom {
+    width: 88px;
+    height: 88px;
+}
+
+.corner-triangle {
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    border-top: 36px solid;
+    border-left: 36px solid transparent;
+    border-top-right-radius: 0.75rem;
+    z-index: 1;
+}
+
+.veg {
+    border-top-color: green;
+}
+
+.non-veg {
+    border-top-color: red;
+}
+
+.vegan-corner {
+    border-top-color: #fd7e14;
+}
+
+.heart-btn {
+    position: absolute;
+    bottom: 0.75rem;
+    right: 0.75rem;
+    background: transparent;
+    border: none;
+    font-size: 1.1rem;
+    z-index: 2;
+}
+
+.heart-btn:hover,
+.heart-btn:focus {
+    color: #1e40af;
+    outline: none;
+    box-shadow: none;
+    
+}
+.fas{
+    font-weight: 100 !important;
+}
+.heart-btn:focus .fas{
+    font-weight: 900 !important;
+}
+
+.fill-heart{
+    font-weight: 900 !important;
+    color: #1e40af;
+}

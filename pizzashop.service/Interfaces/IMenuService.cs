@@ -72,4 +72,8 @@ public interface IMenuService
     Task<int> FirstCategoryId();
 
     Task DeleteModifiergroup(int modifierGroupId);
+
+    Task<List<ItemViewModel>> GetMenuItemsAsync(string categoryId, string searchText);
+
+    Task<bool> ToggleFavoriteAsync(int itemId, bool isFavorite);
 }

@@ -548,4 +548,14 @@ public class MenuService : IMenuService
 
         await _modifierRepository.DeleteModifierGroupAsync(modifierGroupId);
     }
+
+     public async Task<List<ItemViewModel>> GetMenuItemsAsync(string categoryId, string searchText)
+        {
+            return await _itemRepository.GetMenuItemsbyCategoryAsync(categoryId, searchText);
+        }
+
+    public async Task<bool> ToggleFavoriteAsync(int itemId, bool isFavorite)
+        {
+            return await _itemRepository.ToggleFavoriteAsync(itemId, isFavorite);
+        }
 }

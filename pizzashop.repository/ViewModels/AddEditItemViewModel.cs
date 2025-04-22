@@ -10,6 +10,7 @@ public class AddEditItemViewModel
 
     [Required(ErrorMessage = "Item Name is required.")]
     [StringLength(30, MinimumLength = 2, ErrorMessage = "Item Name must be between 2 and 30 characters.")]
+    [RegularExpression(@".*\S+.*", ErrorMessage = "Item Name cannot contain only spaces.")]
     public string Itemname { get; set; } = null!;
 
     public int ModifierGroupId {get; set;}
