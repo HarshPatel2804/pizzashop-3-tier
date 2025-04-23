@@ -831,20 +831,17 @@
         $('#editItem').on('hidden.bs.modal', resetModifierGroups);
 
 
-        // Handle modifier group selection from dropdown
         $(document).on('click', '.modifier-group-item', function (e) {
             e.preventDefault();
             const groupId = $(this).data('id');
             const groupName = $(this).data('name');
             console.log(groupId + groupName);
-            // Prevent re-fetching if group is already selected
             if (!selectedGroups.has(groupId)) {
                 console.log(groupId + groupName);
                 fetchModifierGroupData(groupId, groupName);
             }
         });
 
-        // Handle deletion of modifier groups
         $(document).on('click', '.delete-group', function () {
             const $groupContainer = $(this).closest('.modifier-group-container');
             const groupId = $groupContainer.data('group-id');
@@ -896,12 +893,10 @@
                 type: 'GET',
                 dataType: 'json',
                 success: function (data) {
-                    // Remove loading indicator
                     $(`#loading-${groupId}`).remove();
                     console.log(data.success);
 
                     if (data.success) {
-                        // Add the group to our selected groups
                         selectedGroups.set(groupId, {
                             id: groupId,
                             name: groupName,
@@ -909,15 +904,12 @@
                             maxSelection: 0,
                             modifiers: data.modifiers
                         });
-
-                        // Create and append the group HTML
                         addModifierGroupUI(groupId, groupName, data.modifiers);
                     } else {
                         alert('Error loading modifiers: ' + data.message);
                     }
                 },
                 error: function (error) {
-                    // Remove loading indicator
                     $(`#loading-${groupId}`).remove();
                     console.error('Error fetching modifiers:', error);
                     alert('Failed to load modifiers. Please try again.');
@@ -925,16 +917,12 @@
             });
         }
 
-        // Function to add a modifier group to the UI
         function addModifierGroupUI(groupId, groupName, modifiers) {
-            // Clone the template
             if ($(`[data-group-id="${groupId}"]`).length > 0) {
-                return; // Prevent duplicate groups
             }
             const template = document.getElementById('modifier-group-template');
             const $groupContainer = $(template.content.cloneNode(true));
 
-            // Set group ID and name
             $groupContainer.find('.modifier-group-container').attr('data-group-id', groupId);
             $groupContainer.find('.group-name').text(groupName);
             $groupContainer.find('.group-id-input').val(groupId);
@@ -969,18 +957,15 @@
                 $modifiersList.append('<li>No modifiers available</li>');
             }
 
-            // Append to the container
             $('#selectedModifierGroups').append($groupContainer);
         }
 
         $('#SaveItem').on('click', function (e) {
             e.preventDefault();
-            console.log("clicked");
             if ($('#addItemForm').valid()) {
                 var formData = new FormData($("#addItemForm")[0]);
                 var catid = $("#categoryid").val();
 
-                // Add selected modifier groups to form data
                 let groupsData = [];
                 selectedGroups.forEach((group, groupId) => {
                     groupsData.push({
@@ -1002,6 +987,7 @@
                     contentType: false,
                     success: function (data) {
                         if (data.success) {
+                            console.log("Add item");
                             ItemList(catid, 1);
                             $('#addItem').modal('hide');
                         } else {

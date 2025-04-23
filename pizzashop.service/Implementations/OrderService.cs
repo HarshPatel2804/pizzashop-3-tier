@@ -49,28 +49,21 @@ public class OrderService : IOrderService
 
     public async Task<(string fileName, byte[] fileContent)> GenerateOrderExcel(string searchString, orderstatus? status, DateTime? fromDate, DateTime? toDate)
     {
-        // Get orders based on filters
         var (orders, totalOrders) = await GetOrdersForExport(searchString, status, fromDate, toDate);
 
-        // Get template path
         string templatePath = Path.Combine("wwwroot", "Templates", "OrderTemplate.xlsx");
 
-        // Create file name for export
         string fileName = $"PizzaShopOrders_{DateTime.Now:yyyyMMdd}.xlsx";
 
         using (var templateFile = new FileStream(templatePath, FileMode.Open, FileAccess.Read))
         {
-            // Create workbook from template
             IWorkbook workbook = new XSSFWorkbook(templateFile);
             ISheet sheet = workbook.GetSheetAt(0);
 
-            // Fill the header fields
             FillHeaderData(sheet, status, searchString, totalOrders, fromDate, toDate);
 
-            // Fill order data
             FillOrderData(workbook, sheet, orders);
 
-            // Write to memory stream
             using (var exportData = new MemoryStream())
             {
                 workbook.Write(exportData);
@@ -115,21 +108,17 @@ public class OrderService : IOrderService
 
     private void FillOrderData(IWorkbook workbook, ISheet sheet, IEnumerable<Order> orders)
     {
-        // Create styles for data cells
         ICellStyle dataStyle = CreateDataCellStyle(workbook);
         ICellStyle currencyStyle = CreateCurrencyStyle(workbook, dataStyle);
         ICellStyle dateStyle = CreateDateStyle(workbook, dataStyle);
 
-        // Start filling data from row 8
         int rowIndex = 9;
         foreach (var order in orders)
         {
             IRow dataRow = sheet.CreateRow(rowIndex);
 
-            // Create cell for Order ID (1 column)
             CreateCell(dataRow, 0, order.Orderid.ToString(), dataStyle);
 
-            // Merge cells for Order Date (3 columns)
             sheet.AddMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 1, 3));
             ICell dateCell = dataRow.CreateCell(1);
             dateCell.SetCellValue((DateTime)order.Orderdate);
@@ -137,29 +126,24 @@ public class OrderService : IOrderService
             CreateCell(dataRow, 2, "", dataStyle);
             CreateCell(dataRow, 3, "", dataStyle);
 
-            // Merge cells for Customer Name (3 columns)
             sheet.AddMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 4, 6));
             CreateCell(dataRow, 4, order.Customer.Customername, dataStyle);
             CreateCell(dataRow, 5, "", dataStyle);
             CreateCell(dataRow, 6, "", dataStyle);
 
-            // Merge cells for Order Status (3 columns)
             sheet.AddMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 7, 9));
             CreateCell(dataRow, 7, order.OrderStatus.ToString(), dataStyle);
             CreateCell(dataRow, 8, "", dataStyle);
             CreateCell(dataRow, 9, "", dataStyle);
 
-            // Merge cells for Payment Mode (2 columns)
             sheet.AddMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 10, 11));
             CreateCell(dataRow, 10, order.Paymentmode.ToString(), dataStyle);
             CreateCell(dataRow, 11, "", dataStyle);
 
-            // Merge cells for Rating (2 columns)
             sheet.AddMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 12, 13));
             CreateCell(dataRow, 12, order.Rating?.ToString(), dataStyle);
             CreateCell(dataRow, 13, "", dataStyle);
 
-            // Merge cells for Total Amount (2 columns)
             sheet.AddMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 14, 15));
             ICell amountCell = dataRow.CreateCell(14);
             amountCell.SetCellValue((double)order.Totalamount);
@@ -169,7 +153,6 @@ public class OrderService : IOrderService
             rowIndex++;
         }
 
-        // Auto-size columns for better appearance
         for (int i = 0; i < 16; i++)
         {
             sheet.AutoSizeColumn(i);

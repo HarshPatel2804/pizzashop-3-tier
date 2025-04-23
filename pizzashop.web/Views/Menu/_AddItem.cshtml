@@ -434,6 +434,7 @@
                 success: function (data) {
                     if (data.success) {
                         ItemList(catid,1);
+                        $('#addItem').modal('hide');
                     } else {
                         alert(data.message);
                     }

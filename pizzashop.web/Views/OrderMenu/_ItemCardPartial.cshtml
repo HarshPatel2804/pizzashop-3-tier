@@ -4,7 +4,7 @@
 @foreach (var item in Model)
 {
     <div class="me-5 mb-4">
-        <div class="card card-custom d-flex flex-row align-items-center">
+        <div class="card card-custom d-flex flex-row align-items-center ItemCard" data-itemid="@item.Itemid" data-name="@item.Itemname" data-type="@item.Itemtype">
             <div class="image-container">
                 <img src="@(string.IsNullOrEmpty(item.Itemimg) ? Url.Content("~/images/dining-menu.png") : Url.Content("~/images/uploads/" + item.Itemimg))" alt="@item.Itemname" class="card-img-custom" />
             </div>

@@ -128,8 +128,6 @@ public partial class PizzaShopContext : DbContext
 
             entity.ToTable("category");
 
-            entity.HasIndex(e => e.Categoryname, "category_categoryname_key").IsUnique();
-
             entity.Property(e => e.Categoryid).HasColumnName("categoryid");
             entity.Property(e => e.Categoryname)
                 .HasMaxLength(30)
@@ -210,8 +208,6 @@ public partial class PizzaShopContext : DbContext
             entity.HasKey(e => e.Customerid).HasName("customers_pkey");
 
             entity.ToTable("customers");
-
-            entity.HasIndex(e => e.Phoneno, "customers_phoneno_key").IsUnique();
 
             entity.Property(e => e.Customerid).HasColumnName("customerid");
             entity.Property(e => e.Createdat)
@@ -303,8 +299,6 @@ public partial class PizzaShopContext : DbContext
 
             entity.ToTable("items");
 
-            entity.HasIndex(e => e.Itemname, "items_itemname_key").IsUnique();
-
             entity.Property(e => e.Itemid).HasColumnName("itemid");
             entity.Property(e => e.Categoryid).HasColumnName("categoryid");
             entity.Property(e => e.Createdat)
@@ -395,8 +389,6 @@ public partial class PizzaShopContext : DbContext
 
             entity.ToTable("modifiers");
 
-            entity.HasIndex(e => e.Modifiername, "modifiers_modifiername_key").IsUnique();
-
             entity.Property(e => e.Modifierid).HasColumnName("modifierid");
             entity.Property(e => e.Createdat)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
@@ -436,8 +428,6 @@ public partial class PizzaShopContext : DbContext
             entity.HasKey(e => e.Modifiergroupid).HasName("modifiergroup_pkey");
 
             entity.ToTable("modifiergroup");
-
-            entity.HasIndex(e => e.Modifiergroupname, "modifiergroup_modifiergroupname_key").IsUnique();
 
             entity.Property(e => e.Modifiergroupid).HasColumnName("modifiergroupid");
             entity.Property(e => e.Createdat)
@@ -675,8 +665,6 @@ public partial class PizzaShopContext : DbContext
 
             entity.ToTable("sections");
 
-            entity.HasIndex(e => e.Sectionname, "sections_sectionname_key").IsUnique();
-
             entity.Property(e => e.Sectionid).HasColumnName("sectionid");
             entity.Property(e => e.Createdat)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
@@ -822,8 +810,6 @@ public partial class PizzaShopContext : DbContext
 
             entity.ToTable("users");
 
-            entity.HasIndex(e => e.Phone, "users_phone_key").IsUnique();
-
             entity.Property(e => e.Userid).HasColumnName("userid");
             entity.Property(e => e.Address).HasColumnName("address");
             entity.Property(e => e.Cityid).HasColumnName("cityid");
@@ -878,11 +864,7 @@ public partial class PizzaShopContext : DbContext
 
             entity.ToTable("userslogin");
 
-            entity.HasIndex(e => e.Email, "userslogin_email_key").IsUnique();
-
             entity.HasIndex(e => e.Refreshtoken, "userslogin_refreshtoken_key").IsUnique();
-
-            entity.HasIndex(e => e.Username, "userslogin_username_key").IsUnique();
 
             entity.Property(e => e.ResetToken)
                 .HasColumnName("resettoken")

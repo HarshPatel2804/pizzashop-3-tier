@@ -107,7 +107,6 @@ public class MenuController : Controller
         if (addEditItemViewModel.SelectedModifierGroups != null)
         {
             Console.WriteLine(addEditItemViewModel.SelectedModifierGroups);
-            // Process the selected modifier groups
             foreach (var group in addEditItemViewModel.SelectedModifierGroups)
             {
                 Console.WriteLine(group.Modifiergroupid + "id");

@@ -69,10 +69,10 @@ public class OrdersController : Controller
 
        var viewHtml = await RenderViewToString("OrderPdfView",orderDetailsView);
 
-        // Convert HTML to PDF
+        // TO Convert HTML to PDF
         HtmlToPdf converter = new HtmlToPdf();
         
-        // Customize PDF settings
+        // PDF style
         converter.Options.PdfPageSize = PdfPageSize.A3;
         converter.Options.PdfPageOrientation = PdfPageOrientation.Portrait;
         converter.Options.MarginTop = 20;
@@ -82,7 +82,7 @@ public class OrdersController : Controller
 
         
         // Create PDF document
-        PdfDocument doc = converter.ConvertHtmlString(viewHtml, $"{Request.Scheme}://{Request.Host}");
+        PdfDocument doc = converter.ConvertHtmlString(viewHtml);
 
         // Save PDF to a memory stream
         MemoryStream ms = new MemoryStream();

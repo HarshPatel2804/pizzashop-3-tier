@@ -1,0 +1,59 @@
+@using pizzashop.repository.Models;
+@model List<ItemModifierGroupMapping>;
+
+<div class="modal fade modal-updateModifiersGroup" id="ItemModifiers" tabindex="-1" aria-labelledby="ItemModifiers"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title itemName"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form class="ms-2" id="modifiersForm">
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var group in Model)
+                    {
+                        <span style="font-size: 17px;" class="fw-bold">@group.ModifiergroupName</span>
+                        <small> (You can choose Minimum - @group.Minselectionrequired & Maximum - @group.Maxselectionallowed
+                            options)</small>
+                        <div class="row ms-4 mt-2 justify-content-between me-4 align-self-center">
+                            @if (group.Modifiers != null && group.Modifiers.Any())
+                            {
+                                foreach (var modifier in group.Modifiers)
+                                {
+                                    <div
+                                        class="col-lg-3 col-sm-2 col-auto card modifier-card-custom d-flex flex-row align-items-center mb-3">
+                                        <div class="ms-3 d-flex flex-column justify-content-center flex-grow-1">
+                                            <span style="color: black; font-size: 18px">@modifier.Modifiername</span>
+                                            <span class="text-muted fs-7 mt-1">₹@modifier.Rate</span>
+                                        </div>
+                                        <div
+                                            class="corner-triangle modifierType">
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="col-12 text-center py-3">
+                                    <p>No modifiers available for this group</p>
+                                </div>
+                            }
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="text-center py-3">
+                        <h4>No modifier options available for this item</h4>
+                    </div>
+                }
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary sav-btn">Add</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

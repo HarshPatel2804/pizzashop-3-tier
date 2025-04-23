@@ -160,7 +160,7 @@ public class OrderRepository : IOrderRepository
             }).ToList(),
             TaxesForOrder = order.Ordertaxmappings.Select(otm => new TaxForOrder
             {
-                TaxName = otm.Tax.Taxname, // Get TaxName from the Taxis table
+                TaxName = otm.Tax.Taxname,
                 TaxValue = (decimal)otm.Taxvalue,
                 TaxTypeName = otm.Tax.TaxType.TaxName 
             }).ToList()

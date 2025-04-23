@@ -17,6 +17,10 @@ public class OrderMenuController : Controller
         var categories = await _menuService.GetAllCategories();
         return View(categories);
     }
+    public async Task<ActionResult> OrderCard(int orderId)
+    {
+        return PartialView("_OrderDetailPartial");
+    }
 
     public async Task<IActionResult> GetMenuItems(string categoryId, string searchText)
     {
@@ -29,5 +33,16 @@ public class OrderMenuController : Controller
     {
         var result = await _menuService.ToggleFavoriteAsync(itemId, isFavorite);
         return Json(new { success = result });
+    }
+
+    public async Task<IActionResult> GetItemModifiers(int itemId){
+        var itemModifierMapping = await _menuService.GetItemModifierGroupsAsync(itemId);
+         var item = await _menuService.GetEditItemDetails(itemId);
+         var response = new {
+            Item = item,
+            ItemModifierMapping = itemModifierMapping
+         };
+
+        return PartialView("_itemModifiersPartial", itemModifierMapping );
     }
 }
