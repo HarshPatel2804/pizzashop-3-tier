@@ -55,6 +55,14 @@ public class TableSectionRepository : ITableSectionRepository
         await _context.SaveChangesAsync();
     }
 
+    public async Task<bool> AnyTableOccupied(int sectionId)
+{
+    return await _context.Tables
+        .AnyAsync(t => t.Sectionid == sectionId && 
+                      t.Isdeleted != true && 
+                      (t.Tablestatus == tablestatus.Occupied || t.Tablestatus == tablestatus.Reserved));
+}
+
     public async Task DeleteTablesBySectionAsync(int sectionId)
     {
         await _context.Tables.Where(u => u.Sectionid == sectionId).ForEachAsync(u => u.Isdeleted = true);
@@ -108,6 +116,12 @@ public class TableSectionRepository : ITableSectionRepository
         }
         await _context.SaveChangesAsync();
     }
+
+    public async Task<bool> AreTablesOccupied(List<int> tableIds)
+{
+    return await _context.Tables
+        .AnyAsync(t => tableIds.Contains(t.Tableid) && t.Tablestatus == tablestatus.Occupied);
+}
 
     public async Task MassDeleteTable(List<int> Tableid)
     {

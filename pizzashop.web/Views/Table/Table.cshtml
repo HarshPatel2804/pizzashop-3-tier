@@ -249,6 +249,9 @@
 <script>
     $(document).ready(function () {
         let lastSelectedSectionId = 0;
+         sectionList();
+        getFirstSectionId();
+
 
         $(document).on("click", ".delete-section", function () {
             var Id = $(this).data("id");
@@ -261,15 +264,21 @@
                 type: 'GET',
                 success: function (data) {
                     $('#Sections').html(data);
-                    $('#Sections1').html(data);
+                    @* $('#Sections1').html(data); *@
+                    $(".selectedSection").removeClass("ActiveEffect");
+            $(`.selectedSection[data-id="${lastSelectedSectionId}"]`).addClass("ActiveEffect");
                 }
             });
         };
 
         function TableList(sectionId, page) {
+            console.log("Loaded");
+            lastSelectedSectionId = sectionId;
             let pageSize = $("#pageSizeSelect").val();
             let search = $("#search").val();
-            console.log(sectionId + "section");
+            console.log(lastSelectedSectionId + "section");
+            $(".selectedSection").removeClass("ActiveEffect");
+            $(`.selectedSection[data-id="${lastSelectedSectionId}"]`).addClass("ActiveEffect");
             $.ajax({
                 type: "GET",
                 url: '/Table/Tables',
@@ -288,7 +297,6 @@
                 type: "GET",
                 dataType: "json",
                 success: function (sectionId) {
-                    console.log("First Section ID:", sectionId);
                     TableList(sectionId, 1);
                 }
             });
@@ -393,8 +401,15 @@
                 url: '/Table/DeleteSection',
                 data: { sectionId: sectionId },
                 success: function (response) {
+                    if(response.success){
                     sectionList();
-                    TableList(sectionId, 1);
+                    getFirstSectionId();
+                        toastr.success(response.message);
+                    }
+                    else{
+                        toastr.error(response.message);
+                    }
+                    
                 }
             });
         });
@@ -421,7 +436,7 @@
         });
 
         $("#deleteTableForm").submit(function (e) {
-            e.preventDefault(); // Prevent page refresh
+            e.preventDefault(); 
             var tableId = $("#table").val();
             var sectionId = $("#section").val();
             console.log(tableId + "delete");
@@ -430,7 +445,13 @@
                 url: '/Table/DeleteTable',
                 data: { tableId: tableId },
                 success: function (response) {
+                    if(response.success){
                     TableList(sectionId, 1);
+                        toastr.success(response.message);
+                    }
+                    else{
+                        toastr.error(response.message);
+                    }
                 }
             });
         });
@@ -502,11 +523,17 @@
                         contentType: false,
                         dataType: "json",
                         success: function (response) {
+                            $('#EditTableModal').modal('hide');
                             if (response.success) {
                                 TableList(Sectionid, 1);
-                                $('#EditTableModal').modal('hide');
+                                toastr.success(response.message);
                             } else {
+                                if(response.code == 0){
                                 $("#Name").after('<div class="error-message text-danger mt-1">' + response.message + '</div>');
+                                }
+                                else{
+                                    toastr.error(response.message);
+                                }
                             }
                         }
                     });
@@ -514,30 +541,21 @@
             });
         }
 
-        sectionList();
-        getFirstSectionId();
-
-
         function tableMassDelete() {
             let selectedItemIds = [];
 
-            // Master checkbox click handler
             $("#masterTableCheckbox").on('click', function () {
                 console.log("checked");
                 const isChecked = $(this).prop('checked');
 
-                // Set all visible item checkboxes to match master checkbox
                 $("tbody #TableCheckbox").each(function () {
                     $(this).prop('checked', isChecked);
 
-                    // Get item ID from the row
                     const itemId = getItemIdFromRow($(this).closest('tr'));
 
                     if (isChecked && !selectedItemIds.includes(itemId)) {
-                        // Add ID to array if checked and not already in array
                         selectedItemIds.push(itemId);
                     } else if (!isChecked) {
-                        // Remove ID from array if unchecked
                         selectedItemIds = selectedItemIds.filter(id => id !== itemId);
                     }
                 });
@@ -545,12 +563,10 @@
                 console.log("Selected Item IDs:", selectedItemIds);
             });
 
-            // Individual checkbox click handler
             $("tbody").on('click', "#TableCheckbox", function () {
                 const isChecked = $(this).prop('checked');
                 const itemId = getItemIdFromRow($(this).closest('tr'));
 
-                // Add or remove item ID from array
                 if (isChecked && !selectedItemIds.includes(itemId)) {
                     selectedItemIds.push(itemId);
                 } else if (!isChecked) {
@@ -561,7 +577,6 @@
                 console.log("Selected Item IDs:", selectedItemIds);
             });
 
-            // Function to get item ID from the table row
             function getItemIdFromRow(row) {
                 const editItemElement = row.find('.editTable');
                 const deleteItemElement = row.find('.deleteTable');
@@ -572,7 +587,6 @@
                     return deleteItemElement.data('id');
                 }
 
-                // If no ID found, use the row index as fallback
                 return row.index();
             }
 
@@ -581,19 +595,16 @@
                 const checkedCount = $("tbody #TableCheckbox:checked").length;
 
                 if (checkedCount === 0) {
-                    // No checkboxes are checked
                     $("#masterTableCheckbox").prop({
                         'checked': false,
                         'indeterminate': false
                     });
                 } else if (checkedCount === checkboxes.length) {
-                    // All checkboxes are checked
                     $("#masterTableCheckbox").prop({
                         'checked': true,
                         'indeterminate': false
                     });
                 } else {
-                    // Some checkboxes are checked
                     $("#masterTableCheckbox").prop({
                         'checked': false,
                         'indeterminate': true
@@ -618,6 +629,11 @@
                         if (response.success) {
                             TableList(lastSelectedSectionId, 1);
                             selectedItemIds = [];
+                            toastr.success(respone.message);
+                        }
+                        else{
+                            toastr.clear();
+                            toastr.error(response.message);
                         }
                     }
                 });

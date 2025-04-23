@@ -41,4 +41,8 @@ public interface ITableSectionRepository
      Task AddOrderTables(List<Ordertable> orderTables);
 
      Task UpdateTableStatusToOccupied(int tableId);
+
+     Task<bool> AnyTableOccupied(int sectionId);
+
+     Task<bool> AreTablesOccupied(List<int> tableIds);
 }

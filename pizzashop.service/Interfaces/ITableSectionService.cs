@@ -15,21 +15,21 @@ public interface ITableSectionService
 
     Task EditSection(SectionViewModel model);
 
-    Task DeleteSection(int sectionId);
+    Task<(bool Success, string Message)> DeleteSection(int sectionId);
 
     Task<TableViewModel> GetSections();
 
     Task AddTable(TableViewModel model);
 
-    Task DeleteTable(int tableId);
+    Task<(string message , bool success)> DeleteTable(int tableId);
 
     Task<TableViewModel> GetTableById(int tableId);
 
-    Task EditTable(TableViewModel tableViewModel);
+    Task<(string message , bool success)> EditTable(TableViewModel tableViewModel);
 
     Task UpdateSectionSortOrder(List<int> sortOrder);
 
-    Task DeleteMultipleTables(List<int> itemIds);
+    Task<(bool success, string message)> DeleteMultipleTables(List<int> tableIds);
 
     Task<Table> GetTableByName(TableViewModel model);
 

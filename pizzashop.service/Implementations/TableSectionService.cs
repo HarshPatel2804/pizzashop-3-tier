@@ -90,14 +90,27 @@ public class TableSectionService : ITableSectionService
         await _tableSectionRepository.EditSectionAsync(section);
     }
 
-    public async Task DeleteSection(int sectionId)
+   public async Task<(bool Success, string Message)> DeleteSection(int sectionId)
+{
+    var areTablesOccupied = await _tableSectionRepository.AnyTableOccupied(sectionId);
+    
+    if (areTablesOccupied)
     {
-        var section = await _tableSectionRepository.GetSectionById(sectionId);
-        section.Isdeleted = true;
-        await _tableSectionRepository.EditSectionAsync(section);
-
-        await _tableSectionRepository.DeleteTablesBySectionAsync(sectionId);
+        return (false, "Cannot delete section because some tables are currently occupied.");
     }
+    
+    var section = await _tableSectionRepository.GetSectionById(sectionId);
+    if (section == null)
+    {
+        return (false, "Section not found.");
+    }
+    
+    section.Isdeleted = true;
+    await _tableSectionRepository.EditSectionAsync(section);
+    await _tableSectionRepository.DeleteTablesBySectionAsync(sectionId);
+    
+    return (true, "Section deleted successfully.");
+}
 
     public async Task<TableViewModel> GetSections()
     {
@@ -129,9 +142,14 @@ public class TableSectionService : ITableSectionService
         await _tableSectionRepository.AddTableAsync(Table);
     }
 
-    public async Task DeleteTable(int tableId)
+    public async Task<(string message , bool success)> DeleteTable(int tableId)
     {
+        var table = await _tableSectionRepository.GetTableById(tableId);
+        if(table.Tablestatus == pizzashop.repository.Models.tablestatus.Occupied){
+            return ("Cannot delete this table because table is occupied" , false);
+        }
         await _tableSectionRepository.DeleteTableAsync(tableId);
+        return ("Table deleted successfully" , true);
     }
 
     public async Task<TableViewModel> GetTableById(int tableId)
@@ -149,16 +167,22 @@ public class TableSectionService : ITableSectionService
         return model;
     }
 
-    public async Task EditTable(TableViewModel tableViewModel)
+    public async Task<(string message , bool success)> EditTable(TableViewModel tableViewModel)
     {
         var table = await _tableSectionRepository.GetTableById(tableViewModel.Tableid);
+        Console.WriteLine(table.Tablestatus);
+        if(table.Tablestatus == pizzashop.repository.Models.tablestatus.Occupied){
+            return ("Cannot edit this table because table is occupied" , false);
+        }
 
+        Console.WriteLine(table.Tablestatus);
         table.Tablename = tableViewModel.Tablename;
         table.Capacity = tableViewModel.Capacity;
         table.Tablestatus = tableViewModel.Tablestatus;
         table.Sectionid = tableViewModel.Sectionid;
 
         await _tableSectionRepository.EditTableAsync(table);
+        return ("Table edited successfully" , true);
     }
 
     public async Task UpdateSectionSortOrder(List<int> sortOrder)
@@ -166,9 +190,17 @@ public class TableSectionService : ITableSectionService
         await _tableSectionRepository.UpdateSortOrderOfSection(sortOrder);
     }
 
-    public async Task DeleteMultipleTables(List<int> itemIds)
+    public async Task<(bool success, string message)> DeleteMultipleTables(List<int> tableIds)
     {
-        await _tableSectionRepository.MassDeleteTable(itemIds);
+        bool hasOccupiedTables = await _tableSectionRepository.AreTablesOccupied(tableIds);
+    
+    if (hasOccupiedTables)
+    {
+        return (false, "Cannot delete tables because some tables are occupied");
+    }
+    
+    await _tableSectionRepository.MassDeleteTable(tableIds);
+    return (true, "Tables deleted successfully");
     }
 
     public async Task<Table> GetTableByName(TableViewModel model)

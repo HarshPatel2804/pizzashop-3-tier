@@ -56,8 +56,9 @@ public class TableController : Controller
     }
 
     [HttpPost]
-     public async Task DeleteSection(int sectionId){
-        await _tableSectionService.DeleteSection(sectionId);
+     public async Task<JsonResult> DeleteSection(int sectionId){
+        var (Success, Message) = await _tableSectionService.DeleteSection(sectionId);
+        return Json(new{success = Success,message = Message});
     }
 
     [HttpGet]
@@ -79,9 +80,9 @@ public class TableController : Controller
     }
 
     [HttpPost]
-     public async Task DeleteTable(int tableId){
-        Console.WriteLine(tableId + "table");
-        await _tableSectionService.DeleteTable(tableId);
+     public async Task<JsonResult> DeleteTable(int tableId){
+        var (Message,Success) = await _tableSectionService.DeleteTable(tableId);
+        return Json(new{success = Success,message=Message});
     }
 
     public async Task<IActionResult> editTable(int tableId){
@@ -95,10 +96,10 @@ public class TableController : Controller
         var existingTable = await _tableSectionService.GetTableByName(tableViewModel);
         if (existingTable != null)
         {
-            return Json(new { success = false, message = "Table with this name already exists" });
+            return Json(new { success = false, message = "Table with this name already exists", code = 0 });
         }
-        await _tableSectionService.EditTable(tableViewModel);
-        return Json(new{success = true,message="Table Edited Successfully"});
+        var (Message, Success) = await _tableSectionService.EditTable(tableViewModel);
+        return Json(new{success = Success,message = Message,code = 1});
     }
 
     [HttpPost]
@@ -109,8 +110,14 @@ public class TableController : Controller
     [HttpPost]
     public async Task<JsonResult> MassDeleteTables([FromBody] List<int> selectedIds)
     {
-       await _tableSectionService.DeleteMultipleTables(selectedIds);
-        return Json(new { success = true, message = "Items deleted successfully" });
+       if (selectedIds == null || !selectedIds.Any())
+    {
+        return Json(new { success = false, message = "No tables selected for deletion" });
+    }
+    
+    var (success, message) = await _tableSectionService.DeleteMultipleTables(selectedIds);
+    
+    return Json(new { success, message });
     }
 
     

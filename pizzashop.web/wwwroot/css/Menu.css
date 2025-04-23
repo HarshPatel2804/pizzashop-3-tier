@@ -226,7 +226,7 @@ li {
     margin-top: 2rem;
 }
 
-.items:focus-within>button>img {
+.ActiveEffect>button>img {
     display: block !important;
 }
 
@@ -244,6 +244,10 @@ li {
     background-color: #f2f2f2;
 }
 
+.ActiveEffect{
+    color: #0066a7;
+    background-color: #f2f2f2;
+}
 .existing-modifiers .badge {
     display: flex;
     align-items: center;
