@@ -94,6 +94,22 @@
             color: #0066a7;
             background-color: transparent;
         }
+
+        #upload-photo-icon {
+            background-color: white;
+            border: 1px solid black;
+            border-radius: 50%;
+            position: relative;
+            width: 35px;
+            height: auto;
+            top: 25px;
+            left: -25px;
+            cursor: pointer;
+        }
+
+        .label-pad {
+            margin-left: 1rem;
+        }
     </style>
 
 </head>
@@ -175,11 +191,9 @@
                                     <li>
                                         <hr class="dropdown-divider">
                                     </li>
-                                    <li><a class="dropdown-item" asp-controller="Dashboard"
-                                            asp-action="Profile">MyProfile</a>
+                                    <li><a class="dropdown-item" asp-controller="Dashboard" asp-action="Profile"
+                                            asp-route-from="1">MyProfile</a>
                                     </li>
-                                    <li><a class="dropdown-item" asp-controller="Dashboard"
-                                            asp-action="ChangePassword">ChangePassword</a></li>
                                     <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
                                             data-bs-target="#logoutModel">Logout</a>
                                     </li>

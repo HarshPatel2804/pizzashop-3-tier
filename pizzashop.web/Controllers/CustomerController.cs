@@ -9,6 +9,7 @@ using pizzashop.service.Constants;
 
 namespace pizzashop.web.Controllers;
 
+[CustomAuthorize]
 public class CustomerController : Controller
 {
     private readonly ICustomerService _customerService;

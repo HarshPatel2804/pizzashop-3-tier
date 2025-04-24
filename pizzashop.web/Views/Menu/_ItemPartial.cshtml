@@ -28,7 +28,7 @@
             <td>@item.Quantity</td>
             <td class="mx-auto">
                 <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" @(item.Isavailable ? "checked" : "")>
+                    <input class="form-check-input isAvailable" type="checkbox" id="flexSwitchCheckDefault" @(item.Isavailable ? "checked" : "")>
                 </div>
             </td>
             <td>
@@ -81,3 +81,26 @@
         </nav>
     </div>
 </div>
+<script>
+    $(document).ready(function() {
+    $('.isAvailable').on('change', function() {
+        const isChecked = $(this).prop('checked');
+        const row = $(this).closest('tr');
+        const itemId = row.find('.editItem').data('id');
+        console.log(itemId + "item");
+        
+        $.ajax({
+            url: '/Menu/UpdateAvailability',
+            type: 'POST',
+            data: {ItemId: itemId , isAvailable: isChecked},
+            success: function(response) {
+                if (response.success) {
+                    toastr.success('Item availability updated successfully');
+                } else {
+                    toastr.error(response.message || 'Failed to update item availability');
+                }
+            },
+        });
+    });
+});
+</script>

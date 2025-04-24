@@ -22,6 +22,8 @@ public interface IMenuService
 
     Task DeleteCategory(int Categoryid);
 
+    Task<bool> UpdateItemAvailabilityAsync(int itemId, bool isAvailable);
+
     Task DeleteItem(int Itemid);
 
     Task DeleteModifier(int modifierId , int modifierGroupId);

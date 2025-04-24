@@ -77,6 +77,21 @@ public class ItemRepository : IItemRepository
         _context.Items.Update(model);
         await _context.SaveChangesAsync();
     }
+
+    public async Task<bool> UpdateItemAvailabilityAsync(int itemId, bool isAvailable)
+        {
+            var item = await _context.Items.FindAsync(itemId);
+            
+            if (item == null)
+                return false;
+                
+            item.Isavailable = isAvailable;
+            item.Modifiedat = DateTime.Now;
+            
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
     public async Task AddItemModifierGroupMappingsAsync(List<Itemmodifiergroupmap> mappings)
     {
         await _context.Itemmodifiergroupmaps.AddRangeAsync(mappings);
@@ -138,7 +153,7 @@ return itemModifierGroups;
 
          public async Task<List<ItemViewModel>> GetMenuItemsbyCategoryAsync(string categoryId, string searchText)
         {
-            var query = _context.Items.Where(i => i.Isdeleted != true).AsQueryable();
+            var query = _context.Items.Where(i => i.Isdeleted != true && i.Isavailable == true).AsQueryable();
             
             if (!string.IsNullOrEmpty(categoryId))
             {

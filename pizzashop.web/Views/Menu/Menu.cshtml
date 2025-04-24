@@ -473,6 +473,11 @@
         let lastSelectedModifierGroupId = 0;
         const selectedGroups = new Map();
         let selectedModifiers = [];
+        let selectedItemIds = [];
+
+        categoryList();
+        modifierGroupList();
+        getFirstCategoryId();
 
         $(document).on("click", ".delete-category", function () {
             var Id = $(this).data("id");
@@ -482,7 +487,6 @@
         $(document).on("click", ".deleteItem", function () {
             var item = $(this).data("id");
             var category = $(this).data("category");
-    @* console.log(item + category); *@
                 $("#item").val(item);
             $("#category").val(category);
         });
@@ -490,7 +494,6 @@
         $(document).on("click", ".deleteModifier", function () {
             var modifier = $(this).data("id");
             var modifierGroup = $(this).data("modifiergroup");
-    @* console.log(modifierGroup + "Group"); *@
                 $("#modifier").val(modifier);
             $("#modifierGroup").val(modifierGroup);
         });
@@ -501,14 +504,19 @@
                 type: 'GET',
                 success: function (data) {
                     $('#Category').html(data);
+                    $(".selectedCategory").removeClass("ActiveEffect");
+            $(`.selectedCategory[data-id="${lastSelectedCategoryId}"]`).addClass("ActiveEffect");
                 }
             });
         };
 
         function ItemList(categoryId, page) {
+            lastSelectedCategoryId = categoryId;
             console.log(categoryId + "cat");
             let pageSize = $("#pageSizeSelect").val();
             let search = $("#searchInput").val();
+            $(".selectedCategory").removeClass("ActiveEffect");
+            $(`.selectedCategory[data-id="${lastSelectedCategoryId}"]`).addClass("ActiveEffect");
             $.ajax({
                 type: "GET",
                 url: '/Menu/Items',
@@ -527,6 +535,7 @@
                 type: "GET",
                 dataType: "json",
                 success: function (categoryId) {
+                    lastSelectedCategoryId = categoryId;
                     console.log("First Category ID:", categoryId);
                     ItemList(categoryId, 1);
                 }
@@ -566,12 +575,15 @@
                     $('#ModifierGroup').html(data);
 
                     var firstModifierGroup = $(".selectedModifierGroup:first").data("id");
+                    lastSelectedModifierGroupId = firstModifierGroup;
                     modifierList(firstModifierGroup,1);
                 }
             });
         };
 
         function modifierList(ModifierGroupId, page = 1) {
+            $(".selectedModifierGroup").removeClass("ActiveEffect");
+            $(`.selectedModifierGroup[data-id="${ModifierGroupId}"]`).addClass("ActiveEffect");
             let pageSize = $("#pageSizeSelect").val();
             let search = $("#search").val();
             $.ajax({
@@ -591,7 +603,7 @@
             let page = $(this).data("page");
             let CategoryId = $("#ModifierGroupId").val();
             if (page > 0) {
-                modifierList(CategoryId, page);
+                modifierList(lastSelectedModifierGroupId, page);
             }
         });
 
@@ -608,9 +620,7 @@
             }, 100);
         });
 
-        categoryList();
-        modifierGroupList();
-        getFirstCategoryId();
+        
 
         $(document).on("click", ".addItem", function () {
             console.log("clicked");
@@ -766,11 +776,13 @@
         $(document).on("click", ".selectedCategory", function () {
             var categoryId = $(this).data("id");
             lastSelectedCategoryId = categoryId;
+            selectedItemIds = [];
             ItemList(categoryId, 1);
         });
         $(document).on("click", ".selectedModifierGroup", function () {
             var modifierGroupId = $(this).data("id");
             lastSelectedModifierGroupId = modifierGroupId;
+            selectedItemIds = [];
             modifierList(modifierGroupId);
         });
         $(document).on("click", ".edit-btn", function () {
@@ -1136,12 +1148,10 @@
             }
         }
 
-        // Handle opening of the existing modifiers modal
         $('#AddModifierGroupBtn').on('click', function () {
             setTimeout(updateCheckboxStates, 100);
         });
 
-        // Handle checkbox selection in the existing modifiers modal
         $(document).on('change', '#ModifierCheckBox', function () {
             const row = $(this).closest('tr');
             const modifierId = row.find('#ModifierId').val();
@@ -1149,7 +1159,6 @@
             const checkbox = $(this);
 
             if (checkbox.is(':checked')) {
-                // Check if modifier is not already in the list
                 const exists = selectedModifiers.some(m => m.id === modifierId);
                 if (!exists) {
                     selectedModifiers.push({
@@ -1624,25 +1633,33 @@
 
 
         function itemMassDelete() {
-            let selectedItemIds = [];
 
-            // Master checkbox click handler
-            $("#MasterCheckBoxDelete").on('click', function () {
+            retainCheckboxState();
+
+            function retainCheckboxState(){
+                 $("tbody #ItemCheckbox").each(function () {
+                    const itemId = getItemIdFromRow($(this).closest('tr'));
+
+                    if (selectedItemIds.includes(itemId)) {
+                        $(this).prop('checked', true);
+                    } else {
+                        $(this).prop('checked', false);
+                    }
+                });
+            }
+
+            $("#masterItemCheckbox").on('click', function () {
                 console.log("checked");
                 const isChecked = $(this).prop('checked');
 
-                // Set all visible item checkboxes to match master checkbox
-                $("tbody #ModifierCheckBoxDelete").each(function () {
+                $("tbody #ItemCheckbox").each(function () {
                     $(this).prop('checked', isChecked);
 
-                    // Get item ID from the row
                     const itemId = getItemIdFromRow($(this).closest('tr'));
 
                     if (isChecked && !selectedItemIds.includes(itemId)) {
-                        // Add ID to array if checked and not already in array
                         selectedItemIds.push(itemId);
                     } else if (!isChecked) {
-                        // Remove ID from array if unchecked
                         selectedItemIds = selectedItemIds.filter(id => id !== itemId);
                     }
                 });
@@ -1650,12 +1667,10 @@
                 console.log("Selected Item IDs:", selectedItemIds);
             });
 
-            // Individual checkbox click handler
-            $("tbody").on('click', "#ModifierCheckBoxDelete", function () {
+            $("tbody").on('click', "#ItemCheckbox", function () {
                 const isChecked = $(this).prop('checked');
                 const itemId = getItemIdFromRow($(this).closest('tr'));
 
-                // Add or remove item ID from array
                 if (isChecked && !selectedItemIds.includes(itemId)) {
                     selectedItemIds.push(itemId);
                 } else if (!isChecked) {
@@ -1666,7 +1681,6 @@
                 console.log("Selected Item IDs:", selectedItemIds);
             });
 
-            // Function to get item ID from the table row
             function getItemIdFromRow(row) {
                 const editItemElement = row.find('.editItem');
                 const deleteItemElement = row.find('.deleteItem');
@@ -1677,36 +1691,31 @@
                     return deleteItemElement.data('id');
                 }
 
-                // If no ID found, use the row index as fallback
                 return row.index();
             }
 
             function updateMasterCheckbox() {
-                const checkboxes = $("tbody #ModifierCheckBoxDelete");
-                const checkedCount = $("tbody #ModifierCheckBoxDelete:checked").length;
+                const checkboxes = $("tbody #ItemCheckbox");
+                const checkedCount = $("tbody #ItemCheckbox:checked").length;
 
                 if (checkedCount === 0) {
-                    // No checkboxes are checked
-                    $("#masterModifierCheckBoxDelete").prop({
+                    $("#masterItemCheckbox").prop({
                         'checked': false,
                         'indeterminate': false
                     });
                 } else if (checkedCount === checkboxes.length) {
-                    // All checkboxes are checked
-                    $("#masterModifierCheckBoxDelete").prop({
+                    $("#masterItemCheckbox").prop({
                         'checked': true,
                         'indeterminate': false
                     });
                 } else {
-                    // Some checkboxes are checked
-                    $("#masterModifierCheckBoxDelete").prop({
+                    $("#masterItemCheckbox").prop({
                         'checked': false,
                         'indeterminate': true
                     });
                 }
             }
 
-            // Initialize master checkbox state on page load
             updateMasterCheckbox();
 
             $(document).on('click', '.MassItemDeleteBtn', function (e) {
@@ -1730,27 +1739,34 @@
             });
         }
 
-        //Mass Delete Modifiers
         function modifierMassDelete() {
-            let selectedItemIds = [];
 
-            // Master checkbox click handler
+            retainCheckboxState();
+
+            function retainCheckboxState(){
+                 $("tbody #ModifierCheckBoxDelete").each(function () {
+                    const itemId = getItemIdFromRow($(this).closest('tr'));
+
+                    if (selectedItemIds.includes(itemId)) {
+                        $(this).prop('checked', true);
+                    } else {
+                        $(this).prop('checked', false);
+                    }
+                });
+            }
+
             $("#MasterCheckBoxDelete").on('click', function () {
                 console.log("checked");
                 const isChecked = $(this).prop('checked');
 
-                // Set all visible item checkboxes to match master checkbox
                 $("tbody #ModifierCheckBoxDelete").each(function () {
                     $(this).prop('checked', isChecked);
 
-                    // Get item ID from the row
                     const itemId = getItemIdFromRow($(this).closest('tr'));
 
                     if (isChecked && !selectedItemIds.includes(itemId)) {
-                        // Add ID to array if checked and not already in array
                         selectedItemIds.push(itemId);
                     } else if (!isChecked) {
-                        // Remove ID from array if unchecked
                         selectedItemIds = selectedItemIds.filter(id => id !== itemId);
                     }
                 });
@@ -1758,12 +1774,10 @@
                 console.log("Selected Item IDs:", selectedItemIds);
             });
 
-            // Individual checkbox click handler
             $("tbody").on('click', "#ModifierCheckBoxDelete", function () {
                 const isChecked = $(this).prop('checked');
                 const itemId = getItemIdFromRow($(this).closest('tr'));
 
-                // Add or remove item ID from array
                 if (isChecked && !selectedItemIds.includes(itemId)) {
                     selectedItemIds.push(itemId);
                 } else if (!isChecked) {
@@ -1774,7 +1788,6 @@
                 console.log("Selected Item IDs:", selectedItemIds);
             });
 
-            // Function to get item ID from the table row
             function getItemIdFromRow(row) {
                 const editItemElement = row.find('.EditModifier');
                 const deleteItemElement = row.find('.deleteModifier');
@@ -1785,7 +1798,6 @@
                     return deleteItemElement.data('id');
                 }
 
-                // If no ID found, use the row index as fallback
                 return row.index();
             }
 
@@ -1794,19 +1806,16 @@
                 const checkedCount = $("tbody #ModifierCheckBoxDelete:checked").length;
 
                 if (checkedCount === 0) {
-                    // No checkboxes are checked
                     $("#MasterCheckBoxDelete").prop({
                         'checked': false,
                         'indeterminate': false
                     });
                 } else if (checkedCount === checkboxes.length) {
-                    // All checkboxes are checked
                     $("#MasterCheckBoxDelete").prop({
                         'checked': true,
                         'indeterminate': false
                     });
                 } else {
-                    // Some checkboxes are checked
                     $("#MasterCheckBoxDelete").prop({
                         'checked': false,
                         'indeterminate': true
@@ -1814,7 +1823,6 @@
                 }
             }
 
-            // Initialize master checkbox state on page load
             updateMasterCheckbox();
 
             $(document).on('click', '.MassModifierDeleteBtn', function (e) {

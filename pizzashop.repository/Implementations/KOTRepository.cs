@@ -47,12 +47,11 @@ namespace pizzashop.repository.Repositories
                                 Instruction = oi.Itemwisecomment,
                                 Modifiers = oi.Ordereditemmodifers.Select(oim => oim.Modifiers).ToList()
                             })
-                            .Where(item => item.Quantity > 0) // Filter items with quantity > 0
+                            .Where(item => item.Quantity > 0) 
                             .ToList()
                     })
                     .ToListAsync();
 
-                // Filter out orders where all items have been removed due to zero quantities
                 return orders.Where(o => o.Items.Any()).ToList();
             }
             else
@@ -78,12 +77,11 @@ namespace pizzashop.repository.Repositories
                                 Instruction = oi.Itemwisecomment,
                                 Modifiers = oi.Ordereditemmodifers.Select(oim => oim.Modifiers).ToList()
                             })
-                            .Where(item => item.Quantity > 0) // Filter items with quantity > 0
+                            .Where(item => item.Quantity > 0) 
                             .ToList()
                     })
                     .ToListAsync();
 
-                // Filter out orders where all items have been removed due to zero quantities
                 return ordersWithSpecifiedCategory
                     .Where(o => o.Items.Any())
                     .Select(o => new KOTOrdersViewModel

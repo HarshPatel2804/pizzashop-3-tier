@@ -4,9 +4,11 @@ using pizzashop.service;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using pizzashop.repository.ViewModels;
 using pizzashop.service.Implementations;
+using pizzashop.service.Attributes;
 
 namespace pizzashop.web.Controllers;
 
+[CustomAuthorize]
 public class TableController : Controller
 {
 

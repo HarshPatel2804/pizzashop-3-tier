@@ -17,6 +17,8 @@ public interface IItemRepository
 
     Task EditItemAsync(Item model);
 
+    Task<bool> UpdateItemAvailabilityAsync(int itemId, bool isAvailable);
+
     Task AddItemModifierGroupMappingsAsync(List<Itemmodifiergroupmap> mappings);
 
     Task<List<ItemModifierGroupMapping>> GetItemModifierGroupsAsync(int itemId);

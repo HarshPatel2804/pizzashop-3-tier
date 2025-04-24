@@ -28,20 +28,20 @@ public class DashboardController : Controller
         return View();
     }
 
-    public async Task<IActionResult> Profile()
+    public async Task<IActionResult> Profile(string from)
     {
         var userData = SessionUtils.GetUser(HttpContext);
         if (userData == null)
             return RedirectToAction("index", "Home");
-        var id = userData.Id;
-        var model = await _ProfileService.GetProfileData((int)id);
+        var Id = userData.Id;
+        var model = await _ProfileService.GetProfileData((int)Id);
         Console.WriteLine(model.Profileimg + "image");
         
         return View(model);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Profile(ProfileViewModel model , IFormFile ProfileImage)
+    public async Task<IActionResult> Profile(ProfileViewModel model , IFormFile ProfileImage,[FromForm(Name = "from")] string? from)
     { 
             ModelState.Remove(nameof(model.Countries));
             ModelState.Remove(nameof(model.States));
@@ -52,7 +52,7 @@ public class DashboardController : Controller
          if(!ModelState.IsValid) return View(model);
         await _ProfileService.UpdateProfileData(model , ProfileImage);
         
-        return RedirectToAction("Profile","Dashboard");
+        return RedirectToAction("Profile","Dashboard",new { from = from });
     }
 
     public IActionResult ChangePassword()

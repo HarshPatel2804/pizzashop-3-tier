@@ -244,9 +244,9 @@ li {
     background-color: #f2f2f2;
 }
 
-.ActiveEffect{
+ .ActiveEffect{
     color: #0066a7;
-    background-color: #f2f2f2;
+    background-color: #f2f2f2 !important;
 }
 .existing-modifiers .badge {
     display: flex;

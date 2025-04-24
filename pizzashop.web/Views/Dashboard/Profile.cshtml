@@ -1,12 +1,21 @@
 @{
-    Layout = "_Layout";
+    var layout = Context.Request.Query["from"];
+    Console.WriteLine(layout);
+    if(layout == "0"){
+        Layout = "_Layout";
+    }
+    else{
+        Layout = "_OrderAppLayout";
+    }
     ViewData["Title"] = "Profile Page";
 }
 
 @model pizzashop.repository.ViewModels.ProfileViewModel;
 
 <head>
+    @if(layout == "0"){
     <link rel="stylesheet" href="~/css/userList.css">
+    }
 </head>
 <section style="min-height: 100vh;background-color: #fafafa;">
     <div class="row pt-4 ms-sm-5 me-sm-5 ms-3 me-3 mb-4" style="height: 70px;">
@@ -48,6 +57,7 @@
             <input type="hidden" asp-for="Email">
             <input type="hidden" asp-for="Id">
             <input type="hidden" asp-for="Rolename">
+            <input type="text" name="from" style="display: none;" value=@layout>
             <div class="row">
                 <div class="form-floating col-md-6 col-12 mb-3">
                     <input asp-for="FirstName" type="text" class="form-control" id="floatingInput">
@@ -122,10 +132,12 @@
                     <button type="submit" class="btn btn-primary"
                         style="border-radius: 3px; width: 120px;">Update</button>
                 </div>
+                @if(layout == "0"){
                 <div class="col-auto" style="padding-left: 0px;">
                     <a type="button" class="btn border-primary text-primary" asp-controller="Dashboard"
                         asp-action="Dashboard" style="border-radius: 3px; width: 90px; ">Cancel</a>
                 </div>
+                }
             </div>
         </form>
     </div>

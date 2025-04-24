@@ -9,6 +9,7 @@ using pizzashop.service.Interfaces;
 
 namespace pizzashop.web.Controllers;
 
+[CustomAuthorize]
 public class MenuController : Controller
 {
     private readonly IMenuService _menuService;
@@ -127,6 +128,21 @@ public class MenuController : Controller
 
         var model = await _menuService.GetEditItemDetails(itemId);
         return PartialView("_EditItem", model);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> UpdateAvailability(int ItemId, bool IsAvailable)
+    {
+        bool result = await _menuService.UpdateItemAvailabilityAsync(ItemId, IsAvailable);
+
+        if (result)
+        {
+            return Json(new { success = true });
+        }
+        else
+        {
+            return Json(new { success = false, message = "Item not found" });
+        }
     }
 
     [HttpPost]
@@ -379,23 +395,27 @@ public class MenuController : Controller
     }
 
     [HttpPost]
-    public async Task UpdateCategoryOrder(List<int> sortOrder){
+    public async Task UpdateCategoryOrder(List<int> sortOrder)
+    {
         await _menuService.UpdateCategorySortOrder(sortOrder);
     }
 
     [HttpPost]
-    public async Task UpdateModifierGroupOrder(List<int> sortOrder){
+    public async Task UpdateModifierGroupOrder(List<int> sortOrder)
+    {
         await _menuService.UpdateModifierGroupSortOrder(sortOrder);
     }
 
-    public async Task<int> FirstCategoryId(){
+    public async Task<int> FirstCategoryId()
+    {
         return await _menuService.FirstCategoryId();
     }
 
     [HttpPost]
-    public async Task<JsonResult> DeleteModifierGroup(int modifierGroupid){
+    public async Task<JsonResult> DeleteModifierGroup(int modifierGroupid)
+    {
         await _menuService.DeleteModifiergroup(modifierGroupid);
-         return Json(new { success = true, message = "Modifier Group deleted successfully" });
+        return Json(new { success = true, message = "Modifier Group deleted successfully" });
     }
 
 }

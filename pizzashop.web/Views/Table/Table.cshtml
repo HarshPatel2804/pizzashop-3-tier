@@ -13,7 +13,7 @@
             </h1>
     </div>
     <div id="nav-home" class="mt-3 ms-2 me-2">
-        <div class="row" style="min-height: 600px;">
+        <div class="row main-content" style="min-height: 600px;">
             <div class="col-auto d-none d-xl-block"
                 style="background: linear-gradient(to right, white, rgb(225, 224, 224))">
                 <div class="row px-3 mt-1">
@@ -249,6 +249,7 @@
 <script>
     $(document).ready(function () {
         let lastSelectedSectionId = 0;
+        let selectedItemIds = [];
          sectionList();
         getFirstSectionId();
 
@@ -333,6 +334,7 @@
             var sectionId = $(this).data("id");
             console.log(sectionId + "section");
             lastSelectedSectionId = sectionId;
+            selectedItemIds = [];
             TableList(sectionId, 1);
         });
 
@@ -493,7 +495,6 @@
                                 $('#AddTableModal').modal('hide');
                                 TableList(sectionId, 1);
                             } else {
-                                // Clear any existing error messages first
                                 $(".error-message").remove();
                                 $("#Name").after('<div class="error-message text-danger mt-1">' + response.message + '</div>');
                             }
@@ -542,7 +543,20 @@
         }
 
         function tableMassDelete() {
-            let selectedItemIds = [];
+            retainCheckboxState();
+
+            function retainCheckboxState(){
+                console.log("retain");
+                 $("tbody #TableCheckbox").each(function () {
+                    const itemId = getItemIdFromRow($(this).closest('tr'));
+
+                    if (selectedItemIds.includes(itemId)) {
+                        $(this).prop('checked', true);
+                    } else {
+                        $(this).prop('checked', false);
+                    }
+                });
+            }
 
             $("#masterTableCheckbox").on('click', function () {
                 console.log("checked");
@@ -617,6 +631,7 @@
             $(document).on('click', '.MassItemDeleteBtn', function (e) {
                 e.preventDefault();
                 console.log(selectedItemIds);
+                toastr.clear();
 
                 $.ajax({
                     url: '/Table/MassDeleteTables',
@@ -629,10 +644,10 @@
                         if (response.success) {
                             TableList(lastSelectedSectionId, 1);
                             selectedItemIds = [];
-                            toastr.success(respone.message);
+                            toastr.success(response.message);
                         }
                         else{
-                            toastr.clear();
+                            
                             toastr.error(response.message);
                         }
                     }

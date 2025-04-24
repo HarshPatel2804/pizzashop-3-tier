@@ -82,6 +82,9 @@
         let sortOrder = "asc";
         const $fromDate = $('#fromDate');
         const $toDate = $('#toDate');
+        let today = new Date().toISOString().slice(0, 10);
+        $toDate.attr('max', today);
+        $fromDate.attr('max', today);
 
         $fromDate.on('change', function () {
             const fromVal = $(this).val();

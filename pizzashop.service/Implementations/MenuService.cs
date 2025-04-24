@@ -511,6 +511,11 @@ public class MenuService : IMenuService
         return await _itemRepository.GetItemByName(model);
     }
 
+    public async Task<bool> UpdateItemAvailabilityAsync(int itemId, bool isAvailable)
+    {
+        return await _itemRepository.UpdateItemAvailabilityAsync(itemId, isAvailable);
+    }
+
     public async Task<List<ModifierViewModel>> GetModifiersBymodifierGroup(int id)
     {
         var data = await _modifierRepository.GetModifiersBymodifierGroup(id);
@@ -527,35 +532,40 @@ public class MenuService : IMenuService
 
     }
 
-     public async Task UpdateCategorySortOrder(List<int> sortOrder){
+    public async Task UpdateCategorySortOrder(List<int> sortOrder)
+    {
         await _categoryRepository.UpdateSortOrderOfCategory(sortOrder);
     }
 
-    public async Task UpdateModifierGroupSortOrder(List<int> sortOrder){
+    public async Task UpdateModifierGroupSortOrder(List<int> sortOrder)
+    {
         await _modifierRepository.UpdateSortOrderOfModifierGroup(sortOrder);
     }
 
-    public async Task<int> FirstCategoryId(){
+    public async Task<int> FirstCategoryId()
+    {
         return await _categoryRepository.GetFirstCategoryId();
     }
 
-    public async Task DeleteModifiergroup(int modifierGroupId){
+    public async Task DeleteModifiergroup(int modifierGroupId)
+    {
         var mappings = _modifierRepository.GetByModifierGroupId(modifierGroupId);
 
-        foreach( var mapping in mappings ){
-            await _modifierRepository.DeleteModifier(mapping.ModifierId , modifierGroupId);
+        foreach (var mapping in mappings)
+        {
+            await _modifierRepository.DeleteModifier(mapping.ModifierId, modifierGroupId);
         }
 
         await _modifierRepository.DeleteModifierGroupAsync(modifierGroupId);
     }
 
-     public async Task<List<ItemViewModel>> GetMenuItemsAsync(string categoryId, string searchText)
-        {
-            return await _itemRepository.GetMenuItemsbyCategoryAsync(categoryId, searchText);
-        }
+    public async Task<List<ItemViewModel>> GetMenuItemsAsync(string categoryId, string searchText)
+    {
+        return await _itemRepository.GetMenuItemsbyCategoryAsync(categoryId, searchText);
+    }
 
     public async Task<bool> ToggleFavoriteAsync(int itemId, bool isFavorite)
-        {
-            return await _itemRepository.ToggleFavoriteAsync(itemId, isFavorite);
-        }
+    {
+        return await _itemRepository.ToggleFavoriteAsync(itemId, isFavorite);
+    }
 }
