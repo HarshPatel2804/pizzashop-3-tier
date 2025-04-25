@@ -63,7 +63,8 @@
 
             </div>
         </section>
-        <div id="order-card" class="d-none OrderCard me-3 rounded shadow p-3 mt-3" style="flex : 1; align-self: flex-start; height: auto;">
+        <div id="order-card" class="d-none OrderCard me-3 rounded shadow p-3 mt-3"
+            style="flex : 1; align-self: flex-start; height: auto;">
 
         </div>
     </div>
@@ -75,6 +76,9 @@
 <script>
     $(document).ready(function () {
         let currentCategory = "ALL";
+        let confirmedSelections = [];
+
+        let tempSelections = null;
         let searchText = "";
         function getQueryParam(param) {
             const urlParams = new URLSearchParams(window.location.search);
@@ -135,7 +139,8 @@
         });
 
         function initializeMenuItems() {
-            $('.heart-btn').on('click', function () {
+            $('.heart-btn').on('click', function (e) {
+                e.stopPropagation();
                 const itemId = $(this).data('itemid');
                 const isFavorite = $(this).hasClass('favorite');
                 console.log(isFavorite);
@@ -160,7 +165,8 @@
                 const itemId = $(this).data('itemid');
                 const itemName = $(this).data('name');
                 const itemType = $(this).data('type');
-                console.log(itemName);
+                const rate = $(this).data('rate');
+                console.log(itemName + rate);
                 let triangleClass = '';
                 switch (itemType) {
                     case "Veg":
@@ -183,12 +189,19 @@
                         itemId: itemId
                     },
                     success: function (data) {
-                        $('#ItemModifierModal').html(data);
-                        $('.itemName').text(itemName);
-                        $('.modifierType')
-                            .removeClass('veg non-veg vegan-corner')
-                            .addClass(triangleClass);
-                        $('#ItemModifiers').modal('show');
+                        if (data == "0") {
+                        }
+                        else {
+                            $('#ItemModifierModal').html(data);
+                            $('.itemName').text(itemName);
+                            $('.ItemId').val(itemId);
+                            $('.Rate').val(rate);
+                            $('.modifierType')
+                                .removeClass('veg non-veg vegan-corner')
+                                .addClass(triangleClass);
+                            $('#ItemModifiers').modal('show');
+                            handlemodifierPopUp();
+                        }
                     }
                 });
 
@@ -196,5 +209,322 @@
         }
 
         loadMenuItems();
+
+        function handlemodifierPopUp() {
+            initializeArray();
+            function initializeArray() {
+                const itemId = $('.ItemId').val();
+                const itemName = $('.itemName').text();
+                const rate = $('.Rate').val();
+                const timestamp = new Date().getTime();
+
+                tempSelections = {
+                    uniqueId: `${itemId}-${timestamp}`,
+                    itemId: itemId,
+                    itemName: itemName,
+                    itemRate: rate,
+                    quantity: 1,
+                    groups: {}
+                };
+
+                console.log(tempSelections);
+
+                const existingItem = confirmedSelections.find(item => item.itemId === itemId);
+
+                resetVisualSelections();
+
+                if (existingItem) {
+                    tempSelections.groups = JSON.parse(JSON.stringify(existingItem.groups));
+
+                    restoreVisualSelections(tempSelections);
+                }
+            };
+
+            $('.modifier-card-custom').on('click', function () {
+                console.log("clicked");
+                if (!tempSelections) return;
+
+
+                const $card = $(this);
+                const groupId = $card.data('group');
+                const mappingId = $card.data('mapping');
+                const modifierId = $card.data('id');
+                const minRequired = parseInt($card.data('min'));
+                const maxAllowed = parseInt($card.data('max'));
+                const modifierName = $card.find('span:first').text();
+                const modifierRate = $card.find('span.text-muted').text().replace('₹', '');
+
+                if (!tempSelections.groups[groupId]) {
+                    const groupName = $card.data('groupname');
+
+                    tempSelections.groups[groupId] = {
+                        groupId: groupId,
+                        mappingId: mappingId,
+                        groupName: groupName,
+                        minRequired: minRequired,
+                        maxAllowed: maxAllowed,
+                        selectedModifiers: {}
+                    };
+                }
+
+                if ($card.hasClass('active')) {
+                    $card.removeClass('active');
+                    $card.css('background-color', '');
+                    delete tempSelections.groups[groupId].selectedModifiers[modifierId];
+
+                    if (Object.keys(tempSelections.groups[groupId].selectedModifiers).length === 0) {
+                    }
+                } else {
+                    const currentSelections = Object.keys(tempSelections.groups[groupId].selectedModifiers).length;
+                    if (currentSelections >= maxAllowed) {
+                        toastr.error(`You can select maximum ${maxAllowed} options from ${tempSelections.groups[groupId].groupName}`);
+                        return;
+                    }
+
+                    $card.addClass('active');
+                    $card.css({
+                        'background-color': '#e6f2ff',
+                        'opacity': '0.9'
+                    });
+
+                    tempSelections.groups[groupId].selectedModifiers[modifierId] = {
+                        modifierId: modifierId,
+                        modifierName: modifierName,
+                        rate: modifierRate
+                    };
+                }
+            });
+
+            $('#modifiersForm').on('submit', function (e) {
+                e.preventDefault();
+
+                if (!tempSelections) return;
+
+                let allGroups = {};
+                $('.modifier-card-custom').each(function () {
+                    const $card = $(this);
+                    const groupId = $card.data('group');
+
+                    if (!allGroups[groupId]) {
+                        allGroups[groupId] = {
+                            minRequired: parseInt($card.data('min')),
+                            maxAllowed: parseInt($card.data('max')),
+                            groupName: $card.data('groupname')
+                        };
+                    }
+                });
+
+                let isValid = true;
+
+                for (const groupId in allGroups) {
+                    const group = allGroups[groupId];
+
+                    let selectedCount = 0;
+                    if (tempSelections.groups[groupId] && tempSelections.groups[groupId].selectedModifiers) {
+                        selectedCount = Object.keys(tempSelections.groups[groupId].selectedModifiers).length;
+                    }
+
+                    if (selectedCount < group.minRequired) {
+                        toastr.error(`Please select at least ${group.minRequired} options from ${group.groupName}`);
+                        isValid = false;
+                    }
+                }
+
+                if (isValid) {
+                    updateConfirmedSelections();
+                    console.log("Confirmed selections:", confirmedSelections);
+                    $('#ItemModifiers').modal('hide');
+                }
+            });
+
+            $('#ItemModifiers .btn-danger').on('click', function () {
+                tempSelections = null;
+            });
+
+            function resetVisualSelections() {
+                $('.modifier-card-custom').removeClass('active').css({
+                    'background-color': '',
+                    'opacity': ''
+                });
+            }
+
+            function restoreVisualSelections(selectionData) {
+                if (!selectionData) return;
+
+                for (const groupId in selectionData.groups) {
+                    const group = selectionData.groups[groupId];
+
+                    for (const modifierId in group.selectedModifiers) {
+                        $(`.modifier-card-custom[data-group="${groupId}"][data-id="${modifierId}"]`).addClass('active').css({
+                            'background-color': '#e6f2ff',
+                            'opacity': '0.9'
+                        });
+                    }
+                }
+            }
+
+            function updateConfirmedSelections() {
+                if (!tempSelections) return;
+
+                const identicalItemIndex = confirmedSelections.findIndex(item => {
+                    if (item.itemId !== tempSelections.itemId) return false;
+
+                    const tempGroupIds = Object.keys(tempSelections.groups);
+                    const itemGroupIds = Object.keys(item.groups);
+
+                    if (tempGroupIds.length !== itemGroupIds.length) return false;
+
+                    for (const groupId of tempGroupIds) {
+                        if (!item.groups[groupId]) return false;
+
+                        const tempModifiers = tempSelections.groups[groupId].selectedModifiers;
+                        const itemModifiers = item.groups[groupId].selectedModifiers;
+
+                        const tempModifierIds = Object.keys(tempModifiers);
+                        const itemModifierIds = Object.keys(itemModifiers);
+
+                        if (tempModifierIds.length !== itemModifierIds.length) return false;
+
+                        for (const modifierId of tempModifierIds) {
+                            if (!itemModifiers[modifierId]) return false;
+                        }
+                    }
+
+                    return true;
+                });
+
+                if (identicalItemIndex !== -1) {
+                    confirmedSelections[identicalItemIndex].quantity += tempSelections.quantity;
+                } else {
+                    confirmedSelections.push(JSON.parse(JSON.stringify(tempSelections)));
+                }
+
+                tempSelections = null;
+
+                renderConfirmedSelections();
+            }
+
+            function openModifiersModal(itemId, itemName) {
+                $('.ItemId').val(itemId);
+                $('.itemName').text(itemName);
+
+                $('#ItemModifiers').modal('show');
+            }
+
+            function getAllConfirmedSelections() {
+                return confirmedSelections;
+            }
+
+            function removeConfirmedItem(itemId) {
+                const index = confirmedSelections.findIndex(item => item.itemId === itemId);
+                if (index !== -1) {
+                    confirmedSelections.splice(index, 1);
+                }
+            }
+
+            function renderConfirmedSelections() {
+                const $container = $('#selected-items-container');
+                $container.empty();
+
+                confirmedSelections.forEach((item, index) => {
+                    const $template = $('#item-template').clone();
+                    $template.removeAttr('id').removeClass('d-none');
+                    const accordionId = `collapse-${item.uniqueId}`;
+
+                    $template.attr('data-item-id', item.itemId);
+                    $template.attr('data-unique-id', item.uniqueId);
+                    $template.find('.item-name').text(item.itemName);
+
+                    $template.find('.accordion-button')
+                        .attr('data-bs-target', `#${accordionId}`)
+                        .attr('aria-controls', accordionId);
+
+                    $template.find('.accordion-collapse')
+                        .attr('id', accordionId);
+
+                    const $modifierList = $template.find('ul');
+                    $modifierList.empty();
+
+                    let totalModifierPrice = 0;
+
+                    for (const groupId in item.groups) {
+                        const group = item.groups[groupId];
+
+                        for (const modifierId in group.selectedModifiers) {
+                            const modifier = group.selectedModifiers[modifierId];
+
+                            totalModifierPrice += parseFloat(modifier.rate);
+
+                            $modifierList.append(`<li>${modifier.modifierName} ₹${modifier.rate}</li>`);
+                        }
+                    }
+
+                    if ($modifierList.children().length === 0) {
+                        $modifierList.append('<li>No modifiers selected</li>');
+                    }
+                    console.log(item.itemRate);
+
+                    $template.find('.item-quantity').text(item.quantity);
+
+                    const itemPrice = item.quantity * parseFloat(item.itemRate);
+                    const modifierPrice = item.quantity * totalModifierPrice;
+
+                    $template.find('.item-base-price').text(`₹${itemPrice.toFixed(2)}`);
+                    $template.find('.item-total-price').text(`₹${modifierPrice.toFixed(2)}`);
+
+                    $container.append($template);
+                });
+
+                setupItemControlEvents();
+            }
+
+            function setupItemControlEvents() {
+                $('#selected-items-container').on('click', '.item-quantity-increase', function (e) {
+                    e.stopImmediatePropagation();
+                    const $itemContainer = $(this).closest('[data-unique-id]');
+                    const index = $itemContainer.data('unique-id');
+                    const $quantitySpan = $(this).siblings('.item-quantity');
+
+                    const itemIndex = confirmedSelections.findIndex(i => i.uniqueId === index);
+                    if (itemIndex !== -1) {
+                        console.log(confirmedSelections[itemIndex].quantity);
+                        confirmedSelections[itemIndex].quantity += 1;
+                        console.log(confirmedSelections[itemIndex].quantity);
+                        renderConfirmedSelections();
+                    }
+                });
+
+                $('#selected-items-container').on('click', '.item-quantity-decrease', function (e) {
+                    e.stopImmediatePropagation();
+                    const $itemContainer = $(this).closest('[data-unique-id]');
+                    const index = $itemContainer.data('unique-id');
+                    const $quantitySpan = $(this).siblings('.item-quantity');
+
+                    const itemIndex = confirmedSelections.findIndex(i => i.uniqueId === index);
+                    if (itemIndex !== -1 && confirmedSelections[itemIndex].quantity > 1) {
+                        confirmedSelections[itemIndex].quantity -= 1;
+                        renderConfirmedSelections();
+                    }
+                });
+
+                $('#selected-items-container').on('click', '.remove-item', function () {
+                    const $itemContainer = $(this).closest('[data-unique-id]');
+                    const index = $itemContainer.data('unique-id');
+
+                    removeConfirmedItem(index);
+
+                    $itemContainer.remove();
+                });
+
+                function removeConfirmedItem(index) {
+                    const Index = confirmedSelections.findIndex(item => item.uniqueId === index);
+                    if (Index !== -1) {
+                        confirmedSelections.splice(Index, 1);
+                        renderConfirmedSelections();
+                    }
+                }
+
+            }
+        }
     });
 </script>

@@ -38,10 +38,9 @@ public class OrderMenuController : Controller
     public async Task<IActionResult> GetItemModifiers(int itemId){
         var itemModifierMapping = await _menuService.GetItemModifierGroupsAsync(itemId);
          var item = await _menuService.GetEditItemDetails(itemId);
-         var response = new {
-            Item = item,
-            ItemModifierMapping = itemModifierMapping
-         };
+         if(itemModifierMapping.Count() == 0){
+         return Json(0);
+         }
 
         return PartialView("_itemModifiersPartial", itemModifierMapping );
     }

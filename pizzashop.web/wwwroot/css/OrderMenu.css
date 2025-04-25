@@ -95,6 +95,19 @@ body{
     background-color: white;
 }
 
+.modifier-card-custom.active-modifier {
+    background-color: rgba(13, 110, 253, 0.15);
+    border-color: #0d6efd;
+}
+.modifier-card-custom {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.modifier-card-custom:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
 .image-container {
     margin-left: 1rem;
     border-radius: 1rem;
