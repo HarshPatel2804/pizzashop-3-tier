@@ -61,24 +61,24 @@
             <div class="row">
                 <div class="form-floating col-md-6 col-12 mb-3">
                     <input asp-for="FirstName" type="text" class="form-control" id="floatingInput">
-                    <label for="floatingInput" class="label-pad">First Name</label>
+                    <label for="floatingInput" class="label-pad">First Name*</label>
                     <span asp-validation-for="FirstName" class="text-danger"></span>
                 </div>
                 <div class="form-floating col-md-6 col-12 mb-3">
                     <input asp-for="LastName" type="text" class="form-control" id="floatingPassword">
-                    <label for="floatingPassword" class="label-pad">Last Name</label>
+                    <label for="floatingPassword" class="label-pad">Last Name*</label>
                     <span asp-validation-for="LastName" class="text-danger"></span>
                 </div>
             </div>
             <div class="row">
                 <div class="form-floating col-md-6 col-12 mb-3">
                     <input asp-for="Username" type="text" class="form-control" id="Username">
-                    <label for="Username" class="label-pad">Username</label>
+                    <label for="Username" class="label-pad">Username*</label>
                     <span asp-validation-for="Username" class="text-danger"></span>
                 </div>
                 <div class="form-floating col-md-6 col-12 mb-3">
                     <input asp-for="Phone" type="text" class="form-control" id="Phone">
-                    <label for="Phone" class="label-pad">Phone</label>
+                    <label for="Phone" class="label-pad">Phone*</label>
                     <span asp-validation-for="Phone" class="text-danger"></span>
                 </div>
             </div>
@@ -91,7 +91,7 @@
                             <option value="@country.Value">@country.Text</option>
                         }
                     </select>
-                    <label for="floatingPassword" class="label-pad">Country</label>
+                    <label for="floatingPassword" class="label-pad">Country*</label>
                     <span asp-validation-for="CountryId" class="text-danger"></span>
                 </div>
                 <div class="form-floating col-md-4 col-12 mb-3">
@@ -102,7 +102,7 @@
                             <option value="@state.Value">@state.Text</option>
                         }
                     </select>
-                    <label for="floatingPassword" class="label-pad">State</label>
+                    <label for="floatingPassword" class="label-pad">State*</label>
                     <span asp-validation-for="StateId" class="text-danger"></span>
                 </div>
                 <div class="form-floating col-md-4 col-12 mb-3">
@@ -113,7 +113,7 @@
                             <option value="@city.Value">@city.Text</option>
                         }
                     </select>
-                    <label for="floatingPassword" class="label-pad">City</label>
+                    <label for="floatingPassword" class="label-pad">City*</label>
                     <span asp-validation-for="CityId" class="text-danger"></span>
                 </div>
             </div>

@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Http;
 using pizzashop.repository.Interfaces;
 using pizzashop.repository.Models;
 using pizzashop.repository.ViewModels;
 using pizzashop.service.Interfaces;
+using pizzashop.service.Utils;
 
 namespace pizzashop.service.Implementations;
 
@@ -11,10 +13,13 @@ public class PermissionService : IPermissionService
 
      private readonly IPermissionRepository _permissionRepository;
 
-     public PermissionService(IRoleService RoleService , IPermissionRepository permissionRepository)
+     private readonly IHttpContextAccessor _httpContextAccessor;
+
+     public PermissionService(IRoleService RoleService , IPermissionRepository permissionRepository , IHttpContextAccessor httpContextAccessor)
     {
        _RoleService = RoleService;
        _permissionRepository = permissionRepository;
+       _httpContextAccessor = httpContextAccessor;
     }
     public async Task<List<PermissionViewModel>> GetPermissions(int Roleid)
     {
@@ -43,5 +48,24 @@ public class PermissionService : IPermissionService
     public async Task<Permission> GetPermissions(string role , string module){
         return await _permissionRepository.GetPermissionByRoleAndModule(role,module);
     }
+
+    public async Task<Permission> GetCurrentUserPermissionsForModule(string moduleName)
+        {
+            CookiesViewModel user = SessionUtils.GetUser(_httpContextAccessor.HttpContext);
+            
+            if (user == null)
+            {
+                return new Permission();
+            }
+
+            Role userRole = await _RoleService.GetRoleById(user.roleId);
+            
+            if (userRole == null)
+            {
+                return new Permission();
+            }
+
+            return await GetPermissions(userRole.Rolename, moduleName);
+        }
 
 }

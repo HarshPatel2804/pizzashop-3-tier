@@ -1,3 +1,9 @@
+@using pizzashop.service.Interfaces
+@inject IPermissionService PermissionService
+@{
+    var permission = await PermissionService.GetCurrentUserPermissionsForModule("Menu");
+}
+
 <table class="table  px-5" style="border-radius: 6px;">
     <thead>
         <tr>
@@ -9,7 +15,9 @@
             <th scope="col"><span class="heading">Rate</span></th>
             <th scope="col"><span class="heading">Quantity</span> </th>
             <th scope="col"><span class="heading">Available</span></th>
+            @if(permission.Canaddedit == true || permission.Candelete == true){
             <th scope="col"><span class="heading">Action</span></th>
+            }
         </tr>
     </thead>
     <tbody>
@@ -28,20 +36,26 @@
             <td>@item.Quantity</td>
             <td class="mx-auto">
                 <div class="form-check form-switch">
-                    <input class="form-check-input isAvailable" type="checkbox" id="flexSwitchCheckDefault" @(item.Isavailable ? "checked" : "")>
+                    <input class="form-check-input isAvailable" type="checkbox" id="flexSwitchCheckDefault" @(item.Isavailable ? "checked" : "") @(permission?.Canaddedit == false ? "disabled" : "")>
                 </div>
             </td>
+            @if(permission.Canaddedit == true || permission.Candelete == true){
             <td>
+                @if(permission.Canaddedit == true){
                 <a>
                     <img src="~/images/pen.svg" alt="profile image" class="me-2 bg-light editItem" id="profile" data-id="@item.Itemid"
                         style="max-height: 30px; height: 100%; width:auto;">
                 </a>
+                }
+                @if(permission.Candelete == true){
                 <a data-bs-toggle="modal" data-bs-target="#exampleModalCenter">
                     <img src="~/images/trash.svg" alt="profile image" class="me-2 bg-light deleteItem" id="profile" data-bs-toggle="modal" data-bs-target="#DeleteItemModal" data-id="@item.Itemid" data-category="@item.Categoryid"
                         style="max-height: 30px; height: 100%; width:auto; border-radius: 100%;">
                 </a>
+                }
 
             </td>
+            }
         </tr>
          }
     </tbody>

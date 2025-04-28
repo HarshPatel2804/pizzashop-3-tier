@@ -30,7 +30,7 @@ public interface IMenuService
 
     Task<AddEditItemViewModel> GetEditItemDetails(int itemId);
 
-    Task<AddEditItemViewModel> GetItemDetails();
+    Task<AddEditItemViewModel> GetItemDetails(int categoryId);
 
     Task AddItemAsync(AddEditItemViewModel addEditItemViewModel , IFormFile ProfileImage);
 

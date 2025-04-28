@@ -1,10 +1,12 @@
 ﻿@using System.Security.Claims
+@using System.Security
 @using pizzashop.repository.ViewModels
 @using pizzashop.service.Interfaces
 @using pizzashop.service.Utils
 @using Microsoft.AspNetCore.Mvc;
 @inject IHttpContextAccessor HttpContextAccessor
 @inject IProfileService ProfileService
+@inject IPermissionService PermissionService
 <!DOCTYPE html>
 <html lang="en">
 
@@ -21,83 +23,114 @@
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="~/js/site.js" asp-append-version="true"></script>
-   <!-- jQuery Validation Plugin -->
-    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-    <!-- jQuery Unobtrusive Validation -->
-    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+<!-- jQuery Validation Plugin -->
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<!-- jQuery Unobtrusive Validation -->
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 
 @{
-     CookiesViewModel user = SessionUtils.GetUser(HttpContextAccessor.HttpContext);
-      var profileImageUrl = "";
-      var Username = "";
+    var permission = new Permission();
+    var permission2 = new Permission();
+    var permission3 = new Permission();
+    var permission4 = new Permission();
+    var permission5 = new Permission();
+    var permission6 = new Permission();
+    var permission7 = new Permission();
+    CookiesViewModel user = SessionUtils.GetUser(HttpContextAccessor.HttpContext);
+    var profileImageUrl = "";
+    var Username = "";
     if(user != null) {
-     var Id = user.Id;
-     var ProfileData = await ProfileService.GetProfileData((int)Id);
-     profileImageUrl = ProfileData.Profileimg != null ? @Url.Content("~/images/uploads/" + ProfileData.Profileimg) : @Url.Content("~/images/Default_pfp.svg.png");
-     Console.WriteLine(profileImageUrl);
-     Username = ProfileData.Username;
-     }
+        var Id = user.Id;
+        var ProfileData = await ProfileService.GetProfileData((int)Id);
+        profileImageUrl = ProfileData.Profileimg != null ? @Url.Content("~/images/uploads/" + ProfileData.Profileimg) : @Url.Content("~/images/Default_pfp.svg.png");
+        Console.WriteLine(profileImageUrl);
+        Username = ProfileData.Username;
+        permission = await PermissionService.GetPermissions(ProfileData.Rolename , "Users");
+        permission2 = await PermissionService.GetPermissions(ProfileData.Rolename , "RoleAndPermission");
+        permission3 = await PermissionService.GetPermissions(ProfileData.Rolename , "Menu");
+        permission4 = await PermissionService.GetPermissions(ProfileData.Rolename , "TableAndSection");
+        permission5 = await PermissionService.GetPermissions(ProfileData.Rolename , "TaxAndFee");
+        permission6 = await PermissionService.GetPermissions(ProfileData.Rolename , "Order");
+        permission7 = await PermissionService.GetPermissions(ProfileData.Rolename , "Customers");
+        Console.WriteLine(permission + "permission");
 
-     var role = User.FindFirstValue(ClaimTypes.Role);
+    }
+
+    var role = User.FindFirstValue(ClaimTypes.Role);
+
 }
 <body>
     <main class="d-flex flex-column w-100">
         <section class="row w-100 h-100">
             <aside
-                class="col-auto d-flex justify-content-start align-items-center flex-column offcanvas-lg offcanvas-start px-4"
-                id=sidebar>
+            class="col-auto d-flex justify-content-start align-items-center flex-column offcanvas-lg offcanvas-start px-4"
+            id=sidebar>
                 <div class="w-100 menu mt-3 d-flex justify-content-center">
                     <div class="me-1">
                         <img src="~/images/logos/pizzashop_logo.png" alt="logo" style="width: 60px;">
                     </div>
                     <span style="color: rgb(0, 102, 167); font-weight: 500; font-size: 20px;">PIZZASHOP</span>
                     <button type="button" class="btn-close text-reset ms-auto d-lg-none" data-bs-dismiss="offcanvas"
-                        data-bs-target="#sidebar" aria-label="Close"></button>
+                    data-bs-target="#sidebar" aria-label="Close"></button>
                 </div>
                 <a class='@(ViewContext.RouteData.Values["controller"]!.ToString() == "Dashboard" ? "activeItem" : " ") menu w-100 mt-4' asp-controller="Dashboard" asp-action="Dashboard" class="" onclick="selectItem(this)">
                     <img src="~/images/navbar-icons/dashboard-default.png" class="me-2 ms-4 menu-icon black">
                     <img src="~/images/navbar-icons/dashboard-active.png" class="me-2 ms-4 menu-icon  blue">
                     <span style="font-weight: 600;" class="text">Dashboard</span>
                 </a>
-                <a class='@(ViewContext.RouteData.Values["controller"]!.ToString() == "User" ? "activeItem" : " ") menu w-100 mt-4' asp-controller="User" asp-action="UserList"  onclick="selectItem(this)">
+                @if(permission.Canview == true){
+                    <a class='@(ViewContext.RouteData.Values["controller"]!.ToString() == "User" ? "activeItem" : " ") menu w-100 mt-4' asp-controller="User" asp-action="UserList"  onclick="selectItem(this)">
                     <img src="~/images/navbar-icons/users-default.png" class="me-2 ms-4 menu-icon black">
                     <img src="~/images/navbar-icons/users-active.png" class="me-2 ms-4 menu-icon blue">
                     <span style="font-weight: 600;" class="text">Users</span>
                 </a>
+                }
+                @if(permission2.Canview == true){
                 <a class='@(ViewContext.RouteData.Values["controller"]!.ToString() == "Role" ? "activeItem" : " ") menu w-100 mt-4' asp-controller="Role" asp-action="Role"  onclick="selectItem(this)">
                     <img src="~/images/navbar-icons/roles-default.png" class="me-2 ms-4 menu-icon black ">
                     <img src="~/images/navbar-icons/roles-active.png" class="me-2 ms-4 menu-icon blue ">
                     <span style="font-weight: 600;" class="text me-2">Roles and Permission</span>
                 </a>
+                }
+                @if(permission3.Canview == true){
                 <a class='@(ViewContext.RouteData.Values["controller"]!.ToString() == "Menu" ? "activeItem" : " ") menu w-100 mt-4' asp-controller="Menu" asp-action="Menu"  onclick="selectItem(this)">
                     <img src="~/images/navbar-icons/menu-default.png" class="me-2 ms-4 menu-icon black">
                     <img src="~/images/navbar-icons/menu-active.png" class="me-2 ms-4 menu-icon blue">
                     <span style="font-weight: 600;" class="text">Menu</span>
                 </a>
+                }
+                @if(permission4.Canview == true){
                 <a class='@(ViewContext.RouteData.Values["controller"]!.ToString() == "Table" ? "activeItem" : " ") menu w-100 mt-4' asp-controller="Table" asp-action="Table"  onclick="selectItem(this)">
                     <img src="~/images/navbar-icons/table-default.png" class="me-2 ms-4 menu-icon black">
                     <img src="~/images/navbar-icons/table-active.png" class="me-2 ms-4 menu-icon blue">
                     <span style="font-weight: 600;" class="text">Tables and Sections</span>
                 </a>
+                }
+                @if(permission5.Canview == true){
                 <a class='@(ViewContext.RouteData.Values["controller"]!.ToString() == "Taxes" ? "activeItem" : " ") menu w-100 mt-4' asp-controller="Taxes" asp-action="Tax" onclick="selectItem(this)">
                     <img src="~/images/navbar-icons/taxes-default.png" class="me-2 ms-4 menu-icon black">
                     <img src="~/images/navbar-icons/taxes-active.png" class="me-2 ms-4 menu-icon blue">
                     <span style="font-weight: 600;" class="text">Taxes and Fees</span>
                 </a>
+                }
+                @if(permission6.Canview == true){
                 <a class='@(ViewContext.RouteData.Values["controller"]!.ToString() == "Orders" ? "activeItem" : " ") menu w-100 mt-4' asp-controller="Orders" asp-action="Order" onclick="selectItem(this)">
                     <img src="~/images/navbar-icons/orders-default.png" class="me-2 ms-4 menu-icon black">
                     <img src="~/images/navbar-icons/orders-active.png" class="me-2 ms-4 menu-icon blue">
                     <span style="font-weight: 600;" class="text">Orders</span>
                 </a>
+                }
+                @if(permission7.Canview == true){
                 <a class='@(ViewContext.RouteData.Values["controller"]!.ToString() == "Customer" ? "activeItem" : " ") menu w-100 mt-4' asp-controller="Customer" asp-action="Customer" onclick="selectItem(this)">
                     <img src="~/images/navbar-icons/customers-default.png" class="me-2 ms-4 menu-icon black">
                     <img src="~/images/navbar-icons/customers-active.png" class="me-2 ms-4 menu-icon blue">
                     <span style="font-weight: 600;" class="text">Customers</span>
                 </a>
+                }
             </aside>
             <section class="col" style="height:100%; max-height: 100%;">
                 <nav class="navbar"
-                    style="max-height: 50px; height: 100%; position:sticky; background-color: rgb(0, 100, 153);">
+                    style="max-height: 50px; height: 100%; background-color: rgb(0, 100, 153);">
                     <img src="~/images/menu-bar.svg" data-bs-toggle="offcanvas" data-bs-target="#sidebar"
                         alt="menu-bar-image" class="ms-4 d-lg-none">
                      @if (@role == "Account Manager")
@@ -108,11 +141,11 @@
                             }
                     <div class="dropdown @((role != "Account Manager") ? "ms-auto" : "")">
                             <img src=@profileImageUrl class="dropdown-toggle me-2" id="dropdownMenuButton1"
-                            data-bs-toggle="dropdown" aria-expanded="false" style="width:30px; height: 30px;">                        
+                            data-bs-toggle="dropdown" aria-expanded="false" style="width:30px; height: 30px; border-radius: 50%;">                        
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
                             <li class="mt-2">
                                 <div class="d-flex ms-2 mb-0">
-                                    <img src=@profileImageUrl class="me-2" style="width:25px; height: 25px;">  
+                                    <img src=@profileImageUrl class="me-2" style="width:25px; height: 25px; border-radius: 50%;">  
                                     <span>@Username</span>
                                 </div>
                             </li>

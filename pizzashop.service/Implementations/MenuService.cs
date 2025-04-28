@@ -98,10 +98,11 @@ public class MenuService : IMenuService
         return viewModel;
     }
 
-    public async Task<AddEditItemViewModel> GetItemDetails()
+    public async Task<AddEditItemViewModel> GetItemDetails(int categoryId)
     {
         var model = new AddEditItemViewModel
         {
+            Categoryid = categoryId,
             Category = await _categoryRepository.GetCategoriesListAsync(),
             Units = await _unitRepository.GetUnitsListAsync(),
             ModifierGroups = await _modifierRepository.GetAllmodifierGroups()

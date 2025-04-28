@@ -11,7 +11,7 @@
     <div class="row pt-4 ms-sm-5 me-sm-5 ms-3 me-3 mb-4" style="height: 70px;">
         <h2 class="col" style="color: rgb(101, 101, 224); font-family: Roboto; font-weight: 550">Add New User</h1>
             <a asp-controller="User" asp-action="UserList" type="button"
-                class="btn border-primary text-primary col-auto ms-2 d-flex align-items-center"
+                class="btn btn-border-prime text-primary col-auto ms-2 d-flex align-items-center"
                 style="border-radius: 4px;">
                 <img src="~/images/left.png" style="height: 20px;"> Back
             </a>
@@ -23,13 +23,13 @@
                 <div class="form-floating col-md-6 col-12 mb-3">
                     <input asp-for="FirstName" type="text" class="form-control" id="floatingInput"
                         placeholder="First Name">
-                    <label for="floatingInput" class="label-pad">First Name</label>
+                    <label for="floatingInput" class="label-pad">First Name*</label>
                     <span class="text-danger" asp-validation-for="FirstName"></span>
                 </div>
                 <div class="form-floating col-md-6 col-12 mb-3">
                     <input asp-for="LastName" type="text" class="form-control" id="floatingPassword"
                         placeholder="Last Name">
-                    <label for="floatingPassword" class="label-pad">Last Name</label>
+                    <label for="floatingPassword" class="label-pad">Last Name*</label>
                     <span class="text-danger" asp-validation-for="LastName"></span>
                 </div>
             </div>
@@ -37,7 +37,7 @@
                 <div class="form-floating col-md-6 col-12 mb-3">
                     <input asp-for="Username" type="text" class="form-control" id="floatingInput"
                         placeholder="Username">
-                    <label for="floatingInput" class="label-pad">Username</label>
+                    <label for="floatingInput" class="label-pad">Username*</label>
                     <span class="text-danger" asp-validation-for="Username"></span>
                 </div>
                 <div class="form-floating col-md-6 col-12 mb-3">
@@ -48,20 +48,20 @@
                             <option value="@role.Value">@role.Text</option>
                         }
                     </select>
-                    <label for="floatingPassword" class="label-pad">Role</label>
+                    <label for="floatingPassword" class="label-pad">Role*</label>
                     <span class="text-danger" asp-validation-for="Role"></span>
                 </div>
             </div>
             <div class="row">
                 <div class="form-floating col-md-6 col-12 mb-3">
                     <input asp-for="Email" type="email" class="form-control" id="floatingInput" placeholder="Email">
-                    <label for="floatingInput" class="label-pad">Email</label>
+                    <label for="floatingInput" class="label-pad">Email*</label>
                     <span class="text-danger" asp-validation-for="Email"></span>
                 </div>
                 <div class="form-floating col-md-6 col-12 mb-3">
                     <input asp-for="Password" type="password" class="form-control" id="floatingPassword"
                         placeholder="Password">
-                    <label for="floatingPassword" class="label-pad">Password</label>
+                    <label for="floatingPassword" class="label-pad">Password*</label>
                     <span class="text-danger" asp-validation-for="Password"></span>
                 </div>
             </div>
@@ -94,28 +94,28 @@
 
             <div class="row">
                 <div class="form-floating col-md-4 col-12 mb-3">
-                    <select id="Country" asp-for="CountryId" class="form-control" aria-label="Default select example">
+                    <select id="Country" asp-for="CountryId" class="form-select" aria-label="Default select example">
                         <option value="">Select Country</option>
                         @foreach (var country in Model.Countries)
                         {
                             <option value="@country.Value">@country.Text</option>
                         }
                     </select>
-                    <label for="floatingPassword" class="label-pad">Country</label>
+                    <label for="floatingPassword" class="label-pad">Country*</label>
                     <span class="text-danger" asp-validation-for="CountryId"></span>
                 </div>
                 <div class="form-floating col-md-4 col-12 mb-3">
-                    <select id="State" asp-for="StateId" class="form-control" aria-label="Default select example">
+                    <select id="State" asp-for="StateId" class="form-select" aria-label="Default select example">
                         <option value="">Select State</option>
                     </select>
-                    <label for="floatingPassword" class="label-pad">State</label>
+                    <label for="floatingPassword" class="label-pad">State*</label>
                     <span class="text-danger" asp-validation-for="StateId"></span>
                 </div>
                 <div class="form-floating col-md-4 col-12 mb-3">
-                    <select id="City" asp-for="CityId" class="form-control" aria-label="Default select example">
+                    <select id="City" asp-for="CityId" class="form-select" aria-label="Default select example">
                         <option value="">Select City</option>
                     </select>
-                    <label for="floatingPassword" class="label-pad">City</label>
+                    <label for="floatingPassword" class="label-pad">City*</label>
                     <span class="text-danger" asp-validation-for="CityId"></span>
                 </div>
             </div>
@@ -133,17 +133,17 @@
                 </div>
                 <div class="form-floating col-md-4 col-12 mb-3">
                     <input type="text" asp-for="Phone" class="form-control" id="floatingPassword" placeholder="Phone">
-                    <label for="floatingPassword" class="label-pad">Phone</label>
+                    <label for="floatingPassword" class="label-pad">Phone*</label>
                     <span class="text-danger" asp-validation-for="Phone"></span>
                 </div>
             </div>
             <div class="row">
                 <div class="col-auto mb-3">
-                    <button type="submit" class="btn btn-primary" style="border-radius: 3px; width: 120px;">Create
+                    <button type="submit" class="btn btn-prime" style="border-radius: 3px; width: 120px;">Create
                         User</button>
                 </div>
                 <div class="col-auto" style="padding-left: 0px;">
-                    <a type="button" class="btn border-primary text-primary" asp-controller="User" asp-action="UserList"
+                    <a type="button" class="btn btn-border-prime text-primary" asp-controller="User" asp-action="UserList"
                         style="border-radius: 3px; width: 90px; ">Cancel</a>
                 </div>
             </div>

@@ -1,3 +1,6 @@
+@{
+     var permission = ViewData["Permission"] as Permission;
+}
 
 <table class="table px-3" style="border-radius: 6px; box-shadow: 1px 1px 15px rgb(108, 103, 103);">
     <thead>
@@ -27,7 +30,9 @@
                 </div>
             </th>
             <th>Status</th>
+            @if(permission.Canaddedit == true || permission.Candelete == true){
             <th>Action</th>
+            }
         </tr>
     </thead>
     <tbody>
@@ -59,13 +64,18 @@
                         @user.status
                     </span>
                 </td>
+                @if(permission.Canaddedit == true || permission.Candelete == true){
                 <td>@if(user.IsSameUser == false){
+                    @if(permission.Canaddedit == true){
                     <a class="btn" asp-controller="User" asp-action="EditUser" asp-route-id="@user.Id" >
                         <img src="~/images/pen.svg" alt="edit" style="max-height: 30px; height: 100%; width:auto;">
                     </a>
+                    }
+                    @if(permission.Candelete == true){
                     <a class="delete-user" data-bs-toggle="modal" data-id="@user.Id" data-bs-target="#delete" >
                         <img src="~/images/trash.svg" alt="delete" style="max-height: 30px; height: 100%; width:auto;">
                     </a>
+                    }
                     }
                     <div class="fade modal" id="delete" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
                         aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -93,6 +103,7 @@
                         </div>
                     </div>
                 </td>
+                }
             </tr>
         }
         }

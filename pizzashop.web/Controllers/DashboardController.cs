@@ -67,8 +67,13 @@ public class DashboardController : Controller
         var userData = SessionUtils.GetUser(HttpContext);
         model.Email = userData.Email;
         Console.WriteLine(model.OldPassword + "Password");
-        await _ProfileService.UpdatePassword(model);
-        return RedirectToAction("Dashboard","Dashboard");;
+        var (Success , Message) = await _ProfileService.UpdatePassword(model);
+        if(!Success){
+            TempData["ErrorMessage"] = Message;
+            return RedirectToAction("ChangePassword","Dashboard");
+        }
+        TempData["SuccessMessage"] = Message;
+        return RedirectToAction("Dashboard","Dashboard");
     }
 
     

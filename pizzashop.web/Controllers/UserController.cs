@@ -36,7 +36,7 @@ public class UserController : Controller
     {
         var id = SessionUtils.GetUser(HttpContext);
 
-        var (users, totalUsers, totalPages) = await _usersLoginService.GetPaginatedUsersAsync(page, pageSize, search, sortColumn, sortOrder,(int)id.Id);
+        var (users, totalUsers, totalPages) = await _usersLoginService.GetPaginatedUsersAsync(page, pageSize, search, sortColumn, sortOrder, (int)id.Id);
         ViewBag.CurrentPage = page;
         ViewBag.PageSize = pageSize;
         ViewBag.TotalUsers = totalUsers;
@@ -81,7 +81,12 @@ public class UserController : Controller
         ModelState.Remove(nameof(model.Roles));
         ModelState.Remove(nameof(model.Profileimg));
         ModelState.Remove(nameof(ProfileImage));
-        if (!ModelState.IsValid) return View(model);
+        if (!ModelState.IsValid)
+        {
+            model.Roles = await _roleService.GetAllRoles();
+            model.Countries = await _countryService.GetAllCountry();
+            return View(model);
+        }
         await _userService.AddUser(model, ProfileImage);
         await _EmailService.SendEmailtoNewUserAsync(model.Email, model.FirstName, model.Password);
         TempData["SuccessMessage"] = "User added successfully!";
@@ -110,7 +115,10 @@ public class UserController : Controller
         ModelState.Remove(nameof(model.Profileimg));
         ModelState.Remove(nameof(ProfileImage));
         ModelState.Remove(nameof(model.Rolename));
-        if (!ModelState.IsValid) return View(model);
+        if (!ModelState.IsValid)
+        {
+            return RedirectToAction("EditUser", "User");
+        }
         await _userService.UpdateUserData(model, ProfileImage);
         TempData["SuccessMessage"] = "User edited successfully!";
         return RedirectToAction("UserList", "User");

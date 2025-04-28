@@ -1,8 +1,14 @@
+@using pizzashop.service.Interfaces
+@inject IPermissionService PermissionService
 @{
     Layout = "_Layout";
     ViewData["Title"] = "User Page";
 }
 @* @model List<Userslogin> *@
+@{
+    var permission = await PermissionService.GetCurrentUserPermissionsForModule("Users");
+    ViewData["Permission"] = permission;
+}
 
 <head>
     <link rel="stylesheet" href="~/css/userList.css">
@@ -15,11 +21,14 @@
         <h2 class="col-sm col-12" style="color: rgb(101, 101, 224); font-family: Roboto; font-weight: 550">Users</h1>
             <input type="search" class="col-sm-auto col-6" id="searchInput" placeholder="search"
                 style="border-radius: 3px; border: none; min-height: 50px;">
-            <a asp-controller="User" asp-action="AddUser" type="button"
-                class="btn btn-primary col-sm-auto col-4 ms-sm-2 ms-auto align-items-center d-flex"
-                style="border-radius: 2px; border: none;">+Add User</a>
+            @if (permission.Canaddedit == true)
+            {
+                <a asp-controller="User" asp-action="AddUser" type="button"
+                    class="btn btn-prime col-sm-auto col-4 ms-sm-2 ms-auto align-items-center d-flex"
+                    style="border-radius: 4px; border: none;">+Add User</a>
+            }
     </div>
-    <div class="table-responsive pt-4 ms-2 me-2" id="table-container">
+    <div class="table-responsive pt-4 ms-2 me-2" id="table-container" style="overflow-x: auto;">
         <partial name="_ShowUserList" model="Model">
     </div>
     <div class="fade modal" id="exampleModalCenter" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"

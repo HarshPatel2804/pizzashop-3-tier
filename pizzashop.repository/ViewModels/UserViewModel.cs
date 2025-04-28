@@ -66,7 +66,6 @@ public class UserViewModel
 
         public string? Address { get; set; }
 
-        [Required(ErrorMessage = "Zipcode is required.")]
         [RegularExpression(@"^[0-9]{6}$",
                 ErrorMessage = "Zipcode name can have only numbers and can be of 6 characters.")]
         public string? Zipcode { get; set; }

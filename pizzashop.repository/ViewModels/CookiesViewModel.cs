@@ -12,5 +12,7 @@ public class CookiesViewModel
 
     public string ProfileImg {get; set;}
 
+    public int roleId {get; set;}
+
 
 }

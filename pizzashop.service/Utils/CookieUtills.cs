@@ -40,7 +40,8 @@ namespace pizzashop.service.Utils
                 Id = userLogin.Userid,
                 Email = userLogin.Email,
                 Username = userLogin.Username,
-                ProfileImg = user.Profileimg
+                ProfileImg = user.Profileimg,
+                roleId = userLogin.Roleid
             };
 
             Console.WriteLine(cookieUserData.ProfileImg);

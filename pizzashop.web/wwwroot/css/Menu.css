@@ -43,6 +43,28 @@ a {
     height: 25px;
 }
 
+.btn-prime {
+    background-color: #0066a7 !important;
+    color: white !important;
+  }
+  
+  .btn-prime:hover {
+    background-color: #075383 !important;
+    color: white !important;
+  }
+  
+  .btn-border-prime {
+    border: 1px solid #0066a7 !important;
+    color: #0066a7 !important;
+    background-color: transparent !important;
+  }
+  
+  .btn-border-prime:hover {
+    border: 1px solid #0066a7 !important;
+    color: #0066a7 !important;
+    background-color: transparent !important;
+  }
+
 .nav-link {
     background-color: none !important;
     border: none !important;

@@ -1,3 +1,8 @@
+@using pizzashop.service.Interfaces
+@inject IPermissionService PermissionService
+@{
+    var permission = await PermissionService.GetCurrentUserPermissionsForModule("TaxAndFee");
+}
 <table class="table  px-5" style="border-radius: 6px;">
     <thead>
         <tr>
@@ -6,7 +11,9 @@
             <th scope="col"><span class="heading">IsEnabled</span></th>
             <th scope="col"><span class="heading">Default</span></th>
             <th scope="col"><span class="heading">Tax Value</span></th>
+             @if(permission.Canaddedit == true || permission.Candelete == true){
             <th scope="col"><span class="heading">Action</span></th>
+            }
         </tr>
     </thead>
     <tbody>
@@ -26,17 +33,23 @@
                     </div>
                 </td>
                 <td>@(tax.TaxTypeId == 1 ? $"{tax.Taxvalue}{tax.TaxType.ShortCode}" : $"{tax.TaxType.ShortCode}{tax.Taxvalue}")</td>
+                 @if(permission.Canaddedit == true || permission.Candelete == true){
                 <td>
+                     @if(permission.Canaddedit == true){
                     <a>
                         <img src="~/images/pen.svg" alt="profile image" class="me-2 bg-light editTax" id="profile" data-id="@tax.Taxid"
                             style="max-height: 30px; height: 100%; width:auto;">
                     </a>
+                    }
+                     @if(permission.Candelete == true){
                     <a data-bs-toggle="modal" data-bs-target="#exampleModalCenter">
                         <img src="~/images/trash.svg" alt="profile image" class="me-2 bg-light deleteTax" id="profile"
                             data-bs-toggle="modal" data-bs-target="#DeleteTaxModal" data-id="@tax.Taxid"
                             style="max-height: 30px; height: 100%; width:auto; border-radius: 100%;">
                     </a>
+                    }
                 </td>
+                }
             </tr>
         }
     </tbody>

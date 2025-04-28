@@ -81,41 +81,32 @@ namespace pizzashop.service.Attributes
             var jwtService = context.HttpContext.RequestServices.GetService(typeof(IJwtService)) as IJwtService;
             var permissionService = context.HttpContext.RequestServices.GetService(typeof(IPermissionService)) as IPermissionService;
 
-            // Get the token from Cookie
             var token = CookieUtils.GetJWTToken(context.HttpContext.Request);
 
-            // Validate Token
             var principal = jwtService?.ValidateToken(token ?? "");
             if (principal == null)
             {
-                // If token is invalid or absent, redirect to the login page
                 context.Result = new RedirectToActionResult("Index", "Home", null);
                 return;
             }
 
-            // Set user principal (user details)
             context.HttpContext.User = principal;
 
-            // If no module or permission type is provided, skip permission check
             if (string.IsNullOrEmpty(_moduleName) || string.IsNullOrEmpty(_permissionType))
             {
                 return;
             }
 
-            // Get the user's role from the claims in the token
             var role = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
 
             if (role == null)
             {
-                // If role is missing in the claims, redirect to an error page
                 context.Result = new RedirectToActionResult("AccessDenied", "Home", new { statusCode = 403 });
                 return;
             }
 
-            // Fetch permissions for the user's role and the module
             var permission = await permissionService?.GetPermissions(role, _moduleName);
 
-            // If permission object is null, redirect to error page (permissions not found)
             if (permission == null)
             {
                 context.Result = new RedirectToActionResult("AccessDenied", "Home", new { statusCode = 403 });

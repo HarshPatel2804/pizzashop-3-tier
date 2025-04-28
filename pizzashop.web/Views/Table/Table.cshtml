@@ -2,10 +2,14 @@
     Layout = "_Layout";
     ViewData["Title"] = "Table Page";
 }
+@using pizzashop.service.Interfaces
+@inject IPermissionService PermissionService
+@{
+    var permission = await PermissionService.GetCurrentUserPermissionsForModule("TableAndSection");
+}
 
 <head>
     <link rel="stylesheet" href="~/css/Menu.css">
-
 </head>
 <section style="min-height: 100vh;background-color: #fafafa;">
     <div class="row pt-4 ms-1 me-1" style="height: 70px;">
@@ -19,10 +23,12 @@
                 <div class="row px-3 mt-1">
                     <div class="col-auto d-flex align-items-center me-5 fw-bold" style="font-size: 20px;">Section
                     </div>
+                    @if(permission.Canaddedit == true){
                     <button class="btn col-auto ms-5" type="button" data-bs-toggle="modal"
                         data-bs-target="#addSectionModal">
                         <img src="~/images/more.png" style="width: 30px;">
                     </button>
+                    }
                 </div>
                 <div class="row overflow-auto me-2 mt-2" style="height: 400px;" id="Sections">
                     @* sections *@
@@ -44,10 +50,12 @@
                                     <div class="col-auto d-flex align-items-center me-5 fw-bold"
                                         style="font-size: 20px;">Section
                                     </div>
+                                    @if(permission.Canaddedit == true){
                                     <button class="btn col-auto ms-5" type="button" data-bs-toggle="modal"
                                         data-bs-target="#addSectionModal">
                                         <img src="~/images/more.png" style="width: 30px;">
                                     </button>
+                                    }
                                 </div>
                             </li>
                             <div class="row overflow-auto me-2 mt-2" style="height: 400px;" id="Sections1">
@@ -57,12 +65,16 @@
                     </div>
                     <input type="search" class="col-md-auto col-6 me-1 ms-auto " id="search" placeholder="search"
                         style="border-radius: 3px; border: 1px solid black">
+                        @if(permission.Candelete == true){
                     <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#MassDeleteTableModal"
                         style="width: 50px; border: 1px solid black"><img src="~/images/trash.svg"></button>
-                    <button type="button" class="btn col-md-auto col-3 ms-1 align-items-center d-flex addTable"
-                        style="border-radius: 2px; border: 1px solid black; background-color: rgb(85, 85, 247); color: white  !important;">
+                        }
+                        @if(permission.Canaddedit == true){
+                    <button type="button" class="btn btn-prime col-md-auto col-3 ms-1 align-items-center d-flex addTable"
+                        style="border-radius: 2px; border-radius: 4px;">
                         + New Table
                     </button>
+                    }
                 </div>
 
                 <div class="row table-responsive pt-4 ms-2 me-2" id="TablesBySection">
@@ -88,9 +100,9 @@
                     <form id="deleteSectionForm">
                         <input id="hiddenField" type="hidden" />
                         <div class="d-flex justify-content-center align-items-center mt-2 mb-4">
-                            <button type="submit" class="btn btn-primary" data-bs-dismiss="modal"
+                            <button type="submit" class="btn btn-prime" data-bs-dismiss="modal"
                                 style="border-radius: 3px; width: 60px;">Yes</button>
-                            <button type="button" class="btn ms-2 border"
+                            <button type="button" class="btn ms-2 btn-border-prime border"
                                 style="border-radius: 3px; width: 60px;">No</button>
                         </div>
                     </form>
@@ -116,9 +128,9 @@
                         <input id="table" type="hidden" />
                         <input id="section" type="hidden" />
                         <div class="d-flex justify-content-center align-items-center mt-2 mb-4">
-                            <button type="submit" class="btn btn-primary" data-bs-dismiss="modal"
+                            <button type="submit" class="btn btn-prime" data-bs-dismiss="modal"
                                 style="border-radius: 3px; width: 60px;">Yes</button>
-                            <button type="button" class="btn ms-2 border" data-bs-dismiss="modal"
+                            <button type="button" class="btn ms-2 btn-border-prime border" data-bs-dismiss="modal"
                                 style="border-radius: 3px; width: 60px;">No</button>
                         </div>
                     </form>
@@ -142,9 +154,9 @@
                     <p class="align-self-center">Are you sure you want to delete all this Table?</p>
                 </div>
                 <div class="modal-footer d-flex justify-content-center">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+                    <button type="button" class="btn btn-prime" data-bs-dismiss="modal"
                         id="massDeleteTableBtnModel">Yes</button>
-                    <button type="button" class="btn btn-pizza2" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-border-prime btn-pizza2" data-bs-dismiss="modal">
                         No
                     </button>
                 </div>
@@ -153,7 +165,7 @@
     </div>
 
     @* add section modal *@
-    <div class="modal" id="addSectionModal" tabindex="-1" aria-labelledby="addSectionLabel" aria-hidden="true">
+    <div class="modal fade" id="addSectionModal" tabindex="-1" aria-labelledby="addSectionLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" style="width: 500px;">
             <div class="modal-content ps-3 pe-3">
                 <div class="row mt-2">
@@ -164,7 +176,7 @@
                 <form class="mt-4" id="addSectionForm">
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="SectionName" name="SectionName" placeholder="Name">
-                        <label for="SectionName" class="label-pad">Name</label>
+                        <label for="SectionName" class="label-pad">Name*</label>
                     </div>
                     <div class="form-floating">
                         <input type="text" class="form-control" id="SectionDescription" name="SectionDescription"
@@ -172,9 +184,9 @@
                         <label for="SectionDescription" class="label-pad">Description</label>
                     </div>
                     <div class="d-flex justify-content-end align-items-center mt-5 mb-4">
-                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal"
+                        <button type="submit" class="btn btn-prime" data-bs-dismiss="modal"
                             style="border-radius: 3px;" id="Save">Save</button>
-                        <button type="button" class="btn ms-2 border" data-bs-dismiss="modal"
+                        <button type="button" class="btn ms-2 btn-border-prime border" data-bs-dismiss="modal"
                             style="border-radius: 3px; ">Cancel</button>
                     </div>
                 </form>
@@ -184,7 +196,7 @@
     </div>
 
     @* edit section modal *@
-    <div class="modal" id="editSectionModal" tabindex="-1" aria-labelledby="editSectionLabel" aria-hidden="true">
+    <div class="modal fade" id="editSectionModal" tabindex="-1" aria-labelledby="editSectionLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" style="width: 500px;">
             <div class="modal-content ps-3 pe-3">
                 <div class="row mt-2">
@@ -196,7 +208,7 @@
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="EditSectionname" name="EditSectionname"
                             placeholder="Name">
-                        <label for="EditSectionname" class="label-pad">Name</label>
+                        <label for="EditSectionname" class="label-pad">Name*</label>
                     </div>
                     <div class="form-floating">
                         <input type="text" class="form-control" id="EditDescription" name="EditDescription"
@@ -205,9 +217,9 @@
                     </div>
                     <input type="hidden" id="Sectionid" />
                     <div class="d-flex justify-content-end align-items-center mt-5 mb-4">
-                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal"
+                        <button type="submit" class="btn btn-prime" data-bs-dismiss="modal"
                             style="border-radius: 3px;" id="Save">Save</button>
-                        <button type="button" class="btn ms-2 border" data-bs-dismiss="modal"
+                        <button type="button" class="btn ms-2 btn-border-prime border" data-bs-dismiss="modal"
                             style="border-radius: 3px; ">Cancel</button>
                     </div>
                 </form>
@@ -234,9 +246,9 @@
                     <span>Are you sure you want to delete these tables?</span>
                     <form id="deleteModifierForm">
                         <div class="d-flex justify-content-center align-items-center mt-2 mb-4">
-                            <button type="submit" class="btn btn-primary MassItemDeleteBtn" data-bs-dismiss="modal"
+                            <button type="submit" class="btn btn-prime MassItemDeleteBtn" data-bs-dismiss="modal"
                                 style="border-radius: 3px; width: 60px;">Yes</button>
-                            <button type="button" class="btn ms-2 border"
+                            <button type="button" class="btn ms-2 btn-border-prime border"
                                 style="border-radius: 3px; width: 60px;">No</button>
                         </div>
                     </form>

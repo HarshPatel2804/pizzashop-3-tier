@@ -1,3 +1,8 @@
+@using pizzashop.service.Interfaces
+@inject IPermissionService PermissionService
+@{
+    var permission = await PermissionService.GetCurrentUserPermissionsForModule("TableAndSection");
+}
 <table class="table  px-5" style="border-radius: 6px;">
     <thead>
         <tr>
@@ -7,7 +12,9 @@
             </th>
             <th scope="col"><span class="heading">Capacity</span></th>
             <th scope="col"><span class="heading">Status</span></th>
+            @if(permission.Canaddedit == true || permission.Candelete == true){
             <th scope="col"><span class="heading">Action</span></th>
+            }
         </tr>
     </thead>
     <tbody>
@@ -23,18 +30,24 @@
                 <td><span
                         class="badge rounded-pill @(@table.Tablestatus == tablestatus.Occupied ? "bg-secondary" : (@table.Tablestatus == tablestatus.Available ? "bg-success" : "bg-danger"))">@table.Tablestatus</span>
                 </td>
+                @if(permission.Canaddedit == true || permission.Candelete == true){
                 <td>
+                    @if(permission.Canaddedit == true){
                     <a>
                         <img src="~/images/pen.svg" alt="profile image" class="me-2 bg-light editTable" id="profile" data-id="@table.Tableid"
                             style="max-height: 30px; height: 100%; width:auto;">
                     </a>
+                    }
+                    @if(permission.Candelete == true){
                     <a data-bs-toggle="modal" data-bs-target="#exampleModalCenter">
                         <img src="~/images/trash.svg" alt="profile image" class="me-2 bg-light deleteTable" id="profile"
                             data-bs-toggle="modal" data-bs-target="#DeleteTableModal" data-id="@table.Tableid"
                             data-sectionid="@table.Sectionid"
                             style="max-height: 30px; height: 100%; width:auto; border-radius: 100%;">
                     </a>
+                    }
                 </td>
+                }
             </tr>
         }
     </tbody>

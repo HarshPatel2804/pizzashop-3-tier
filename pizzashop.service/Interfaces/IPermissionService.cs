@@ -9,4 +9,6 @@ public interface IPermissionService
     Task UpdatePermissions(List<PermissionViewModel> permissions);
 
     Task<Permission> GetPermissions(string role , string module);
+
+    Task<Permission> GetCurrentUserPermissionsForModule(string moduleName);
 }

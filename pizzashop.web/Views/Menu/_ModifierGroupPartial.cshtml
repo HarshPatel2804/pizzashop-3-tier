@@ -1,19 +1,29 @@
+@using pizzashop.service.Interfaces
+@inject IPermissionService PermissionService
+@{
+    var permission = await PermissionService.GetCurrentUserPermissionsForModule("Menu");
+}
 <ul class="sortModifierGroup">
     @foreach (var modifier in Model)
     {
         <li class="d-flex items selectedModifierGroup" tabindex="0" data-id="@modifier.Modifiergroupid">
             <div class="d-flex align-items-center" style="padding-top: 5px; padding-bottom: 5px;">
-                <img src="~/images/dots-graphic.png" class="sort-icon">
+                <img src="/images/dots-graphic.png" class="@(permission?.Canaddedit == true ? "sort-icon" : "")" />
+
                 <div style="width: 130px;" class="text-wrap ms-1 fw-bold">
                     @modifier.Modifiergroupname</div>
             </div>
+            @if(permission.Canaddedit == true){
             <button class="btn ms-auto edit-modifierGroup-btn" type="button" data-id="@modifier.Modifiergroupid">
                 <img src="~/images/pen.svg" class="d-none">
             </button>
+            }
+            @if(permission.Candelete == true){
             <button class="btn ms-1 delete-category" type="button" data-bs-toggle="modal" data-bs-target="#DeleteModifierGroupModal"
                 data-id="@modifier.Modifiergroupid">
                 <img src="~/images/trash.svg" style="margin-right: 0px;" class="d-none" class="d-none">
             </button>
+            }
         </li>
     }
 

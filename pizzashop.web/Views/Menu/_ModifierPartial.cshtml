@@ -1,3 +1,9 @@
+@using pizzashop.service.Interfaces
+@inject IPermissionService PermissionService
+@{
+    var permission = await PermissionService.GetCurrentUserPermissionsForModule("Menu");
+}
+
 <table class="table  px-5" style="border-radius: 6px;">
     <thead>
         <tr>
@@ -8,7 +14,9 @@
             <th scope="col"><span class="heading">Unit</span></th>
             <th scope="col"><span class="heading">Rate</span></th>
             <th scope="col"><span class="heading">Quantity</span> </th>
+             @if(permission.Canaddedit == true || permission.Candelete == true){
             <th scope="col"><span class="heading">Action</span></th>
+            }
         </tr>
     </thead>
     <tbody>
@@ -23,18 +31,24 @@
                 <td>@modifier.UnitName</td>
                 <td>@modifier.Rate</td>
                 <td>@modifier.Quantity</td>
+                 @if(permission.Canaddedit == true || permission.Candelete == true){
                 <td>
+                     @if(permission.Canaddedit == true){
                     <a>
                         <img src="~/images/pen.svg" alt="profile image" data-id="@modifier.Modifierid" class="me-2 bg-light EditModifier" id="profile"
                             style="max-height: 30px; height: 100%; width:auto;">
                     </a>
+                    }
+                     @if(permission.Candelete == true){
                     <a>
                         <img src="~/images/trash.svg" alt="profile image" data-bs-toggle="modal"
                             data-bs-target="#DeleteModifierModal" data-id="@modifier.Modifierid"
                             data-modifiergroup="@modifier.Modifiergroupid" class="me-2 bg-light deleteModifier" id="profile"
                             style="max-height: 30px; height: 100%; width:auto; border-radius: 100%;">
                     </a>
+                    }
                 </td>
+                }
             </tr>
         }
     </tbody>

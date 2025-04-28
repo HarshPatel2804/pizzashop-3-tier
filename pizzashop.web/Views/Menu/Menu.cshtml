@@ -3,6 +3,11 @@
     ViewData["Title"] = "Menu Page";
 }
 @model CategoryViewModel
+@using pizzashop.service.Interfaces
+@inject IPermissionService PermissionService
+@{
+    var permission = await PermissionService.GetCurrentUserPermissionsForModule("Menu");
+}
 
 <head>
     <link rel="stylesheet" href="~/css/Menu.css">
@@ -40,10 +45,12 @@
                             <div class="col-auto d-flex align-items-center me-5 fw-bold" style="font-size: 20px;">
                                 Category
                             </div>
+                            @if(permission.Canaddedit == true){
                             <button class="btn col-auto ms-5" type="button" data-bs-toggle="modal"
                                 data-bs-target="#Add-Category">
                                 <img src="~/images/more.png" style="width: 30px;">
                             </button>
+                            }
                         </div>
                         <div class="row overflow-auto me-2 mt-2" style="height: 400px;" id="Category">
 
@@ -58,14 +65,18 @@
                         <div class="row justify-content-end ms-lg-5 me-lg-5 me-2 mt-2" style="height: 50px;">
                             <input type="search" class="col-md-auto col-6 me-1 " id="searchInput" placeholder="search"
                                 style="border-radius: 3px; border: 1px solid black">
+                                @if(permission.Candelete == true){
                             <button type="button" class="btn MassItemDelete"
                                 style="width: 50px; border: 1px solid black" data-bs-toggle="modal"
                                 data-bs-target="#MassDeleteItemModal"><img src="~/images/trash.svg"></button>
+                                }
+                                @if(permission.Canaddedit == true){
                             <button type="button"
-                                class="btn col-md-auto col-3 ms-1 align-items-center d-flex item-button addItem"
-                                style="border-radius: 2px; border: 1px solid black; background-color: rgb(85, 85, 247); color: white  !important;">
+                                class="btn btn-prime col-md-auto col-3 ms-1 align-items-center d-flex item-button addItem"
+                                style="border-radius: 4px;">
                                 + New Item
                             </button>
+                            }
                         </div>
                         <div class="row table-responsive pt-4 ms-2 me-2" id="itemByCategory">
 
@@ -81,10 +92,12 @@
                             <div class="col-auto d-flex align-items-center fw-bold" style="font-size: 20px;">
                                 Modifier Group
                             </div>
+                             @if(permission.Canaddedit == true){
                             <button class="btn col-auto ms-3" type="button" data-bs-toggle="modal"
                                 data-bs-target="#addModifiersGroup">
                                 <img src="~/images/more.png" style="width: 30px;">
                             </button>
+                            }
                         </div>
                         <div class="row overflow-auto me-2 mt-2" style="height: 400px; ;" id="ModifierGroup">
 
@@ -100,13 +113,17 @@
                         <div class="row justify-content-end ms-lg-5 me-lg-5 me-2 mt-2" style="height: 50px;">
                             <input type="search" class="col-md-auto col-6 me-1 " id="search" placeholder="search"
                                 style="border-radius: 3px; border: 1px solid black">
+                                 @if(permission.Candelete == true){
                             <button type="button" class="btn" data-bs-toggle="modal"
                                 data-bs-target="#MassDeletemodifierModal"
                                 style="width: 50px; border: 1px solid black"><img src="~/images/trash.svg"></button>
+                                }
+                                 @if(permission.Canaddedit == true){
                             <button class="btn col-md-auto col-3 ms-1 align-items-center d-flex addModifier"
                                 style="border-radius: 2px; border: 1px solid black; background-color: rgb(85, 85, 247); color: white  !important;">
                                 + New Modifier
                             </button>
+                            }
                         </div>
                         <div class="row table-responsive pt-4 ms-2 me-2" id="Modifier">
 
@@ -177,7 +194,7 @@
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="EditCategoryname" name="Categoryname"
                             placeholder="Name">
-                        <label for="Categoryname" class="label-pad">Name</label>
+                        <label for="Categoryname" class="label-pad">Name*</label>
                     </div>
                     <div class="form-floating">
                         <input type="text" class="form-control" id="EditDescription" name="Description"
@@ -209,7 +226,7 @@
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="Categoryname" name="Categoryname"
                             placeholder="Name">
-                        <label for="Categoryname" class="label-pad">Name</label>
+                        <label for="Categoryname" class="label-pad">Name*</label>
                     </div>
                     <div class="form-floating">
                         <input type="text" class="form-control" id="Description" name="Description"
@@ -627,6 +644,7 @@
             $.ajax({
                 url: "/Menu/AddNewItem",
                 type: "GET",
+                data: {categoryId : lastSelectedCategoryId},
                 success: function (response) {
                     $("#AddEditItem").html(response);
                     $("#addItem").modal("show");

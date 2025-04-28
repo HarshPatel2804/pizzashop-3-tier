@@ -97,18 +97,21 @@ public class ProfileService : IProfileService
          await _UsersloginRepository.UpdateUserLoginDetails(user);
      }
 
-     public async Task<bool> UpdatePassword(ChangePasswordViewModel model){
+     public async Task<(bool success , string message)> UpdatePassword(ChangePasswordViewModel model){
         var usersLogin = await _UsersloginRepository.GetUserByEmailAsync(model.Email);
+        if(model.Password != model.ConfirmPassword){
+            return (false , "Passwords do not match!");
+        }
         if (usersLogin == null || !PasswordUtills.VerifyPassword(model.OldPassword, usersLogin.Passwordhash))
         {
             Console.WriteLine(model.Email + model.OldPassword);
-            return false;
+            return (false , "Password is wrong!");
         }
         else 
         {
             usersLogin.Passwordhash = model.Password;
              await _UsersloginRepository.UpdateUserLoginDetails(usersLogin);
-            return true;
+            return (true , "Password updated successfully");
         }
      }
 

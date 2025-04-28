@@ -46,3 +46,25 @@ button.accept-policy[b-0735uv1hxp] {
   white-space: nowrap;
   line-height: 60px;
 }
+
+.btn-prime[b-0735uv1hxp] {
+  background-color: #0066a7;
+  color: white;
+}
+
+.btn-prime:hover[b-0735uv1hxp] {
+  background-color: #075383;
+  color: white;
+}
+
+.btn-border-prime[b-0735uv1hxp] {
+  border: 1px solid #0066a7;
+  color: #0066a7;
+  background-color: transparent;
+}
+
+.btn-border-prime:hover[b-0735uv1hxp] {
+  border: 1px solid #0066a7;
+  color: #0066a7;
+  background-color: transparent;
+}

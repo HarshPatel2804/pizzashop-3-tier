@@ -76,9 +76,9 @@ public class MenuController : Controller
         return PartialView("_ItemPartial", model);
     }
 
-    public async Task<IActionResult> AddNewItem()
+    public async Task<IActionResult> AddNewItem(int categoryId)
     {
-        var model = await _menuService.GetItemDetails();
+        var model = await _menuService.GetItemDetails(categoryId);
         return PartialView("_AddItem", model);
     }
     public async Task<IActionResult> AddNewModifier()

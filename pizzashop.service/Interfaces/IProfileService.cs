@@ -9,5 +9,5 @@ public interface IProfileService
 
     Task UpdateProfileData(ProfileViewModel model , IFormFile ProfileImage);
 
-    Task<bool> UpdatePassword(ChangePasswordViewModel model);
+    Task<(bool success , string message)> UpdatePassword(ChangePasswordViewModel model);
 }
