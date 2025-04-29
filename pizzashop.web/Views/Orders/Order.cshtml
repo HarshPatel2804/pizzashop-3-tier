@@ -35,6 +35,7 @@
                 <option value="1">Last 7 Days</option>
                 <option value="2">Last 30 Days</option>
                 <option value="3">Current Month</option>
+                <option value="4">Custom Date</option>
             </select>
         </div>
         <div class="col-xl-auto col-12 mt-3 d-flex align-items-center justify-content-start me-3" style="height: 55px;">
@@ -85,9 +86,11 @@
         let today = new Date().toISOString().slice(0, 10);
         $toDate.attr('max', today);
         $fromDate.attr('max', today);
+        const $timeSearch = $('#Time-Search');
 
         $fromDate.on('change', function () {
             const fromVal = $(this).val();
+             $timeSearch.val('4');
             if (fromVal) {
                 $toDate.attr('min', fromVal);
             } else {
@@ -97,6 +100,7 @@
 
         $toDate.on('change', function () {
             const toVal = $(this).val();
+             $timeSearch.val('4');
             if (toVal) {
                 $fromDate.attr('max', toVal);
             } else {
@@ -165,6 +169,7 @@
         });
 
         $("#Time-Search").change(function () {
+            $toDate.removeAttr('min');
             const timeOption = $(this).val();
             const today = new Date();
             let fromDateValue = '';

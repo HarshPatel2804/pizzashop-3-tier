@@ -112,11 +112,13 @@ public class TableSectionService : ITableSectionService
     return (true, "Section deleted successfully.");
 }
 
-    public async Task<TableViewModel> GetSections()
+    public async Task<TableViewModel> GetTableviewModel(int sectionId)
     {
         var model = new TableViewModel
         {
-            Sections = await _tableSectionRepository.GetSectionListAsync()
+            Tablestatus = tablestatus.Available,
+            Sections = await _tableSectionRepository.GetSectionListAsync(),
+            Sectionid = sectionId
         };
         return model;
     }
@@ -205,7 +207,15 @@ public class TableSectionService : ITableSectionService
 
     public async Task<Table> GetTableByName(TableViewModel model)
     {
+        string result = System.Text.RegularExpressions.Regex.Replace(model.Tablename, @"\s+", " ");
+        model.Tablename = result.Trim();
         return await _tableSectionRepository.GetTableByName(model);
+    }
+    public async Task<Section> GetSectionByName(SectionViewModel model)
+    {
+        string result = System.Text.RegularExpressions.Regex.Replace(model.Sectionname, @"\s+", " ");
+        model.Sectionname = result.Trim();
+        return await _tableSectionRepository.GetSectionByName(model);
     }
 
     public async Task<int> FirstSectionId()

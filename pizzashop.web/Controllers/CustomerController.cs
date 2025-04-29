@@ -20,11 +20,13 @@ public class CustomerController : Controller
         _customerService = customerService;
         _context = context;
     }
+    [CustomAuthorize("Menu", "CanView")]
     public IActionResult Customer()
     {
         return View();
     }
 
+    [CustomAuthorize("Menu", "CanView")]
     public async Task<IActionResult> CustomerList(int page = 1, int pageSize = 5, string search = "", string sortColumn = "", string sortOrder = "", DateTime? fromDate = null, DateTime? toDate = null)
     {
 
@@ -37,12 +39,14 @@ public class CustomerController : Controller
         return PartialView("_CustomerList", customers);
     }
 
+    [CustomAuthorize("Menu", "CanView")]
     public async Task<IActionResult> CustomerHistory(int customerId)
     {
         var model = await _customerService.GetCustomerHistory(customerId);
         return PartialView("_CustomerHistory", model);
     }
 
+    [CustomAuthorize("Menu", "CanView")]
     [HttpGet]
     public async Task<IActionResult> ForExportExcel(string searchString = "", DateTime? fromDate = null, DateTime? toDate = null)
     {
@@ -54,6 +58,7 @@ public class CustomerController : Controller
         );
     }
 
+    
     [HttpGet]
     public async Task<IActionResult> GetCustomerByEmail(string email)
     {

@@ -23,11 +23,12 @@
                 <div class="row px-3 mt-1">
                     <div class="col-auto d-flex align-items-center me-5 fw-bold" style="font-size: 20px;">Section
                     </div>
-                    @if(permission.Canaddedit == true){
-                    <button class="btn col-auto ms-5" type="button" data-bs-toggle="modal"
-                        data-bs-target="#addSectionModal">
-                        <img src="~/images/more.png" style="width: 30px;">
-                    </button>
+                    @if (permission.Canaddedit == true)
+                    {
+                        <button class="btn col-auto ms-5" type="button" data-bs-toggle="modal"
+                            data-bs-target="#addSectionModal">
+                            <img src="~/images/more.png" style="width: 30px;">
+                        </button>
                     }
                 </div>
                 <div class="row overflow-auto me-2 mt-2" style="height: 400px;" id="Sections">
@@ -50,11 +51,12 @@
                                     <div class="col-auto d-flex align-items-center me-5 fw-bold"
                                         style="font-size: 20px;">Section
                                     </div>
-                                    @if(permission.Canaddedit == true){
-                                    <button class="btn col-auto ms-5" type="button" data-bs-toggle="modal"
-                                        data-bs-target="#addSectionModal">
-                                        <img src="~/images/more.png" style="width: 30px;">
-                                    </button>
+                                    @if (permission.Canaddedit == true)
+                                    {
+                                        <button class="btn col-auto ms-5" type="button" data-bs-toggle="modal"
+                                            data-bs-target="#addSectionModal">
+                                            <img src="~/images/more.png" style="width: 30px;">
+                                        </button>
                                     }
                                 </div>
                             </li>
@@ -65,15 +67,18 @@
                     </div>
                     <input type="search" class="col-md-auto col-6 me-1 ms-auto " id="search" placeholder="search"
                         style="border-radius: 3px; border: 1px solid black">
-                        @if(permission.Candelete == true){
-                    <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#MassDeleteTableModal"
-                        style="width: 50px; border: 1px solid black"><img src="~/images/trash.svg"></button>
-                        }
-                        @if(permission.Canaddedit == true){
-                    <button type="button" class="btn btn-prime col-md-auto col-3 ms-1 align-items-center d-flex addTable"
-                        style="border-radius: 2px; border-radius: 4px;">
-                        + New Table
-                    </button>
+                    @if (permission.Candelete == true)
+                    {
+                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#MassDeleteTableModal"
+                            style="width: 50px; border: 1px solid black"><img src="~/images/trash.svg"></button>
+                    }
+                    @if (permission.Canaddedit == true)
+                    {
+                        <button type="button"
+                            class="btn btn-prime col-md-auto col-3 ms-1 align-items-center d-flex addTable"
+                            style="border-radius: 2px; border-radius: 4px;">
+                            + New Table
+                        </button>
                     }
                 </div>
 
@@ -184,8 +189,7 @@
                         <label for="SectionDescription" class="label-pad">Description</label>
                     </div>
                     <div class="d-flex justify-content-end align-items-center mt-5 mb-4">
-                        <button type="submit" class="btn btn-prime" data-bs-dismiss="modal"
-                            style="border-radius: 3px;" id="Save">Save</button>
+                        <button type="submit" class="btn btn-prime" style="border-radius: 3px;" id="Save">Save</button>
                         <button type="button" class="btn ms-2 btn-border-prime border" data-bs-dismiss="modal"
                             style="border-radius: 3px; ">Cancel</button>
                     </div>
@@ -217,8 +221,7 @@
                     </div>
                     <input type="hidden" id="Sectionid" />
                     <div class="d-flex justify-content-end align-items-center mt-5 mb-4">
-                        <button type="submit" class="btn btn-prime" data-bs-dismiss="modal"
-                            style="border-radius: 3px;" id="Save">Save</button>
+                        <button type="submit" class="btn btn-prime" style="border-radius: 3px;" id="Save">Save</button>
                         <button type="button" class="btn ms-2 btn-border-prime border" data-bs-dismiss="modal"
                             style="border-radius: 3px; ">Cancel</button>
                     </div>
@@ -260,9 +263,10 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
+        let totalItemCount = 0;
         let lastSelectedSectionId = 0;
         let selectedItemIds = [];
-         sectionList();
+        sectionList();
         getFirstSectionId();
 
 
@@ -277,9 +281,9 @@
                 type: 'GET',
                 success: function (data) {
                     $('#Sections').html(data);
-                    @* $('#Sections1').html(data); *@
-                    $(".selectedSection").removeClass("ActiveEffect");
-            $(`.selectedSection[data-id="${lastSelectedSectionId}"]`).addClass("ActiveEffect");
+    @* $('#Sections1').html(data); *@
+                        $(".selectedSection").removeClass("ActiveEffect");
+                    $(`.selectedSection[data-id="${lastSelectedSectionId}"]`).addClass("ActiveEffect");
                 }
             });
         };
@@ -299,7 +303,8 @@
                 data: { page: page, pageSize: pageSize, search: search, sectionId: sectionId },
                 success: function (data) {
                     $('#TablesBySection').html(data);
-                    tableMassDelete();
+                    retainCheckboxState();
+                    updateMasterCheckbox();
                 }
             });
         };
@@ -311,6 +316,9 @@
                 dataType: "json",
                 success: function (sectionId) {
                     TableList(sectionId, 1);
+                    getAllTables(function (allIds) {
+                        retainCheckboxState();
+                    });
                 }
             });
         }
@@ -326,6 +334,7 @@
             if (page > 0) {
                 TableList(sectionId, page);
             }
+            
         });
 
         $("#TablesBySection").on("change", "#pageSizeSelect", function () {
@@ -337,9 +346,8 @@
         $("#search").on("input", function () {
             clearTimeout(searchTimer);
             let sectionId = $("#sectionId").val();
-            searchTimer = setTimeout(function () {
-                TableList(sectionId || lastSelectedSectionId, 1);
-            }, 100);
+            TableList(sectionId || lastSelectedSectionId, 1);
+            updateArrayOnSearch();
         });
 
         $(document).on("click", ".selectedSection", function () {
@@ -353,22 +361,34 @@
         $("#addSectionForm").submit(function (e) {
             e.preventDefault(); // Prevent page refresh
 
-            var formData = {
-                Sectionname: $("#SectionName").val(),
-                Description: $("#SectionDescription").val()
-            };
-            console.log(formData);
-            $.ajax({
-                type: "POST",
-                url: '/Table/AddSection',
-                contentType: "application/json",
-                data: JSON.stringify(formData),
-                success: function (response) {
-                    $("#SectionName").val("");
-                    $("#SectionDescription").val("");
-                    sectionList();
-                }
-            });
+            var sectionName = $("#SectionName").val();
+            if (sectionName == '') {
+                $("#SectionName").after('<div class="error-message text-danger mt-1">' + "Section name is required" + '</div>');
+            }
+            else {
+                var formData = {
+                    Sectionname: $("#SectionName").val().trim(),
+                    Description: $("#SectionDescription").val()
+                };
+                console.log(formData);
+                $.ajax({
+                    type: "POST",
+                    url: '/Table/AddSection',
+                    contentType: "application/json",
+                    data: JSON.stringify(formData),
+                    success: function (response) {
+                        $("#SectionName").val("");
+                        $("#SectionDescription").val("");
+                        if (response.success) {
+                            $('#addSectionModal').modal('hide');
+                        } else {
+                            $(".error-message").remove();
+                            $("#SectionName").after('<div class="error-message text-danger mt-1">' + response.message + '</div>');
+                        }
+                        sectionList();
+                    }
+                });
+            }
         });
 
         $(document).on("click", ".edit-btn", function () {
@@ -388,22 +408,33 @@
         });
         $("#editSectionForm").submit(function (e) {
             e.preventDefault(); // Prevent page refresh
-
-            var formData = {
-                Sectionid: $("#Sectionid").val(),
-                Sectionname: $("#EditSectionname").val(),
-                Description: $("#EditDescription").val()
-            };
-            console.log(formData);
-            $.ajax({
-                type: "POST",
-                url: '/Table/EditSectionById',
-                contentType: "application/json",
-                data: JSON.stringify(formData),
-                success: function (response) {
-                    sectionList();
-                }
-            });
+            var sectionName = $("#EditSectionname").val();
+            if (sectionName == '') {
+                $("#EditSectionname").after('<div class="error-message text-danger mt-1">' + "Section name is required" + '</div>');
+            }
+            else {
+                var formData = {
+                    Sectionid: $("#Sectionid").val(),
+                    Sectionname: $("#EditSectionname").val().trim(),
+                    Description: $("#EditDescription").val()
+                };
+                console.log(formData);
+                $.ajax({
+                    type: "POST",
+                    url: '/Table/EditSectionById',
+                    contentType: "application/json",
+                    data: JSON.stringify(formData),
+                    success: function (response) {
+                        if (response.success) {
+                            $('#editSectionModal').modal('hide');
+                        } else {
+                            $(".error-message").remove();
+                            $("#EditSectionname").after('<div class="error-message text-danger mt-1">' + response.message + '</div>');
+                        }
+                        sectionList();
+                    }
+                });
+            }
         });
 
         $("#deleteSectionForm").submit(function (e) {
@@ -415,15 +446,15 @@
                 url: '/Table/DeleteSection',
                 data: { sectionId: sectionId },
                 success: function (response) {
-                    if(response.success){
-                    sectionList();
-                    getFirstSectionId();
+                    if (response.success) {
+                        sectionList();
+                        getFirstSectionId();
                         toastr.success(response.message);
                     }
-                    else{
+                    else {
                         toastr.error(response.message);
                     }
-                    
+
                 }
             });
         });
@@ -433,6 +464,7 @@
             $.ajax({
                 url: "/Table/AddNewTable",
                 type: "GET",
+                data: { sectionId: lastSelectedSectionId },
                 success: function (response) {
                     $("#TableModal").html(response);
                     $("#AddTableModal").modal("show");
@@ -450,7 +482,7 @@
         });
 
         $("#deleteTableForm").submit(function (e) {
-            e.preventDefault(); 
+            e.preventDefault();
             var tableId = $("#table").val();
             var sectionId = $("#section").val();
             console.log(tableId + "delete");
@@ -459,11 +491,11 @@
                 url: '/Table/DeleteTable',
                 data: { tableId: tableId },
                 success: function (response) {
-                    if(response.success){
-                    TableList(sectionId, 1);
+                    if (response.success) {
+                        TableList(sectionId, 1);
                         toastr.success(response.message);
                     }
-                    else{
+                    else {
                         toastr.error(response.message);
                     }
                 }
@@ -541,10 +573,10 @@
                                 TableList(Sectionid, 1);
                                 toastr.success(response.message);
                             } else {
-                                if(response.code == 0){
-                                $("#Name").after('<div class="error-message text-danger mt-1">' + response.message + '</div>');
+                                if (response.code == 0) {
+                                    $("#Name").after('<div class="error-message text-danger mt-1">' + response.message + '</div>');
                                 }
-                                else{
+                                else {
                                     toastr.error(response.message);
                                 }
                             }
@@ -554,117 +586,144 @@
             });
         }
 
-        function tableMassDelete() {
-            retainCheckboxState();
-
-            function retainCheckboxState(){
-                console.log("retain");
-                 $("tbody #TableCheckbox").each(function () {
-                    const itemId = getItemIdFromRow($(this).closest('tr'));
-
-                    if (selectedItemIds.includes(itemId)) {
-                        $(this).prop('checked', true);
-                    } else {
-                        $(this).prop('checked', false);
-                    }
-                });
-            }
-
-            $("#masterTableCheckbox").on('click', function () {
-                console.log("checked");
-                const isChecked = $(this).prop('checked');
-
-                $("tbody #TableCheckbox").each(function () {
-                    $(this).prop('checked', isChecked);
-
-                    const itemId = getItemIdFromRow($(this).closest('tr'));
-
-                    if (isChecked && !selectedItemIds.includes(itemId)) {
-                        selectedItemIds.push(itemId);
-                    } else if (!isChecked) {
-                        selectedItemIds = selectedItemIds.filter(id => id !== itemId);
-                    }
-                });
-
-                console.log("Selected Item IDs:", selectedItemIds);
+        function updateArrayOnSearch() {
+            getAllTables(function (allIds) {
+                tempselectedItemIds = [...allIds];
+                selectedItemIds = selectedItemIds.filter(id => tempselectedItemIds.includes(id));
+                retainCheckboxState();
             });
+        }
 
-            $("tbody").on('click', "#TableCheckbox", function () {
-                const isChecked = $(this).prop('checked');
+        function getAllTables(callback) {
+            let search = $("#search").val();
+            $.ajax({
+                type: "GET",
+                url: '/Table/Tables',
+                contentType: "application/json",
+                data: { page: 1, pageSize: 0, search: search, sectionId: lastSelectedSectionId },
+                success: function (response) {
+                    console.log(response.data);
+                    const allIds = response.data.map(item => item.tableid);
+
+                    totalItemCount = allIds.length;
+                    callback(allIds);
+                }
+            });
+        }
+
+        function retainCheckboxState() {
+            console.log("retain");
+            console.log(selectedItemIds);
+
+            $("tbody #TableCheckbox").each(function () {
                 const itemId = getItemIdFromRow($(this).closest('tr'));
 
-                if (isChecked && !selectedItemIds.includes(itemId)) {
-                    selectedItemIds.push(itemId);
-                } else if (!isChecked) {
-                    selectedItemIds = selectedItemIds.filter(id => id !== itemId);
-                }
-
-                updateMasterCheckbox();
-                console.log("Selected Item IDs:", selectedItemIds);
-            });
-
-            function getItemIdFromRow(row) {
-                const editItemElement = row.find('.editTable');
-                const deleteItemElement = row.find('.deleteTable');
-
-                if (editItemElement.length > 0) {
-                    return editItemElement.data('id');
-                } else if (deleteItemElement.length > 0) {
-                    return deleteItemElement.data('id');
-                }
-
-                return row.index();
-            }
-
-            function updateMasterCheckbox() {
-                const checkboxes = $("tbody #TableCheckbox");
-                const checkedCount = $("tbody #TableCheckbox:checked").length;
-
-                if (checkedCount === 0) {
-                    $("#masterTableCheckbox").prop({
-                        'checked': false,
-                        'indeterminate': false
-                    });
-                } else if (checkedCount === checkboxes.length) {
-                    $("#masterTableCheckbox").prop({
-                        'checked': true,
-                        'indeterminate': false
-                    });
+                if (selectedItemIds.includes(itemId)) {
+                    $(this).prop('checked', true);
                 } else {
-                    $("#masterTableCheckbox").prop({
-                        'checked': false,
-                        'indeterminate': true
-                    });
+                    $(this).prop('checked', false);
                 }
+            });
+        }
+
+        $("#TablesBySection").on('click','#masterTableCheckbox', function () {
+            
+            const isChecked = $(this).prop('checked');
+
+            if (isChecked) {
+                getAllTables(function (allIds) {
+                    selectedItemIds = [...allIds];
+                    retainCheckboxState();
+                });
+            } else {
+                selectedItemIds = [];
+                retainCheckboxState();
+            }
+        });
+
+        $("#TablesBySection").on('click', "#TableCheckbox", function () {
+            console.log("slave clicked");
+            const isChecked = $(this).prop('checked');
+            const itemId = getItemIdFromRow($(this).closest('tr'));
+
+            if (isChecked && !selectedItemIds.includes(itemId)) {
+                selectedItemIds.push(itemId);
+            } else if (!isChecked) {
+                selectedItemIds = selectedItemIds.filter(id => id !== itemId);
             }
 
             updateMasterCheckbox();
+            console.log("Selected Item IDs:", selectedItemIds);
+        });
 
-            $(document).on('click', '.MassItemDeleteBtn', function (e) {
-                e.preventDefault();
-                console.log(selectedItemIds);
-                toastr.clear();
+        function getItemIdFromRow(row) {
+            const editItemElement = row.find('.editTable');
+            const deleteItemElement = row.find('.deleteTable');
 
-                $.ajax({
-                    url: '/Table/MassDeleteTables',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(
-                        selectedItemIds
-                    ),
-                    success: function (response) {
-                        if (response.success) {
-                            TableList(lastSelectedSectionId, 1);
-                            selectedItemIds = [];
-                            toastr.success(response.message);
-                        }
-                        else{
-                            
-                            toastr.error(response.message);
-                        }
-                    }
-                });
-            });
+            if (editItemElement.length > 0) {
+                return editItemElement.data('id');
+            } else if (deleteItemElement.length > 0) {
+                return deleteItemElement.data('id');
+            }
+
+            return row.index();
         }
+
+        function updateMasterCheckbox() {
+            if (totalItemCount === 0) {
+                $("#TablesBySection #masterTableCheckbox").prop({
+                    'checked': false,
+                    'indeterminate': false
+                });
+                return;
+            }
+
+            if (selectedItemIds.length === totalItemCount) {
+                $("#TablesBySection #masterTableCheckbox").prop({
+                    'checked': true,
+                    'indeterminate': false
+                });
+            }
+            else if (selectedItemIds.length > 0) {
+                $("#TablesBySection #masterTableCheckbox").prop({
+                    'checked': false,
+                    'indeterminate': true
+                });
+            }
+            else {
+                $("#TablesBySection #masterTableCheckbox").prop({
+                    'checked': false,
+                    'indeterminate': false
+                });
+            }
+        }
+
+        $('#TablesBySection').on('click', '.MassItemDeleteBtn', function (e) {
+            e.preventDefault();
+            console.log(selectedItemIds);
+            toastr.clear();
+
+            $.ajax({
+                url: '/Table/MassDeleteTables',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(
+                    selectedItemIds
+                ),
+                success: function (response) {
+                    if (response.success) {
+                        TableList(lastSelectedSectionId, 1);
+                        selectedItemIds = [];
+                        toastr.clear();
+                        toastr.success(response.message);
+                    }
+                    else {
+                        toastr.clear();
+                        toastr.error(response.message);
+                    }
+                }
+            });
+        });
+
     });
 </script>

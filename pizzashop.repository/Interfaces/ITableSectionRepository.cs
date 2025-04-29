@@ -34,6 +34,8 @@ public interface ITableSectionRepository
 
     Task<Table> GetTableByName(TableViewModel model);
 
+    Task<Section> GetSectionByName(SectionViewModel model);
+
     Task<int> GetSectionIdWithLeastOrderField();
 
      Task<List<Section>> GetAllSectionsWithTablesAndOrdersAsync();

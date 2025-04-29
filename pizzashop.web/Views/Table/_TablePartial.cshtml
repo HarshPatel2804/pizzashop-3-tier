@@ -6,8 +6,10 @@
 <table class="table  px-5" style="border-radius: 6px;">
     <thead>
         <tr>
-            <th scope="col">
+            <th scope="col" class="ps-3">
+                @if(permission.Canaddedit == true || permission.Candelete == true){
                 <input class="form-check-input" type="checkbox" value="" id="masterTableCheckbox">
+                }
                 <span class="heading ">Name</span>
             </th>
             <th scope="col"><span class="heading">Capacity</span></th>
@@ -22,8 +24,10 @@
         @foreach (var table in Model)
         {
             <tr>
-                <td class="d-flex">
+                <td class="d-flex ps-3">
+                    @if(permission.Canaddedit == true || permission.Candelete == true){
                     <input class="form-check-input me-2" type="checkbox" value="" id="TableCheckbox">
+                    }
                     <span>@table.Tablename</span>
                 </td>
                 <td>@table.Capacity</td>

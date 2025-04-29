@@ -36,7 +36,7 @@
         <td class="text-secondary">Status</td>
         <td class="text-secondary">PaymentMode</td>
         <td class="text-secondary">Rating</td>
-         <td>
+        <td>
             <div class="d-flex sortDiv">
                 Total Amount
                 <a href="#" class="sort-icon" id="sortDateAsc" data-column="totalamount">
@@ -51,7 +51,7 @@
     </tr>
     @foreach (var o in Model)
     {
-        <tr data-orderid = "@o.Orderid">
+        <tr data-orderid="@o.Orderid">
             <td>
                 # @o.Orderid
             </td>
@@ -65,10 +65,25 @@
                         decimal rating = o.Rating;
                         for (int i = 1; i <= 5; i++)
                         {
-                            <span class="star @(i <= rating ? "filled" : "")">★</span>
+                            if (i <= Math.Floor(rating))
+                            {
+                                <span class="star filled">★</span>
+                            }
+                            else if (i == Math.Ceiling(rating) && rating % 1 != 0)
+                            {
+                                <div class="partial-star-container">
+                                    <span class="star partial-background">★</span>
+                                    <span class="star partial-fill" style="width: @((rating % 1) * 100)%">★</span>
+                                </div>
+                            }
+                            else
+                            {
+                                <span class="star">★</span>
+                            }
                         }
                     }
                 </div>
+
             </td>
             <td>
                 @o.Totalamount
@@ -119,20 +134,50 @@
         </nav>
     </div>
 </div>
+
 <style>
     .star-rating {
-        display: flex;
+        display: inline-flex;
         align-items: center;
+        font-size: 24px;
     }
 
     .star {
-        color: #ddd;
-        font-size: 23px;
+        position: relative;
+        color: #e0e0e0;
+        /* Empty star color */
         margin-right: 2px;
     }
 
     .star.filled {
-        color: #ffc107;
+        color: #FFD700;
+        /* Full star color (gold) */
+    }
+
+    .partial-star-container {
+        position: relative;
+        display: inline-block;
+        margin-right: 2px;
+    }
+
+    .partial-background {
+        color: #e0e0e0;
+        /* Empty star color */
+    }
+
+    .partial-fill {
+        position: absolute;
+        top: 0;
+        left: 0;
+        color: #FFD700;
+        /* Full star color (gold) */
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    .rating-value {
+        margin-left: 5px;
+        font-size: 16px;
     }
 </style>
 <script>
@@ -143,32 +188,32 @@
         }
         return starHtml;
     }
-    $(".file-down").click(function(){
-            let orderid = $(this).closest("tr").data("orderid");
-            let url = `/Orders/ForPdfDownload?orderid=${encodeURIComponent(orderid)}`;
+    $(".file-down").click(function () {
+        let orderid = $(this).closest("tr").data("orderid");
+        let url = `/Orders/ForPdfDownload?orderid=${encodeURIComponent(orderid)}`;
 
-            window.location.href = url;
+        window.location.href = url;
+    });
+
+    $(".viewButton").click(function () {
+        console.log("Clicked");
+        let orderid = $(this).closest("tr").data("orderid");
+
+        $.ajax({
+            url: "/Orders/FororderView",
+            type: "GET",
+            data: { orderid: orderid },
+            success: function (data) {
+                $(".Orderlist").addClass('d-none');
+                $("#viewOrder").removeClass('d-none');
+                $("#viewOrder").html(data);
+
+            },
+            error: function () {
+                alert("Failed to load data.");
+            }
         });
+    });
 
-    $(".viewButton").click(function(){
-            console.log("Clicked");
-            let orderid = $(this).closest("tr").data("orderid");
 
-            $.ajax({
-                url: "/Orders/FororderView",
-                type: "GET",
-                data: { orderid: orderid },
-                success: function (data) {
-                    $(".Orderlist").addClass('d-none');
-                    $("#viewOrder").removeClass('d-none');
-                    $("#viewOrder").html(data);
-
-                },
-                error: function () {
-                    alert("Failed to load data.");
-                }
-            });
-        });
-
-    
 </script>

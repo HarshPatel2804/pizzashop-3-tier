@@ -496,19 +496,26 @@ public class MenuService : IMenuService
 
     public async Task<Category> GetCategoryByName(CategoryViewModel model)
     {
+        string result = System.Text.RegularExpressions.Regex.Replace(model.Categoryname, @"\s+", " ");
+        model.Categoryname = result.Trim();
         return await _categoryRepository.GetCategoryByName(model);
     }
 
     public async Task<Modifiergroup> GetModifierGroupByName(string name, int id)
     {
-        return await _modifierRepository.GetModifierGroupByName(name, id);
+        string result = System.Text.RegularExpressions.Regex.Replace(name, @"\s+", " ");
+        return await _modifierRepository.GetModifierGroupByName(name.Trim(), id);
     }
     public async Task<Modifier> GetModifierByName(ModifierViewModel model)
     {
+        string result = System.Text.RegularExpressions.Regex.Replace(model.Modifiername, @"\s+", " ");
+        model.Modifiername = result.Trim();
         return await _modifierRepository.GetModifierByName(model);
     }
     public async Task<Item> GetItemByName(AddEditItemViewModel model)
     {
+        string result = System.Text.RegularExpressions.Regex.Replace(model.Itemname, @"\s+", " ");
+        model.Itemname = result.Trim();
         return await _itemRepository.GetItemByName(model);
     }
 

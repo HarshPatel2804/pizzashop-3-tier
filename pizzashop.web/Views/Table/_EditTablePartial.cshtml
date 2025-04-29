@@ -9,6 +9,8 @@
             </div>
             <form method="post" id="editTableForm">
                 <input type="hidden" asp-for="Tableid">
+                <input type="hidden" asp-for="Sectionid">
+                <input type="hidden" asp-for="Tablestatus">
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-12 col-lg-6 mb-3">
@@ -22,7 +24,7 @@
                         <div class="col-12 col-lg-6 mb-3">
                             <div class="form-floating">
                                 <select asp-for="Sectionid" asp-items="Model.Sections" class="form-select input-height"
-                                    id="SectionId">
+                                    id="SectionId" disabled>
                                     <option value="">Select Section</option>
                                 </select>
                                 <label for="SectionId">Section*</label>
@@ -41,7 +43,7 @@
                         </div>
                         <div class="col-12 col-lg-6 mb-3">
                             <div class="form-floating">
-                                <select asp-for="Tablestatus" class="form-select input-height" id="Type">
+                                <select asp-for="Tablestatus" class="form-select input-height" id="Type" disabled>
                                     <option value="">Select Status</option>
                                     @foreach (var tablestatus in Enum.GetValues(typeof(tablestatus)))
                                     {

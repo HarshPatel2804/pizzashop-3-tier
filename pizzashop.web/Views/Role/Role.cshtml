@@ -1,7 +1,19 @@
+@using System.Security.Claims
+@using pizzashop.service.Utils
+@inject IHttpContextAccessor HttpContextAccessor
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Add User Page";
 }
+
+@{
+    CookiesViewModel user = SessionUtils.GetUser(HttpContextAccessor.HttpContext);
+    var RoleId = 0;
+    if(user != null){
+      RoleId = user.roleId;
+    }
+}
+@await Html.PartialAsync("_Toast")
 <head>
     <link rel="stylesheet" href="~/css/userList.css">
     <link rel="stylesheet" href="~/css/site.css">
@@ -18,7 +30,8 @@
                                 <tbody>
                                     @foreach (var role in Model)
                                     {
-                                    <tr>                       
+                                    <tr>             
+                                      @if(RoleId < Int32.Parse(role.Value)){
                                       <td>@role.Text</td>
                                       <td class = "text-end">
                                           <a asp-controller="Role" asp-action="Permission" asp-route-id = "@role.Value">
@@ -26,6 +39,7 @@
                                               id="profile" style="max-height: 30px; height: 100%; width:auto;">
                                           </a>
                                       </td>
+                                      }
                                     </tr>
                                     }
                                     

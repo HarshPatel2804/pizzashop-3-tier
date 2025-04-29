@@ -22,6 +22,7 @@ public class TaxViewModel
     public string TaxTypeName { get; set; }
 
     [Required(ErrorMessage = "Tax Value is required.")]
+    [Range(0, double.MaxValue, ErrorMessage = "Tax Value must not be negative")]
     public string Taxvalue { get; set; } = null!;
 
     public bool Isdeleted { get; set; }

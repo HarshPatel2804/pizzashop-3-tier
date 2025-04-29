@@ -19,19 +19,25 @@ public class RoleController : Controller
        _PermissionService = PermissionService;
     }
 
+    [CustomAuthorize("RoleAndPermission", "CanView")]
      public async Task<IActionResult> Role()
     {
         var Roles = await _RoleService.GetAllRoles();
         return View(Roles);
     }
-
+    [CustomAuthorize("RoleAndPermission", "CanView")]
     public async Task<IActionResult> Permission(int id)
     {
-        var permissions = await _PermissionService.GetPermissions(id);
+        var (permissions , Success) = await _PermissionService.GetPermissions(id , HttpContext);
+
+        if(!Success){
+            TempData["ErrorMessage"] = "Invalid Request!";
+            return RedirectToAction("Role","Role");
+        }
         
         return View(permissions);
     }
-
+    [CustomAuthorize("RoleAndPermission", "CanAddEdit")]
     [HttpPost]
     public async Task<IActionResult> Permission([FromBody] List<PermissionViewModel> permissions)
     {

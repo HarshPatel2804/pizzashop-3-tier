@@ -146,7 +146,12 @@
                         $('#AddTaxModal').modal('hide');
                     }
                     else{
+                        if(response.code == 1){
+                            $("#Taxvalue").after('<div class="error-message text-danger mt-1">' + response.message + '</div>');
+                        }
+                        else{
                         $("#Taxname").after('<div class="error-message text-danger mt-1">' + response.message + '</div>');
+                        }
                     }
                 },
                 error: function (error) {

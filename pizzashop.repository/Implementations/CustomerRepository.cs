@@ -32,7 +32,7 @@ public class CustomerRepository : ICustomerRepository
             case "customername":
                 query = sortOrder == "asc" ? query.OrderBy(u => u.Customername) : query.OrderByDescending(u => u.Customername);
                 break;
-            case "totalamount":
+            case "totalorder":
                 query = sortOrder == "asc" ? query.OrderBy(u => u.Totalorder) : query.OrderByDescending(u => u.Totalorder);
                 break;
             default:

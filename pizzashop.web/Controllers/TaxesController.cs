@@ -16,11 +16,13 @@ public class TaxesController : Controller
     {
        _taxService = taxService;
     }
+    [CustomAuthorize("TaxAndFee", "CanView")]
     public IActionResult Tax()
     {
         return View("Tax");
     }
 
+    [CustomAuthorize("TaxAndFee", "CanView")]
      public async Task<IActionResult> TaxTable(int page = 1, int pageSize = 5, string search = "")
     {
         var (model, totalTaxes, totalPages) = await _taxService.GetTaxes(page, pageSize, search);
@@ -31,6 +33,7 @@ public class TaxesController : Controller
         return PartialView("_TaxPartial",model);
     }
 
+    [CustomAuthorize("TaxAndFee", "CanAddEdit")]
    [HttpGet]
     public async Task<IActionResult> GetTaxModal(int? id = null)
     {
@@ -52,16 +55,21 @@ public class TaxesController : Controller
         return PartialView("_AddTax", viewModel);
     }
 
+    [CustomAuthorize("TaxAndFee", "CanAddEdit")]
     [HttpPost]
     public async Task<IActionResult> SaveTax(TaxViewModel viewModel)
     {
         Console.WriteLine("Save");
         bool success;
+
+        if(viewModel.TaxTypeId == 1 && Int32.Parse(viewModel.Taxvalue) > 100){
+             return Json(new { success = false, message = "Tax percentage can not be more than 100" , code = 1 });
+        }
         
         var existingTable = await _taxService.GetTaxByName(viewModel);
         if (existingTable != null)
         {
-            return Json(new { success = false, message = "Tax with this name already exists" });
+            return Json(new { success = false, message = "Tax with this name already exists"});
         }
         if (viewModel.Taxid > 0)
         {
@@ -80,6 +88,7 @@ public class TaxesController : Controller
         });
     }
 
+    [CustomAuthorize("TaxAndFee", "CanDelete")]
     [HttpPost]
     public async Task<IActionResult> DeleteTax(int id)
     {

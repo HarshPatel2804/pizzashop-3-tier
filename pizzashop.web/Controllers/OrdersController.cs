@@ -28,11 +28,13 @@ public class OrdersController : Controller
         _orderService = orderService;
         _context = context;
     }
+    [CustomAuthorize("Order", "CanView")]
     public IActionResult Order()
     {
         return View();
     }
 
+    [CustomAuthorize("Order", "CanView")]
     public async Task<IActionResult> OrderList(int page = 1, int pageSize = 5, string search = "", string sortColumn = "", string sortOrder = "", orderstatus? status = null, DateTime? fromDate = null , DateTime? toDate = null)
     {
 
@@ -45,6 +47,7 @@ public class OrdersController : Controller
         return  PartialView("_OrderTablePartial", orders);
     }
 
+    [CustomAuthorize("Order", "CanView")]
     [HttpGet]
         public async Task<IActionResult> ForExportExcel(string searchString = "", orderstatus? status = null, DateTime? fromDate = null , DateTime? toDate = null)
         {
@@ -63,6 +66,7 @@ public class OrdersController : Controller
 
         }
 
+    [CustomAuthorize("Order", "CanView")]
     public async Task<IActionResult> ForPdfDownload(int orderid){
         
         OrderDetailsView orderDetailsView = await _orderService.GetOrderDetailsViewService(orderid);
@@ -71,6 +75,7 @@ public class OrdersController : Controller
 
         // TO Convert HTML to PDF
         HtmlToPdf converter = new HtmlToPdf();
+
         
         // PDF style
         converter.Options.PdfPageSize = PdfPageSize.A3;
@@ -80,9 +85,8 @@ public class OrdersController : Controller
         converter.Options.MarginLeft = 20;
         converter.Options.MarginRight = 20;
 
-        
         // Create PDF document
-        PdfDocument doc = converter.ConvertHtmlString(viewHtml);
+        PdfDocument doc = converter.ConvertHtmlString(viewHtml, $"{Request.Scheme}://{Request.Host}");
 
         // Save PDF to a memory stream
         MemoryStream ms = new MemoryStream();

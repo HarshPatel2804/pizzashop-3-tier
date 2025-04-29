@@ -25,7 +25,8 @@ public class UsersLoginService : IUsersLoginService
     }
 
     public bool CheckUsername(string Username , int? Id = null){
-        return _UsersloginRepository.CheckUsername(Username , Id);
+        string result = System.Text.RegularExpressions.Regex.Replace(Username, @"\s+", " ");
+        return _UsersloginRepository.CheckUsername(result.Trim() , Id);
     }
 
     public bool CheckEmail(string Email, int? Id = null)

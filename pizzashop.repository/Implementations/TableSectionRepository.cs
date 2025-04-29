@@ -29,6 +29,11 @@ public class TableSectionRepository : ITableSectionRepository
 
         int totalTables = await query.CountAsync();
 
+        if(pageSize == 0){
+            var allTables = await query
+            .ToListAsync();
+            return (allTables, totalTables);
+        }
         var tables = await query
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
@@ -133,8 +138,17 @@ public class TableSectionRepository : ITableSectionRepository
     {
         return await _context.Tables
             .FirstOrDefaultAsync(mg =>
-                mg.Tablename.ToLower() == model.Tablename.ToLower() &&
+                mg.Tablename.ToLower().Trim() == model.Tablename.ToLower().Trim() &&
                 mg.Tableid != model.Tableid &&
+                mg.Isdeleted != true);
+    }
+
+     public async Task<Section> GetSectionByName(SectionViewModel model)
+    {
+        return await _context.Sections
+            .FirstOrDefaultAsync(mg =>
+                mg.Sectionname.ToLower().Trim() == model.Sectionname.ToLower().Trim() &&
+                mg.Sectionid != model.Sectionid &&
                 mg.Isdeleted != true);
     }
 

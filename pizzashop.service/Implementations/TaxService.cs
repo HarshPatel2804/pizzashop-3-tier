@@ -121,6 +121,8 @@ public class TaxService : ITaxService
 
     public async Task<Taxis> GetTaxByName(TaxViewModel model)
         {
+            string result = System.Text.RegularExpressions.Regex.Replace(model.Taxname, @"\s+", " ");
+        model.Taxname = result.Trim();
             return await _taxRepository.GetTaxByName(model);
         }
 }

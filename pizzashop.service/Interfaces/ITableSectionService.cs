@@ -17,7 +17,7 @@ public interface ITableSectionService
 
     Task<(bool Success, string Message)> DeleteSection(int sectionId);
 
-    Task<TableViewModel> GetSections();
+    Task<TableViewModel> GetTableviewModel(int sectionId);
 
     Task AddTable(TableViewModel model);
 
@@ -32,6 +32,8 @@ public interface ITableSectionService
     Task<(bool success, string message)> DeleteMultipleTables(List<int> tableIds);
 
     Task<Table> GetTableByName(TableViewModel model);
+
+    Task<Section> GetSectionByName(SectionViewModel model);
 
     Task<int> FirstSectionId();
 

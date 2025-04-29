@@ -20,11 +20,13 @@ public class MenuController : Controller
         _menuService = menuService;
         _context = context;
     }
+    [CustomAuthorize("Menu", "CanView")]
     public async Task<IActionResult> Menu()
     {
         return View();
     }
 
+    [CustomAuthorize("Menu", "CanView")]
     [HttpGet]
     public async Task<IActionResult> Category()
     {
@@ -32,6 +34,7 @@ public class MenuController : Controller
         return PartialView("_CategoryPartial", model);
     }
 
+    [CustomAuthorize("Menu", "CanAddEdit")]
     [HttpPost]
     public async Task<IActionResult> Category([FromBody] CategoryViewModel model)
     {
@@ -49,6 +52,7 @@ public class MenuController : Controller
         return Json(new { success = true });
     }
 
+    [CustomAuthorize("Menu", "CanView")]
     [HttpGet]
     public async Task<IActionResult> ModifierGroup()
     {
@@ -56,6 +60,7 @@ public class MenuController : Controller
         return PartialView("_ModifierGrouppartial", model);
     }
 
+    [CustomAuthorize("Menu", "CanView")]
     public async Task<IActionResult> Modifiers(int ModifierGroupId, int page = 1, int pageSize = 5, string search = "")
     {
         var (model, totalUsers, totalPages) = await _menuService.GetModifiersByGroup(ModifierGroupId, page, pageSize, search);
@@ -66,6 +71,7 @@ public class MenuController : Controller
         return PartialView("_ModifierPartial", model);
     }
 
+    [CustomAuthorize("Menu", "CanView")]
     public async Task<IActionResult> Items(int categoryId, int page = 1, int pageSize = 5, string search = "")
     {
         var (model, totalUsers, totalPages) = await _menuService.GetItemsByCategory(categoryId, page, pageSize, search);
@@ -76,17 +82,20 @@ public class MenuController : Controller
         return PartialView("_ItemPartial", model);
     }
 
+    [CustomAuthorize("Menu", "CanAddEdit")]
     public async Task<IActionResult> AddNewItem(int categoryId)
     {
         var model = await _menuService.GetItemDetails(categoryId);
         return PartialView("_AddItem", model);
     }
+    [CustomAuthorize("Menu", "CanAddEdit")]
     public async Task<IActionResult> AddNewModifier()
     {
         var model = await _menuService.GetModifierGroups();
         return PartialView("_AddNewModifier", model);
     }
 
+    [CustomAuthorize("Menu", "CanAddEdit")]
     [HttpPost]
     public async Task<IActionResult> AddNewItem(AddEditItemViewModel addEditItemViewModel, IFormFile ProfileImage)
     {
@@ -123,6 +132,7 @@ public class MenuController : Controller
         return Json(new { success = true, message = "added successfully" });
     }
 
+    [CustomAuthorize("Menu", "CanAddEdit")]
     public async Task<IActionResult> editItem(int itemId)
     {
 
@@ -130,6 +140,7 @@ public class MenuController : Controller
         return PartialView("_EditItem", model);
     }
 
+    [CustomAuthorize("Menu", "CanAddEdit")]
     [HttpPost]
     public async Task<IActionResult> UpdateAvailability(int ItemId, bool IsAvailable)
     {
@@ -145,6 +156,7 @@ public class MenuController : Controller
         }
     }
 
+    [CustomAuthorize("Menu", "CanAddEdit")]
     [HttpPost]
     public async Task<IActionResult> editItem(AddEditItemViewModel addEditItemViewModel, IFormFile ProfileImage)
     {
@@ -174,6 +186,7 @@ public class MenuController : Controller
         return Json(new { success = true, message = "added successfully" });
     }
 
+    [CustomAuthorize("Menu", "CanAddEdit")]
     public async Task<CategoryViewModel> EditCategoryById(int categoryId)
     {
         var model = await _menuService.GetCategoryById(categoryId);
@@ -181,6 +194,7 @@ public class MenuController : Controller
         return model;
     }
 
+    [CustomAuthorize("Menu", "CanAddEdit")]
     [HttpPost]
     public async Task<IActionResult> EditCategoryById([FromBody] CategoryViewModel model)
     {
@@ -197,6 +211,7 @@ public class MenuController : Controller
         return Json(new { success = true });
     }
 
+    [CustomAuthorize("Menu", "CanDelete")]
     [HttpPost]
     public async Task DeleteCategory(int categoryId)
     {
@@ -204,12 +219,14 @@ public class MenuController : Controller
         await _menuService.DeleteCategory(categoryId);
     }
 
+    [CustomAuthorize("Menu", "CanDelete")]
     [HttpPost]
     public async Task DeleteItem(int itemId)
     {
         await _menuService.DeleteItem(itemId);
     }
 
+    [CustomAuthorize("Menu", "CanDelete")]
     [HttpPost]
     public async Task DeleteModifier(int modifierId, int modifierGroupId)
     {
@@ -225,6 +242,7 @@ public class MenuController : Controller
         return Json(new { success = true, modifiers });
     }
 
+    [CustomAuthorize("Menu", "CanAddEdit")]
     public async Task<IActionResult> AddItemModal()
     {
         var viewModel = new AddEditItemViewModel
@@ -268,6 +286,7 @@ public class MenuController : Controller
         return Ok(modifierGroups);
     }
 
+    [CustomAuthorize("Menu", "CanAddEdit")]
     [HttpGet]
     public async Task<IActionResult> Modifierlist(int page = 1, int pageSize = 5, string search = "")
     {
@@ -283,6 +302,7 @@ public class MenuController : Controller
             : View(modifiers);
     }
 
+    [CustomAuthorize("Menu", "CanAddEdit")]
     [HttpPost]
     public async Task<IActionResult> CreateModifierGroup([FromBody] ModifierGroupViewModel model)
     {
@@ -300,6 +320,8 @@ public class MenuController : Controller
         int modifierGroupId = await _menuService.AddModifierGroup(model);
         return Json(new { success = true, ID = modifierGroupId });
     }
+
+    [CustomAuthorize("Menu", "CanAddEdit")]
     [HttpPost]
     public async Task<IActionResult> UpdateModifierGroup([FromBody] ModifierGroupViewModel model)
     {
@@ -325,6 +347,7 @@ public class MenuController : Controller
         return Json(new { success = true, Data = model });
     }
 
+    [CustomAuthorize("Menu", "CanAddEdit")]
     [HttpPost]
     public async Task<IActionResult> SaveModifier(ModifierViewModel model)
     {
@@ -349,6 +372,7 @@ public class MenuController : Controller
         return Json(new { success = true });
     }
 
+    [CustomAuthorize("Menu", "CanAddEdit")]
     [HttpGet]
     public async Task<IActionResult> GetModifierDetails(int modifierId)
     {
@@ -356,6 +380,7 @@ public class MenuController : Controller
         return PartialView("_EditModifier", model);
     }
 
+    [CustomAuthorize("Menu", "CanAddEdit")]
     [HttpPost]
     public async Task<IActionResult> EditModifier(ModifierViewModel model)
     {
@@ -380,6 +405,7 @@ public class MenuController : Controller
         return Json(new { success = true, modifierId = model.Modifierid });
     }
 
+    [CustomAuthorize("Menu", "CanDelete")]
     [HttpPost]
     public async Task<JsonResult> MassDeleteItems([FromBody] List<int> selectedIds)
     {
@@ -387,6 +413,7 @@ public class MenuController : Controller
         return Json(new { success = true, message = "Items deleted successfully" });
     }
 
+    [CustomAuthorize("Menu", "CanDelete")]
     [HttpPost]
     public async Task<JsonResult> MassDeleteModifiers(List<int> selectedIds, int modifierGroupid)
     {
@@ -394,12 +421,14 @@ public class MenuController : Controller
         return Json(new { success = true, message = "Modifiers deleted successfully" });
     }
 
+    [CustomAuthorize("Menu", "CanAddEdit")]
     [HttpPost]
     public async Task UpdateCategoryOrder(List<int> sortOrder)
     {
         await _menuService.UpdateCategorySortOrder(sortOrder);
     }
 
+    [CustomAuthorize("Menu", "CanAddEdit")]
     [HttpPost]
     public async Task UpdateModifierGroupOrder(List<int> sortOrder)
     {
@@ -411,6 +440,7 @@ public class MenuController : Controller
         return await _menuService.FirstCategoryId();
     }
 
+    [CustomAuthorize("Menu", "CanDelete")]
     [HttpPost]
     public async Task<JsonResult> DeleteModifierGroup(int modifierGroupid)
     {

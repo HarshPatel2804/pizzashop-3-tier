@@ -248,7 +248,7 @@ li {
     margin-top: 2rem;
 }
 
-.ActiveEffect>button>img {
+.items:hover>button>img {
     display: block !important;
 }
 

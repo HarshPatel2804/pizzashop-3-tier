@@ -4,28 +4,40 @@ using pizzashop.repository.Models;
 using pizzashop.repository.ViewModels;
 using pizzashop.service.Interfaces;
 using pizzashop.service.Utils;
-
 namespace pizzashop.service.Implementations;
 
 public class PermissionService : IPermissionService
 {
-     private readonly IRoleService _RoleService;
+    private readonly IRoleService _RoleService;
 
-     private readonly IPermissionRepository _permissionRepository;
+    private readonly IPermissionRepository _permissionRepository;
 
-     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    int RoleId = 0;
 
-     public PermissionService(IRoleService RoleService , IPermissionRepository permissionRepository , IHttpContextAccessor httpContextAccessor)
+    public PermissionService(IRoleService RoleService, IPermissionRepository permissionRepository, IHttpContextAccessor httpContextAccessor)
     {
-       _RoleService = RoleService;
-       _permissionRepository = permissionRepository;
-       _httpContextAccessor = httpContextAccessor;
+        _RoleService = RoleService;
+        _permissionRepository = permissionRepository;
+        _httpContextAccessor = httpContextAccessor;
     }
-    public async Task<List<PermissionViewModel>> GetPermissions(int Roleid)
+    public async Task<(List<PermissionViewModel>, bool success)> GetPermissions(int Roleid , HttpContext httpContext)
     {
-        var model = await _permissionRepository.GetPermissionByRole(Roleid);
+         CookiesViewModel user = SessionUtils.GetUser(httpContext);
+        
+        if (user != null)
+        {
+            RoleId = user.roleId;
+        }
+        var model = new List<PermissionViewModel>();
+        if(RoleId < Roleid){
+            model = await _permissionRepository.GetPermissionByRole(Roleid);
+        }
+        else{
+            return (model , false);
+        }
 
-        return model;
+        return (model , true);
     }
 
     public async Task UpdatePermissions(List<PermissionViewModel> permissions)
@@ -45,27 +57,28 @@ public class PermissionService : IPermissionService
         }
     }
 
-    public async Task<Permission> GetPermissions(string role , string module){
-        return await _permissionRepository.GetPermissionByRoleAndModule(role,module);
+    public async Task<Permission> GetPermissions(string role, string module)
+    {
+        return await _permissionRepository.GetPermissionByRoleAndModule(role, module);
     }
 
     public async Task<Permission> GetCurrentUserPermissionsForModule(string moduleName)
+    {
+        CookiesViewModel user = SessionUtils.GetUser(_httpContextAccessor.HttpContext);
+
+        if (user == null)
         {
-            CookiesViewModel user = SessionUtils.GetUser(_httpContextAccessor.HttpContext);
-            
-            if (user == null)
-            {
-                return new Permission();
-            }
-
-            Role userRole = await _RoleService.GetRoleById(user.roleId);
-            
-            if (userRole == null)
-            {
-                return new Permission();
-            }
-
-            return await GetPermissions(userRole.Rolename, moduleName);
+            return new Permission();
         }
+
+        Role userRole = await _RoleService.GetRoleById(user.roleId);
+
+        if (userRole == null)
+        {
+            return new Permission();
+        }
+
+        return await GetPermissions(userRole.Rolename, moduleName);
+    }
 
 }

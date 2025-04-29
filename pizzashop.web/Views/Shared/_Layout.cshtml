@@ -85,7 +85,7 @@
                     <span style="font-weight: 600;" class="text">Users</span>
                 </a>
                 }
-                @if(permission2.Canview == true){
+                @if(permission2.Canview == true && role != "Chef"){
                 <a class='@(ViewContext.RouteData.Values["controller"]!.ToString() == "Role" ? "activeItem" : " ") menu w-100 mt-4' asp-controller="Role" asp-action="Role"  onclick="selectItem(this)">
                     <img src="~/images/navbar-icons/roles-default.png" class="me-2 ms-4 menu-icon black ">
                     <img src="~/images/navbar-icons/roles-active.png" class="me-2 ms-4 menu-icon blue ">

@@ -1,5 +1,7 @@
+@using pizzashop.service.Interfaces
+@inject IPermissionService PermissionService
 @{
-     var permission = ViewData["Permission"] as Permission;
+    var permission = await PermissionService.GetCurrentUserPermissionsForModule("Users");
 }
 
 <table class="table px-3" style="border-radius: 6px; box-shadow: 1px 1px 15px rgb(108, 103, 103);">
