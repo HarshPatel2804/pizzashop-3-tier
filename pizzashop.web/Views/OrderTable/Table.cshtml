@@ -232,6 +232,60 @@
                     }
                 });
 
+                $('#AssignModal').on('submit', '#AssignTableForm', function (e) {
+                    e.preventDefault();
+                    console.log("Assign Table");
+
+                    let selectedTableIds = [];
+                    selectedTableIds = JSON.parse($('#selectedTableIds').val() || '[]');
+                    console.log(selectedTableIds);
+
+                    if ($(this).valid()) {
+
+                        const formData = {
+                            Email: $('#Email').val(),
+                            Customername: $('#Name').val(),
+                            Phoneno: $('#mobile').val(),
+                            Noofpeople: parseInt($('#NoOfPerson').val()) || 0,
+                            selectedTableIds: selectedTableIds
+                        };
+
+                        const waitingTokenId = $('#waitingTokenId').val();
+                        if (waitingTokenId) {
+                            formData.Waitingtokenid = parseInt(waitingTokenId);
+                        }
+
+                        $.ajax({
+                            url: '/OrderTable/AssignTable',
+                            type: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify(formData),
+                            dataType: 'json',
+                            success: function (response) {
+                                if (response.success) {
+                                    var offcanvasElement = document.getElementById('AssignTableModal');
+                                    var bsOffcanvas = bootstrap.Offcanvas.getInstance(offcanvasElement);
+                                    bsOffcanvas.hide();
+                                    var orderId = response.orderid;
+
+                                    selectedTableIds.forEach(function (tableId) {
+                                        var table = $(`.table-card[data-table-id="${tableId}"]`);
+                                        console.log(table);
+                                        table.data('orderid', orderId);
+                                    });
+
+                                    sectionList();
+                                    toastr.clear();
+                                    toastr.success('Table assigned successfully');
+                                } else {
+                                    toastr.clear();
+                                    toastr.error(response.message || 'Failed to assign table');
+                                }
+                            }
+                        });
+                    }
+                });
+
                 $('.accordion-collapse').on('hidden.bs.collapse', function () {
                     const sectionId = $(this).closest('.accordion-item').find('.assign-btn').data('id');
 
@@ -270,7 +324,7 @@
             });
         });
 
-       
+
     });
 </script>
 <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>

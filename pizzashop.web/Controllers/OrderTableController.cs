@@ -93,11 +93,11 @@ public class OrderTableController : Controller
             }
         }
 
-        string result = await _tableSectionService.AssignTable(model);
+        var (result , orderId) = await _tableSectionService.AssignTable(model);
         if(result != "true"){
             return Json(new { success = false, message = result });
         }
 
-        return Json(new { success = true, message = "Table Assigned Successfully" });
+        return Json(new { success = true, message = "Table Assigned Successfully", orderid = orderId});
     }
 }

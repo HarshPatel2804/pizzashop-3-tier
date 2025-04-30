@@ -45,11 +45,12 @@
                             <div class="col-auto d-flex align-items-center me-5 fw-bold" style="font-size: 20px;">
                                 Category
                             </div>
-                            @if(permission.Canaddedit == true){
-                            <button class="btn col-auto ms-5" type="button" data-bs-toggle="modal"
-                                data-bs-target="#Add-Category">
-                                <img src="~/images/more.png" style="width: 30px;">
-                            </button>
+                            @if (permission.Canaddedit == true)
+                            {
+                                <button class="btn col-auto ms-5" type="button" data-bs-toggle="modal"
+                                    data-bs-target="#Add-Category">
+                                    <img src="~/images/more.png" style="width: 30px;">
+                                </button>
                             }
                         </div>
                         <div class="row overflow-auto me-2 mt-2" style="height: 400px;" id="Category">
@@ -65,17 +66,19 @@
                         <div class="row justify-content-end ms-lg-5 me-lg-5 me-2 mt-2" style="height: 50px;">
                             <input type="search" class="col-md-auto col-6 me-1 " id="searchInput" placeholder="search"
                                 style="border-radius: 3px; border: 1px solid black">
-                                @if(permission.Candelete == true){
-                            <button type="button" class="btn MassItemDelete"
-                                style="width: 50px; border: 1px solid black" data-bs-toggle="modal"
-                                data-bs-target="#MassDeleteItemModal"><img src="~/images/trash.svg"></button>
-                                }
-                                @if(permission.Canaddedit == true){
-                            <button type="button"
-                                class="btn btn-prime col-md-auto col-3 ms-1 align-items-center d-flex item-button addItem"
-                                style="border-radius: 4px;">
-                                + New Item
-                            </button>
+                            @if (permission.Candelete == true)
+                            {
+                                <button type="button" class="btn MassItemDelete"
+                                    style="width: 50px; border: 1px solid black" data-bs-toggle="modal"
+                                    data-bs-target="#MassDeleteItemModal"><img src="~/images/trash.svg"></button>
+                            }
+                            @if (permission.Canaddedit == true)
+                            {
+                                <button type="button"
+                                    class="btn btn-prime col-md-auto col-3 ms-1 align-items-center d-flex item-button addItem"
+                                    style="border-radius: 4px;">
+                                    + New Item
+                                </button>
                             }
                         </div>
                         <div class="row table-responsive pt-4 ms-2 me-2" id="itemByCategory">
@@ -92,11 +95,12 @@
                             <div class="col-auto d-flex align-items-center fw-bold" style="font-size: 20px;">
                                 Modifier Group
                             </div>
-                             @if(permission.Canaddedit == true){
-                            <button class="btn col-auto ms-3" type="button" data-bs-toggle="modal"
-                                data-bs-target="#addModifiersGroup">
-                                <img src="~/images/more.png" style="width: 30px;">
-                            </button>
+                            @if (permission.Canaddedit == true)
+                            {
+                                <button class="btn col-auto ms-3" type="button" data-bs-toggle="modal"
+                                    data-bs-target="#addModifiersGroup">
+                                    <img src="~/images/more.png" style="width: 30px;">
+                                </button>
                             }
                         </div>
                         <div class="row overflow-auto me-2 mt-2" style="height: 400px; ;" id="ModifierGroup">
@@ -113,16 +117,18 @@
                         <div class="row justify-content-end ms-lg-5 me-lg-5 me-2 mt-2" style="height: 50px;">
                             <input type="search" class="col-md-auto col-6 me-1 " id="search" placeholder="search"
                                 style="border-radius: 3px; border: 1px solid black">
-                                 @if(permission.Candelete == true){
-                            <button type="button" class="btn" data-bs-toggle="modal"
-                                data-bs-target="#MassDeletemodifierModal"
-                                style="width: 50px; border: 1px solid black"><img src="~/images/trash.svg"></button>
-                                }
-                                 @if(permission.Canaddedit == true){
-                            <button class="btn col-md-auto col-3 ms-1 align-items-center d-flex addModifier"
-                                style="border-radius: 2px; border: 1px solid black; background-color: rgb(85, 85, 247); color: white  !important;">
-                                + New Modifier
-                            </button>
+                            @if (permission.Candelete == true)
+                            {
+                                <button type="button" class="btn" data-bs-toggle="modal"
+                                    data-bs-target="#MassDeletemodifierModal"
+                                    style="width: 50px; border: 1px solid black"><img src="~/images/trash.svg"></button>
+                            }
+                            @if (permission.Canaddedit == true)
+                            {
+                                <button class="btn col-md-auto col-3 ms-1 align-items-center d-flex addModifier"
+                                    style="border-radius: 2px; border: 1px solid black; background-color: rgb(85, 85, 247); color: white  !important;">
+                                    + New Modifier
+                                </button>
                             }
                         </div>
                         <div class="row table-responsive pt-4 ms-2 me-2" id="Modifier">
@@ -322,8 +328,8 @@
             </div>
         </div>
     </div>
-    <div class="fade modal" id="MassDeletemodifierModal" data-bs-keyboard="false"
-        tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="fade modal" id="MassDeletemodifierModal" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" style="width: 400px;">
             <div class="modal-content">
                 <div class="row mx-1 mt-2">
@@ -346,8 +352,8 @@
             </div>
         </div>
     </div>
-    <div class="fade modal" id="DeleteModifierGroupModal" data-bs-keyboard="false"
-        tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="fade modal" id="DeleteModifierGroupModal" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" style="width: 400px;">
             <div class="modal-content">
                 <div class="row mx-1 mt-2">
@@ -490,7 +496,12 @@
         let lastSelectedModifierGroupId = 0;
         const selectedGroups = new Map();
         let selectedModifiers = [];
+        let tempSelectedModifiers = [];
         let selectedItemIds = [];
+        let selectedModifierIds = [];
+        let totalItemCount = 0;
+        let totalModifierCount = 0;
+        let totaExistingModifierCount = 0;
 
         categoryList();
         modifierGroupList();
@@ -504,14 +515,14 @@
         $(document).on("click", ".deleteItem", function () {
             var item = $(this).data("id");
             var category = $(this).data("category");
-                $("#item").val(item);
+            $("#item").val(item);
             $("#category").val(category);
         });
 
         $(document).on("click", ".deleteModifier", function () {
             var modifier = $(this).data("id");
             var modifierGroup = $(this).data("modifiergroup");
-                $("#modifier").val(modifier);
+            $("#modifier").val(modifier);
             $("#modifierGroup").val(modifierGroup);
         });
 
@@ -522,7 +533,7 @@
                 success: function (data) {
                     $('#Category').html(data);
                     $(".selectedCategory").removeClass("ActiveEffect");
-            $(`.selectedCategory[data-id="${lastSelectedCategoryId}"]`).addClass("ActiveEffect");
+                    $(`.selectedCategory[data-id="${lastSelectedCategoryId}"]`).addClass("ActiveEffect");
                 }
             });
         };
@@ -541,20 +552,34 @@
                 data: { page: page, pageSize: pageSize, search: search, categoryId: categoryId },
                 success: function (data) {
                     $('#itemByCategory').html(data);
-                    itemMassDelete();
+                    retainCheckboxState();
+                    updateMasterCheckbox();
+                    var masterCheckbox = $('#masterItemCheckbox');
+                    console.log(masterCheckbox);
+                    if (search == '') {
+                        masterCheckbox.removeClass('d-none');
+                        $('#ItemName').removeClass('nameHeading');
+                    }
+                    else {
+                        masterCheckbox.addClass('d-none');
+                        $('#ItemName').addClass('nameHeading');
+                    }
                 }
             });
         };
 
         function getFirstCategoryId() {
-             $.ajax({
-                url: "/Menu/FirstCategoryId", 
+            $.ajax({
+                url: "/Menu/FirstCategoryId",
                 type: "GET",
                 dataType: "json",
                 success: function (categoryId) {
                     lastSelectedCategoryId = categoryId;
                     console.log("First Category ID:", categoryId);
                     ItemList(categoryId, 1);
+                    getAllItems(function (allIds) {
+                        retainCheckboxState();
+                    });
                 }
             });
         }
@@ -573,15 +598,11 @@
             ItemList(CategoryId, 1);
         });
 
-
-
-        let searchTimer;
         $("#searchInput").on("input", function () {
-            clearTimeout(searchTimer);
             let CategoryId = $("#CategoryId").val();
-            searchTimer = setTimeout(function () {
-                ItemList(CategoryId || lastSelectedCategoryId, 1);
-            }, 100);
+            let search = $('#searchInput').val();
+            ItemList(CategoryId || lastSelectedCategoryId, 1);
+
         });
 
         function modifierGroupList() {
@@ -593,7 +614,10 @@
 
                     var firstModifierGroup = $(".selectedModifierGroup:first").data("id");
                     lastSelectedModifierGroupId = firstModifierGroup;
-                    modifierList(firstModifierGroup,1);
+                    modifierList(firstModifierGroup, 1);
+                    getAllModifiersTables(function (allIds) {
+                        retainModifierCheckboxState();
+                    });
                 }
             });
         };
@@ -601,7 +625,7 @@
         function modifierList(ModifierGroupId, page = 1) {
             $(".selectedModifierGroup").removeClass("ActiveEffect");
             $(`.selectedModifierGroup[data-id="${ModifierGroupId}"]`).addClass("ActiveEffect");
-            let pageSize = $("#pageSizeSelect").val();
+            let pageSize = $("#ModifierPageSizeSelect").val();
             let search = $("#search").val();
             $.ajax({
                 type: "GET",
@@ -610,7 +634,17 @@
                 data: { page: page, pageSize: pageSize, search: search, ModifierGroupId: ModifierGroupId },
                 success: function (data) {
                     $('#Modifier').html(data);
-                    modifierMassDelete();
+                    retainModifierCheckboxState();
+                    updateModifierMasterCheckbox();
+                    var masterCheckbox = $('#MasterCheckBoxDelete');
+                    if (search == '') {
+                        masterCheckbox.removeClass('d-none');
+                        $('#modifierName').removeClass('nameHeading');
+                    }
+                    else {
+                        masterCheckbox.addClass('d-none');
+                        $('#modifierName').addClass('nameHeading');
+                    }
                 }
             });
         };
@@ -618,33 +652,25 @@
         $("#Modifier").on("click", ".pagination-link", function (e) {
             e.preventDefault();
             let page = $(this).data("page");
-            let CategoryId = $("#ModifierGroupId").val();
             if (page > 0) {
                 modifierList(lastSelectedModifierGroupId, page);
             }
         });
 
-        $("#Modifier").on("change", "#pageSizeSelect", function () {
-            let CategoryId = $("#ModifierGroupId").val();
-            modifierList(CategoryId, 1);
+        $("#Modifier").on("change", "#ModifierPageSizeSelect", function () {
+            modifierList(lastSelectedModifierGroupId, 1);
         });
 
         $("#search").on("input", function () {
-            clearTimeout(searchTimer);
-            let CategoryId = $("#ModifierGroupId").val();
-            searchTimer = setTimeout(function () {
-                modifierList(CategoryId || lastSelectedModifierGroupId, 1);
-            }, 100);
+            modifierList(lastSelectedModifierGroupId, 1);
         });
-
-        
 
         $(document).on("click", ".addItem", function () {
             console.log("clicked");
             $.ajax({
                 url: "/Menu/AddNewItem",
                 type: "GET",
-                data: {categoryId : lastSelectedCategoryId},
+                data: { categoryId: lastSelectedCategoryId },
                 success: function (response) {
                     $("#AddEditItem").html(response);
                     $("#addItem").modal("show");
@@ -1068,15 +1094,15 @@
         }
 
         function modifiersList(page) {
-            let pageSize = $("#pageSizeSelect").val();
+            let pageSize = $("#ExistingModifierPageSizeSelect").val();
             let search = $("#searchModifier").val();
             $.ajax({
                 type: "GET",
                 url: '/Menu/Modifierlist',
                 contentType: "application/json",
                 data: { page: page, pageSize: pageSize, search: search },
-                success: function (data) {
-                    $('#ExistingModifier').html(data);
+                success: function (response) {
+                    $('#ExistingModifier').html(response);
                     $('#selectExistingModifiers').modal('show');
 
                     updateCheckboxStates();
@@ -1084,9 +1110,35 @@
             });
         };
 
+        function getModifiersList(callback) {
+            $.ajax({
+                type: "GET",
+                url: '/Menu/Modifierlist',
+                contentType: "application/json",
+                data: { page: 1, pageSize: 0, search: '' },
+                success: function (response) {
+                    console.log(response.data);
+                    const allIds = [];
+                    for (var modifier of response.data) {
+                        allIds.push({
+                            id: modifier.modifierid,
+                            name: modifier.modifiername
+                        });
+                    }
+                    console.log(allIds);
+                    totaExistingModifierCount = allIds.length;
+                    callback(allIds);
+                }
+            });
+        }
+
+        getModifiersList(function (allIds) {
+            updateCheckboxStates();
+        });
+
         function resetModifiers() {
             selectedModifiers = [];
-            console.log(selectedModifiers);
+            tempSelectedModifiers = [];
             $('tbody tr').each(function () {
                 $(this).find('#ModifierCheckBox').prop('checked', false);
             });
@@ -1096,6 +1148,15 @@
 
         $('#addModifiersGroup').on('hidden.bs.modal', resetModifiers);
         $('#addModifiersGroup').on('show.bs.modal', resetModifiers);
+        $('#selectExistingModifiers').on('hidden.bs.modal', function () {
+            tempSelectedModifiers = [];
+        });
+        $('#selectExistingModifiers').on('show.bs.modal', function () {
+            for (var modifier of selectedModifiers) {
+                tempSelectedModifiers.push(modifier);
+            }
+        });
+
 
         $(document).on("click", "#AddModifierGroupBtn", function () {
             console.log("HiiList");
@@ -1115,21 +1176,16 @@
             }
         });
 
-        $("#ExistingModifier").on("change", "#pageSizeSelect", function () {
+        $("#ExistingModifier").on("change", "#ExistingModifierPageSizeSelect", function () {
             modifiersList(1);
         });
 
 
         $("#searchModifier").on("input", function () {
-            clearTimeout(searchTimer);
-            searchTimer = setTimeout(function () {
-                modifiersList(1);
-            }, 100);
+            modifiersList(1);
         });
 
         function updateCheckboxStates() {
-            let totalCheckboxes = 0;
-            let checkedCheckboxes = 0;
             const masterCheckbox = $('#MasterCheckBox');
 
             $('#ExistingModifier tbody tr').each(function () {
@@ -1137,32 +1193,40 @@
                 const modifierId = row.find('#ModifierId').val();
                 const checkbox = row.find('#ModifierCheckBox');
 
-                totalCheckboxes++;
-
-                const isSelected = selectedModifiers.some(m => m.id == modifierId);
-                console.log(selectedModifiers);
-                console.log(isSelected + "bool");
-                console.log(modifierId + "id");
+                const isSelected = tempSelectedModifiers.some(m => m.id == modifierId);
 
                 if (isSelected) {
                     checkbox.prop('checked', true);
-                    checkedCheckboxes++;
                 } else {
                     checkbox.prop('checked', false);
                 }
             });
 
-            console.log(totalCheckboxes + " Total " + checkedCheckboxes + " checked");
+            if (totaExistingModifierCount === 0) {
+                $(masterCheckbox).prop({
+                    'checked': false,
+                    'indeterminate': false
+                });
+                return;
+            }
 
-            if (checkedCheckboxes === 0) {
-                masterCheckbox.prop('checked', false);
-                masterCheckbox.prop('indeterminate', false);
-            } else if (checkedCheckboxes === totalCheckboxes) {
-                masterCheckbox.prop('checked', true);
-                masterCheckbox.prop('indeterminate', false);
-            } else {
-                masterCheckbox.prop('checked', false);
-                masterCheckbox.prop('indeterminate', true);
+            if (tempSelectedModifiers.length === totaExistingModifierCount) {
+                $(masterCheckbox).prop({
+                    'checked': true,
+                    'indeterminate': false
+                });
+            }
+            else if (tempSelectedModifiers.length > 0) {
+                $(masterCheckbox).prop({
+                    'checked': false,
+                    'indeterminate': true
+                });
+            }
+            else {
+                $(masterCheckbox).prop({
+                    'checked': false,
+                    'indeterminate': false
+                });
             }
         }
 
@@ -1170,6 +1234,7 @@
             setTimeout(updateCheckboxStates, 100);
         });
 
+        //in temp array
         $(document).on('change', '#ModifierCheckBox', function () {
             const row = $(this).closest('tr');
             const modifierId = row.find('#ModifierId').val();
@@ -1177,53 +1242,45 @@
             const checkbox = $(this);
 
             if (checkbox.is(':checked')) {
-                const exists = selectedModifiers.some(m => m.id === modifierId);
+                const exists = tempSelectedModifiers.some(m => m.id == modifierId);
                 if (!exists) {
-                    selectedModifiers.push({
+                    tempSelectedModifiers.push({
                         id: modifierId,
                         name: modifierName
                     });
                     checkbox.attr('checked', 'checked');
                 }
             } else {
-                selectedModifiers = selectedModifiers.filter(m => m.id !== modifierId);
+                tempSelectedModifiers = tempSelectedModifiers.filter(m => m.id != modifierId);
                 checkbox.removeAttr('checked');
             }
 
             updateCheckboxStates();
         });
 
+        //in temp array
         $(document).on('change', '#MasterCheckBox', function () {
-            const isChecked = $(this).is(':checked');
+            const isChecked = $(this).prop('checked');
 
-            $('#ExistingModifier tbody tr').each(function () {
-                const row = $(this).closest('tr');
-                const modifierId = row.find('#ModifierId').val();
-                const modifierName = row.find('td:nth-child(2)').text().trim();
-                const checkbox = $(this);
-                console.log(modifierName);
+            if (isChecked) {
+                getModifiersList(function (allIds) {
+                    tempSelectedModifiers = [...allIds];
+                    updateCheckboxStates();
+                });
+            } else {
+                tempSelectedModifiers = [];
+                updateCheckboxStates();
+            }
 
-                if (isChecked) {
-                    checkbox.attr('checked', 'checked');
-
-                    const exists = selectedModifiers.some(m => m.id == modifierId);
-                    if (!exists) {
-                        selectedModifiers.push({
-                            id: modifierId,
-                            name: modifierName
-                        });
-                    }
-                } else {
-                    checkbox.removeAttr('checked');
-                    selectedModifiers = selectedModifiers.filter(m => m.id != modifierId);
-                }
-            });
-
-            $(this).attr('checked', isChecked ? 'checked' : null);
-            updateCheckboxStates();
         });
 
+        //temp array to main array
         $('#selectExistingModifiers .btn-primary').on('click', function () {
+            selectedModifiers = [];
+            for (var modifier of tempSelectedModifiers) {
+                selectedModifiers.push(modifier);
+            }
+            console.log(selectedModifiers);
             $('#addModifiersGroup .existing-modifiers').remove();
             $('#editModifiersGroup .existing-modifiers').remove();
 
@@ -1264,7 +1321,6 @@
         $('form').on('submit', function (e) {
             if (selectedModifiers.length === 0) {
                 e.preventDefault();
-    @* alert('Please select at least one modifier'); *@
                 return;
             }
 
@@ -1295,13 +1351,13 @@
             console.log(modifierGroupName + "name");
 
             // Extract just the IDs for the API call
-            const selectedModifierIds = selectedModifiers.map(m => m.id);
+            const ModifierIds = selectedModifiers.map(m => m.id);
 
             // Create data object
             const data = {
                 Modifiergroupname: modifierGroupName,
                 Description: description,
-                SelectedModifierIds: selectedModifierIds
+                SelectedModifierIds: ModifierIds
             };
 
             // Send AJAX request
@@ -1315,7 +1371,7 @@
 
                         $("#modifierGroupName").val('');
                         $("#modifierGroupDescription").val('');
-                        selectedModifiers = [];
+                        ModifierIds = [];
 
                         $('#addModifiersGroup').modal('hide');
                         console.log(response);
@@ -1342,13 +1398,13 @@
                 return;
             }
 
-            const selectedModifierIds = selectedModifiers.map(m => m.id);
+            const ModifierIds = selectedModifiers.map(m => m.id);
 
             const data = {
                 Modifiergroupid: modifierGroupId,
                 Modifiergroupname: modifierGroupName,
                 Description: description,
-                SelectedModifierIds: selectedModifierIds
+                SelectedModifierIds: ModifierIds
             };
 
             $.ajax({
@@ -1360,7 +1416,7 @@
                     if (response.success) {
                         $("#editmodifierGroupName").val('');
                         $("#editmodifierGroupDescription").val('');
-                        selectedModifiers = [];
+                        ModifierIds = [];
 
                         $('.modal-updateModifiersGroup').modal('hide');
                         modifierGroupList();
@@ -1376,6 +1432,7 @@
             const modifierGroupId = $(this).data('id');
             $('#editmodifierGroupId').val(modifierGroupId);
             selectedModifiers = [];
+            tempSelectedModifiers = [];
             console.log("Hii edit goup");
 
             $.ajax({
@@ -1392,6 +1449,10 @@
                             id: modifier.modifierid,
                             name: modifier.modifiername
                         });
+                        tempSelectedModifiers.push({
+                            id: modifier.modifierid,
+                            name: modifier.modifiername
+                        });
                     });
 
                     $('#editModifiersGroup .existing-modifiers').remove();
@@ -1399,7 +1460,6 @@
 
                     const modifiersContainer = $('<div class="existing-modifiers d-flex flex-wrap gap-2 mt-2"></div>');
 
-                    // Add each selected modifier as a badge
                     selectedModifiers.forEach(function (modifier) {
                         const badge = $(`
                 <span class="badge bg-primary d-flex align-items-center" data-modifier-id="${modifier.id}">
@@ -1410,7 +1470,6 @@
                         modifiersContainer.append(badge);
                     });
 
-                    // Insert the modifiers container after the "Add Existing Modifiers" link
                     $('#EditModifierGroupBtn').after(modifiersContainer);
                     console.log(selectedModifiers);
                     $('#editModifiersGroup').modal('show');
@@ -1430,7 +1489,6 @@
             const selectedModifiersInput = container.querySelector('#selectedModifiers');
             const modifierPlaceholder = container.querySelector('#modifierPlaceholder');
 
-            // Array to store selected modifiers
             let selectedModifierGroups = [];
 
             checkboxes.forEach(checkbox => {
@@ -1446,29 +1504,24 @@
 
             updateDisplay();
 
-            // Toggle dropdown when clicking on the display area
             selectedModifiersDisplay.addEventListener('click', function () {
                 modifierDropdown.classList.toggle('show');
             });
 
-            // Close dropdown when clicking outside
             $(document).on('click', function (event) {
                 if (!selectedModifiersDisplay.contains(event.target) && !modifierDropdown.contains(event.target)) {
                     modifierDropdown.classList.remove('show');
                 }
             });
 
-            // Handle checkbox changes
             checkboxes.forEach(checkbox => {
                 checkbox.addEventListener('change', function () {
                     const value = this.value;
                     const label = this.nextElementSibling.textContent;
 
                     if (this.checked) {
-                        // Add to selected modifiers
                         selectedModifierGroups.push({ value, label });
                     } else {
-                        // Remove from selected modifiers
                         selectedModifierGroups = selectedModifierGroups.filter(item => item.value !== value);
                     }
 
@@ -1476,23 +1529,18 @@
                 });
             });
 
-            // Update the display and hidden input
             function updateDisplay() {
-                // Clear current display except placeholder
                 const tags = selectedModifiersDisplay.querySelectorAll('.selected-tag');
                 tags.forEach(tag => tag.remove());
 
                 if (selectedModifierGroups.length > 0) {
-                    // Hide placeholder
                     modifierPlaceholder.style.display = 'none';
 
-                    // Create first tag
                     const firstTag = document.createElement('span');
                     firstTag.className = 'selected-tag';
                     firstTag.innerHTML = `${selectedModifierGroups[0].label} <span class="tag-remove" data-value="${selectedModifierGroups[0].value}">×</span>`;
                     selectedModifiersDisplay.appendChild(firstTag);
 
-                    // Add +N if there are more
                     if (selectedModifierGroups.length > 1) {
                         const moreTag = document.createElement('span');
                         moreTag.className = 'selected-tag';
@@ -1500,25 +1548,19 @@
                         selectedModifiersDisplay.appendChild(moreTag);
                     }
                 } else {
-                    // Show placeholder if no selections
                     modifierPlaceholder.style.display = 'block';
                 }
 
-                // Update hidden input value
                 selectedModifiersInput.value = JSON.stringify(selectedModifierGroups.map(item => item.value));
 
-                // Add event listeners to remove buttons
                 const removeButtons = selectedModifiersDisplay.querySelectorAll('.tag-remove');
                 removeButtons.forEach(button => {
                     button.addEventListener('click', function (e) {
                         e.stopPropagation();
                         const valueToRemove = this.getAttribute('data-value');
-
-                        // Uncheck the corresponding checkbox
                         const checkbox = document.querySelector(`.modifier-checkbox[value="${valueToRemove}"]`);
                         if (checkbox) checkbox.checked = false;
 
-                        // Remove from array
                         selectedModifierGroups = selectedModifierGroups.filter(item => item.value !== valueToRemove);
                         console.log(selectedModifierGroups);
 
@@ -1632,237 +1674,266 @@
         });
 
         $(document).on('click', '.ModifierGroupDeleteBtn', function (e) {
-                e.preventDefault();
+            e.preventDefault();
 
-                $.ajax({
-                    url: '/Menu/DeleteModifierGroup',
-                    type: 'POST',
-                    data: {
-                        modifierGroupid: lastSelectedModifierGroupId
-                    }
-                    ,
-                    success: function (response) {
-                        if (response.success) {
-                            modifierGroupList();
-                        }
-                    }
-                });
-            });
-
-
-        function itemMassDelete() {
-
-            retainCheckboxState();
-
-            function retainCheckboxState(){
-                 $("tbody #ItemCheckbox").each(function () {
-                    const itemId = getItemIdFromRow($(this).closest('tr'));
-
-                    if (selectedItemIds.includes(itemId)) {
-                        $(this).prop('checked', true);
-                    } else {
-                        $(this).prop('checked', false);
-                    }
-                });
-            }
-
-            $("#masterItemCheckbox").on('click', function () {
-                console.log("checked");
-                const isChecked = $(this).prop('checked');
-
-                $("tbody #ItemCheckbox").each(function () {
-                    $(this).prop('checked', isChecked);
-
-                    const itemId = getItemIdFromRow($(this).closest('tr'));
-
-                    if (isChecked && !selectedItemIds.includes(itemId)) {
-                        selectedItemIds.push(itemId);
-                    } else if (!isChecked) {
-                        selectedItemIds = selectedItemIds.filter(id => id !== itemId);
-                    }
-                });
-
-                console.log("Selected Item IDs:", selectedItemIds);
-            });
-
-            $("tbody").on('click', "#ItemCheckbox", function () {
-                const isChecked = $(this).prop('checked');
-                const itemId = getItemIdFromRow($(this).closest('tr'));
-
-                if (isChecked && !selectedItemIds.includes(itemId)) {
-                    selectedItemIds.push(itemId);
-                } else if (!isChecked) {
-                    selectedItemIds = selectedItemIds.filter(id => id !== itemId);
+            $.ajax({
+                url: '/Menu/DeleteModifierGroup',
+                type: 'POST',
+                data: {
+                    modifierGroupid: lastSelectedModifierGroupId
                 }
-
-                updateMasterCheckbox();
-                console.log("Selected Item IDs:", selectedItemIds);
-            });
-
-            function getItemIdFromRow(row) {
-                const editItemElement = row.find('.editItem');
-                const deleteItemElement = row.find('.deleteItem');
-
-                if (editItemElement.length > 0) {
-                    return editItemElement.data('id');
-                } else if (deleteItemElement.length > 0) {
-                    return deleteItemElement.data('id');
-                }
-
-                return row.index();
-            }
-
-            function updateMasterCheckbox() {
-                const checkboxes = $("tbody #ItemCheckbox");
-                const checkedCount = $("tbody #ItemCheckbox:checked").length;
-
-                if (checkedCount === 0) {
-                    $("#masterItemCheckbox").prop({
-                        'checked': false,
-                        'indeterminate': false
-                    });
-                } else if (checkedCount === checkboxes.length) {
-                    $("#masterItemCheckbox").prop({
-                        'checked': true,
-                        'indeterminate': false
-                    });
-                } else {
-                    $("#masterItemCheckbox").prop({
-                        'checked': false,
-                        'indeterminate': true
-                    });
-                }
-            }
-
-            updateMasterCheckbox();
-
-            $(document).on('click', '.MassItemDeleteBtn', function (e) {
-                e.preventDefault();
-                console.log(selectedItemIds);
-
-                $.ajax({
-                    url: '/Menu/MassDeleteItems',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(
-                        selectedItemIds
-                    ),
-                    success: function (response) {
-                        if (response.success) {
-                            ItemList(lastSelectedCategoryId, 1);
-                            selectedItemIds = [];
-                        }
+                ,
+                success: function (response) {
+                    if (response.success) {
+                        modifierGroupList();
                     }
-                });
+                }
+            });
+        });
+
+        function getAllItems(callback) {
+            let search = $("#searchInput").val();
+            $.ajax({
+                type: "GET",
+                url: '/Menu/Items',
+                contentType: "application/json",
+                data: { page: 1, pageSize: 0, search: search, categoryId: lastSelectedCategoryId },
+                success: function (response) {
+                    console.log(response.data);
+                    const allIds = response.data.map(item => item.itemid);
+
+                    totalItemCount = allIds.length;
+                    callback(allIds);
+                }
             });
         }
 
-        function modifierMassDelete() {
-
-            retainCheckboxState();
-
-            function retainCheckboxState(){
-                 $("tbody #ModifierCheckBoxDelete").each(function () {
-                    const itemId = getItemIdFromRow($(this).closest('tr'));
-
-                    if (selectedItemIds.includes(itemId)) {
-                        $(this).prop('checked', true);
-                    } else {
-                        $(this).prop('checked', false);
-                    }
-                });
-            }
-
-            $("#MasterCheckBoxDelete").on('click', function () {
-                console.log("checked");
-                const isChecked = $(this).prop('checked');
-
-                $("tbody #ModifierCheckBoxDelete").each(function () {
-                    $(this).prop('checked', isChecked);
-
-                    const itemId = getItemIdFromRow($(this).closest('tr'));
-
-                    if (isChecked && !selectedItemIds.includes(itemId)) {
-                        selectedItemIds.push(itemId);
-                    } else if (!isChecked) {
-                        selectedItemIds = selectedItemIds.filter(id => id !== itemId);
-                    }
-                });
-
-                console.log("Selected Item IDs:", selectedItemIds);
-            });
-
-            $("tbody").on('click', "#ModifierCheckBoxDelete", function () {
-                const isChecked = $(this).prop('checked');
+        function retainCheckboxState() {
+            $("tbody #ItemCheckbox").each(function () {
                 const itemId = getItemIdFromRow($(this).closest('tr'));
 
-                if (isChecked && !selectedItemIds.includes(itemId)) {
-                    selectedItemIds.push(itemId);
-                } else if (!isChecked) {
-                    selectedItemIds = selectedItemIds.filter(id => id !== itemId);
+                if (selectedItemIds.includes(itemId)) {
+                    $(this).prop('checked', true);
+                } else {
+                    $(this).prop('checked', false);
                 }
-
-                updateMasterCheckbox();
-                console.log("Selected Item IDs:", selectedItemIds);
             });
+        }
 
-            function getItemIdFromRow(row) {
-                const editItemElement = row.find('.EditModifier');
-                const deleteItemElement = row.find('.deleteModifier');
+        $("#itemByCategory").on('click', '#masterItemCheckbox', function () {
+            const isChecked = $(this).prop('checked');
+            console.log(isChecked + "item");
 
-                if (editItemElement.length > 0) {
-                    return editItemElement.data('id');
-                } else if (deleteItemElement.length > 0) {
-                    return deleteItemElement.data('id');
-                }
-
-                return row.index();
+            if (isChecked) {
+                getAllItems(function (allIds) {
+                    selectedItemIds = [...allIds];
+                    retainCheckboxState();
+                });
+            } else {
+                selectedItemIds = [];
+                retainCheckboxState();
             }
 
-            function updateMasterCheckbox() {
-                const checkboxes = $("tbody #ModifierCheckBoxDelete");
-                const checkedCount = $("tbody #ModifierCheckBoxDelete:checked").length;
+            console.log("Selected Item IDs:", selectedItemIds);
+        });
 
-                if (checkedCount === 0) {
-                    $("#MasterCheckBoxDelete").prop({
-                        'checked': false,
-                        'indeterminate': false
-                    });
-                } else if (checkedCount === checkboxes.length) {
-                    $("#MasterCheckBoxDelete").prop({
-                        'checked': true,
-                        'indeterminate': false
-                    });
-                } else {
-                    $("#MasterCheckBoxDelete").prop({
-                        'checked': false,
-                        'indeterminate': true
-                    });
-                }
+        $("#itemByCategory").on('click', "#ItemCheckbox", function () {
+            const isChecked = $(this).prop('checked');
+            const itemId = getItemIdFromRow($(this).closest('tr'));
+
+            if (isChecked && !selectedItemIds.includes(itemId)) {
+                selectedItemIds.push(itemId);
+            } else if (!isChecked) {
+                selectedItemIds = selectedItemIds.filter(id => id !== itemId);
             }
 
             updateMasterCheckbox();
+            console.log("Selected Item IDs:", selectedItemIds);
+        });
 
-            $(document).on('click', '.MassModifierDeleteBtn', function (e) {
-                e.preventDefault();
-                console.log(typeof (selectedItemIds));
+        function getItemIdFromRow(row) {
+            const editItemElement = row.find('.editItem');
+            const deleteItemElement = row.find('.deleteItem');
 
-                $.ajax({
-                    url: '/Menu/MassDeleteModifiers',
-                    type: 'POST',
-                    data: {
-                        selectedIds: selectedItemIds,
-                        modifierGroupid: lastSelectedModifierGroupId
-                    }
-                    ,
-                    success: function (response) {
-                        if (response.success) {
-                            modifierList(lastSelectedModifierGroupId, 1);
-                            selectedItemIds = [];
-                        }
-                    }
+            if (editItemElement.length > 0) {
+                return editItemElement.data('id');
+            } else if (deleteItemElement.length > 0) {
+                return deleteItemElement.data('id');
+            }
+
+            return row.index();
+        }
+
+        function updateMasterCheckbox() {
+            if (totalItemCount === 0) {
+                $("#itemByCategory #masterItemCheckbox").prop({
+                    'checked': false,
+                    'indeterminate': false
                 });
+                return;
+            }
+
+            if (selectedItemIds.length === totalItemCount) {
+                $("#itemByCategory #masterItemCheckbox").prop({
+                    'checked': true,
+                    'indeterminate': false
+                });
+            }
+            else if (selectedItemIds.length > 0) {
+                $("#itemByCategory #masterItemCheckbox").prop({
+                    'checked': false,
+                    'indeterminate': true
+                });
+            }
+            else {
+                $("#itemByCategory #masterItemCheckbox").prop({
+                    'checked': false,
+                    'indeterminate': false
+                });
+            }
+        }
+
+        $(document).on('click', '.MassItemDeleteBtn', function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: '/Menu/MassDeleteItems',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(
+                    selectedItemIds
+                ),
+                success: function (response) {
+                    if (response.success) {
+                        ItemList(lastSelectedCategoryId, 1);
+                        selectedItemIds = [];
+                    }
+                }
+            });
+        });
+
+        // mass delete modifiers
+        function getAllModifiersTables(callback) {
+            $.ajax({
+                type: "GET",
+                url: '/Menu/Modifiers',
+                contentType: "application/json",
+                data: { page: 1, pageSize: 0, search: '', ModifierGroupId: lastSelectedModifierGroupId },
+                success: function (response) {
+                    console.log(response.data);
+                    const allIds = response.data.map(item => item.modifierid);
+
+                    totalModifierCount = allIds.length;
+                    callback(allIds);
+                }
             });
         }
+        function retainModifierCheckboxState() {
+            $("tbody #ModifierCheckBoxDelete").each(function () {
+                const itemId = getItemIdFromRow($(this).closest('tr'));
+
+                if (selectedModifierIds.includes(itemId)) {
+                    $(this).prop('checked', true);
+                } else {
+                    $(this).prop('checked', false);
+                }
+            });
+        }
+
+        $("#Modifier").on('click', '#MasterCheckBoxDelete', function () {
+            const isChecked = $(this).prop('checked');
+
+            if (isChecked) {
+                getAllModifiersTables(function (allIds) {
+                    selectedModifierIds = [...allIds];
+                    retainModifierCheckboxState();
+                });
+            } else {
+                selectedModifierIds = [];
+                retainModifierCheckboxState();
+            }
+        });
+
+        $("#Modifier").on('click', "#ModifierCheckBoxDelete", function () {
+            const isChecked = $(this).prop('checked');
+            const itemId = getItemIdFromRow($(this).closest('tr'));
+
+            if (isChecked && !selectedModifierIds.includes(itemId)) {
+                selectedModifierIds.push(itemId);
+            } else if (!isChecked) {
+                selectedModifierIds = selectedModifierIds.filter(id => id !== itemId);
+            }
+
+            updateModifierMasterCheckbox();
+            console.log("Selected Item IDs:", selectedModifierIds);
+        });
+
+        function getItemIdFromRow(row) {
+            const editItemElement = row.find('.EditModifier');
+            const deleteItemElement = row.find('.deleteModifier');
+
+            if (editItemElement.length > 0) {
+                return editItemElement.data('id');
+            } else if (deleteItemElement.length > 0) {
+                return deleteItemElement.data('id');
+            }
+
+            return row.index();
+        }
+
+        function updateModifierMasterCheckbox() {
+            if (totalModifierCount === 0) {
+                $("#Modifier #MasterCheckBoxDelete").prop({
+                    'checked': false,
+                    'indeterminate': false
+                });
+                return;
+            }
+
+            if (selectedModifierIds.length === totalModifierCount) {
+                $("#Modifier #MasterCheckBoxDelete").prop({
+                    'checked': true,
+                    'indeterminate': false
+                });
+            }
+            else if (selectedModifierIds.length > 0) {
+                $("#Modifier #MasterCheckBoxDelete").prop({
+                    'checked': false,
+                    'indeterminate': true
+                });
+            }
+            else {
+                $("#Modifier #MasterCheckBoxDelete").prop({
+                    'checked': false,
+                    'indeterminate': false
+                });
+            }
+        }
+
+        $(document).on('click', '.MassModifierDeleteBtn', function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: '/Menu/MassDeleteModifiers',
+                type: 'POST',
+                data: {
+                    selectedIds: selectedModifierIds,
+                    modifierGroupid: lastSelectedModifierGroupId
+                }
+                ,
+                success: function (response) {
+                    if (response.success) {
+                        modifierList(lastSelectedModifierGroupId, 1);
+                        selectedModifierIds = [];
+                        toastr.clear();
+                        toastr.success(response.message);
+                    }
+                    else {
+                        toastr.clear();
+                        toastr.error(response.message);
+                    }
+                }
+            });
+        });
     });
 </script>

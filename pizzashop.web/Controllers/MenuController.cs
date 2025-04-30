@@ -68,6 +68,7 @@ public class MenuController : Controller
         ViewBag.PageSize = pageSize;
         ViewBag.TotalUsers = totalUsers;
         ViewBag.TotalPages = totalPages;
+        if(pageSize == 0) return Json(new { data = model });
         return PartialView("_ModifierPartial", model);
     }
 
@@ -79,6 +80,7 @@ public class MenuController : Controller
         ViewBag.PageSize = pageSize;
         ViewBag.TotalUsers = totalUsers;
         ViewBag.TotalPages = totalPages;
+        if(pageSize == 0) return Json(new { data = model });
         return PartialView("_ItemPartial", model);
     }
 
@@ -296,6 +298,8 @@ public class MenuController : Controller
         ViewBag.PageSize = pageSize;
         ViewBag.TotalUsers = totalModifiers;
         ViewBag.TotalPages = totalPages;
+
+        if(pageSize == 0) return Json(new { data = modifiers });
 
         return Request.Headers["X-Requested-With"] == "XMLHttpRequest"
             ? PartialView("_AddExistingModifier", modifiers)

@@ -56,7 +56,7 @@
                         }
 
                         <div class="col d-flex">
-                            <div class="table-card @cardClass" data-table-id="@table.TableId">
+                            <div class="table-card @cardClass" data-table-id="@table.TableId" data-order-id="@table.OrderId">
                                 <div class="d-flex justify-content-between mb-2">
                                     <h6 class="mb-0">@table.TableName</h6>
                                     @if (table.Status != pizzashop.repository.ViewModels.TableViewStatus.Available)

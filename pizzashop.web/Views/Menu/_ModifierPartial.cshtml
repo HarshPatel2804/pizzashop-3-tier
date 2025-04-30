@@ -9,7 +9,7 @@
         <tr>
             <th scope="col">
                 <input class="form-check-input me-2" type="checkbox" value="" id="MasterCheckBoxDelete">
-                <span class="heading ">Name</span>
+                <span class="heading" id="modifierName">Name</span>
             </th>
             <th scope="col"><span class="heading">Unit</span></th>
             <th scope="col"><span class="heading">Rate</span></th>
@@ -56,7 +56,7 @@
 <div class="d-flex justify-content-end align-items-center flex-wrap gap-2 mt-2 p-3">
     <div class="d-flex align-items-center">
         <span class=" px-1">Items Per page:</span>
-        <select id="pageSizeSelect" class="form-select form-select-sm" style="width: auto;">
+        <select id="ModifierPageSizeSelect" class="form-select form-select-sm" style="width: auto;">
             <option value="5" selected="@(ViewBag.PageSize == 5)">5</option>
             <option value="10" selected="@(ViewBag.PageSize == 10)">10</option>
             <option value="25" selected="@(ViewBag.PageSize == 25)">25</option>

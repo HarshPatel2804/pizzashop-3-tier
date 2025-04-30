@@ -17,6 +17,8 @@ public class OrderTableViewModel
         public decimal CurrentOrderAmount { get; set; }
         public int NumberOfPersons { get; set; }
 
+        public int OrderId {get; set;}
+
         public DateTime? OrderDate {get; set;}
     }
 }

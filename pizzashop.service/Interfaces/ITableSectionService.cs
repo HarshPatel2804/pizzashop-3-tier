@@ -41,5 +41,5 @@ public interface ITableSectionService
 
     Task<WaitingtokenViewModel> GetSectionList();
 
-    Task<string> AssignTable(AssignTableViewModel model);
+    Task<(string , int)> AssignTable(AssignTableViewModel model);
 }

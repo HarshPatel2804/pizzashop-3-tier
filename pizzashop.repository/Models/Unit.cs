@@ -13,5 +13,6 @@ public partial class Unit
 
     public virtual ICollection<Item> Items { get; set; } = new List<Item>();
 
+    [System.Text.Json.Serialization.JsonIgnore]
     public virtual ICollection<Modifier> Modifiers { get; set; } = new List<Modifier>();
 }

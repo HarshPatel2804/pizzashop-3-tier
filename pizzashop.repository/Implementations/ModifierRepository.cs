@@ -44,7 +44,7 @@ public class ModifierRepository : IModifierRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<(List<ModifierGroupModifierMapping> , int totalModifiers)> GetModifierByGroupAsync(int ModifierGroupId,int page, int pageSize, string search)
+    public async Task<(List<ModifierGroupModifierMapping>, int totalModifiers)> GetModifierByGroupAsync(int ModifierGroupId, int page, int pageSize, string search)
     {
         var query = _context.ModifierGroupModifierMappings.Where(u => u.ModifierGroupId == ModifierGroupId)
                     .Include(u => u.Modifier)
@@ -56,6 +56,12 @@ public class ModifierRepository : IModifierRepository
 
         int totalModifiers = await query.CountAsync();
 
+        if (pageSize == 0)
+        {
+            var allModifiers = await query
+            .ToListAsync();
+            return (allModifiers, totalModifiers);
+        }
         var modifiers = await query
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
@@ -64,7 +70,7 @@ public class ModifierRepository : IModifierRepository
         return (modifiers, totalModifiers);
     }
 
-    public async Task DeleteModifier(int modifierId , int modifierGroupId)
+    public async Task DeleteModifier(int modifierId, int modifierGroupId)
     {
         var mappings = await _context.ModifierGroupModifierMappings.Where(u => u.ModifierGroupId == modifierGroupId && u.ModifierId == modifierId)
                     .Include(u => u.Modifier)
@@ -72,12 +78,13 @@ public class ModifierRepository : IModifierRepository
         _context.ModifierGroupModifierMappings.RemoveRange(mappings);
         await _context.SaveChangesAsync();
         var count = await _context.ModifierGroupModifierMappings.Where(u => u.ModifierId == modifierId).CountAsync();
-        if(count == 0){
-        await _context.Modifiers.Where(u => u.Modifierid == modifierId).ForEachAsync(u => u.Isdeleted = true);
+        if (count == 0)
+        {
+            await _context.Modifiers.Where(u => u.Modifierid == modifierId).ForEachAsync(u => u.Isdeleted = true);
         }
         await _context.SaveChangesAsync();
     }
-    public async Task DeleteModifierGroup(int modifierId , int modifierGroupId)
+    public async Task DeleteModifierGroup(int modifierId, int modifierGroupId)
     {
         var mappings = await _context.ModifierGroupModifierMappings.Where(u => u.ModifierGroupId == modifierGroupId && u.ModifierId == modifierId)
                     .Include(u => u.Modifier)
@@ -85,8 +92,9 @@ public class ModifierRepository : IModifierRepository
         _context.ModifierGroupModifierMappings.RemoveRange(mappings);
         await _context.SaveChangesAsync();
         var count = await _context.ModifierGroupModifierMappings.Where(u => u.ModifierId == modifierId).CountAsync();
-        if(count == 0){
-        await _context.Modifiers.Where(u => u.Modifierid == modifierId).ForEachAsync(u => u.Isdeleted = true);
+        if (count == 0)
+        {
+            await _context.Modifiers.Where(u => u.Modifierid == modifierId).ForEachAsync(u => u.Isdeleted = true);
         }
         await _context.SaveChangesAsync();
     }
@@ -112,6 +120,14 @@ public class ModifierRepository : IModifierRepository
                         u.Modifiername.ToLower().Contains(search.ToLower()));
 
         int totalModifiers = await query.CountAsync();
+
+        if (pageSize == 0)
+        {
+            var allModifiers = await query
+            .ToListAsync();
+
+            return (allModifiers, totalModifiers);
+        }
 
         var modifiers = await query
             .Skip((page - 1) * pageSize)
@@ -186,24 +202,25 @@ public class ModifierRepository : IModifierRepository
     }
 
     public async Task<Modifiergroup> GetModifierGroupByName(string name, int id)
-        {
-            return await _context.Modifiergroups
-                .FirstOrDefaultAsync(mg => 
-                    mg.Modifiergroupname.ToLower() == name.ToLower() && 
-                    mg.Modifiergroupid != id && 
-                    mg.Isdeleted != true);
-        }
+    {
+        return await _context.Modifiergroups
+            .FirstOrDefaultAsync(mg =>
+                mg.Modifiergroupname.ToLower() == name.ToLower() &&
+                mg.Modifiergroupid != id &&
+                mg.Isdeleted != true);
+    }
     public async Task<Modifier> GetModifierByName(ModifierViewModel model)
-        {
-            return await _context.Modifiers
-                .FirstOrDefaultAsync(mg => 
-                    mg.Modifiername.ToLower() == model.Modifiername.ToLower() && 
-                    mg.Modifierid != model.Modifierid && 
-                    mg.Isdeleted != true);
-        }
+    {
+        return await _context.Modifiers
+            .FirstOrDefaultAsync(mg =>
+                mg.Modifiername.ToLower() == model.Modifiername.ToLower() &&
+                mg.Modifierid != model.Modifierid &&
+                mg.Isdeleted != true);
+    }
 
-    public async Task<List<Modifier>> GetModifiersBymodifierGroup(int id){
-        var modifiers =  await _context.ModifierGroupModifierMappings
+    public async Task<List<Modifier>> GetModifiersBymodifierGroup(int id)
+    {
+        var modifiers = await _context.ModifierGroupModifierMappings
             .Where(mg => mg.ModifierGroupId == id)
             .Select(mg => mg.Modifier)
             .Where(m => m.Isdeleted == false)
@@ -212,7 +229,8 @@ public class ModifierRepository : IModifierRepository
         return modifiers;
     }
 
-    public async Task DeleteModifierGroupAsync(int modifierGroupId){
+    public async Task DeleteModifierGroupAsync(int modifierGroupId)
+    {
         var modifierGroup = await _context.Modifiergroups.FirstOrDefaultAsync(m => m.Modifiergroupid == modifierGroupId);
         modifierGroup.Isdeleted = true;
         await _context.SaveChangesAsync();

@@ -51,6 +51,11 @@ public class ItemRepository : IItemRepository
 
         int totalItems = await query.CountAsync();
 
+        if(pageSize == 0){
+            var allItems = await query
+            .ToListAsync();
+            return (allItems, totalItems);
+        }
         var items = await query
             .Skip((page - 1) * pageSize)
             .Take(pageSize)

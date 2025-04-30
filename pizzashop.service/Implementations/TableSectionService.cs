@@ -244,6 +244,10 @@ public class TableSectionService : ITableSectionService
                 Status = DetermineTableStatus(t),
                 CurrentOrderAmount = GetCurrentOrderAmount(t),
                 NumberOfPersons = GetNumberOfPersons(t),
+                OrderId = t.Ordertables
+                                .Where(ot => ot.Order != null && ot.Order.OrderStatus == orderstatus.InProgress)
+                                .Select(ot => ot.Order.Orderid)
+                                .FirstOrDefault(),
                 OrderDate = t.Ordertables
                                 .Where(ot => ot.Order != null)
                                 .OrderByDescending(ot => ot.Order.Orderdate)
@@ -293,7 +297,7 @@ public class TableSectionService : ITableSectionService
         return activeOrder?.Noofperson ?? 0;
     }
 
-    public async Task<string> AssignTable(AssignTableViewModel model)
+    public async Task<(string , int)> AssignTable(AssignTableViewModel model)
     {
         int totalCapacity = 0;
         foreach (int tableId in model.selectedTableIds)
@@ -305,7 +309,7 @@ public class TableSectionService : ITableSectionService
         if (totalCapacity < model.Noofpeople)
         {
             var result = $"Selected tables don't have enough capacity. Required: {model.Noofpeople}, Available: {totalCapacity}";
-            return result;
+            return (result,0);
         }
         //Add or update Customer details
         var customer = await _customerService.GetCustomerByEmail(model.Email);
@@ -349,6 +353,6 @@ public class TableSectionService : ITableSectionService
             await _waitingTokenService.WaitingToAssign((int)model.Waitingtokenid);
         }
 
-        return "true";
+        return ("true",orderId);
     }
 }

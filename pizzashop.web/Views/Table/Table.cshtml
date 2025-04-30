@@ -305,6 +305,15 @@
                     $('#TablesBySection').html(data);
                     retainCheckboxState();
                     updateMasterCheckbox();
+                    var masterCheckbox = $('#masterTableCheckbox');
+                    if (search == '') {
+                        masterCheckbox.removeClass('d-none');
+                        $('#TableName').removeClass('nameHeading');
+                    }
+                    else {
+                        masterCheckbox.addClass('d-none');
+                        $('#TableName').addClass('nameHeading');
+                    }
                 }
             });
         };
@@ -347,7 +356,6 @@
             clearTimeout(searchTimer);
             let sectionId = $("#sectionId").val();
             TableList(sectionId || lastSelectedSectionId, 1);
-            updateArrayOnSearch();
         });
 
         $(document).on("click", ".selectedSection", function () {
@@ -586,14 +594,6 @@
             });
         }
 
-        function updateArrayOnSearch() {
-            getAllTables(function (allIds) {
-                tempselectedItemIds = [...allIds];
-                selectedItemIds = selectedItemIds.filter(id => tempselectedItemIds.includes(id));
-                retainCheckboxState();
-            });
-        }
-
         function getAllTables(callback) {
             let search = $("#search").val();
             $.ajax({
@@ -698,10 +698,8 @@
             }
         }
 
-        $('#TablesBySection').on('click', '.MassItemDeleteBtn', function (e) {
+        $(document).on('click', '.MassItemDeleteBtn', function (e) {
             e.preventDefault();
-            console.log(selectedItemIds);
-            toastr.clear();
 
             $.ajax({
                 url: '/Table/MassDeleteTables',
