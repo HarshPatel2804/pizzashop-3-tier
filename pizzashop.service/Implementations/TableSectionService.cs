@@ -245,7 +245,7 @@ public class TableSectionService : ITableSectionService
                 CurrentOrderAmount = GetCurrentOrderAmount(t),
                 NumberOfPersons = GetNumberOfPersons(t),
                 OrderId = t.Ordertables
-                                .Where(ot => ot.Order != null && ot.Order.OrderStatus == orderstatus.InProgress)
+                                .Where(ot => ot.Order != null && (ot.Order.OrderStatus == orderstatus.InProgress || ot.Order.OrderStatus == orderstatus.Pending))
                                 .Select(ot => ot.Order.Orderid)
                                 .FirstOrDefault(),
                 OrderDate = t.Ordertables

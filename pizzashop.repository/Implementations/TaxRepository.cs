@@ -81,4 +81,13 @@ public class TaxRepository : ITaxRepository
                     mg.Taxid != model.Taxid && 
                     mg.Isdeleted != true);
         }
+
+         public async Task<IEnumerable<Taxis>> GetEnabledTaxesAsync()
+        {
+            return await _context.Taxes
+                .Include(t => t.TaxType) 
+                .Where(t => t.Isenabled == true &&  t.Isdeleted != true)
+                .AsNoTracking() 
+                .ToListAsync();
+        }
 }

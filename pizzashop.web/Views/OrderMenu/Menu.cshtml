@@ -74,12 +74,19 @@
 </div>
 
 <script>
+    var parentOrderItemsArray = [];
+
+    function addOrderItemsFromPartial(itemsFromPartial) {
+        if (itemsFromPartial && Array.isArray(itemsFromPartial)) {
+            parentOrderItemsArray = itemsFromPartial;
+        }
+    }
     $(document).ready(function () {
         let currentCategory = "ALL";
         let confirmedSelections = [];
-
         let tempSelections = null;
         let searchText = "";
+        let lastSubTotal = 0;
         function getQueryParam(param) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(param);
@@ -97,10 +104,241 @@
                 data: { orderId: orderId },
                 success: function (result) {
                     $('#order-card').html(result);
+                    confirmedSelections = JSON.parse(JSON.stringify(parentOrderItemsArray));
+                    console.log(confirmedSelections);
+                    renderConfirmedSelections();
                 },
                 error: function () {
                     $('#order-card').html('<p class="text-danger">Failed to load order details.</p>');
                 }
+            });
+        }
+
+        function renderConfirmedSelections() {
+            console.log(confirmedSelections);
+            const $container = $('#selected-items-container');
+            $container.empty();
+
+            confirmedSelections.forEach((item, index) => {
+                const $template = $('#item-template').clone();
+                $template.removeAttr('id').removeClass('d-none');
+                const accordionId = `collapse-${item.uniqueId}`;
+
+                $template.attr('data-item-id', item.itemId);
+                $template.attr('data-unique-id', item.uniqueId);
+                $template.find('.item-name').text(item.itemName);
+
+                $template.find('.accordion-button')
+                    .attr('data-bs-target', `#${accordionId}`)
+                    .attr('aria-controls', accordionId);
+
+                $template.find('.accordion-collapse')
+                    .attr('id', accordionId);
+
+                const $modifierList = $template.find('ul');
+                $modifierList.empty();
+
+                let totalModifierPrice = 0;
+
+                for (const groupId in item.groups) {
+                    const group = item.groups[groupId];
+
+                    for (const modifierId in group.selectedModifiers) {
+                        const modifier = group.selectedModifiers[modifierId];
+
+                        totalModifierPrice += parseFloat(modifier.rate);
+
+                        $modifierList.append(`<li>${modifier.modifierName} ₹${modifier.rate}</li>`);
+                    }
+                }
+
+                console.log(item.itemRate);
+
+                $template.find('.item-quantity').text(item.quantity);
+
+                const itemPrice = item.quantity * parseFloat(item.itemRate);
+                const modifierPrice = item.quantity * totalModifierPrice;
+
+                $template.find('.item-base-price').text(`₹${itemPrice.toFixed(2)}`);
+                if ($modifierList.children().length !== 0) {
+                $template.find('.item-total-price').text(`₹${modifierPrice.toFixed(2)}`);
+                }
+
+                $container.append($template);
+            });
+            calculateAndRenderTotals();
+            setupItemControlEvents();
+        }
+
+        function setupItemControlEvents() {
+            $('#selected-items-container').on('click', '.item-quantity-increase', function (e) {
+                e.stopImmediatePropagation();
+                const $itemContainer = $(this).closest('[data-unique-id]');
+                const index = $itemContainer.data('unique-id');
+                const $quantitySpan = $(this).siblings('.item-quantity');
+
+                const itemIndex = confirmedSelections.findIndex(i => i.uniqueId === index);
+                if (itemIndex !== -1) {
+                    console.log(confirmedSelections[itemIndex].quantity);
+                    confirmedSelections[itemIndex].quantity += 1;
+                    console.log(confirmedSelections[itemIndex].quantity);
+                    renderConfirmedSelections();
+                }
+            });
+
+            $('#selected-items-container').on('click', '.item-quantity-decrease', function (e) {
+                e.stopImmediatePropagation();
+                const $itemContainer = $(this).closest('[data-unique-id]');
+                const index = $itemContainer.data('unique-id');
+                const $quantitySpan = $(this).siblings('.item-quantity');
+
+                const itemIndex = confirmedSelections.findIndex(i => i.uniqueId === index);
+                if (itemIndex !== -1 && confirmedSelections[itemIndex].quantity > 1) {
+                    confirmedSelections[itemIndex].quantity -= 1;
+                    renderConfirmedSelections();
+                }
+            });
+
+            $('#selected-items-container').on('click', '.remove-item', function () {
+                const $itemContainer = $(this).closest('[data-unique-id]');
+                const index = $itemContainer.data('unique-id');
+
+                removeConfirmedItem(index);
+
+                $itemContainer.remove();
+            });
+
+            function removeConfirmedItem(index) {
+                const Index = confirmedSelections.findIndex(item => item.uniqueId === index);
+                if (Index !== -1) {
+                    confirmedSelections.splice(Index, 1);
+                    renderConfirmedSelections();
+                }
+            }
+
+        }
+
+        function calculateSubTotal() {
+            let subTotal = 0;
+            if (!confirmedSelections || !Array.isArray(confirmedSelections)) {
+                return 0;
+            }
+            confirmedSelections.forEach(item => {
+                let itemTotal = 0;
+                const itemRate = parseFloat(item.itemRate) || 0;
+                const quantity = parseInt(item.quantity, 10) || 0;
+                if (quantity > 0) {
+                    itemTotal += itemRate * quantity;
+                    if (item.groups) {
+                        Object.values(item.groups).forEach(group => {
+                            if (group.selectedModifiers) {
+                                Object.values(group.selectedModifiers).forEach(modifier => {
+                                    const modRate = parseFloat(modifier.rate) || 0;
+                                    itemTotal += modRate * quantity;
+                                });
+                            }
+                        });
+                    }
+                }
+                subTotal += itemTotal;
+            });
+            lastSubTotal = subTotal;
+            return subTotal;
+        }
+
+        function fetchTaxes(callback) {
+            $.ajax({
+                url: '/Taxes/GetEnabledTaxes',
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    console.log(response);
+                    if (response && response.success && response.allTaxes) {
+                        callback(response.allTaxes);
+                    } else {
+                        console.error("Failed to fetch taxes or invalid response format:", response);
+                        callback([]);
+                    }
+                }
+            });
+        }
+
+        function renderTaxesAndCalculateTotal(taxes, subTotal) {
+            const $taxesContainer = $('#taxes-container');
+            $taxesContainer.empty();
+            let currentTotal = subTotal;
+            let taxHtml = '';
+
+            if (!Array.isArray(taxes)) {
+                taxes = [];
+            }
+
+            taxes.forEach(tax => {
+                const taxValue = parseFloat(tax.taxvalue) || 0;
+                const taxName = tax.taxname || 'Unnamed Tax';
+                const isPercentage = tax.taxTypeName && tax.taxTypeName.toLowerCase().includes('percentage');
+
+                if (isPercentage) {
+                    const taxAmount = subTotal * (taxValue / 100);
+                    currentTotal += taxAmount;
+                    taxHtml += `
+                <div class="d-flex justify-content-between fs-6 tax-row percentage-tax"
+                     data-tax-id="${tax.taxid}"
+                     data-tax-type="percentage"
+                     data-tax-percentage="${taxValue}">
+                    <div>${taxName} (${taxValue}%):</div>
+                    <div class="tax-amount">${taxAmount.toFixed(2)}</div>
+                </div>`;
+                } else {
+                    taxHtml += `
+                <div class="d-flex justify-content-between fs-6 tax-row fixed-tax"
+                     data-tax-id="${tax.taxid}"
+                     data-tax-type="fixed"
+                     data-tax-amount="${taxValue}">
+                    <div>
+                        <input type="checkbox" class="fixed-tax-checkbox me-1" id="tax-chk-${tax.taxid}" value="${taxValue}">
+                        <label for="tax-chk-${tax.taxid}">${taxName}:</label>
+                    </div>
+                    <div class="tax-amount">${taxValue.toFixed(2)}</div>
+                </div>`;
+                }
+            });
+
+            $taxesContainer.html(taxHtml);
+            $('#subtotal-value').text(subTotal.toFixed(2));
+            $('#total-value').text(currentTotal.toFixed(2));
+            attachCheckboxListeners();
+        }
+
+        function recalculateTotal() {
+            let currentTotal = lastSubTotal;
+
+            $('#taxes-container .percentage-tax').each(function () {
+                const $taxRow = $(this);
+                const percentage = parseFloat($taxRow.data('tax-percentage')) || 0;
+                const taxAmount = lastSubTotal * (percentage / 100);
+                currentTotal += taxAmount;
+            });
+
+            $('#taxes-container .fixed-tax-checkbox:checked').each(function () {
+                const fixedAmount = parseFloat($(this).val()) || 0;
+                currentTotal += fixedAmount;
+            });
+
+            $('#total-value').text(currentTotal.toFixed(2));
+        }
+
+        function attachCheckboxListeners() {
+            $('#taxes-container').off('change', '.fixed-tax-checkbox').on('change', '.fixed-tax-checkbox', function () {
+                recalculateTotal();
+            });
+        }
+
+        function calculateAndRenderTotals() {
+            const subTotal = calculateSubTotal();
+            fetchTaxes(function (taxes) {
+                renderTaxesAndCalculateTotal(taxes, subTotal);
+                recalculateTotal();
             });
         }
 
@@ -139,6 +377,7 @@
         });
 
         function initializeMenuItems() {
+
             $('.heart-btn').on('click', function (e) {
                 e.stopPropagation();
                 const itemId = $(this).data('itemid');
@@ -190,6 +429,20 @@
                     },
                     success: function (data) {
                         if (data == "0") {
+                            //No ModifierGroups
+
+                            const timestamp = new Date().getTime();
+
+                            tempSelections = {
+                                uniqueId: `${itemId}-${timestamp}`,
+                                itemId: itemId,
+                                itemName: itemName,
+                                itemRate: rate,
+                                quantity: 1,
+                                groups: {}
+                            };
+
+                            updateConfirmedSelections();
                         }
                         else {
                             $('#ItemModifierModal').html(data);
@@ -209,6 +462,47 @@
         }
 
         loadMenuItems();
+
+        function updateConfirmedSelections() {
+                if (!tempSelections) return;
+
+                const identicalItemIndex = confirmedSelections.findIndex(item => {
+                    if (item.itemId !== tempSelections.itemId) return false;
+
+                    const tempGroupIds = Object.keys(tempSelections.groups);
+                    const itemGroupIds = Object.keys(item.groups);
+
+                    if (tempGroupIds.length !== itemGroupIds.length) return false;
+
+                    for (const groupId of tempGroupIds) {
+                        if (!item.groups[groupId]) return false;
+
+                        const tempModifiers = tempSelections.groups[groupId].selectedModifiers;
+                        const itemModifiers = item.groups[groupId].selectedModifiers;
+
+                        const tempModifierIds = Object.keys(tempModifiers);
+                        const itemModifierIds = Object.keys(itemModifiers);
+
+                        if (tempModifierIds.length !== itemModifierIds.length) return false;
+
+                        for (const modifierId of tempModifierIds) {
+                            if (!itemModifiers[modifierId]) return false;
+                        }
+                    }
+
+                    return true;
+                });
+
+                if (identicalItemIndex !== -1) {
+                    confirmedSelections[identicalItemIndex].quantity += tempSelections.quantity;
+                } else {
+                    confirmedSelections.push(JSON.parse(JSON.stringify(tempSelections)));
+                }
+
+                tempSelections = null;
+
+                renderConfirmedSelections();
+            }
 
         function handlemodifierPopUp() {
             initializeArray();
@@ -363,47 +657,6 @@
                 }
             }
 
-            function updateConfirmedSelections() {
-                if (!tempSelections) return;
-
-                const identicalItemIndex = confirmedSelections.findIndex(item => {
-                    if (item.itemId !== tempSelections.itemId) return false;
-
-                    const tempGroupIds = Object.keys(tempSelections.groups);
-                    const itemGroupIds = Object.keys(item.groups);
-
-                    if (tempGroupIds.length !== itemGroupIds.length) return false;
-
-                    for (const groupId of tempGroupIds) {
-                        if (!item.groups[groupId]) return false;
-
-                        const tempModifiers = tempSelections.groups[groupId].selectedModifiers;
-                        const itemModifiers = item.groups[groupId].selectedModifiers;
-
-                        const tempModifierIds = Object.keys(tempModifiers);
-                        const itemModifierIds = Object.keys(itemModifiers);
-
-                        if (tempModifierIds.length !== itemModifierIds.length) return false;
-
-                        for (const modifierId of tempModifierIds) {
-                            if (!itemModifiers[modifierId]) return false;
-                        }
-                    }
-
-                    return true;
-                });
-
-                if (identicalItemIndex !== -1) {
-                    confirmedSelections[identicalItemIndex].quantity += tempSelections.quantity;
-                } else {
-                    confirmedSelections.push(JSON.parse(JSON.stringify(tempSelections)));
-                }
-
-                tempSelections = null;
-
-                renderConfirmedSelections();
-            }
-
             function openModifiersModal(itemId, itemName) {
                 $('.ItemId').val(itemId);
                 $('.itemName').text(itemName);
@@ -422,109 +675,7 @@
                 }
             }
 
-            function renderConfirmedSelections() {
-                const $container = $('#selected-items-container');
-                $container.empty();
 
-                confirmedSelections.forEach((item, index) => {
-                    const $template = $('#item-template').clone();
-                    $template.removeAttr('id').removeClass('d-none');
-                    const accordionId = `collapse-${item.uniqueId}`;
-
-                    $template.attr('data-item-id', item.itemId);
-                    $template.attr('data-unique-id', item.uniqueId);
-                    $template.find('.item-name').text(item.itemName);
-
-                    $template.find('.accordion-button')
-                        .attr('data-bs-target', `#${accordionId}`)
-                        .attr('aria-controls', accordionId);
-
-                    $template.find('.accordion-collapse')
-                        .attr('id', accordionId);
-
-                    const $modifierList = $template.find('ul');
-                    $modifierList.empty();
-
-                    let totalModifierPrice = 0;
-
-                    for (const groupId in item.groups) {
-                        const group = item.groups[groupId];
-
-                        for (const modifierId in group.selectedModifiers) {
-                            const modifier = group.selectedModifiers[modifierId];
-
-                            totalModifierPrice += parseFloat(modifier.rate);
-
-                            $modifierList.append(`<li>${modifier.modifierName} ₹${modifier.rate}</li>`);
-                        }
-                    }
-
-                    if ($modifierList.children().length === 0) {
-                        $modifierList.append('<li>No modifiers selected</li>');
-                    }
-                    console.log(item.itemRate);
-
-                    $template.find('.item-quantity').text(item.quantity);
-
-                    const itemPrice = item.quantity * parseFloat(item.itemRate);
-                    const modifierPrice = item.quantity * totalModifierPrice;
-
-                    $template.find('.item-base-price').text(`₹${itemPrice.toFixed(2)}`);
-                    $template.find('.item-total-price').text(`₹${modifierPrice.toFixed(2)}`);
-
-                    $container.append($template);
-                });
-
-                setupItemControlEvents();
-            }
-
-            function setupItemControlEvents() {
-                $('#selected-items-container').on('click', '.item-quantity-increase', function (e) {
-                    e.stopImmediatePropagation();
-                    const $itemContainer = $(this).closest('[data-unique-id]');
-                    const index = $itemContainer.data('unique-id');
-                    const $quantitySpan = $(this).siblings('.item-quantity');
-
-                    const itemIndex = confirmedSelections.findIndex(i => i.uniqueId === index);
-                    if (itemIndex !== -1) {
-                        console.log(confirmedSelections[itemIndex].quantity);
-                        confirmedSelections[itemIndex].quantity += 1;
-                        console.log(confirmedSelections[itemIndex].quantity);
-                        renderConfirmedSelections();
-                    }
-                });
-
-                $('#selected-items-container').on('click', '.item-quantity-decrease', function (e) {
-                    e.stopImmediatePropagation();
-                    const $itemContainer = $(this).closest('[data-unique-id]');
-                    const index = $itemContainer.data('unique-id');
-                    const $quantitySpan = $(this).siblings('.item-quantity');
-
-                    const itemIndex = confirmedSelections.findIndex(i => i.uniqueId === index);
-                    if (itemIndex !== -1 && confirmedSelections[itemIndex].quantity > 1) {
-                        confirmedSelections[itemIndex].quantity -= 1;
-                        renderConfirmedSelections();
-                    }
-                });
-
-                $('#selected-items-container').on('click', '.remove-item', function () {
-                    const $itemContainer = $(this).closest('[data-unique-id]');
-                    const index = $itemContainer.data('unique-id');
-
-                    removeConfirmedItem(index);
-
-                    $itemContainer.remove();
-                });
-
-                function removeConfirmedItem(index) {
-                    const Index = confirmedSelections.findIndex(item => item.uniqueId === index);
-                    if (Index !== -1) {
-                        confirmedSelections.splice(Index, 1);
-                        renderConfirmedSelections();
-                    }
-                }
-
-            }
         }
     });
 </script>

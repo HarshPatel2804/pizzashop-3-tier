@@ -159,8 +159,6 @@ public class OrderService : IOrderService
         }
     }
 
-
-
     private ICellStyle CreateDataCellStyle(IWorkbook workbook)
     {
         ICellStyle style = workbook.CreateCellStyle();
@@ -207,4 +205,80 @@ public class OrderService : IOrderService
     public async Task<OrderDetailsView> GetOrderDetailsViewService(int orderid){
         return await _orderRepository.GetOrderDetailsView(orderid);
     }
+
+    public async Task<OrderDetailsView?> GetOrderDetailsForViewAsync(int orderId)
+        {
+            var order = await _orderRepository.GetOrderWithDetailsByIdAsync(orderId);
+
+            if (order == null)
+            {
+                return null; // Order not found
+            }
+
+            var orderDetailsView = new OrderDetailsView
+            {
+                OrderId = order.Orderid,
+                CustomerId = order.Customerid,
+
+                CustomerEmail = order.Customer?.Email ?? "N/A", 
+                NoOfPerson = order.Noofperson ?? 0,
+                OrderDate = order.Orderdate ?? DateTime.MinValue, 
+                ModifiedDate = order.Modifiedat ?? order.Createdat ?? DateTime.MinValue, 
+                SubTotal = order.Subamount ?? 0,
+                Total = order.Totalamount,
+                Paymentmode = order.Paymentmode,
+                OrderStatus = order.OrderStatus,
+                OrderWiseComment = order.Orderwisecomment ?? string.Empty,
+
+                Section = order.Ordertables.FirstOrDefault()?.Table?.Section?.Sectionname ?? "N/A",
+                Table = order.Ordertables.Any() 
+                    ? string.Join(", ", order.Ordertables.Select(ot => ot.Table?.Tablename)) 
+                    : "N/A",
+
+                ItemsInOrder = order.Ordereditems.Select(oi => new ItemDetailForOrder
+                {
+                    OrderToItemId = oi.Ordereditemid,
+                    ItemName = oi.Item?.Itemname ?? "Unknown Item",
+                    ItemAmount = oi.Item?.Rate ?? 0,
+                    ItemQuantity = oi.Quantity,
+                    ReadyQuantity = oi.ReadyQuantity,
+                    ItemWiseComment = oi.Itemwisecomment ?? string.Empty,
+
+                    ItemModifiers = oi.Ordereditemmodifers.Select(oim =>
+                    {
+                        var itemGroupMap = oi.Item?.Itemmodifiergroupmaps?
+                            .FirstOrDefault(map => map.Modifiergroupid == oim.Modifiers?.Modifiergroupid);
+
+                        return new ModifierDetailForOrder
+                        {
+                            ModifierItemId = oim.Modifieditemid,
+                            ModifierId = oim.Modifierid,
+                            Modifiergroupid = oim.Modifiers?.Modifiergroupid ?? 0,
+                            ModifierName = oim.Modifiers?.Modifiername ?? "Unknown Modifier",
+                            ModifierRate = oim.Modifiers?.Rate ?? 0,
+
+                            ItemModifierMappingId = itemGroupMap?.Itemmodifiergroupid ?? 0, 
+                            ModifierGroupName = oim.Modifiers?.Modifiergroup?.Modifiergroupname
+                                                ?? itemGroupMap?.Modifiergroup?.Modifiergroupname 
+                                                ?? "Unknown Group",
+                            MinRequired = itemGroupMap?.Minselectionrequired ?? 0, 
+                            MaxRequired = itemGroupMap?.Maxselectionallowed ?? 0,
+
+                        };
+                    }).ToList(), 
+                }).ToList(), 
+
+                TaxesForOrder = order.Ordertaxmappings.Select(otm => new TaxForOrder
+                {
+                    OrderId = otm.Orderid,
+                    TaxName = otm.Tax?.Taxname ?? "N/A",
+                    TaxValue = (decimal)(otm.Taxvalue ?? 0),
+                    TaxTypeName = otm.Tax?.TaxType?.TaxName ?? "N/A" 
+                }).ToList(), 
+
+                Taxes = null 
+            };
+
+            return orderDetailsView;
+        }
 }

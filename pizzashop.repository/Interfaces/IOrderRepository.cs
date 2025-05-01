@@ -15,4 +15,6 @@ public interface IOrderRepository
 
    Task<int> createOrder(Order order);
 
+   Task<Order?> GetOrderWithDetailsByIdAsync(int orderId);
+
 }

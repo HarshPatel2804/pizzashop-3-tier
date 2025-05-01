@@ -100,5 +100,13 @@ public class TaxesController : Controller
         });
     }
 
+    public async Task<IActionResult> GetEnabledTaxes(){
+        var Taxes = await _taxService.GetEnabledTaxes();
+        return Json(new { 
+            success = true, 
+            allTaxes = Taxes
+        });
+    }
+
 
 }

@@ -125,4 +125,24 @@ public class TaxService : ITaxService
         model.Taxname = result.Trim();
             return await _taxRepository.GetTaxByName(model);
         }
+
+    public async Task<IEnumerable<TaxViewModel>> GetEnabledTaxes()
+        {
+            var activeTaxes = await _taxRepository.GetEnabledTaxesAsync();
+
+            var taxViewModels = activeTaxes.Select(t => new TaxViewModel
+            {
+                Taxid = t.Taxid,
+                Taxname = t.Taxname,
+                Isenabled = t.Isenabled ?? true, 
+                Isdefault = t.Isdefault ?? false,
+                TaxTypeId = t.TaxTypeId,
+                TaxTypeName = t.TaxType?.TaxName ?? "N/A", 
+                Taxvalue = t.Taxvalue,
+                Isdeleted = t.Isdeleted ?? false, 
+                TaxType = t.TaxType, 
+            });
+
+            return taxViewModels;
+        }
 }

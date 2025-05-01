@@ -183,5 +183,27 @@ public class OrderRepository : IOrderRepository
         await _context.SaveChangesAsync();
         return order.Orderid;
     }
+
+     public async Task<Order?> GetOrderWithDetailsByIdAsync(int orderId)
+        {
+            return await _context.Orders
+                .Include(o => o.Customer)
+                .Include(o => o.Ordereditems)
+                    .ThenInclude(oi => oi.Item) 
+                        .ThenInclude(item => item.Itemmodifiergroupmaps) 
+                            .ThenInclude(imgm => imgm.Modifiergroup)
+                .Include(o => o.Ordereditems)
+                    .ThenInclude(oi => oi.Ordereditemmodifers) 
+                        .ThenInclude(oim => oim.Modifiers) 
+                            .ThenInclude(m => m.Modifiergroup)
+                .Include(o => o.Ordertables) 
+                    .ThenInclude(ot => ot.Table) 
+                        .ThenInclude(t => t.Section) 
+                .Include(o => o.Ordertaxmappings) 
+                    .ThenInclude(otm => otm.Tax) 
+                        .ThenInclude(t => t.TaxType) 
+                .AsNoTracking()
+                .FirstOrDefaultAsync(o => o.Orderid == orderId);
+        }
 }
 

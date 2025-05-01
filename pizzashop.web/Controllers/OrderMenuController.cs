@@ -8,9 +8,12 @@ public class OrderMenuController : Controller
 {
     private readonly IMenuService _menuService;
 
-    public OrderMenuController(IMenuService menuService)
+    private readonly IOrderService _orderService;
+
+    public OrderMenuController(IMenuService menuService , IOrderService orderService)
     {
         _menuService = menuService;
+        _orderService = orderService;
     }
     public async Task<ActionResult> Menu()
     {
@@ -19,7 +22,8 @@ public class OrderMenuController : Controller
     }
     public async Task<ActionResult> OrderCard(int orderId)
     {
-        return PartialView("_OrderDetailPartial");
+        var orderDetailsViewModel = await _orderService.GetOrderDetailsForViewAsync(orderId);
+        return PartialView("_OrderDetailPartial" , orderDetailsViewModel);
     }
 
     public async Task<IActionResult> GetMenuItems(string categoryId, string searchText)

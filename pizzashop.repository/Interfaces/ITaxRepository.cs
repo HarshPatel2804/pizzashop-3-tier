@@ -15,4 +15,6 @@ public interface ITaxRepository
     Task<bool> DeleteTaxAsync(int id);
 
     Task<Taxis> GetTaxByName(TaxViewModel model);
+
+    Task<IEnumerable<Taxis>> GetEnabledTaxesAsync();
 }

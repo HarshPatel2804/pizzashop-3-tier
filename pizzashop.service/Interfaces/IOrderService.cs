@@ -17,4 +17,6 @@ public interface IOrderService
     Task<bool> HasCustomerActiveOrder(int customerId);
 
     Task<int> createOrderbycustomerId(int customerId);
+
+    Task<OrderDetailsView?> GetOrderDetailsForViewAsync(int orderId);
 }

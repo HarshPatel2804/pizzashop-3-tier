@@ -12,5 +12,6 @@ public string TaxName { get; set; }
 [MaxLength(20)]
 public string? ShortCode { get; set; }
 
+[System.Text.Json.Serialization.JsonIgnore]
 public ICollection<Taxis> Taxes { get; set; } = new List<Taxis>();
 }

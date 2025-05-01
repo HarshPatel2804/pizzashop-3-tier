@@ -14,4 +14,6 @@ public interface ITaxService
     Task<bool> DeleteTax(int id);
 
     Task<Taxis> GetTaxByName(TaxViewModel model);
+
+    Task<IEnumerable<TaxViewModel>> GetEnabledTaxes();
 }
