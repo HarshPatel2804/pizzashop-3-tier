@@ -19,4 +19,8 @@ public interface IOrderService
     Task<int> createOrderbycustomerId(int customerId);
 
     Task<OrderDetailsView?> GetOrderDetailsForViewAsync(int orderId);
+
+     Task<bool> SaveOrderAsync(OrderSaveViewModel model);
+
+     Task<List<int>> GetTaxIdsByOrderIdAsync(int orderId);
 }

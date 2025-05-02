@@ -23,7 +23,7 @@ public class OrdersController : Controller
     private readonly IOrderService _orderService;
     private readonly PizzaShopContext _context;
 
-    public OrdersController(IOrderService orderService , PizzaShopContext context)
+    public OrdersController(IOrderService orderService, PizzaShopContext context)
     {
         _orderService = orderService;
         _context = context;
@@ -35,48 +35,50 @@ public class OrdersController : Controller
     }
 
     [CustomAuthorize("Order", "CanView")]
-    public async Task<IActionResult> OrderList(int page = 1, int pageSize = 5, string search = "", string sortColumn = "", string sortOrder = "", orderstatus? status = null, DateTime? fromDate = null , DateTime? toDate = null)
+    public async Task<IActionResult> OrderList(int page = 1, int pageSize = 5, string search = "", string sortColumn = "", string sortOrder = "", orderstatus? status = null, DateTime? fromDate = null, DateTime? toDate = null)
     {
 
-        var (orders, totalUsers, totalPages) = await _orderService.GetPaginatedOrdersAsync(page, pageSize, search, sortColumn, sortOrder,status,fromDate,toDate);
+        var (orders, totalUsers, totalPages) = await _orderService.GetPaginatedOrdersAsync(page, pageSize, search, sortColumn, sortOrder, status, fromDate, toDate);
         ViewBag.CurrentPage = page;
         ViewBag.PageSize = pageSize;
         ViewBag.TotalUsers = totalUsers;
         ViewBag.TotalPages = totalPages;
 
-        return  PartialView("_OrderTablePartial", orders);
+        return PartialView("_OrderTablePartial", orders);
     }
 
     [CustomAuthorize("Order", "CanView")]
     [HttpGet]
-        public async Task<IActionResult> ForExportExcel(string searchString = "", orderstatus? status = null, DateTime? fromDate = null , DateTime? toDate = null)
-        {
-                var (fileName, fileContent) = await _orderService.GenerateOrderExcel(searchString, status, fromDate, toDate);
-                return File(
-                    fileContent,
-                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                    fileName
-                );
-        }
+    public async Task<IActionResult> ForExportExcel(string searchString = "", orderstatus? status = null, DateTime? fromDate = null, DateTime? toDate = null)
+    {
+        var (fileName, fileContent) = await _orderService.GenerateOrderExcel(searchString, status, fromDate, toDate);
+        return File(
+            fileContent,
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            fileName
+        );
+    }
 
-        public async Task<IActionResult> FororderView(int orderid){
-            OrderDetailsView orderDetailsView = await _orderService.GetOrderDetailsViewService(orderid);
-
-            return PartialView("_Orderview" , orderDetailsView);
-
-        }
-
-    [CustomAuthorize("Order", "CanView")]
-    public async Task<IActionResult> ForPdfDownload(int orderid){
-        
+    public async Task<IActionResult> FororderView(int orderid)
+    {
         OrderDetailsView orderDetailsView = await _orderService.GetOrderDetailsViewService(orderid);
 
-       var viewHtml = await RenderViewToString("OrderPdfView",orderDetailsView);
+        return PartialView("_Orderview", orderDetailsView);
+
+    }
+
+    [CustomAuthorize("Order", "CanView")]
+    public async Task<IActionResult> ForPdfDownload(int orderid)
+    {
+
+        OrderDetailsView orderDetailsView = await _orderService.GetOrderDetailsViewService(orderid);
+
+        var viewHtml = await RenderViewToString("OrderPdfView", orderDetailsView);
 
         // TO Convert HTML to PDF
         HtmlToPdf converter = new HtmlToPdf();
 
-        
+
         // PDF style
         converter.Options.PdfPageSize = PdfPageSize.A3;
         converter.Options.PdfPageOrientation = PdfPageOrientation.Portrait;
@@ -95,15 +97,15 @@ public class OrdersController : Controller
 
         // Return the PDF file
         return File(ms.ToArray(), "application/pdf", "Report.pdf");
-         
+
     }
 
-     private async Task<string> RenderViewToString(string viewName,OrderDetailsView model)
+    private async Task<string> RenderViewToString(string viewName, OrderDetailsView model)
     {
         using (var sw = new StringWriter())
         {
             var viewEngine = HttpContext.RequestServices.GetService(typeof(ICompositeViewEngine)) as ICompositeViewEngine;
-            
+
             var viewResult = viewEngine.FindView(ControllerContext, viewName, false);
 
             if (viewResult.View == null)
@@ -122,10 +124,24 @@ public class OrdersController : Controller
                 sw,
                 new HtmlHelperOptions()
             );
-           
+
             viewResult.View.RenderAsync(viewContext);
             return sw.ToString();
-           
+
         }
+    }
+
+    public async Task<IActionResult> SaveOrder([FromBody] OrderSaveViewModel model)
+    {
+        bool success = await _orderService.SaveOrderAsync(model);
+        return Json(new { success = success, message = "Order Saved Successfully" });
+    }
+
+
+    public async Task<IActionResult> GetOrderTaxIds(int orderId)
+    {
+        var taxIds = await _orderService.GetTaxIdsByOrderIdAsync(orderId);
+        return Json(new { taxIds });
+
     }
 }

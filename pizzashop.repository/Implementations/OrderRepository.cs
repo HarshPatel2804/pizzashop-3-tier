@@ -107,16 +107,16 @@ public class OrderRepository : IOrderRepository
 
     public async Task<OrderDetailsView> GetOrderDetailsView(int orderId)
     {
-        var order = await  _context.Orders
+        var order = await _context.Orders
             .Where(o => o.Orderid == orderId)
             .Include(o => o.Customer)
             .Include(o => o.Ordereditems)
                 .ThenInclude(oi => oi.Item)
             .Include(o => o.Ordereditems)
-                .ThenInclude(O => O.Ordereditemmodifers)   
+                .ThenInclude(O => O.Ordereditemmodifers)
                     .ThenInclude(O => O.Modifiers)
             .Include(o => o.Ordertables)
-                .ThenInclude(ot => ot.Table)    
+                .ThenInclude(ot => ot.Table)
                     .ThenInclude(s => s.Section)
             .Include(o => o.Ordertaxmappings)
                 .ThenInclude(otm => otm.Tax)
@@ -162,7 +162,7 @@ public class OrderRepository : IOrderRepository
             {
                 TaxName = otm.Tax.Taxname,
                 TaxValue = (decimal)otm.Taxvalue,
-                TaxTypeName = otm.Tax.TaxType.TaxName 
+                TaxTypeName = otm.Tax.TaxType.TaxName
             }).ToList()
         };
 
@@ -172,38 +172,111 @@ public class OrderRepository : IOrderRepository
     public async Task<bool> HasCustomerActiveOrder(int customerId)
     {
         return await _context.Orders
-            .AnyAsync(o => o.Customerid == customerId && 
-                          (o.OrderStatus == orderstatus.InProgress || 
-                           o.OrderStatus == orderstatus.Pending || 
+            .AnyAsync(o => o.Customerid == customerId &&
+                          (o.OrderStatus == orderstatus.InProgress ||
+                           o.OrderStatus == orderstatus.Pending ||
                            o.OrderStatus == orderstatus.Served));
     }
 
-    public async Task<int> createOrder(Order order){
+    public async Task<int> createOrder(Order order)
+    {
         await _context.AddAsync(order);
         await _context.SaveChangesAsync();
         return order.Orderid;
     }
 
-     public async Task<Order?> GetOrderWithDetailsByIdAsync(int orderId)
-        {
-            return await _context.Orders
-                .Include(o => o.Customer)
-                .Include(o => o.Ordereditems)
-                    .ThenInclude(oi => oi.Item) 
-                        .ThenInclude(item => item.Itemmodifiergroupmaps) 
-                            .ThenInclude(imgm => imgm.Modifiergroup)
-                .Include(o => o.Ordereditems)
-                    .ThenInclude(oi => oi.Ordereditemmodifers) 
-                        .ThenInclude(oim => oim.Modifiers) 
-                            .ThenInclude(m => m.Modifiergroup)
-                .Include(o => o.Ordertables) 
-                    .ThenInclude(ot => ot.Table) 
-                        .ThenInclude(t => t.Section) 
-                .Include(o => o.Ordertaxmappings) 
-                    .ThenInclude(otm => otm.Tax) 
-                        .ThenInclude(t => t.TaxType) 
-                .AsNoTracking()
-                .FirstOrDefaultAsync(o => o.Orderid == orderId);
-        }
+    public async Task<Order?> GetOrderWithDetailsByIdAsync(int orderId)
+    {
+        return await _context.Orders
+            .Include(o => o.Customer)
+            .Include(o => o.Ordereditems)
+                .ThenInclude(oi => oi.Item)
+                    .ThenInclude(item => item.Itemmodifiergroupmaps)
+                        .ThenInclude(imgm => imgm.Modifiergroup)
+            .Include(o => o.Ordereditems)
+                .ThenInclude(oi => oi.Ordereditemmodifers)
+                    .ThenInclude(oim => oim.Modifiers)
+                        .ThenInclude(m => m.Modifiergroup)
+            .Include(o => o.Ordertables)
+                .ThenInclude(ot => ot.Table)
+                    .ThenInclude(t => t.Section)
+            .Include(o => o.Ordertaxmappings)
+                .ThenInclude(otm => otm.Tax)
+                    .ThenInclude(t => t.TaxType)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(o => o.Orderid == orderId);
+    }
+
+    public async Task<Order?> GetOrderByIdAsync(int orderId)
+    {
+        return await _context.Orders.FindAsync(orderId);
+    }
+
+    public async Task<List<Ordereditem>> GetOrderedItemsWithModifiersAsync(int orderId)
+    {
+        return await _context.Ordereditems
+                             .Include(oi => oi.Ordereditemmodifers)
+                             .Where(oi => oi.Orderid == orderId)
+                             .ToListAsync();
+    }
+
+    public async Task<List<Ordertaxmapping>> GetOrderTaxMappingsAsync(int orderId)
+    {
+        return await _context.Ordertaxmappings
+                             .Where(otm => otm.Orderid == orderId)
+                             .ToListAsync();
+    }
+
+    public void UpdateOrder(Order order)
+    {
+        _context.Entry(order).State = EntityState.Modified;
+    }
+
+    public void AddOrderedItem(Ordereditem item)
+    {
+        _context.Ordereditems.Add(item);
+    }
+
+    public void UpdateOrderedItem(Ordereditem item)
+    {
+        _context.Entry(item).State = EntityState.Modified;
+    }
+
+    public void RemoveOrderedItems(IEnumerable<Ordereditem> items)
+    {
+        _context.Ordereditems.RemoveRange(items);
+    }
+
+    public void RemoveOrderedItemModifiers(IEnumerable<Ordereditemmodifer> modifiers)
+    {
+        foreach (var mod in modifiers) { if (_context.Entry(mod).State == EntityState.Detached) { _context.Ordereditemmodifers.Attach(mod); } }
+        _context.Ordereditemmodifers.RemoveRange(modifiers);
+    }
+
+    public void AddOrderedItemModifiers(IEnumerable<Ordereditemmodifer> modifiers)
+    {
+        _context.Ordereditemmodifers.AddRange(modifiers);
+    }
+
+    public void RemoveOrderTaxMappings(IEnumerable<Ordertaxmapping> taxMappings)
+    {
+        foreach (var tax in taxMappings) { if (_context.Entry(tax).State == EntityState.Detached) { _context.Ordertaxmappings.Attach(tax); } }
+        _context.Ordertaxmappings.RemoveRange(taxMappings);
+    }
+
+    public void AddOrderTaxMappings(IEnumerable<Ordertaxmapping> taxMappings)
+    {
+        _context.Ordertaxmappings.AddRange(taxMappings);
+    }
+
+    public void UpdateOrderTaxMapping(Ordertaxmapping taxMapping)
+    {
+        _context.Entry(taxMapping).State = EntityState.Modified;
+    }
+
+    public async Task<int> SaveChangesAsync()
+    {
+        return await _context.SaveChangesAsync();
+    }
 }
 

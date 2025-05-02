@@ -4,18 +4,24 @@
 @foreach (var item in Model)
 {
     <div class="me-5 mb-4">
-        <div class="card card-custom d-flex flex-row align-items-center ItemCard" data-itemid="@item.Itemid" data-name="@item.Itemname" data-type="@item.Itemtype" data-rate="@item.Rate">
+        <div class="card card-custom d-flex flex-row align-items-center ItemCard" data-itemid="@item.Itemid"
+            data-name="@item.Itemname" data-type="@item.Itemtype" data-rate="@item.Rate" data-tax="@item.Taxpercentage"
+            data-istax="@item.Isdefaulttax">
             <div class="image-container">
-                <img src="@(string.IsNullOrEmpty(item.Itemimg) ? Url.Content("~/images/dining-menu.png") : Url.Content("~/images/uploads/" + item.Itemimg))" alt="@item.Itemname" class="card-img-custom" />
+                <img src="@(string.IsNullOrEmpty(item.Itemimg) ? Url.Content("~/images/dining-menu.png") : Url.Content("~/images/uploads/" + item.Itemimg))"
+                    alt="@item.Itemname" class="card-img-custom" />
             </div>
             <div class="ms-3 d-flex flex-column justify-content-center flex-grow-1">
                 <span style="color: black; font-size: 18px">@item.Itemname</span>
                 <span class="text-muted fs-7 mt-1">₹@item.Rate</span>
             </div>
-            <div class="corner-triangle @(item.Itemtype == pizzashop.repository.Models.itemtype.Veg ? "veg" : 
+            <div
+                class="corner-triangle @(item.Itemtype == pizzashop.repository.Models.itemtype.Veg ? "veg" : 
                                          item.Itemtype == pizzashop.repository.Models.itemtype.Nonveg ? "non-veg" : 
-                                         item.Itemtype == pizzashop.repository.Models.itemtype.Vegan ? "vegan-corner" : "") "></div>
-            <button aria-label="Favorite" class="heart-btn @(item.Isfavourite == true ? "favorite" :  "")" type="button" data-itemid="@item.Itemid">
+                                         item.Itemtype == pizzashop.repository.Models.itemtype.Vegan ? "vegan-corner" : "") ">
+            </div>
+            <button aria-label="Favorite" class="heart-btn @(item.Isfavourite == true ? "favorite" :  "")" type="button"
+                data-itemid="@item.Itemid">
                 <i class="fas @(item.Isfavourite == true ? "fill-heart" :  "") fa-heart"></i>
             </button>
         </div>

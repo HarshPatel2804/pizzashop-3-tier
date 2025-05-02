@@ -189,7 +189,9 @@ return itemModifierGroups;
                     Itemid = i.Itemid,
                     Itemimg = i.Itemimg,
                     Itemtype = i.Itemtype,
-                    Isavailable = i.Isavailable
+                    Isavailable = i.Isavailable,
+                    Isdefaulttax = i.Isdefaulttax,
+                    Taxpercentage = i.Taxpercentage
                 })
                 .ToListAsync();
         }

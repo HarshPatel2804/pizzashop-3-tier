@@ -238,11 +238,15 @@ public class OrderService : IOrderService
                 ItemsInOrder = order.Ordereditems.Select(oi => new ItemDetailForOrder
                 {
                     OrderToItemId = oi.Ordereditemid,
+                    
                     ItemName = oi.Item?.Itemname ?? "Unknown Item",
+                    ItemId = oi.Item?.Itemid ?? 0,
                     ItemAmount = oi.Item?.Rate ?? 0,
                     ItemQuantity = oi.Quantity,
                     ReadyQuantity = oi.ReadyQuantity,
                     ItemWiseComment = oi.Itemwisecomment ?? string.Empty,
+                    Isdefaulttax = oi.Item?.Isdefaulttax,
+                    Taxpercentage = oi.Item?.Taxpercentage ?? 0,
 
                     ItemModifiers = oi.Ordereditemmodifers.Select(oim =>
                     {
@@ -280,5 +284,230 @@ public class OrderService : IOrderService
             };
 
             return orderDetailsView;
+        }
+
+
+    public async Task<bool> SaveOrderAsync(OrderSaveViewModel model)
+        {
+            if (model == null)
+            {
+                return false; 
+            }
+
+            try
+            {
+                var order = await _orderRepository.GetOrderByIdAsync(model.OrderId);
+                if (order == null)
+                {
+                    return false; 
+                }
+
+                order.OrderStatus = orderstatus.InProgress;
+                _orderRepository.UpdateOrder(order);
+
+                await ProcessOrderedItemsAsync(model.OrderId, model.Items);
+                await ProcessOrderTaxesAsync(model.OrderId, model.Taxes);
+
+                await _orderRepository.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex) {
+                Console.WriteLine($"Error saving order {model.OrderId}: {ex.Message}"); 
+                return false;
+            }
+        }
+
+        private async Task ProcessOrderedItemsAsync(int orderId, List<OrderItemViewModel> itemModels)
+        {
+            var existingDbItems = await _orderRepository.GetOrderedItemsWithModifiersAsync(orderId);
+            var modelItemIds = itemModels.Select(vm => vm.OrderedItemId).Where(id => id > 0).ToHashSet(); 
+            var dbItemMap = existingDbItems.ToDictionary(db => db.Ordereditemid);
+
+            var itemsToDelete = existingDbItems.Where(db => !modelItemIds.Contains(db.Ordereditemid)).ToList();
+            if (itemsToDelete.Any())
+            {
+                _orderRepository.RemoveOrderedItems(itemsToDelete);
+            }
+
+            foreach (var itemViewModel in itemModels)
+            {
+                if (itemViewModel.OrderedItemId > 0 && dbItemMap.TryGetValue(itemViewModel.OrderedItemId, out var existingItem))
+                {
+                    bool itemUpdated = false;
+                    if (existingItem.Quantity != itemViewModel.Quantity)
+                    {
+                         existingItem.Quantity = itemViewModel.Quantity;
+                         itemUpdated = true;
+                    }
+                    if (existingItem.Itemid != itemViewModel.ItemId)
+                    {
+                        existingItem.Itemid = itemViewModel.ItemId;
+                        itemUpdated = true;
+                    }
+
+                    if (itemUpdated)
+                    {
+                        _orderRepository.UpdateOrderedItem(existingItem);
+                    }
+
+
+                    ProcessItemModifiers(itemViewModel, existingItem);
+                }
+                else
+                {
+                    var newItem = new Ordereditem
+                    {
+                        Orderid = orderId,
+                        Itemid = itemViewModel.ItemId,
+                        Quantity = itemViewModel.Quantity,
+                    };
+
+                    var newModifiers = CreateModifiersFromViewModel(itemViewModel, 0); 
+                    foreach(var mod in newModifiers)
+                    {
+                        newItem.Ordereditemmodifers.Add(mod); 
+                    }
+
+                    _orderRepository.AddOrderedItem(newItem);
+                }
+            }
+        }
+
+        private void ProcessItemModifiers(OrderItemViewModel itemViewModel, Ordereditem existingItem)
+        {
+            var existingModifiers = existingItem.Ordereditemmodifers.ToList();
+            var modelModifierIds = new HashSet<int>();
+
+            if (itemViewModel.Groups != null)
+            {
+                foreach (var groupPair in itemViewModel.Groups)
+                {
+                    if (groupPair.Value.SelectedModifiers != null)
+                    {
+                        foreach (var modPair in groupPair.Value.SelectedModifiers)
+                        {
+                            modelModifierIds.Add(modPair.Value.ModifierId);
+                        }
+                    }
+                }
+            }
+
+            var modifiersToDelete = existingModifiers
+                .Where(dbMod => !modelModifierIds.Contains(dbMod.Modifierid))
+                .ToList();
+
+            var existingModifierIds = existingModifiers.Select(dbMod => dbMod.Modifierid).ToHashSet();
+            var modifierIdsToAdd = modelModifierIds
+                .Where(modelModId => !existingModifierIds.Contains(modelModId))
+                .ToList();
+
+            if (modifiersToDelete.Any())
+            {
+                _orderRepository.RemoveOrderedItemModifiers(modifiersToDelete);
+            }
+
+            if (modifierIdsToAdd.Any())
+            {
+                var modifiersToAdd = modifierIdsToAdd.Select(modId => new Ordereditemmodifer
+                {
+                    Ordereditemid = existingItem.Ordereditemid, 
+                    Modifierid = modId
+                }).ToList();
+                _orderRepository.AddOrderedItemModifiers(modifiersToAdd);
+            }
+        }
+
+        private List<Ordereditemmodifer> CreateModifiersFromViewModel(OrderItemViewModel itemViewModel, int orderedItemId)
+        {
+             var modifiers = new List<Ordereditemmodifer>();
+             if (itemViewModel.Groups != null)
+             {
+                foreach (var groupPair in itemViewModel.Groups)
+                {
+                    if (groupPair.Value.SelectedModifiers != null)
+                    {
+                        foreach (var modPair in groupPair.Value.SelectedModifiers)
+                        {
+                            modifiers.Add(new Ordereditemmodifer
+                            {
+                                Ordereditemid = orderedItemId, 
+                                Modifierid = modPair.Value.ModifierId
+                            });
+                        }
+                    }
+                }
+             }
+             return modifiers;
+        }
+
+        private async Task ProcessOrderTaxesAsync(int orderId, List<OrderTaxViewModel> taxModels)
+        {
+            var existingDbTaxes = await _orderRepository.GetOrderTaxMappingsAsync(orderId);
+            var modelTaxesMap = taxModels.ToDictionary(vm => vm.TaxId); 
+            var existingDbTaxesMap = existingDbTaxes.ToDictionary(db => db.Taxid);
+
+            var taxesToDelete = existingDbTaxes
+                .Where(dbTax => !modelTaxesMap.ContainsKey(dbTax.Taxid))
+                .ToList();
+
+            if (taxesToDelete.Any())
+            {
+                _orderRepository.RemoveOrderTaxMappings(taxesToDelete);
+            }
+
+            var taxesToAdd = new List<Ordertaxmapping>();
+            var taxesToUpdate = new List<Ordertaxmapping>(); 
+
+            foreach (var modelTax in taxModels)
+            {
+
+                int? calculatedTaxValue = (int?)Math.Round(modelTax.TaxValue);
+
+                if (existingDbTaxesMap.TryGetValue(modelTax.TaxId, out var existingTax))
+                {
+
+                    if (existingTax.Taxvalue != calculatedTaxValue)
+                    {
+                        existingTax.Taxvalue = calculatedTaxValue;
+                        _orderRepository.UpdateOrderTaxMapping(existingTax); 
+                        taxesToUpdate.Add(existingTax);
+                    }
+                }
+                else
+                {
+                    taxesToAdd.Add(new Ordertaxmapping
+                    {
+                        Orderid = orderId,
+                        Taxid = modelTax.TaxId,
+                        Taxvalue = calculatedTaxValue
+                    });
+                }
+            }
+
+            if (taxesToAdd.Any())
+            {
+                _orderRepository.AddOrderTaxMappings(taxesToAdd);
+            }
+        }
+
+    public async Task<List<int>> GetTaxIdsByOrderIdAsync(int orderId)
+        {
+            if (orderId <= 0)
+            {
+                return new List<int>();
+            }
+
+                var taxMappings = await _orderRepository.GetOrderTaxMappingsAsync(orderId);
+
+                if (taxMappings != null)
+                {
+                    return taxMappings.Select(mapping => mapping.Taxid)
+                                      .ToList();
+                }
+                else
+                {
+                    return new List<int>();
+                }
+
         }
 }

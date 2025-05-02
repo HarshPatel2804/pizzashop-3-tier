@@ -84,6 +84,8 @@
     $(document).ready(function () {
         let currentCategory = "ALL";
         let confirmedSelections = [];
+        let orderTaxes = [];
+        let appliedTaxIds = [];
         let tempSelections = null;
         let searchText = "";
         let lastSubTotal = 0;
@@ -97,6 +99,18 @@
 
         if (orderId) {
             $('#order-card').removeClass('d-none');
+
+            //Get already stored taxes
+            $.ajax({
+                url: '/Orders/GetOrderTaxIds',
+                method: 'GET',
+                data: { orderId: orderId },
+                dataType: 'json',
+                success: function (data) {
+                    appliedTaxIds = data.taxIds;
+                    console.log(appliedTaxIds);
+                }
+            });
 
             $.ajax({
                 url: '/OrderMenu/OrderCard',
@@ -112,6 +126,9 @@
                     $('#order-card').html('<p class="text-danger">Failed to load order details.</p>');
                 }
             });
+
+
+
         }
 
         function renderConfirmedSelections() {
@@ -161,7 +178,7 @@
 
                 $template.find('.item-base-price').text(`₹${itemPrice.toFixed(2)}`);
                 if ($modifierList.children().length !== 0) {
-                $template.find('.item-total-price').text(`₹${modifierPrice.toFixed(2)}`);
+                    $template.find('.item-total-price').text(`₹${modifierPrice.toFixed(2)}`);
                 }
 
                 $container.append($template);
@@ -179,9 +196,7 @@
 
                 const itemIndex = confirmedSelections.findIndex(i => i.uniqueId === index);
                 if (itemIndex !== -1) {
-                    console.log(confirmedSelections[itemIndex].quantity);
                     confirmedSelections[itemIndex].quantity += 1;
-                    console.log(confirmedSelections[itemIndex].quantity);
                     renderConfirmedSelections();
                 }
             });
@@ -191,10 +206,14 @@
                 const $itemContainer = $(this).closest('[data-unique-id]');
                 const index = $itemContainer.data('unique-id');
                 const $quantitySpan = $(this).siblings('.item-quantity');
-
                 const itemIndex = confirmedSelections.findIndex(i => i.uniqueId === index);
-                if (itemIndex !== -1 && confirmedSelections[itemIndex].quantity > 1) {
+                if (itemIndex !== -1) {
                     confirmedSelections[itemIndex].quantity -= 1;
+
+                    if (confirmedSelections[itemIndex].quantity <= 0) {
+                        confirmedSelections.splice(itemIndex, 1);
+                    }
+
                     renderConfirmedSelections();
                 }
             });
@@ -264,10 +283,13 @@
         }
 
         function renderTaxesAndCalculateTotal(taxes, subTotal) {
+            orderTaxes = [];
             const $taxesContainer = $('#taxes-container');
             $taxesContainer.empty();
             let currentTotal = subTotal;
             let taxHtml = '';
+            let otherTax = calculateOtherTax();
+            currentTotal += otherTax;
 
             if (!Array.isArray(taxes)) {
                 taxes = [];
@@ -280,6 +302,11 @@
 
                 if (isPercentage) {
                     const taxAmount = subTotal * (taxValue / 100);
+                    orderTaxes.push({
+                        taxid: tax.taxid,
+                        orderid: orderId,
+                        taxvalue: taxAmount
+                    });
                     currentTotal += taxAmount;
                     taxHtml += `
                 <div class="d-flex justify-content-between fs-6 tax-row percentage-tax"
@@ -290,13 +317,19 @@
                     <div class="tax-amount">${taxAmount.toFixed(2)}</div>
                 </div>`;
                 } else {
+                    const isCheckedBefore = appliedTaxIds.includes(tax.taxid);
+                    const isChecked = isCheckedBefore ? 'checked' : '';
+
                     taxHtml += `
                 <div class="d-flex justify-content-between fs-6 tax-row fixed-tax"
                      data-tax-id="${tax.taxid}"
                      data-tax-type="fixed"
                      data-tax-amount="${taxValue}">
                     <div>
-                        <input type="checkbox" class="fixed-tax-checkbox me-1" id="tax-chk-${tax.taxid}" value="${taxValue}">
+                        <input type="checkbox" class="fixed-tax-checkbox me-1"
+                               id="tax-chk-${tax.taxid}"
+                               value="${taxValue}"
+                               data-tax-id="${tax.taxid}" ${isChecked}>
                         <label for="tax-chk-${tax.taxid}">${taxName}:</label>
                     </div>
                     <div class="tax-amount">${taxValue.toFixed(2)}</div>
@@ -304,25 +337,60 @@
                 }
             });
 
+            taxHtml += `
+                <div class="d-flex justify-content-between fs-6 tax-row item-specific-tax">
+                    <div>Other Taxes:</div>
+                    <div class="tax-amount">${otherTax.toFixed(2)}</div>
+                </div>`;
+
             $taxesContainer.html(taxHtml);
             $('#subtotal-value').text(subTotal.toFixed(2));
             $('#total-value').text(currentTotal.toFixed(2));
             attachCheckboxListeners();
+
+            $taxesContainer.find('.fixed-tax-checkbox:checked').each(function () {
+                $(this).trigger('change');
+            });
         }
 
         function recalculateTotal() {
+            orderTaxes = [];
             let currentTotal = lastSubTotal;
+            let otherTax = calculateOtherTax();
+            currentTotal += otherTax;
+            orderTaxes.push({
+                taxid: 0,
+                orderid: orderId,
+                taxvalue: otherTax
+            });
 
             $('#taxes-container .percentage-tax').each(function () {
                 const $taxRow = $(this);
                 const percentage = parseFloat($taxRow.data('tax-percentage')) || 0;
+                const taxId = parseInt($taxRow.data('tax-id')) || 0;
                 const taxAmount = lastSubTotal * (percentage / 100);
+
                 currentTotal += taxAmount;
+
+                orderTaxes.push({
+                    taxid: taxId,
+                    orderid: orderId,
+                    taxvalue: taxAmount
+                });
             });
 
             $('#taxes-container .fixed-tax-checkbox:checked').each(function () {
-                const fixedAmount = parseFloat($(this).val()) || 0;
-                currentTotal += fixedAmount;
+                const $checkbox = $(this);
+                const taxValue = parseFloat($checkbox.val()) || 0;
+                const taxId = parseInt($checkbox.data('tax-id')) || 0;
+
+                currentTotal += taxValue;
+
+                orderTaxes.push({
+                    taxid: taxId,
+                    orderid: orderId,
+                    taxvalue: taxValue
+                });
             });
 
             $('#total-value').text(currentTotal.toFixed(2));
@@ -330,6 +398,15 @@
 
         function attachCheckboxListeners() {
             $('#taxes-container').off('change', '.fixed-tax-checkbox').on('change', '.fixed-tax-checkbox', function () {
+                const $checkbox = $(this);
+                const taxId = parseInt($checkbox.data('tax-id'));
+                if ($checkbox.is(':checked')) {
+                    if (!appliedTaxIds.includes(taxId)) {
+                        appliedTaxIds.push(taxId);
+                    }
+                } else {
+                    appliedTaxIds = appliedTaxIds.filter(id => id !== taxId);
+                }
                 recalculateTotal();
             });
         }
@@ -340,6 +417,27 @@
                 renderTaxesAndCalculateTotal(taxes, subTotal);
                 recalculateTotal();
             });
+        }
+
+        function calculateOtherTax() {
+            let itemSpecificTaxTotal = 0;
+            console.log(confirmedSelections);
+            confirmedSelections.forEach(item => {
+                if ((item.defaultTax == 'True' || item.defaultTax == true) && item.tax) {
+                    const itemRate = parseFloat(item.itemRate) || 0;
+                    const quantity = parseInt(item.quantity, 10) || 0;
+                    const itemTaxPercent = parseFloat(item.tax) || 0;
+                    console.log(itemTaxPercent);
+
+                    if (itemRate > 0 && quantity > 0 && itemTaxPercent > 0) {
+                        const itemSubTotal = itemRate * quantity;
+                        const itemTaxAmount = itemSubTotal * (itemTaxPercent / 100);
+                        itemSpecificTaxTotal += itemTaxAmount;
+                    }
+                }
+            });
+
+            return itemSpecificTaxTotal;
         }
 
         function loadMenuItems() {
@@ -405,6 +503,8 @@
                 const itemName = $(this).data('name');
                 const itemType = $(this).data('type');
                 const rate = $(this).data('rate');
+                const isTax = $(this).data('istax');
+                const Tax = $(this).data('tax');
                 console.log(itemName + rate);
                 let triangleClass = '';
                 switch (itemType) {
@@ -439,8 +539,12 @@
                                 itemName: itemName,
                                 itemRate: rate,
                                 quantity: 1,
+                                defaultTax: isTax,
+                                tax: Tax,
                                 groups: {}
                             };
+
+                            console.log(tempSelections);
 
                             updateConfirmedSelections();
                         }
@@ -449,6 +553,8 @@
                             $('.itemName').text(itemName);
                             $('.ItemId').val(itemId);
                             $('.Rate').val(rate);
+                            $('.isTax').val(isTax);
+                            $('.Tax').val(Tax);
                             $('.modifierType')
                                 .removeClass('veg non-veg vegan-corner')
                                 .addClass(triangleClass);
@@ -464,45 +570,45 @@
         loadMenuItems();
 
         function updateConfirmedSelections() {
-                if (!tempSelections) return;
+            if (!tempSelections) return;
 
-                const identicalItemIndex = confirmedSelections.findIndex(item => {
-                    if (item.itemId !== tempSelections.itemId) return false;
+            const identicalItemIndex = confirmedSelections.findIndex(item => {
+                if (item.itemId !== tempSelections.itemId) return false;
 
-                    const tempGroupIds = Object.keys(tempSelections.groups);
-                    const itemGroupIds = Object.keys(item.groups);
+                const tempGroupIds = Object.keys(tempSelections.groups);
+                const itemGroupIds = Object.keys(item.groups);
 
-                    if (tempGroupIds.length !== itemGroupIds.length) return false;
+                if (tempGroupIds.length !== itemGroupIds.length) return false;
 
-                    for (const groupId of tempGroupIds) {
-                        if (!item.groups[groupId]) return false;
+                for (const groupId of tempGroupIds) {
+                    if (!item.groups[groupId]) return false;
 
-                        const tempModifiers = tempSelections.groups[groupId].selectedModifiers;
-                        const itemModifiers = item.groups[groupId].selectedModifiers;
+                    const tempModifiers = tempSelections.groups[groupId].selectedModifiers;
+                    const itemModifiers = item.groups[groupId].selectedModifiers;
 
-                        const tempModifierIds = Object.keys(tempModifiers);
-                        const itemModifierIds = Object.keys(itemModifiers);
+                    const tempModifierIds = Object.keys(tempModifiers);
+                    const itemModifierIds = Object.keys(itemModifiers);
 
-                        if (tempModifierIds.length !== itemModifierIds.length) return false;
+                    if (tempModifierIds.length !== itemModifierIds.length) return false;
 
-                        for (const modifierId of tempModifierIds) {
-                            if (!itemModifiers[modifierId]) return false;
-                        }
+                    for (const modifierId of tempModifierIds) {
+                        if (!itemModifiers[modifierId]) return false;
                     }
-
-                    return true;
-                });
-
-                if (identicalItemIndex !== -1) {
-                    confirmedSelections[identicalItemIndex].quantity += tempSelections.quantity;
-                } else {
-                    confirmedSelections.push(JSON.parse(JSON.stringify(tempSelections)));
                 }
 
-                tempSelections = null;
+                return true;
+            });
 
-                renderConfirmedSelections();
+            if (identicalItemIndex !== -1) {
+                confirmedSelections[identicalItemIndex].quantity += tempSelections.quantity;
+            } else {
+                confirmedSelections.push(JSON.parse(JSON.stringify(tempSelections)));
             }
+
+            tempSelections = null;
+
+            renderConfirmedSelections();
+        }
 
         function handlemodifierPopUp() {
             initializeArray();
@@ -510,6 +616,8 @@
                 const itemId = $('.ItemId').val();
                 const itemName = $('.itemName').text();
                 const rate = $('.Rate').val();
+                const isTax = $('.isTax').val();
+                const Tax = $('.Tax').val();
                 const timestamp = new Date().getTime();
 
                 tempSelections = {
@@ -518,6 +626,8 @@
                     itemName: itemName,
                     itemRate: rate,
                     quantity: 1,
+                    defaultTax: isTax,
+                    tax: Tax,
                     groups: {}
                 };
 
@@ -674,8 +784,28 @@
                     confirmedSelections.splice(index, 1);
                 }
             }
-
-
         }
+
+
+        $('#order-card').on('click', '#Save-Order-Btn', function () {
+
+            const data = {
+                OrderId: orderId,
+                Items: confirmedSelections,
+                Taxes: orderTaxes
+            };
+
+            $.ajax({
+                url: '/Orders/SaveOrder',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+
+                success: function (response) {
+                    console.log('Save successful:', response);
+                    alert(response.message || 'Order saved successfully!');
+                }
+            });
+        });
     });
 </script>
