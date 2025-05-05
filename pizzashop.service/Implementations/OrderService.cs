@@ -6,6 +6,8 @@ using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using NPOI.SS.Util;
 using pizzashop.repository.ViewModels;
+using Microsoft.AspNetCore.Mvc.ActionConstraints;
+using Microsoft.AspNetCore.Mvc;
 
 namespace pizzashop.service.Implementations;
 
@@ -31,6 +33,36 @@ public class OrderService : IOrderService
             Createdat = DateTime.Now
         };
         return await _orderRepository.createOrder(order);
+    }
+
+    public async Task<Order> GetOrderbyId(int orderId){
+        var order = await _orderRepository.GetOrderByIdAsync(orderId);
+        return order;
+    }
+
+    public async Task<List<repository.Models.Table>> GetOrdertables(int orderId){
+        var data = await _orderRepository.GetOrderTablesAsync(orderId);
+        var tables = data.Ordertables.Select(ot => ot.Table).ToList();
+        return tables;
+    }
+
+    public async Task<int> updateOrder(Order order){
+          return await _orderRepository.updateOrderAsync(order);
+    }
+
+    public async Task<string> GetItemCommentAsync(int orderItemId){
+        var orderedItem = await _orderRepository.GetOrderedItem(orderItemId);
+        return orderedItem.Itemwisecomment ?? "";
+    }
+
+    public async Task<(bool , string)> UpdateItemCommentAsync(int orderItemId , string comment){
+        var orderedItem = await _orderRepository.GetOrderedItem(orderItemId);
+        if(orderedItem == null){
+            return (false , "No such item found");
+        }
+        orderedItem.Itemwisecomment = comment;
+        await _orderRepository.UpdateOrderedItemAsync(orderedItem);
+        return (true , "Comment Saved successfully");
     }
     
     public async Task<(List<Order> orders, int totalOrders, int totalPages)> GetPaginatedOrdersAsync(int page, int pageSize, string search, string sortColumn, string sortOrder, orderstatus? status, DateTime? fromDate, DateTime? toDate)
@@ -219,8 +251,9 @@ public class OrderService : IOrderService
             {
                 OrderId = order.Orderid,
                 CustomerId = order.Customerid,
-
+                CustomerName = order.Customer?.Customername ?? "N/A",
                 CustomerEmail = order.Customer?.Email ?? "N/A", 
+                ContactNumber = order.Customer?.Phoneno ?? "N/A",
                 NoOfPerson = order.Noofperson ?? 0,
                 OrderDate = order.Orderdate ?? DateTime.MinValue, 
                 ModifiedDate = order.Modifiedat ?? order.Createdat ?? DateTime.MinValue, 
@@ -303,6 +336,8 @@ public class OrderService : IOrderService
                 }
 
                 order.OrderStatus = orderstatus.InProgress;
+                order.Subamount = model.Subamount;
+                order.Totalamount = model.Totalamount;
                 _orderRepository.UpdateOrder(order);
 
                 await ProcessOrderedItemsAsync(model.OrderId, model.Items);

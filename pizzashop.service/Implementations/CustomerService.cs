@@ -11,10 +11,12 @@ namespace pizzashop.service.Implementations;
 public class CustomerService : ICustomerService
 {
     private readonly ICustomerRepository _customerRepository;
+    private readonly IOrderService _orderService;
 
-    public CustomerService(ICustomerRepository customerRepository)
+    public CustomerService(ICustomerRepository customerRepository, IOrderService orderService)
     {
         _customerRepository = customerRepository;
+        _orderService = orderService;
     }
     public async Task<(List<Customer> customers, int totalCustomers, int totalPages)> GetPaginatedCustomersAsync(int page, int pageSize, string search, string sortColumn, string sortOrder, DateTime? fromDate, DateTime? toDate)
     {
@@ -25,7 +27,8 @@ public class CustomerService : ICustomerService
         return (customers, totalCustomers, totalPages);
     }
 
-    public async Task<Customer> GetCustomerByEmail(string Email){
+    public async Task<Customer> GetCustomerByEmail(string Email)
+    {
         return await _customerRepository.GetCustomerByEmail(Email);
     }
 
@@ -38,16 +41,55 @@ public class CustomerService : ICustomerService
         return await _customerRepository.UpdateCustomer(model);
     }
 
-    public async Task<CustomerViewModel> GetCustomerHistory(int customerId){
+    public async Task<(bool Success, string Message)> updateOrderMenuCustomer(OrderMenuCustomerViewModel model)
+    {
+        var tables = await _orderService.GetOrdertables(model.OrderId);
+
+        var totalCapacity = 0;
+        foreach (var table in tables)
+        {
+            totalCapacity += (int)table.Capacity;
+        }
+        if (totalCapacity < model.Noofpeople)
+        {
+            return (false, $"Selected tables don't have enough capacity. Required: {model.Noofpeople}, Available: {totalCapacity}");
+        }
+
+        bool IsSameEmail = await _customerRepository.IsSameEmail(model.Email , model.CustomerId);
+        bool IsSamePhone = await _customerRepository.IsSamePhone(model.Phoneno , model.CustomerId);
+
+        if(IsSameEmail){
+            return (false, "User with this email already exist!");
+        }
+        if(IsSamePhone){
+            return (false, "User with this phone number already exist!");
+        }
+        Customer customer = await _customerRepository.GetCustomerById(model.CustomerId);
+        customer.Email = model.Email;
+        customer.Customername = model.Customername;
+        customer.Phoneno = model.Phoneno;
+
+        await UpdateCustomer(customer);
+
+        var order = await _orderService.GetOrderbyId(model.OrderId);
+        order.Noofperson = (short?)model.Noofpeople;
+        await _orderService.updateOrder(order);
+
+        return (true, "Customer Details Updates successfully!");
+    }
+
+    public async Task<CustomerViewModel> GetCustomerHistory(int customerId)
+    {
         var customer = await _customerRepository.GetCustomerById(customerId);
 
         var orders = await _customerRepository.GetOrdersByCustomer(customerId);
 
         decimal maxOrder = orders.OrderByDescending(o => o.Totalamount).FirstOrDefault().Totalamount;
-        decimal averageBill = orders.Average(o=>o.Totalamount);
-        DateTime? comingSince = orders.Count() > 0 ? orders.Min(o=>o.Orderdate) : customer.Createdat;
+        decimal averageBill = orders.Average(o => o.Totalamount);
+        DateTime? comingSince = orders.Count() > 0 ? orders.Min(o => o.Orderdate) : customer.Createdat;
 
-        var model = new CustomerViewModel{
+        var model = new CustomerViewModel
+        {
             Customerid = customer.Customerid,
             Email = customer.Email,
             Phoneno = customer.Phoneno,
@@ -64,7 +106,7 @@ public class CustomerService : ICustomerService
 
     public async Task<(List<Customer>, int totalOrders)> GetOrdersForExport(string searchString, DateTime? fromDate, DateTime? toDate)
     {
-        return await _customerRepository.GetCustomersForExport(searchString,fromDate, toDate);
+        return await _customerRepository.GetCustomersForExport(searchString, fromDate, toDate);
     }
 
     public async Task<(string fileName, byte[] fileContent)> GenerateCustomerExcel(string searchString, DateTime? fromDate, DateTime? toDate)
@@ -178,7 +220,7 @@ public class CustomerService : ICustomerService
 
             // Merge cells for Total Amount (2 columns)
             sheet.AddMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 14, 15));
-             CreateCell(dataRow, 14, customer.Totalorder.ToString(), dataStyle);
+            CreateCell(dataRow, 14, customer.Totalorder.ToString(), dataStyle);
             CreateCell(dataRow, 15, "", dataStyle);
 
             rowIndex++;
@@ -234,5 +276,34 @@ public class CustomerService : ICustomerService
         ICell cell = row.CreateCell(column);
         cell.SetCellValue(value);
         cell.CellStyle = style;
+    }
+
+    public async Task<OrderMenuCustomerViewModel?> GetOrderCustomerDetailsAsync(int orderId)
+    {
+        var order = await _orderService.GetOrderbyId(orderId);
+
+        if (order == null)
+        {
+            return null;
+        }
+
+        var customer = await _customerRepository.GetCustomerById(order.Customerid);
+
+        if (customer == null)
+        {
+            return null;
+        }
+
+        var viewModel = new OrderMenuCustomerViewModel
+        {
+            OrderId = order.Orderid,
+            CustomerId = customer.Customerid,
+            Customername = customer.Customername,
+            Email = customer.Email,
+            Phoneno = customer.Phoneno,
+            Noofpeople = order.Noofperson ?? 1
+        };
+
+        return viewModel;
     }
 }

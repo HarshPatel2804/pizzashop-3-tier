@@ -118,6 +118,13 @@ public class CustomerRepository : ICustomerRepository
         return await _context.Customers.FirstOrDefaultAsync(c => c.Email == Email);
     }
 
+    public async Task<bool> IsSameEmail(string email , int customerId){
+        return await _context.Customers.AnyAsync(c => c.Email == email && c.Customerid != customerId);
+    }
+    public async Task<bool> IsSamePhone(string phone , int customerId){
+        return await _context.Customers.AnyAsync(c => c.Phoneno == phone && c.Customerid != customerId);
+    }
+
     public async Task<int> AddCustomer(Customer model)
     {
         await _context.Customers.AddAsync(model);
@@ -129,6 +136,9 @@ public class CustomerRepository : ICustomerRepository
     public async Task<int> UpdateCustomer(Customer model)
     {
         Customer customer = await _context.Customers.FirstOrDefaultAsync(c => c.Email == model.Email);
+        if(customer == null){
+            customer = await _context.Customers.FirstOrDefaultAsync(c => c.Customerid == model.Customerid);
+        }
         customer.Email = model.Email;
         customer.Phoneno = model.Phoneno;
         customer.Customername = model.Customername;

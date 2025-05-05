@@ -23,4 +23,13 @@ public interface IOrderService
      Task<bool> SaveOrderAsync(OrderSaveViewModel model);
 
      Task<List<int>> GetTaxIdsByOrderIdAsync(int orderId);
+
+     Task<Order> GetOrderbyId(int orderId);
+
+     Task<List<repository.Models.Table>> GetOrdertables(int orderId);
+
+     Task<int> updateOrder(Order order);
+
+     Task<string> GetItemCommentAsync(int orderItemId);
+     Task<(bool , string)> UpdateItemCommentAsync(int orderItemId , string comment);
 }

@@ -87,6 +87,7 @@ public class TaxRepository : ITaxRepository
             return await _context.Taxes
                 .Include(t => t.TaxType) 
                 .Where(t => t.Isenabled == true &&  t.Isdeleted != true)
+                .OrderBy(t => t.TaxTypeId)
                 .AsNoTracking() 
                 .ToListAsync();
         }

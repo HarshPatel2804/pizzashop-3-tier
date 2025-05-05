@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using pizzashop.repository.ViewModels;
 using pizzashop.service.Interfaces;
 
 namespace pizzashop.web.Controllers;
@@ -9,11 +10,13 @@ public class OrderMenuController : Controller
     private readonly IMenuService _menuService;
 
     private readonly IOrderService _orderService;
+    private readonly ICustomerService _customerService;
 
-    public OrderMenuController(IMenuService menuService , IOrderService orderService)
+    public OrderMenuController(IMenuService menuService , IOrderService orderService , ICustomerService customerService)
     {
         _menuService = menuService;
         _orderService = orderService;
+        _customerService = customerService;
     }
     public async Task<ActionResult> Menu()
     {
@@ -48,4 +51,51 @@ public class OrderMenuController : Controller
 
         return PartialView("_itemModifiersPartial", itemModifierMapping );
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetOrderCustomerDetails(int orderId)
+    {
+        var viewModel = await _customerService.GetOrderCustomerDetailsAsync(orderId);
+
+        if (viewModel == null)
+        {
+            return NotFound($"Details not found for Order ID {orderId}.");
+        }
+
+        return PartialView("_CustomerDetailPartial" , viewModel);
+    }
+
+    [HttpPost]
+    public async Task<JsonResult> UpdateOrderCustomerDetails([FromForm] OrderMenuCustomerViewModel model){
+        var (Success , Message) = await _customerService.updateOrderMenuCustomer(model);
+        return Json(new {success = Success , message = Message});
+    }
+
+    [HttpGet]
+    public async Task<JsonResult> OrderComment(int orderId){
+        var order = await _orderService.GetOrderbyId(orderId);
+        var comment = order.Orderwisecomment;
+        return Json(new {success = true , comment});
+    }
+
+    [HttpPost]
+    public async Task<JsonResult> OrderComment(int orderId , string orderWiseComment){
+        var order = await _orderService.GetOrderbyId(orderId);
+        order.Orderwisecomment = orderWiseComment;
+        await _orderService.updateOrder(order);
+        return Json(new {success = true});
+    }
+
+    [HttpGet]
+    public async Task<JsonResult> ItemComment(int orderItemId){
+        var comment = await _orderService.GetItemCommentAsync(orderItemId);
+        return Json(new {success = true , comment});
+    }
+
+    [HttpPost]
+    public async Task<JsonResult> ItemComment(int orderItemId , string itemWiseComment){
+        var (Success , Message) = await _orderService.UpdateItemCommentAsync(orderItemId , itemWiseComment);
+        return Json(new {success = Success , message = Message});
+    }
+
 }

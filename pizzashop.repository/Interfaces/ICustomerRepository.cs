@@ -17,4 +17,8 @@ public interface ICustomerRepository
     Task<int> AddCustomer(Customer model);
 
     Task<int> UpdateCustomer(Customer model);
+
+    Task<bool> IsSameEmail(string email , int customerId);
+
+    Task<bool> IsSamePhone(string phone , int customerId);
 }

@@ -11,15 +11,16 @@
             <span><b>Table:</b> @Model.Table</span>
         </div>
     </div>
+    <input type="hidden" asp-for="CustomerId" id="CustomerId" />
 
-    <div class="d-flex align-items-center justify-content-end gap-3">
-        <div class="Order-Header-Btns">
+    <div class="d-flex align-items-center justify-content-end gap-3 pointer">
+        <div class="Order-Header-Btns" id="QR">
             <i class="bi bi-qr-code-scan"></i>
         </div>
-        <div class="Order-Header-Btns">
+        <div class="Order-Header-Btns pointer" id="customer-update">
             <i class="bi bi-person-lines-fill"></i>
         </div>
-        <div class="Order-Header-Btns">
+        <div class="Order-Header-Btns pointer" id="order-comment">
             <i class="bi bi-chat-left-text"></i>
         </div>
     </div>
@@ -37,12 +38,12 @@
         </div>
     </div>
 
-    <div id="item-template" class="rounded border mb-2 d-none" data-item-id="">
+    <div id="item-template" class="rounded border mb-2 d-none accordion-container" data-item-id="">
         <div class="d-flex">
             <div class="accordion d-flex flex-column justify-content-start gap-2 p-2 w-50">
                 <button class="accordion-button collapsed p-2 bg-transparent border-0" type="button"
                     data-bs-toggle="collapse" data-bs-target="#collapse-template" aria-expanded="false"
-                    aria-controls="collapse-template">
+                    aria-controls="collapse-template" style="width: fit-content;">
                     <strong class="ps-1 item-name">ItemName</strong>
                 </button>
 
@@ -89,9 +90,9 @@
 
     </div>
     <div class="d-flex justify-content-between fs-6">
-            <div class="fs-5">Total</div>
-            <div class="fs-5" id="total-value">0.00</div>
-        </div>
+        <div class="fs-5">Total</div>
+        <div class="fs-5" id="total-value">0.00</div>
+    </div>
 
     <div>
 
@@ -127,7 +128,7 @@
     <button type="button" class="btn p-3 clear-btn w-40" style="color:#087cc4; border-color:#087cc4;">Cancel</button>
 </div>
 <script>
-    (function() {
+    (function () {
         const itemsDataFromModel = @Html.Raw(JsonSerializer.Serialize(Model.ItemsInOrder ?? new List<ItemDetailForOrder>()));
 
         var itemsToAdd = [];
@@ -139,17 +140,18 @@
                 try {
                     const timestamp = Date.now();
                     let tempSelections = {
-                        uniqueId: `${item.OrderToItemId}-${timestamp}`, 
+                        uniqueId: `${item.OrderToItemId}-${timestamp}`,
                         itemId: item.ItemId,
                         orderedItemId: item.OrderToItemId,
                         itemName: item.ItemName,
                         itemRate: item.ItemAmount,
                         quantity: item.ItemQuantity,
                         defaultTax: item.Isdefaulttax,
+                        readyQuantity: item.ReadyQuantity,
                         tax: item.Taxpercentage,
                         groups: {}
                     };
-                    
+
                     if (item.ItemModifiers && Array.isArray(item.ItemModifiers)) {
                         item.ItemModifiers.forEach(mod => {
 
@@ -174,16 +176,16 @@
                                     rate: mod.ModifierRate
                                 };
                             }
-                        }); 
-                    } 
+                        });
+                    }
 
                     itemsToAdd.push(tempSelections);
 
                 } catch (err) {
                     console.error("JavaScript Error processing item data:", item, err);
                 }
-            }); 
-        } 
+            });
+        }
 
 
         if (typeof window.addOrderItemsFromPartial === 'function') {
@@ -194,4 +196,3 @@
 
     })(); 
 </script>
-

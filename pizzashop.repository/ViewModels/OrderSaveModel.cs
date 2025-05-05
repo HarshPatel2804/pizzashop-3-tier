@@ -41,6 +41,10 @@ public class OrderTaxViewModel
 public class OrderSaveViewModel
 {
     public int OrderId { get; set; }
+
+    public decimal Subamount { get; set; }
+
+    public decimal Totalamount { get; set; }
     public List<OrderItemViewModel> Items { get; set; } = new List<OrderItemViewModel>();
     public List<OrderTaxViewModel> Taxes { get; set; } = new List<OrderTaxViewModel>();
 }

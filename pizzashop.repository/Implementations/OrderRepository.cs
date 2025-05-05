@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
 using pizzashop.repository.Interfaces;
 using pizzashop.repository.Models;
@@ -212,6 +213,13 @@ public class OrderRepository : IOrderRepository
         return await _context.Orders.FindAsync(orderId);
     }
 
+    public async Task<Order?> GetOrderTablesAsync(int orderId){
+        return await _context.Orders
+                .Include(o => o.Ordertables)
+                    .ThenInclude(ot => ot.Table)
+                .FirstOrDefaultAsync(o => o.Orderid == orderId);
+    }
+
     public async Task<List<Ordereditem>> GetOrderedItemsWithModifiersAsync(int orderId)
     {
         return await _context.Ordereditems
@@ -225,6 +233,17 @@ public class OrderRepository : IOrderRepository
         return await _context.Ordertaxmappings
                              .Where(otm => otm.Orderid == orderId)
                              .ToListAsync();
+    }
+
+    public async Task<int> updateOrderAsync(Order order){
+         _context.Orders.Update(order);
+         await _context.SaveChangesAsync();
+         return order.Orderid;
+    }
+    public async Task<int> UpdateOrderedItemAsync(Ordereditem orderedItem){
+         _context.Ordereditems.Update(orderedItem);
+         await _context.SaveChangesAsync();
+         return orderedItem.Orderid;
     }
 
     public void UpdateOrder(Order order)
@@ -277,6 +296,10 @@ public class OrderRepository : IOrderRepository
     public async Task<int> SaveChangesAsync()
     {
         return await _context.SaveChangesAsync();
+    }
+
+    public async Task<Ordereditem> GetOrderedItem(int orderItemId){
+        return await _context.Ordereditems.FirstOrDefaultAsync(oi => oi.Ordereditemid == orderItemId);
     }
 }
 

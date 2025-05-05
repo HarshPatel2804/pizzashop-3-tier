@@ -230,6 +230,16 @@
                         $(`.assign-btn[data-id="${sectionId}"]`).prop('disabled',
                             selectedTablesPerSection[sectionId].length === 0);
                     }
+                    else {
+                        const orderId = $(this).data('order-id');
+
+                        if (orderId) {
+                            const redirectUrl = `/OrderMenu/Menu?orderId=${orderId}`;
+
+                            window.location.href = redirectUrl;
+
+                        }
+                    }
                 });
 
                 $('#AssignModal').on('submit', '#AssignTableForm', function (e) {

@@ -16,4 +16,8 @@ public interface ICustomerService
     Task<int> AddCustomer(Customer model);
 
     Task<int> UpdateCustomer(Customer model);
+
+    Task<OrderMenuCustomerViewModel?> GetOrderCustomerDetailsAsync(int orderId);
+
+    Task<(bool Success , string Message)> updateOrderMenuCustomer(OrderMenuCustomerViewModel model);
 }

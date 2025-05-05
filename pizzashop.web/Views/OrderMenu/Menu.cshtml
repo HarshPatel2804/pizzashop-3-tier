@@ -72,7 +72,56 @@
 <div id="ItemModifierModal">
 
 </div>
+<!-- Comment Modal -->
+<div class="modal fade" id="orderCommentModal" tabindex="-1" aria-labelledby="orderCommentModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Order Comment</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <textarea id="orderCommentTextArea" class="form-control" rows="5"
+                    placeholder="Enter comment here..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="saveOrderCommentBtn" class="btn btn-prime">Save</button>
+                <button type="button" class="btn btn-border-prime" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
 
+<!-- Item Comment Modal -->
+<div class="modal fade" id="itemCommentModal" tabindex="-1" aria-labelledby="itemCommentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="itemCommentModalLabel">Special Instruction</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="itemCommentForm">
+                    <input type="hidden" id="OrderedItemId" name="orderedItemId" value="" />
+                    <div class="mb-3">
+                        <textarea id="itemCommentTextArea" class="form-control" rows="4"
+                            placeholder="Instruction"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="saveItemCommentBtn" class="btn btn-prime">Save</button>
+                <button type="button" class="btn btn-border-prime" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Customer Details Modal -->
+<div id="customerModalContailer">
+
+</div>
 <script>
     var parentOrderItemsArray = [];
 
@@ -89,6 +138,7 @@
         let tempSelections = null;
         let searchText = "";
         let lastSubTotal = 0;
+        let totalAmount = 0;
         function getQueryParam(param) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(param);
@@ -108,7 +158,6 @@
                 dataType: 'json',
                 success: function (data) {
                     appliedTaxIds = data.taxIds;
-                    console.log(appliedTaxIds);
                 }
             });
 
@@ -126,13 +175,9 @@
                     $('#order-card').html('<p class="text-danger">Failed to load order details.</p>');
                 }
             });
-
-
-
         }
 
         function renderConfirmedSelections() {
-            console.log(confirmedSelections);
             const $container = $('#selected-items-container');
             $container.empty();
 
@@ -168,8 +213,6 @@
                         $modifierList.append(`<li>${modifier.modifierName} ₹${modifier.rate}</li>`);
                     }
                 }
-
-                console.log(item.itemRate);
 
                 $template.find('.item-quantity').text(item.quantity);
 
@@ -207,14 +250,28 @@
                 const index = $itemContainer.data('unique-id');
                 const $quantitySpan = $(this).siblings('.item-quantity');
                 const itemIndex = confirmedSelections.findIndex(i => i.uniqueId === index);
+                const readyQuantity = confirmedSelections[itemIndex].readyQuantity;
+                const itemName = confirmedSelections[itemIndex].itemName;
+                console.log(readyQuantity);
                 if (itemIndex !== -1) {
-                    confirmedSelections[itemIndex].quantity -= 1;
-
-                    if (confirmedSelections[itemIndex].quantity <= 0) {
-                        confirmedSelections.splice(itemIndex, 1);
+                    if (confirmedSelections[itemIndex].quantity == readyQuantity) {
+                        if (readyQuantity > 1) {
+                            toastr.warning(`${readyQuantity} ${itemName} are already prepared.`)
+                        }
+                        else {
+                            toastr.warning(`${readyQuantity} ${itemName} is already prepared.`)
+                        }
                     }
 
-                    renderConfirmedSelections();
+                    else {
+                        confirmedSelections[itemIndex].quantity -= 1;
+
+                        if (confirmedSelections[itemIndex].quantity <= 0) {
+                            confirmedSelections.splice(itemIndex, 1);
+                        }
+
+                        renderConfirmedSelections();
+                    }
                 }
             });
 
@@ -222,19 +279,25 @@
                 const $itemContainer = $(this).closest('[data-unique-id]');
                 const index = $itemContainer.data('unique-id');
 
-                removeConfirmedItem(index);
-
-                $itemContainer.remove();
-            });
-
-            function removeConfirmedItem(index) {
                 const Index = confirmedSelections.findIndex(item => item.uniqueId === index);
                 if (Index !== -1) {
-                    confirmedSelections.splice(Index, 1);
-                    renderConfirmedSelections();
+                    const readyQuantity = confirmedSelections[Index].readyQuantity;
+                    const itemName = confirmedSelections[Index].itemName;
+                    if (readyQuantity != undefined && readyQuantity > 0) {
+                        if (readyQuantity > 1) {
+                            toastr.warning(`Can't delete because ${readyQuantity} ${itemName} are already prepared.`)
+                        }
+                        else {
+                            toastr.warning(`Can't delete because ${readyQuantity} ${itemName} is already prepared.`)
+                        }
+                    }
+                    else {
+                        confirmedSelections.splice(Index, 1);
+                        renderConfirmedSelections();
+                        $itemContainer.remove();
+                    }
                 }
-            }
-
+            });
         }
 
         function calculateSubTotal() {
@@ -271,7 +334,6 @@
                 type: 'GET',
                 dataType: 'json',
                 success: function (response) {
-                    console.log(response);
                     if (response && response.success && response.allTaxes) {
                         callback(response.allTaxes);
                     } else {
@@ -294,6 +356,12 @@
             if (!Array.isArray(taxes)) {
                 taxes = [];
             }
+
+            taxHtml += `
+                <div class="d-flex justify-content-between fs-6 tax-row item-specific-tax">
+                    <div>Other Taxes:</div>
+                    <div class="tax-amount">${otherTax.toFixed(2)}</div>
+                </div>`;
 
             taxes.forEach(tax => {
                 const taxValue = parseFloat(tax.taxvalue) || 0;
@@ -337,11 +405,7 @@
                 }
             });
 
-            taxHtml += `
-                <div class="d-flex justify-content-between fs-6 tax-row item-specific-tax">
-                    <div>Other Taxes:</div>
-                    <div class="tax-amount">${otherTax.toFixed(2)}</div>
-                </div>`;
+
 
             $taxesContainer.html(taxHtml);
             $('#subtotal-value').text(subTotal.toFixed(2));
@@ -394,6 +458,7 @@
             });
 
             $('#total-value').text(currentTotal.toFixed(2));
+            totalAmount = currentTotal;
         }
 
         function attachCheckboxListeners() {
@@ -421,13 +486,11 @@
 
         function calculateOtherTax() {
             let itemSpecificTaxTotal = 0;
-            console.log(confirmedSelections);
             confirmedSelections.forEach(item => {
                 if ((item.defaultTax == 'True' || item.defaultTax == true) && item.tax) {
                     const itemRate = parseFloat(item.itemRate) || 0;
                     const quantity = parseInt(item.quantity, 10) || 0;
                     const itemTaxPercent = parseFloat(item.tax) || 0;
-                    console.log(itemTaxPercent);
 
                     if (itemRate > 0 && quantity > 0 && itemTaxPercent > 0) {
                         const itemSubTotal = itemRate * quantity;
@@ -480,7 +543,6 @@
                 e.stopPropagation();
                 const itemId = $(this).data('itemid');
                 const isFavorite = $(this).hasClass('favorite');
-                console.log(isFavorite);
 
                 $.ajax({
                     url: '/OrderMenu/ToggleFavorite',
@@ -505,7 +567,6 @@
                 const rate = $(this).data('rate');
                 const isTax = $(this).data('istax');
                 const Tax = $(this).data('tax');
-                console.log(itemName + rate);
                 let triangleClass = '';
                 switch (itemType) {
                     case "Veg":
@@ -519,7 +580,6 @@
                         triangleClass = 'vegan-corner';
                         break;
                 }
-                console.log(triangleClass);
 
                 $.ajax({
                     url: '/OrderMenu/GetItemModifiers',
@@ -543,8 +603,6 @@
                                 tax: Tax,
                                 groups: {}
                             };
-
-                            console.log(tempSelections);
 
                             updateConfirmedSelections();
                         }
@@ -631,8 +689,6 @@
                     groups: {}
                 };
 
-                console.log(tempSelections);
-
                 const existingItem = confirmedSelections.find(item => item.itemId === itemId);
 
                 resetVisualSelections();
@@ -645,9 +701,7 @@
             };
 
             $('.modifier-card-custom').on('click', function () {
-                console.log("clicked");
                 if (!tempSelections) return;
-
 
                 const $card = $(this);
                 const groupId = $card.data('group');
@@ -736,7 +790,6 @@
 
                 if (isValid) {
                     updateConfirmedSelections();
-                    console.log("Confirmed selections:", confirmedSelections);
                     $('#ItemModifiers').modal('hide');
                 }
             });
@@ -791,6 +844,8 @@
 
             const data = {
                 OrderId: orderId,
+                Subamount: lastSubTotal,
+                Totalamount: totalAmount,
                 Items: confirmedSelections,
                 Taxes: orderTaxes
             };
@@ -802,9 +857,146 @@
                 data: JSON.stringify(data),
 
                 success: function (response) {
-                    console.log('Save successful:', response);
-                    alert(response.message || 'Order saved successfully!');
+                    toastr.success('Order saved successfully!');
                 }
+            });
+        });
+
+        $('#order-card').on('click', '#customer-update', function () {
+            console.log("customer-details");
+            $.ajax({
+                url: '/OrderMenu/GetOrderCustomerDetails',
+                method: 'GET',
+                data: { orderId: orderId },
+                success: function (response) {
+                    $('#customerModalContailer').html(response);
+                    $('#CustomerDetailsModal').modal('show');
+                }
+
+            });
+        });
+
+        $('#customerModalContailer').on('submit', '#customerDetailsForm', function (e) {
+            e.preventDefault();
+            const formData = new FormData($("#customerDetailsForm")[0]);
+            console.log(formData);
+            $.ajax({
+                url: '/OrderMenu/UpdateOrderCustomerDetails',
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response.success) {
+                        $('#CustomerDetailsModal').modal('hide');
+                        toastr.success('Customer details updated successfully');
+                    }
+                    else {
+                        toastr.error(`${response.message}`);
+                    }
+                }
+
+            });
+        });
+        $('#order-card').on('click', '#order-comment', function (e) {
+            $.ajax({
+                url: '/OrderMenu/OrderComment',
+                method: 'GET',
+                data: { orderId: orderId },
+                success: function (response) {
+                    if (response.success) {
+                        $('#orderCommentTextArea').val(response.comment);
+                    }
+                    else {
+                        toastr.error(`${response.message}`);
+                    }
+                }
+
+            });
+            $('#orderCommentModal').modal('show');
+        });
+
+        $('#saveOrderCommentBtn').on('click', function () {
+            var orderComment = $('#orderCommentTextArea').val();
+            $.ajax({
+                url: '/OrderMenu/OrderComment',
+                method: 'POST',
+                data: { orderId: orderId, orderWiseComment: orderComment },
+                success: function (response) {
+                    if (response.success) {
+                        $('#orderCommentModal').modal('hide');
+                        toastr.success('Comment Saved successfully');
+                    }
+                    else {
+                        toastr.error(`${response.message}`);
+                    }
+                }
+
+            });
+        });
+
+        $('#order-card').on('click', '.accordion-container', function (e) {
+            const $clickedElement = $(e.target);
+
+            const isExcluded =
+                $clickedElement.hasClass('accordion-button') ||
+                $clickedElement.hasClass('item-quantity-decrease') ||
+                $clickedElement.hasClass('item-quantity-increase') ||
+                $clickedElement.hasClass('remove-item') ||
+                $clickedElement.parents('.accordion-button').length > 0 ||
+                $clickedElement.parents('.item-quantity-decrease').length > 0 ||
+                $clickedElement.parents('.item-quantity-increase').length > 0 ||
+                $clickedElement.parents('.remove-item').length > 0;
+
+            if (!isExcluded) {
+                const itemId = $(this).data('item-id');
+                const uniqueId = $(this).data('unique-id');
+                const itemName = $(this).find('.item-name').text();
+                const itemIndex = confirmedSelections.findIndex(i => i.uniqueId === uniqueId);
+                console.log(uniqueId);
+                console.log(confirmedSelections);
+                console.log(itemIndex + "Index");
+                if (itemIndex != -1) {
+                    if (confirmedSelections[itemIndex]?.orderedItemId != undefined) {
+                        var orderItemId = confirmedSelections[itemIndex]?.orderedItemId;
+                        $.ajax({
+                            url: '/OrderMenu/ItemComment',
+                            method: 'GET',
+                            data: { orderItemId: orderItemId },
+                            success: function (response) {
+                                if (response.success) {
+                                    $('#itemCommentTextArea').val(response.comment);
+                                    $('#OrderedItemId').val(orderItemId);
+                                    $('#itemCommentModal').modal('show');
+                                }
+                                else {
+                                    toastr.error(`${response.message}`);
+                                }
+                            }
+
+                        });
+                    }
+                }
+            }
+        });
+
+        $('#saveItemCommentBtn').on('click', function () {
+            var comment = $('#itemCommentTextArea').val();
+            var orderItemId = $('#OrderedItemId').val();
+            $.ajax({
+                url: '/OrderMenu/ItemComment',
+                method: 'POST',
+                data: { orderItemId: orderItemId , itemWiseComment : comment },
+                success: function (response) {
+                    if (response.success) {
+                        $('#itemCommentModal').modal('hide');
+                        toastr.success('Comment Saved successfully');
+                    }
+                    else {
+                        toastr.error(`${response.message}`);
+                    }
+                }
+
             });
         });
     });

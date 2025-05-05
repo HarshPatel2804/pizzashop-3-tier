@@ -35,4 +35,12 @@ public interface IOrderRepository
 
     Task<int> SaveChangesAsync();
 
+    Task<Order?> GetOrderTablesAsync(int orderId);
+
+    Task<int> updateOrderAsync(Order order);
+
+    Task<Ordereditem> GetOrderedItem(int orderItemId);
+
+    Task<int> UpdateOrderedItemAsync(Ordereditem orderedItem);
+
 }
