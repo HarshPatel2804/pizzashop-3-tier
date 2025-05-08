@@ -88,10 +88,11 @@ public class WaitingTokenRepository : IWaitingTokenRepository
         public async Task<IEnumerable<Waitingtoken>> GetActiveWaitingTokensByDateRangeAsync(DateTime startDate, DateTime endDate)
         {
             var inclusiveEndDate = endDate.Date.AddDays(1).AddTicks(-1);
+            startDate =  DateTime.Today;
+            endDate = startDate.Date.AddDays(1).AddTicks(-1);
             
             return await _context.Waitingtokens
-                .Where(wt => wt.Createdat >= startDate.Date && 
-                             wt.Createdat <= inclusiveEndDate && 
+                .Where(wt => wt.Createdat >= startDate && wt.Createdat <= endDate &&
                              wt.Isassigned == false)
                 .ToListAsync();
         }
