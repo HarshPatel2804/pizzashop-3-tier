@@ -8,5 +8,7 @@ namespace pizzashop.service
         ClaimsPrincipal? ValidateToken(string token);
 
         string GenerateJwtResetToken(string email);
+
+        string GenerateOrderToken(int orderId);
     }
 }

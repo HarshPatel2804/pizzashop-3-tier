@@ -19,6 +19,27 @@ public class JwtService : IJwtService
             _audience = configuration["Jwt:Audience"];
         }
 
+        public string GenerateOrderToken(int orderId)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.UTF8.GetBytes(_key);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+                   new Claim("orderId", orderId.ToString())
+                }),
+                Expires = DateTime.UtcNow.AddHours(2),
+                Issuer = _issuer,
+                Audience = _audience,
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
+
         public string GenerateJwtToken(string email, string role)
         {
             var tokenHandler = new JwtSecurityTokenHandler();

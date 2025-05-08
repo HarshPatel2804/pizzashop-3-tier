@@ -34,6 +34,8 @@ public class OrdersController : Controller
         return View();
     }
 
+    
+
     [CustomAuthorize("Order", "CanView")]
     public async Task<IActionResult> OrderList(int page = 1, int pageSize = 5, string search = "", string sortColumn = "", string sortOrder = "", orderstatus? status = null, DateTime? fromDate = null, DateTime? toDate = null)
     {

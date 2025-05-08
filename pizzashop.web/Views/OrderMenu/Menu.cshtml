@@ -182,13 +182,13 @@
                     aria-label="Close"></button>
             </div>
             <div class="d-flex justify-content-center align-items-center mt-4 flex-column">
-                
-                <form id="QRForm">
+                 <div id="qrCodePlaceholder" style="margin: 0 auto; width: 256px; height: 256px; ">
+                   
+                </div>
                     <div class="d-flex justify-content-center align-items-center mt-2 mb-4">
                         <button type="submit" class="btn btn-border-prime" data-bs-dismiss="modal"
                             style="border-radius: 3px; width: 60px;">Done</button>
                     </div>
-                </form>
             </div>
         </div>
     </div>
@@ -281,9 +281,34 @@
             return urlParams.get(param);
         }
 
-        const orderId = getQueryParam("orderId");
+        let orderId = getQueryParam("orderId");
+        const tokenFromUrl = getQueryParam('orderToken');
         console.log(orderId);
+        console.log("orderId");
+        if(!orderId){
+            
+            if (tokenFromUrl) {
+            console.log("Order Token found in URL, validating:", tokenFromUrl);
 
+            $.ajax({
+                url: '/OrderMenu/GetOrderIdFromToken', 
+                type: 'GET',
+                data: { orderToken: tokenFromUrl },
+                success: function (response) {
+                    if (response && response.success && response.orderId) {
+                        console.log(response.orderId);
+                        orderId = parseInt(response.orderId);
+                        loadOrderCard();
+                        
+                    } else {
+                        console.error("Failed to validate token or get orderId:", response.message);
+                    }
+                }
+            });
+        }
+        } 
+        loadOrderCard();
+        function loadOrderCard(){
         if (orderId) {
             $('#order-card').removeClass('d-none');
 
@@ -306,12 +331,18 @@
                     $('#order-card').html(result);
                     confirmedSelections = JSON.parse(JSON.stringify(parentOrderItemsArray));
                     console.log(confirmedSelections);
+                    if(tokenFromUrl){
+                        $('#Complete-btn').hide();
+                        $('#Cancel-btn').hide();
+                        $('#Invoice-btn').hide();
+                    }
                     renderConfirmedSelections();
                 },
                 error: function () {
                     $('#order-card').html('<p class="text-danger">Failed to load order details.</p>');
                 }
             });
+        }
         }
 
         function renderConfirmedSelections() {
@@ -1290,5 +1321,53 @@
                 }
             });
         });
+
+        let qrCodeInstance = null; 
+
+        $('#order-card').on('click','#QR', function () {
+
+            if (!orderId) {
+               return;
+            }
+             $('#QRModal').modal('show');
+            $('#qrCodePlaceholder').html('<div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>');
+ 
+            $.ajax({
+                url: '/OrderMenu/GenerateToken', 
+                type: 'GET',
+                data: { orderId: orderId }, 
+                success: function (response) {
+                    if (response && response.token) {
+                       
+                        const baseUrl = window.location.origin;
+                        const targetUrl = `${baseUrl}/OrderMenu/Menu?orderToken=${response.token}`;
+
+                        $('#qrCodePlaceholder').empty(); 
+
+                             qrCodeInstance = new QRCode(document.getElementById('qrCodePlaceholder'), {
+                                text: targetUrl,
+                                width: 256,
+                                height: 256
+                            });
+                        
+                    } else {
+                       $('#qrCodePlaceholder').html('<p class="text-danger">Error: Failed to retrieve token.</p>');
+                    }
+                },
+                error: function (xhr, status, error) {
+                   console.error('AJAX Error fetching token:', status, error);
+                   $('#qrCodePlaceholder').html('<p class="text-danger">Error generating code.</p>');
+                   @* alert('Error communicating with server.'); *@
+                }
+            });
+        });
+       
+        $('#QRModal').on('hidden.bs.modal', function () {
+             if (qrCodeInstance) {
+                 qrCodeInstance.clear();
+             }
+            $('#qrCodePlaceholder').empty(); 
+        });
     });
 </script>
+ <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>

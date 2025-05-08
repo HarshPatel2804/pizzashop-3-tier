@@ -319,6 +319,8 @@ public class OrderRepository : IOrderRepository
     public async Task<IEnumerable<Order>> GetOrdersByDateRangeAsync(DateTime startDate, DateTime endDate)
         {
             var inclusiveEndDate = endDate.Date.AddDays(1).AddTicks(-1);
+            Console.WriteLine(startDate);
+            Console.WriteLine(endDate);
 
             return await _context.Orders
                 .Where(o => o.Orderdate >= startDate.Date && o.Orderdate <= inclusiveEndDate)

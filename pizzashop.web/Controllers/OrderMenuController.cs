@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using pizzashop.repository.ViewModels;
 using pizzashop.service.Interfaces;
+using pizzashop.service;
+
 
 namespace pizzashop.web.Controllers;
 
@@ -11,12 +13,14 @@ public class OrderMenuController : Controller
 
     private readonly IOrderService _orderService;
     private readonly ICustomerService _customerService;
+    private readonly IJwtService _JwtService;
 
-    public OrderMenuController(IMenuService menuService, IOrderService orderService, ICustomerService customerService)
+    public OrderMenuController(IJwtService JwtService,IMenuService menuService, IOrderService orderService, ICustomerService customerService)
     {
         _menuService = menuService;
         _orderService = orderService;
         _customerService = customerService;
+        _JwtService = JwtService;
     }
     public async Task<ActionResult> Menu()
     {
@@ -28,6 +32,33 @@ public class OrderMenuController : Controller
         var orderDetailsViewModel = await _orderService.GetOrderDetailsForViewAsync(orderId);
         return PartialView("_OrderDetailPartial", orderDetailsViewModel);
     }
+
+    public IActionResult GenerateToken(int orderId)
+    {
+             var tokenString = _JwtService.GenerateOrderToken(orderId);
+             return Ok(new { token = tokenString });
+    }
+
+    [HttpGet] 
+public IActionResult GetOrderIdFromToken(string orderToken)
+{
+    if (string.IsNullOrEmpty(orderToken))
+    {
+        return BadRequest(new { success = false, message = "Order token is missing." });
+    }
+
+    var principal = _JwtService.ValidateToken(orderToken);
+
+    if (principal == null)
+    {
+        return Unauthorized(new { success = false, message = "Invalid or expired order token." });
+    }
+
+    var orderIdClaim = principal.Claims.FirstOrDefault(c => c.Type == "orderId");
+    int.TryParse(orderIdClaim.Value, out int orderId);
+
+    return Ok(new { success = true, orderId = orderId });
+}
 
     public async Task<IActionResult> GetMenuItems(string categoryId, string searchText)
     {
