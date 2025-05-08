@@ -40,6 +40,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFzaGJvYXJkXFByb2ZpbGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/pizzashop_3Tier/pizzashop.web/Views/Dashboard/_DashboardPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFzaGJvYXJkXF9EYXNoYm9hcmRQYXJ0aWFsLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/pizzashop_3Tier/pizzashop.web/Views/Home/AccessDenied.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxBY2Nlc3NEZW5pZWQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
@@ -166,6 +170,26 @@ build_metadata.AdditionalFiles.CssScope =
 
 [D:/pizzashop_3Tier/pizzashop.web/Views/OrderWaitingList/WaitingList.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJXYWl0aW5nTGlzdFxXYWl0aW5nTGlzdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/pizzashop_3Tier/pizzashop.web/Views/OrderWaitingList/_AssignTable.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJXYWl0aW5nTGlzdFxfQXNzaWduVGFibGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/pizzashop_3Tier/pizzashop.web/Views/OrderWaitingList/_EditWaiting.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJXYWl0aW5nTGlzdFxfRWRpdFdhaXRpbmcuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/pizzashop_3Tier/pizzashop.web/Views/OrderWaitingList/_WaitingNavPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJXYWl0aW5nTGlzdFxfV2FpdGluZ05hdlBhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/pizzashop_3Tier/pizzashop.web/Views/OrderWaitingList/_WaitingPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJXYWl0aW5nTGlzdFxfV2FpdGluZ1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/pizzashop_3Tier/pizzashop.web/Views/OrderWaitingList/_WaitingTokenPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJXYWl0aW5nTGlzdFxfV2FpdGluZ1Rva2VuUGFydGlhbC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/pizzashop_3Tier/pizzashop.web/Views/Role/Permission.cshtml]

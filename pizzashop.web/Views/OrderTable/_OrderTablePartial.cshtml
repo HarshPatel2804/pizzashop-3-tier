@@ -68,7 +68,7 @@
                                     <div class="d-flex flex-column"><i class="bi bi-people"></i> @table.Capacity</div>
                                     <div class="d-flex flex-column align-items-center">
                                         <div><i class="bi bi-alarm"></i></div>
-                                            <div class="small" data-orderdate="@table.OrderDate?.ToString("o")"></div>                                        
+                                        <div class="small" data-orderdate="@table.OrderDate?.ToString("o")"></div>
                                     </div>
                                 </div>
                             </div>
@@ -76,7 +76,8 @@
                     }
                 </div>
                 <div class="text-end">
-                    <button type = "submit" class="btn btn-prime assign-btn" data-id="@Section.SectionId" disabled>Assign</button>
+                    <button type="submit" class="btn btn-prime assign-btn" data-id="@Section.SectionId"
+                        disabled>Assign</button>
                 </div>
             </div>
         </div>
@@ -92,16 +93,22 @@
             const now = new Date();
             const diff = now - orderDate;
 
-            if (diff >= 0) {
-                const totalSeconds = Math.floor(diff / 1000);
-                const days = Math.floor(totalSeconds / (3600 * 24));
-                const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
-                const minutes = Math.floor((totalSeconds % 3600) / 60);
-                const seconds = totalSeconds % 60;
-
-                $this.html(`${days} days ${hours} hours <br/> ${minutes} min ${seconds} sec`);
-            } else {
+            const tableCard = $this.closest('.table-card');
+            if (tableCard.hasClass('table-gray')) {
                 $this.html(`0 min`);
+            }
+            else {
+                if (diff >= 0) {
+                    const totalSeconds = Math.floor(diff / 1000);
+                    const days = Math.floor(totalSeconds / (3600 * 24));
+                    const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
+                    const minutes = Math.floor((totalSeconds % 3600) / 60);
+                    const seconds = totalSeconds % 60;
+
+                    $this.html(`${days} days ${hours} hours <br/> ${minutes} min ${seconds} sec`);
+                } else {
+                    $this.html(`0 min`);
+                }
             }
         });
     }

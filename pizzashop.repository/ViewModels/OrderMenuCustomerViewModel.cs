@@ -24,7 +24,7 @@ public partial class OrderMenuCustomerViewModel
     public string Phoneno { get; set; } = null!;
 
     [Required(ErrorMessage = "Customer Name is required.")]
-    [RegularExpression(@"^[A-Za-z]+$", ErrorMessage = "Customer name can contain only alphabets.")]
+    [RegularExpression(@"^[A-Za-z]+( [A-Za-z]+)*$", ErrorMessage = "Customer name can contain only alphabets with single spaces between words.")]
     [StringLength(50, MinimumLength = 2, ErrorMessage = "Customer name must be between 2 and 50 characters.")]
     public string Customername { get; set; } = null!;
 

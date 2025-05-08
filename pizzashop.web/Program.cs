@@ -1,34 +1,37 @@
 using Microsoft.EntityFrameworkCore;
 using pizzashop.repository.Models;
 using pizzashop.web;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddDbContext<PizzaShopContext>(options =>
-options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<PizzaShopContext>(options => 
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 DependencyInjection.RegisterServices(builder.Services, connectionString!);
-builder.Services.AddSession(options =>
-{
+
+// Add Lazy<T> resolution support to fix circular dependencies
+builder.Services.AddTransient(typeof(Lazy<>), typeof(LazyResolution<>));
+
+builder.Services.AddSession(options => {
     options.IdleTimeout = TimeSpan.FromDays(20);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
     options.Cookie.SecurePolicy = CookieSecurePolicy.None;
 });
+
 var app = builder.Build();
 
 app.UseStatusCodePagesWithReExecute("/Home/Error", "?statusCode={0}");
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
+if (!app.Environment.IsDevelopment()) {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -44,3 +47,12 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+// This class helps resolve Lazy<T> services
+public class LazyResolution<T> : Lazy<T> where T : class
+{
+    public LazyResolution(IServiceProvider serviceProvider) 
+        : base(() => serviceProvider.GetRequiredService<T>())
+    {
+    }
+}

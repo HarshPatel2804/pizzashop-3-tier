@@ -148,4 +148,14 @@ public class CustomerRepository : ICustomerRepository
         return customer.Customerid;
     }
 
+     public async Task<IEnumerable<Customer>> GetCustomersByDateRangeAsync(DateTime startDate, DateTime endDate)
+        {
+            var inclusiveEndDate = endDate.Date.AddDays(1).AddTicks(-1);
+            
+            return await _context.Customers
+                .Where(wt => wt.Createdat >= startDate.Date && 
+                             wt.Createdat <= inclusiveEndDate)
+                .ToListAsync();
+        }
+
 }

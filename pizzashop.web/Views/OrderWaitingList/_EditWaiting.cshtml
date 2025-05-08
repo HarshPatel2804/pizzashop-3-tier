@@ -1,0 +1,87 @@
+@model pizzashop.repository.ViewModels.WaitingtokenViewModel;
+
+<div class="modal fade" id="editWaitingTokenModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <form method="post" id="editWaitingTokenForm">
+        <input id="tokenId" name="Waitingtokenid" value="@Model.Waitingtokenid" hidden>
+        <input id="email" name="Email" value="@Model.Email" hidden>
+        <div class="d-flex justify-content-between ms-2 me-2 mt-2">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Waiting Token Details</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="d-flex flex-column ms-3 me-3 mt-3 mb-3">
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control input-height" id="Email" asp-for="Email" placeholder="" disabled>
+            <label for="Email">Email*</label>
+          <span asp-validation-for="Email" id="tab-name" class="text-danger"></span>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control input-height" id="Name" asp-for="Customername" placeholder="">
+            <label for="Name">Name*</label>
+          <span asp-validation-for="Customername" id="tab-name" class="text-danger"></span>
+          </div>
+          <div class="form-floating mb-2">
+            <input type="text" class="form-control input-height" id="mobile" asp-for="Phoneno" placeholder="">
+            <label for="mobile">Mobilenumber*</label>
+          <span asp-validation-for="Phoneno" id="tab-name" class="text-danger"></span>
+          </div>
+        </div>
+
+        <div class="row ms-2 me-2">
+          <div class="col-12 col-lg-6 mb-3">
+            <div class="form-floating">
+              <input type="text" class="form-control input-height" id="NoOfPerson" asp-for="Noofpeople" placeholder="">
+              <label for="NoOfPerson">No Of Persons*</label>
+            <span asp-validation-for="Noofpeople" id="tab-name" class="text-danger"></span>
+            </div>
+          </div>
+          <div class="col-12 col-lg-6 mb-3">
+            <div class="form-floating">
+              <select class="form-select input-height" id="SectionId" asp-for="Sectionid" asp-items="Model.Sections">
+                <option value="">Select Section</option>
+              </select>
+              <label for="SectionId">Section*</label>
+            <span asp-validation-for="Sectionid" class="text-danger"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-center justify-content-end mb-3 me-2">
+          <a id="save">
+            <button type="submit" class="btn btn-prime me-3">Save</button>
+          </a>
+          <button type="button" class="btn btn-border-prime" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $('#Email').on('blur', function () {
+      var email = $(this).val();
+      if (email) {
+        $.ajax({
+          url: '/Customer/GetCustomerByEmail',
+          type: 'GET',
+          data: { email: email },
+          success: function (response) {
+            console.log(response);
+            if (response.success) {
+              $('#Name').val(response.data.customername);
+              $('#mobile').val(response.data.phoneno);
+            } else {
+              $('#Name').val('');
+              $('#mobile').val('');
+            }
+          }
+        });
+      }
+    });
+  });
+</script>
+

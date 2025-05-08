@@ -2,7 +2,7 @@
     Layout = "_OrderAppLayout";
     ViewData["Title"] = "OrderAppTable";
 }
-@* @await Html.PartialAsync("_Toast") *@
+@await Html.PartialAsync("_Toast")
 <style>
     .status-dot {
         display: inline-block;
@@ -339,3 +339,5 @@
 </script>
 <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
 <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>

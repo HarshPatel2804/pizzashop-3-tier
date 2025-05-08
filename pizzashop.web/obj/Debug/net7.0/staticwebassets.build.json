@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "Sk8J6HHzdqSxz4qK3INJs85dHOsSvwhx1qD6YvqUG3o=",
+  "Hash": "0KatYGUaQST2PKWeX8ryAmBxiGOlHpsV3PYh9vz906c=",
   "Source": "pizzashop.web",
   "BasePath": "_content/pizzashop.web",
   "Mode": "Default",
@@ -457,6 +457,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\images\\icons\\order-value.svg"
+    },
+    {
+      "Identity": "D:\\pizzashop_3Tier\\pizzashop.web\\wwwroot\\images\\icons\\person-check.svg",
+      "SourceId": "pizzashop.web",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\pizzashop_3Tier\\pizzashop.web\\wwwroot\\",
+      "BasePath": "_content/pizzashop.web",
+      "RelativePath": "images/icons/person-check.svg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\icons\\person-check.svg"
     },
     {
       "Identity": "D:\\pizzashop_3Tier\\pizzashop.web\\wwwroot\\images\\icons\\total-orders.svg",

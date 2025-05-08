@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+
 using pizzashop.repository.Interfaces;
 using pizzashop.repository.Models;
 using pizzashop.repository.ViewModels;
@@ -31,7 +31,8 @@ public class TableSectionService : ITableSectionService
         {
             Sectionid = u.Sectionid,
             Sectionname = u.Sectionname,
-            Description = u.Description
+            Description = u.Description,
+            TokenCount = u.Waitingtokens.Where(w => w.Isassigned != true).Count()
 
         }).ToList();
 

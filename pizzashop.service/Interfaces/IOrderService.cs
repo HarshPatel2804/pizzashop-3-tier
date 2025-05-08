@@ -32,4 +32,9 @@ public interface IOrderService
 
      Task<string> GetItemCommentAsync(int orderItemId);
      Task<(bool , string)> UpdateItemCommentAsync(int orderItemId , string comment);
+     Task<(bool , string)> CompleteOrder(int orderId);
+
+     Task<(bool, string)> CancelOrder(int orderId);
+
+     Task<(bool Success, string Message)> SaveCustomerReviewAsync(SaveRatingViewModel reviewData);
 }

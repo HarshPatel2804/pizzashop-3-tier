@@ -1,0 +1,20 @@
+@model pizzashop.repository.ViewModels.WaitingListViewModel;
+
+@{
+int totalTokenCount = Model.sections.Sum(s => s.TokenCount);
+}
+<button class="ms-4 ps-3 pe-3 me-4 pb-3 border-0 bg-white menu-btn active" id="nav-home-tab" type="button" role="tab"
+    aria-controls="nav-home" aria-selected="false">All <span
+        class="d-inline-flex justify-content-center align-items-center rounded-circle bg-secondary text-white"
+        style="width: 24px; height: 24px; font-size: 0.75rem;">
+        @totalTokenCount
+    </span></button>
+@foreach (var Section in Model.sections)
+{
+    <button class="ps-3 pe-3 pb-3 me-4 border-0 menu-btn bg-white" id="nav-profile-tab" type="button" role="tab"
+        aria-controls="nav-profile" data-section-id="@Section.Sectionid" aria-selected="true">@Section.Sectionname <span
+            class="d-inline-flex justify-content-center align-items-center rounded-circle bg-secondary text-white"
+            style="width: 24px; height: 24px; font-size: 0.75rem;">
+            @Section.TokenCount
+        </span></button>
+}

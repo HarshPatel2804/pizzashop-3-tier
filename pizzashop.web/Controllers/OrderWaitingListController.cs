@@ -1,13 +1,72 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using pizzashop.repository.ViewModels;
+using pizzashop.service.Interfaces;
 
 namespace pizzashop.web.Controllers;
 
 public class OrderWaitingListController : Controller
 {
-    public ActionResult WaitingList(){
+    private readonly IWaitingTokenService _waitingTokenService;
+
+    public OrderWaitingListController(IWaitingTokenService waitingTokenService)
+    {
+        _waitingTokenService = waitingTokenService;
+    }
+    public ActionResult WaitingList()
+    {
         return View();
     }
+    public async Task<ActionResult> WaitingData()
+    {
+        var model = await _waitingTokenService.GetWaitingData();
+        return PartialView("_WaitingNavPartial", model);
+    }
 
-    
+    [HttpGet]
+    public async Task<IActionResult> GetWaitingTokensBySection(int sectionId = 0)
+    {
+        var waitingTokens = await _waitingTokenService.GetWaitingTokensBySectionAsync(sectionId);
+        return PartialView("_WaitingPartial", waitingTokens);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> DeleteWaitingToken(int tokenId)
+    {
+        if (tokenId <= 0)
+        {
+            return Json(new { success = false, message = "Invalid Token ID." });
+        }
+
+        bool deleted = await _waitingTokenService.RemoveWaitingTokenAsync(tokenId);
+        if (deleted)
+        {
+            return Json(new { success = true, message = "Waiting token deleted successfully." });
+        }
+        else
+        {
+            return Json(new { success = false, message = "Waiting token not found or could not be deleted." });
+        }
+
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetWaitingTokenForEdit(int tokenId)
+    {
+        var response = await _waitingTokenService.GetWaitingTokenForEditAsync(tokenId);
+        if (response.success && response.model != null)
+        {
+            return PartialView("_EditWaiting", response.model);
+        }
+
+        return PartialView("_EditWaiting", new WaitingtokenViewModel { Sections = new() }); 
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> UpdateWaitingToken(WaitingtokenViewModel model)
+    {
+        var response = await _waitingTokenService.UpdateWaitingTokenDetailsAsync(model);
+
+        return Json(new { success = response.success, message = response.message });
+    }
 }

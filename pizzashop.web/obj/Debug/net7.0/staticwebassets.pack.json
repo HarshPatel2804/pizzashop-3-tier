@@ -113,6 +113,10 @@
       "PackagePath": "staticwebassets\\images\\icons\\order-value.svg"
     },
     {
+      "Id": "D:\\pizzashop_3Tier\\pizzashop.web\\wwwroot\\images\\icons\\person-check.svg",
+      "PackagePath": "staticwebassets\\images\\icons\\person-check.svg"
+    },
+    {
       "Id": "D:\\pizzashop_3Tier\\pizzashop.web\\wwwroot\\images\\icons\\total-orders.svg",
       "PackagePath": "staticwebassets\\images\\icons\\total-orders.svg"
     },

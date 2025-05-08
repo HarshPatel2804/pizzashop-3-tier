@@ -3,6 +3,286 @@
     ViewData["Title"] = "Table Page";
 }
 
-<section style="min-height: 100vh;background-color: #fafafa;">
-Waiting List
-</section>
+
+@{
+    Layout = "_OrderAppLayout";
+    ViewData["Title"] = "KOT Page";
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/OrderKOT.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        integrity="sha512-MX5EkfBl..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<div class="content w-100 ms-2 py-2 px-5" id="content">
+    <div class="d-flex flex-row justify-content-between mt-3">
+        <h3 class="for-color ">
+            Waiting List
+        </h3>
+        <button type="button" id="SaveToken" class="btn btn-border-prime btn-sm align-self-center p-2 me-3"
+            style="height: 50px; width: 160px">
+            <i class="bi bi-plus"></i> Waiting Token
+        </button>
+    </div>
+    <nav class="bg-white pt-3 shadow rounded mt-4">
+        <div class="nav nav-tabs flex-nowrap overflow-auto" id="nav-tab" role="tablist" style="white-space: nowrap;">
+
+        </div>
+    </nav>
+    <div class="d-flex flex-column col mt-3 bg-white shadow rounded p-4">
+        <div class="row g-3" id="Waiting-Container">
+
+        </div>
+    </div>
+</div>
+
+<div id="WaitingToken">
+
+</div>
+<div id="EditWaitingTokenModalContainer">
+
+</div>
+
+<div class="fade modal" id="cancelToken" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="cancelTokenLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="width: 400px;">
+        <div class="modal-content">
+            <div class="row mx-1 mt-2">
+                <h5 class="modal-title col text-muted ms-2" id="cancelTokenLabel">Cancel Confirmation</h5>
+                <button type="button" class="btn-close col-auto me-1" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="d-flex justify-content-center align-items-center mt-4 flex-column">
+                <img src="~/images/caution.png" style="height: 40px; width: 40px;">
+                <span>Are you sure you want to cancel the Waiting token?</span>
+                <form id="cancelTokenForm">
+                    <input id="tokenId" hidden>
+                    <div class="d-flex justify-content-center align-items-center mt-2 mb-4">
+                        <button type="submit" class="btn btn-prime" data-bs-dismiss="modal"
+                            style="border-radius: 3px; width: 60px;">Yes</button>
+                        <button type="button" class="btn ms-2 btn-border-prime border"
+                            style="border-radius: 3px; width: 60px;">No</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        let lastSelectedSection = parseInt(localStorage.getItem('lastSelectedSection')) || 0;
+        function loadWaitingTokens(sectionId) {
+            $.ajax({
+                url: '/OrderWaitingList/GetWaitingTokensBySection',
+                type: 'GET',
+                data: { sectionId: sectionId },
+                success: function (result) {
+                    $('#Waiting-Container').html(result);
+                    initializeTimers();
+                },
+                error: function (error) {
+                    console.error('Error loading waiting tokens:', error);
+                }
+            });
+        }
+        function loadWaitingData() {
+            $.ajax({
+                url: '/OrderWaitingList/WaitingData',
+                type: 'GET',
+                success: function (result) {
+                    $('#nav-tab').html(result);
+                    $('.menu-btn').removeClass('active');
+                    let tabToActivate = $('.menu-btn[data-section-id="' + lastSelectedSection + '"]');
+
+                    if (tabToActivate.length) {
+                        tabToActivate.addClass('active');
+                    } else {
+                        let firstTab = $('#nav-tab .menu-btn:first');
+                        if (firstTab.length) {
+                            firstTab.addClass('active');
+                        } else {
+                            lastSelectedSection = 0;
+                            localStorage.setItem('lastSelectedSection', lastSelectedSection);
+                        }
+                    }
+                },
+                error: function (error) {
+                    console.error('Error loading waiting tokens:', error);
+                }
+            });
+        }
+        loadWaitingData();
+        loadWaitingTokens(lastSelectedSection);
+
+        $(document).on("click", "#SaveToken", function () {
+            console.log("clicked");
+            var section = lastSelectedSection;
+            $.ajax({
+                url: "/OrderTable/AddWaitingToken",
+                type: "GET",
+                data: { section: section },
+                success: function (response) {
+                    $("#WaitingToken").html(response);
+                    $("#waitingToken").modal("show");
+                    WaitingList();
+                }
+            });
+        });
+
+        $('#Waiting-Container').on('click', '.edit-token-btn', function () {
+            var tokenId = $(this).data('id');
+            if (tokenId) {
+                $.ajax({
+                    url: '/OrderWaitingList/GetWaitingTokenForEdit',
+                    type: 'GET',
+                    data: { tokenId: tokenId },
+                    success: function (response) {
+                        $('#EditWaitingTokenModalContainer').html(response);
+                        $('#editWaitingTokenModal').modal('show');
+                    },
+                    error: function (err) {
+                        toastr.error('Error loading token details for editing.');
+                    }
+                });
+            }
+        });
+
+        $('#EditWaitingTokenModalContainer').on('submit', '#editWaitingTokenForm', function (e) {
+            e.preventDefault();
+
+            var form = $(this);
+
+            if (!form.valid()) {
+                toastr.warning('Please correct the validation errors.', 'Validation Failed');
+                return;
+            }
+
+            var formData = form.serialize();
+            console.log(formData);
+
+            $.ajax({
+                url: '/OrderWaitingList/UpdateWaitingToken',
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        $('#editWaitingTokenModal').modal('hide');
+                        toastr.success(response.message || 'Waiting token updated successfully!');
+                        var updatedSectionId = parseInt(form.find('#SectionId').val());
+
+                        if (!isNaN(updatedSectionId)) {
+                            lastSelectedSection = updatedSectionId;
+                            localStorage.setItem('lastSelectedSection', lastSelectedSection);
+                        }
+                        loadWaitingData();
+                        loadWaitingTokens(lastSelectedSection);
+
+                    } else {
+                        var errorMessage = response.message || 'An error occurred while updating.';
+                        toastr.error(errorMessage);
+                    }
+                },
+                error: function (error) {
+                    toastr.error('A server error occurred: ' + error + '. Please try again.');
+
+                }
+            });
+        });
+
+        $('#Waiting-Container').on('click', '.delete-token-btn', function (e) {
+            console.log('clicked');
+            var id = $(this).data('id');
+            $('#cancelToken').modal('show');
+            $('#tokenId').val(id);
+        });
+
+        $('#cancelTokenForm').on('submit', function (e) {
+            e.preventDefault();
+            var tokenId = $('#tokenId').val();
+
+            $.ajax({
+                url: '/OrderWaitingList/DeleteWaitingToken',
+                method: 'POST',
+                data: { tokenId: tokenId },
+                success: function (response) {
+                    if (response.success) {
+                        toastr.success(response.message);
+                        loadWaitingData();
+                        loadWaitingTokens(lastSelectedSection);
+                    }
+                    else {
+                        toastr.error(response.message);
+                    }
+                }
+            });
+        });
+
+        function WaitingList() {
+            $("#addWaitingTokenForm").submit(function (e) {
+                e.preventDefault();
+                console.log("submitted");
+
+                if ($('#addWaitingTokenForm').valid()) {
+                    var formData = new FormData($("#addWaitingTokenForm")[0]);
+
+                    $.ajax({
+                        url: "/OrderTable/AddWaitingToken",
+                        type: "POST",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (response) {
+                            if (response.success) {
+                                $("#waitingToken").modal("hide");
+                                loadWaitingData();
+                                loadWaitingTokens(lastSelectedSection);
+                            }
+                            else {
+                                toastr.error(response.message);
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+        $('#nav-tab').on('click', '.menu-btn', function () {
+            $('.menu-btn').removeClass('active');
+
+            $(this).addClass('active');
+
+            var sectionId = $(this).data('section-id') || 0;
+            lastSelectedSection = sectionId;
+            localStorage.setItem('lastSelectedSection', lastSelectedSection);
+
+            loadWaitingTokens(sectionId);
+        });
+
+        function initializeTimers() {
+            $('.wait-timer').each(function () {
+                var $this = $(this);
+                var createdAt = new Date($this.data('createdat'));
+
+                updateWaitTime($this, createdAt);
+
+                setInterval(function () {
+                    updateWaitTime($this, createdAt);
+                }, 60000);
+            });
+        }
+
+        function updateWaitTime($element, createdAt) {
+            var now = new Date();
+            var diff = now - createdAt;
+
+            var hours = Math.floor(diff / (1000 * 60 * 60));
+            var minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+            $element.text(hours + ' hrs ' + minutes + ' min');
+        }
+        
+
+    });
+</script>

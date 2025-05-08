@@ -43,4 +43,9 @@ public interface IOrderRepository
 
     Task<int> UpdateOrderedItemAsync(Ordereditem orderedItem);
 
+    void UpdateTable(Table table);
+
+    Task<int> AddReviewAsync(Customerreview review);
+
+    Task<IEnumerable<Order>> GetOrdersByDateRangeAsync(DateTime startDate, DateTime endDate);
 }

@@ -19,6 +19,8 @@ public class SectionViewModel
 
     public int? Modifiedby { get; set; }
 
+    public int TokenCount { get; set; }
+
     public virtual ICollection<Table> Tables { get; set; } = new List<Table>();
 
     public virtual ICollection<Waitingtoken> Waitingtokens { get; set; } = new List<Waitingtoken>();

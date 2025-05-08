@@ -18,15 +18,25 @@ public class DashboardController : Controller
     private readonly IProfileService _ProfileService;
     private readonly PizzaShopContext _context;
 
-    public DashboardController(IProfileService ProfileService , PizzaShopContext context)
+    private readonly IDashboardService _dashboardService;
+
+    public DashboardController(IProfileService ProfileService , PizzaShopContext context , IDashboardService dashboardService)
     {
         _ProfileService = ProfileService;
         _context = context;
+        _dashboardService = dashboardService;
     }
     public IActionResult Dashboard()
     {
         return View();
     }
+
+    [HttpGet]
+        public async Task<IActionResult> Data(DateTime startDate, DateTime endDate)
+        {
+            var data = await _dashboardService.GetDashboardDataAsync(startDate, endDate);
+            return PartialView("_DashboardPartial",data);
+        }
 
     public async Task<IActionResult> Profile(string from)
     {

@@ -12,7 +12,7 @@ public class OrderMenuController : Controller
     private readonly IOrderService _orderService;
     private readonly ICustomerService _customerService;
 
-    public OrderMenuController(IMenuService menuService , IOrderService orderService , ICustomerService customerService)
+    public OrderMenuController(IMenuService menuService, IOrderService orderService, ICustomerService customerService)
     {
         _menuService = menuService;
         _orderService = orderService;
@@ -26,7 +26,7 @@ public class OrderMenuController : Controller
     public async Task<ActionResult> OrderCard(int orderId)
     {
         var orderDetailsViewModel = await _orderService.GetOrderDetailsForViewAsync(orderId);
-        return PartialView("_OrderDetailPartial" , orderDetailsViewModel);
+        return PartialView("_OrderDetailPartial", orderDetailsViewModel);
     }
 
     public async Task<IActionResult> GetMenuItems(string categoryId, string searchText)
@@ -42,14 +42,16 @@ public class OrderMenuController : Controller
         return Json(new { success = result });
     }
 
-    public async Task<IActionResult> GetItemModifiers(int itemId){
+    public async Task<IActionResult> GetItemModifiers(int itemId)
+    {
         var itemModifierMapping = await _menuService.GetItemModifierGroupsAsync(itemId);
-         var item = await _menuService.GetEditItemDetails(itemId);
-         if(itemModifierMapping.Count() == 0){
-         return Json(0);
-         }
+        var item = await _menuService.GetEditItemDetails(itemId);
+        if (itemModifierMapping.Count() == 0)
+        {
+            return Json(0);
+        }
 
-        return PartialView("_itemModifiersPartial", itemModifierMapping );
+        return PartialView("_itemModifiersPartial", itemModifierMapping);
     }
 
     [HttpGet]
@@ -62,40 +64,87 @@ public class OrderMenuController : Controller
             return NotFound($"Details not found for Order ID {orderId}.");
         }
 
-        return PartialView("_CustomerDetailPartial" , viewModel);
+        return PartialView("_CustomerDetailPartial", viewModel);
     }
 
     [HttpPost]
-    public async Task<JsonResult> UpdateOrderCustomerDetails([FromForm] OrderMenuCustomerViewModel model){
-        var (Success , Message) = await _customerService.updateOrderMenuCustomer(model);
-        return Json(new {success = Success , message = Message});
+    public async Task<JsonResult> UpdateOrderCustomerDetails([FromForm] OrderMenuCustomerViewModel model)
+    {
+        var (Success, Message) = await _customerService.updateOrderMenuCustomer(model);
+        return Json(new { success = Success, message = Message });
     }
 
     [HttpGet]
-    public async Task<JsonResult> OrderComment(int orderId){
+    public async Task<JsonResult> OrderComment(int orderId)
+    {
         var order = await _orderService.GetOrderbyId(orderId);
         var comment = order.Orderwisecomment;
-        return Json(new {success = true , comment});
+        return Json(new { success = true, comment });
     }
 
     [HttpPost]
-    public async Task<JsonResult> OrderComment(int orderId , string orderWiseComment){
+    public async Task<JsonResult> OrderComment(int orderId, string orderWiseComment)
+    {
         var order = await _orderService.GetOrderbyId(orderId);
         order.Orderwisecomment = orderWiseComment;
         await _orderService.updateOrder(order);
-        return Json(new {success = true});
+        return Json(new { success = true });
     }
 
     [HttpGet]
-    public async Task<JsonResult> ItemComment(int orderItemId){
+    public async Task<JsonResult> ItemComment(int orderItemId)
+    {
         var comment = await _orderService.GetItemCommentAsync(orderItemId);
-        return Json(new {success = true , comment});
+        return Json(new { success = true, comment });
     }
 
     [HttpPost]
-    public async Task<JsonResult> ItemComment(int orderItemId , string itemWiseComment){
-        var (Success , Message) = await _orderService.UpdateItemCommentAsync(orderItemId , itemWiseComment);
-        return Json(new {success = Success , message = Message});
+    public async Task<JsonResult> ItemComment(int orderItemId, string itemWiseComment)
+    {
+        var (Success, Message) = await _orderService.UpdateItemCommentAsync(orderItemId, itemWiseComment);
+        return Json(new { success = Success, message = Message });
+    }
+    [HttpPost]
+    public async Task<JsonResult> CompleteOrder(int orderId)
+    {
+        var (Success, Message) = await _orderService.CompleteOrder(orderId);
+        return Json(new { success = Success, message = Message });
+    }
+    [HttpPost]
+    public async Task<JsonResult> CancelOrder(int orderId)
+    {
+        var (Success, Message) = await _orderService.CancelOrder(orderId);
+        if (Success)
+        {
+            TempData["SuccessMessage"] = Message;
+        }
+        else
+        {
+            TempData["ErrorMessage"] = Message;
+        }
+        return Json(new { success = Success, message = Message });
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> SaveRatings([FromBody] SaveRatingViewModel request)
+    {
+        if (request.OrderId <= 0)
+        {
+            TempData["ErrorMessage"] = "Invalid OrderId";
+            return Json(new { success = false, message = "Invalid OrderId" });
+        }
+
+        var (Success, Message) = await _orderService.SaveCustomerReviewAsync(request);
+        if (Success)
+        {
+            TempData["SuccessMessage"] = Message;
+        }
+        else
+        {
+            TempData["ErrorMessage"] = Message;
+        }
+
+        return Json(new { success = Success, message = Message });
     }
 
 }

@@ -43,7 +43,7 @@ public class OrderRepository : IOrderRepository
         }
         if (fromDate.HasValue && toDate.HasValue)
         {
-            // Ensure toDate includes the entire day
+            // To include entire day
             toDate = toDate.Value.Date.AddDays(1).AddTicks(-1);
 
             query = query.Where(u =>
@@ -148,15 +148,15 @@ public class OrderRepository : IOrderRepository
                 OrderToItemId = oi.Ordereditemid,
                 ItemName = oi.Item.Itemname,
                 ItemAmount = oi.Item.Rate,
-                ItemQuantity = (int)oi.Item.Quantity,
-                TotalPrice = (decimal)(oi.Item.Rate * oi.Item.Quantity),
+                ItemQuantity = oi.Quantity,
+                TotalPrice = oi.Item.Rate * oi.Quantity,
                 ItemModifiers = oi.Ordereditemmodifers
         .Select(oim => new ModifierDetailForOrder
         {
             ModifierName = oim.Modifiers.Modifiername,
             ModifierRate = oim.Modifiers.Rate,
             ModifierQuantity = oim.Modifiers.Quantity ?? 0,
-            OrderedModifierPrice = (int)(oim.Modifiers.Rate * oim.Modifiers.Quantity)
+            OrderedModifierPrice = (int)(oim.Modifiers.Rate * oi.Quantity)
         }).ToList()
             }).ToList(),
             TaxesForOrder = order.Ordertaxmappings.Select(otm => new TaxForOrder
@@ -213,7 +213,8 @@ public class OrderRepository : IOrderRepository
         return await _context.Orders.FindAsync(orderId);
     }
 
-    public async Task<Order?> GetOrderTablesAsync(int orderId){
+    public async Task<Order?> GetOrderTablesAsync(int orderId)
+    {
         return await _context.Orders
                 .Include(o => o.Ordertables)
                     .ThenInclude(ot => ot.Table)
@@ -235,20 +236,27 @@ public class OrderRepository : IOrderRepository
                              .ToListAsync();
     }
 
-    public async Task<int> updateOrderAsync(Order order){
-         _context.Orders.Update(order);
-         await _context.SaveChangesAsync();
-         return order.Orderid;
+    public async Task<int> updateOrderAsync(Order order)
+    {
+        _context.Orders.Update(order);
+        await _context.SaveChangesAsync();
+        return order.Orderid;
     }
-    public async Task<int> UpdateOrderedItemAsync(Ordereditem orderedItem){
-         _context.Ordereditems.Update(orderedItem);
-         await _context.SaveChangesAsync();
-         return orderedItem.Orderid;
+    public async Task<int> UpdateOrderedItemAsync(Ordereditem orderedItem)
+    {
+        _context.Ordereditems.Update(orderedItem);
+        await _context.SaveChangesAsync();
+        return orderedItem.Orderid;
     }
 
     public void UpdateOrder(Order order)
     {
-        _context.Entry(order).State = EntityState.Modified;
+        _context.Orders.Update(order);
+    }
+
+    public void UpdateTable(Table table)
+    {
+        _context.Tables.Update(table);
     }
 
     public void AddOrderedItem(Ordereditem item)
@@ -258,7 +266,7 @@ public class OrderRepository : IOrderRepository
 
     public void UpdateOrderedItem(Ordereditem item)
     {
-        _context.Entry(item).State = EntityState.Modified;
+        _context.Ordereditems.Update(item);
     }
 
     public void RemoveOrderedItems(IEnumerable<Ordereditem> items)
@@ -268,7 +276,6 @@ public class OrderRepository : IOrderRepository
 
     public void RemoveOrderedItemModifiers(IEnumerable<Ordereditemmodifer> modifiers)
     {
-        foreach (var mod in modifiers) { if (_context.Entry(mod).State == EntityState.Detached) { _context.Ordereditemmodifers.Attach(mod); } }
         _context.Ordereditemmodifers.RemoveRange(modifiers);
     }
 
@@ -279,7 +286,6 @@ public class OrderRepository : IOrderRepository
 
     public void RemoveOrderTaxMappings(IEnumerable<Ordertaxmapping> taxMappings)
     {
-        foreach (var tax in taxMappings) { if (_context.Entry(tax).State == EntityState.Detached) { _context.Ordertaxmappings.Attach(tax); } }
         _context.Ordertaxmappings.RemoveRange(taxMappings);
     }
 
@@ -290,7 +296,7 @@ public class OrderRepository : IOrderRepository
 
     public void UpdateOrderTaxMapping(Ordertaxmapping taxMapping)
     {
-        _context.Entry(taxMapping).State = EntityState.Modified;
+        _context.Ordertaxmappings.Update(taxMapping);
     }
 
     public async Task<int> SaveChangesAsync()
@@ -298,8 +304,28 @@ public class OrderRepository : IOrderRepository
         return await _context.SaveChangesAsync();
     }
 
-    public async Task<Ordereditem> GetOrderedItem(int orderItemId){
+    public async Task<Ordereditem> GetOrderedItem(int orderItemId)
+    {
         return await _context.Ordereditems.FirstOrDefaultAsync(oi => oi.Ordereditemid == orderItemId);
     }
+
+    public async Task<int> AddReviewAsync(Customerreview review)
+    {
+        await _context.Customerreviews.AddAsync(review);
+        int savedChanges = await _context.SaveChangesAsync();
+        return review.Reviewid;
+    }
+
+    public async Task<IEnumerable<Order>> GetOrdersByDateRangeAsync(DateTime startDate, DateTime endDate)
+        {
+            var inclusiveEndDate = endDate.Date.AddDays(1).AddTicks(-1);
+
+            return await _context.Orders
+                .Where(o => o.Orderdate >= startDate.Date && o.Orderdate <= inclusiveEndDate)
+                .Include(o => o.Ordereditems)      
+                    .ThenInclude(oi => oi.Item) 
+                .Include(o => o.Customer) 
+                .ToListAsync();
+        }
 }
 

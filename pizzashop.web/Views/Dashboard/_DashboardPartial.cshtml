@@ -1,0 +1,379 @@
+ @model pizzashop.repository.ViewModels.DashboardViewModel;
+ 
+ 
+    <div class="row mt-3 g-3 mb-3">
+        <div class="col-lg-3 col-sm-6 col-12">
+            <div class="card p-2 custom-box-shadow">
+                <div class="d-flex justify-content-end">
+                    <div class="sale-outer d-flex align-items-center justify-content-center">
+                        <div class="sale-inner d-flex align-items-center justify-content-center">
+                            <img width="28" height="28" src="~/images/icons/total-sales.svg" alt="sales icon" />
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex flex-column justify-content-end align-items-start p-2">
+                    <div style="font-size: 30px;">₹@Model.TotalSales</div>
+                    <div class="text-muted">Total Sales</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-6 col-12">
+            <div class="card p-2 custom-box-shadow">
+                <div class="d-flex justify-content-end">
+                    <div class="d-flex justify-content-end">
+                        <div class="order-outer d-flex align-items-center justify-content-center">
+                            <div class="order-inner d-flex align-items-center justify-content-center">
+                                <img width="28" height="28" src="~/images/icons/total-orders.svg" alt="orders icon" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex flex-column justify-content-end align-items-start p-2">
+                    <div style="font-size: 30px;">@Model.TotalOrders</div>
+                    <div class="text-muted">Total Orders</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-6 col-12">
+            <div class="card p-2 custom-box-shadow">
+                <div class="d-flex justify-content-end">
+                    <div class="d-flex justify-content-end">
+                        <div class="order-value-outer d-flex align-items-center justify-content-center">
+                            <div class="order-value-inner d-flex align-items-center justify-content-center">
+                                <img width="28" height="28" src="~/images/icons/order-value.svg"
+                                    alt="avg-order-value icon" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex flex-column justify-content-end align-items-start p-2">
+                    <div style="font-size: 30px;">₹@Model.AverageOrderValue</div>
+                    <div class="text-muted">Avg. Order Value</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-6 col-12">
+            <div class="card p-2 custom-box-shadow">
+                <div class="d-flex justify-content-end">
+                    <div class="d-flex justify-content-end">
+                        <div class="waiting-time-outer d-flex align-items-center justify-content-center">
+                            <div class="waiting-time-inner d-flex align-items-center justify-content-center">
+                                <img width="28" height="28" src="~/images/icons/waiting-time.svg"
+                                    alt="waiting-time icon" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex flex-column justify-content-end align-items-start p-2">
+                    <div style="font-size: 30px;">7.26 mins</div>
+                    <div class="text-muted">Avg. Waiting Time</div>
+                </div>
+            </div>
+        </div>
+    </div>
+ 
+    <div class="row g-3 mb-3">
+        <div class="col-lg-6 col-12">
+            <div style="height: 250px;" class="card p-2 custom-box-shadow">
+                <div class="d-flex justify-content-start fs-4 ps-2">
+                    Revenue
+                </div>
+                <div class="mt-4" style="height: 200px;">
+                    <div id="revenueChartContainer" style="height: 200px; max-height: 200px;">
+ 
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 col-12">
+            <div style="height: 250px;" class="card p-2 custom-box-shadow">
+                <div class="d-flex justify-content-start fs-4 ps-2">
+                    Customer Growth
+                </div>
+                <div class="mt-4" style="height: 200px;">
+                    <div id="customerChartContainer" style="height: 200px; max-height: 200px;">
+ 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+ 
+    <div class="row g-3 mb-3">
+        <div class="col-lg-4 col-md-6 col-12">
+            <div style="height: 200px;" class="card p-2 custom-box-shadow">
+                <div class="fs-4 ps-2">
+                    Top Selling Items
+                    <div class="overflow-auto" style="max-height: 150px; scrollbar-width: none;">
+                    <table class="table table-borderless table-sm">
+                    <tbody id="topSellingItemsBody">
+                        @if (Model.TopSellingItems != null && Model.TopSellingItems.Any())
+                        {
+                            int topIndex = 0;
+                            foreach (var item in Model.TopSellingItems)
+                            {
+                                topIndex++;
+                                <tr>
+                                    <td style="width: 30px; vertical-align: middle; padding-left: 0.5rem;"><span class="text-muted fs-5">#@topIndex</span></td>
+                                    <td style="vertical-align: middle;">
+                                        <div class="d-flex align-items-center">
+                                            <img src="@(string.IsNullOrEmpty(item.ItemImg) ? Url.Content("~/images/dining-menu.png") : Url.Content("~/images/uploads/" + item.ItemImg))" alt="@item.ItemName" width="40" height="40" class="me-2 rounded" style="object-fit: cover;">
+                                            <div>
+                                                <div style="font-weight: 500; font-size: 0.9rem; line-height: 1.2;">@item.ItemName</div>
+                                                <div class="d-flex align-items-center text-muted" style="font-size: 0.8rem;">
+                                                    <img  width="16" height="16" class="me-1">
+                                                    @item.QuantitySold order
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="2" class="text-center text-muted p-3">No items sold in this period.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 col-12">
+             <div style="height: 200px;" class="card p-2 custom-box-shadow">
+                <div class="fs-4 ps-2">
+                    Top Selling Items
+                    <div class="overflow-auto" style="max-height: 150px; scrollbar-width: none;">
+                    <table class="table table-borderless table-sm">
+                    <tbody id="topSellingItemsBody">
+                        @if (Model.LeastSellingItems != null && Model.LeastSellingItems.Any())
+                        {
+                            int topIndex = 0;
+                            foreach (var item in Model.LeastSellingItems)
+                            {
+                                topIndex++;
+                                <tr>
+                                    <td style="width: 30px; vertical-align: middle; padding-left: 0.5rem;"><span class="text-muted fs-5">#@topIndex</span></td>
+                                    <td style="vertical-align: middle;">
+                                        <div class="d-flex align-items-center">
+                                            <img src="@(string.IsNullOrEmpty(item.ItemImg) ? Url.Content("~/images/dining-menu.png") : Url.Content("~/images/uploads/" + item.ItemImg))" alt="@item.ItemName" width="40" height="40" class="me-2 rounded" style="object-fit: cover;">
+                                            <div>
+                                                <div style="font-weight: 500; font-size: 0.9rem; line-height: 1.2;">@item.ItemName</div>
+                                                <div class="d-flex align-items-center text-muted" style="font-size: 0.8rem;">
+                                                    <img  width="16" height="16" class="me-1">
+                                                    @item.QuantitySold order
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="2" class="text-center text-muted p-3">No items sold in this period.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 col-12 mx-auto mb-3">
+            <div style="height: 200px;" class="card p-2 custom-box-shadow">
+                <div class="d-flex justify-content-end">
+                    <div class="d-flex justify-content-end">
+                        <div class="waiting-list-outer d-flex align-items-center justify-content-center">
+                            <div class="waiting-list-inner d-flex align-items-center justify-content-center">
+                                <img width="28" height="28" src="~/images/icons/waiting-list.svg"
+                                    alt="waiting-list icon" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex flex-column justify-content-end align-items-start p-2 h-100">
+                    <div style="font-size: 30px;">@Model.WaitingListCount</div>
+                    <div class="text-muted">Waiting List Count</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* <script src="https://cdn.canvasjs.com/canvasjs.min.js"></script> *@
+<script>
+    $(document).ready( function (e) {
+    const dailyRevenueDataFromModel = @Html.Raw(Json.Serialize(Model.DailyRevenueData ?? new List<pizzashop.repository.ViewModels.DailyRevenueViewModel>()));
+        const revenueChartContainer = $('#revenueChartContainer');
+
+    const customerDataFromModel = @Html.Raw(Json.Serialize(Model.CustomerCount ?? new List<pizzashop.repository.ViewModels.CustomerCountViewModel>()));
+        const customerChartContainer = $('#customerChartContainer');
+        console.log(customerDataFromModel);
+
+            const revenueDataPoints = dailyRevenueDataFromModel.map(d => {
+                return { x: new Date(d.date), y: d.revenue };
+            });
+            const customerDataPoints = customerDataFromModel.map(d => {
+                return { x: new Date(d.date), y: d.count };
+            });
+
+            if (revenueDataPoints.length > 0) {
+                var revenueChart = {
+                    animationEnabled: true,
+                    theme: "light2",
+                    axisX: {
+                        valueFormatString: "DD MMM",
+                    },
+                    axisY: {
+                        includeZero: true
+                    },
+                    toolTip: {
+                        contentFormatter: function (e) {
+                            let content = "";
+                            for (var i = 0; i < e.entries.length; i++) {
+                                content += "<strong>" + CanvasJS.formatDate(e.entries[i].dataPoint.x, "DD MMM YYYY") + "</strong>";
+                                content += "<br/>";
+                                content += e.entries[i].dataSeries.name + ": ₹" + e.entries[i].dataPoint.y.toFixed(2);
+                            }
+                            return content;
+                        }
+                    },
+                    data: [{
+                        type: "area",
+                        name: "Revenue",
+                        color: "rgba(1, 123, 217, 0.7)",
+                        lineColor: "rgb(1, 123, 217)",
+                        markerSize: 5,
+                        dataPoints: revenueDataPoints
+                    }]
+                };
+                } else {
+                revenueChartContainer.innerHTML = '<div style="text-align:center; padding-top:70px; color:grey; font-size:0.9rem;">No revenue data for this period.</div>';
+            }
+
+                var chart = new CanvasJS.Chart("revenueChartContainer", revenueChart);
+
+                console.log(customerDataPoints);
+                if (customerDataPoints.length > 0) {
+                var customerChart = {
+                    animationEnabled: true,
+                    theme: "light2",
+                    axisX: {
+                        valueFormatString: "DD MMM",
+                    },
+                    axisY: {
+                        includeZero: true
+                    },
+                    toolTip: {
+                        contentFormatter: function (e) {
+                            let content = "";
+                            for (var i = 0; i < e.entries.length; i++) {
+                                content += "<strong>" + CanvasJS.formatDate(e.entries[i].dataPoint.x, "DD MMM YYYY") + "</strong>";
+                                content += "<br/>";
+                                content += e.entries[i].dataSeries.name + " : " + e.entries[i].dataPoint.y;
+                            }
+                            return content;
+                        }
+                    },
+                    data: [{
+                        type: "area",
+                        name: "Customer Count",
+                        color: "rgba(1, 123, 217, 0.7)",
+                        lineColor: "rgb(1, 123, 217)",
+                        markerSize: 5,
+                        dataPoints: customerDataPoints
+                    }]
+                };
+
+                var chart1 = new CanvasJS.Chart("customerChartContainer", customerChart);
+                chart.render();
+                chart1.render();
+
+            } else {
+                customerChartContainer.innerHTML = '<div style="text-align:center; padding-top:70px; color:grey; font-size:0.9rem;">No customer data for this period.</div>';
+            }
+    });
+</script>
+<style>
+    .card {
+        border-radius: 0.7rem;
+    }
+ 
+    .sale-outer {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        border: 2px solid #62ec80;
+        background-color: transparent;
+    }
+ 
+    .sale-inner {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background-color: #62ec80;
+    }
+ 
+    .order-outer {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        border: 2px solid #d7a4e5;
+        background-color: transparent;
+    }
+ 
+    .order-inner {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background-color: #d7a4e5;
+    }
+ 
+    .order-value-outer {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        border: 2px solid #92b7cc;
+        background-color: transparent;
+    }
+ 
+    .order-value-inner {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background-color: #92b7cc;
+    }
+ 
+    .waiting-time-outer {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        border: 2px solid #faafa3;
+        background-color: transparent;
+    }
+ 
+    .waiting-time-inner {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background-color: #faafa3;
+    }
+ 
+    .waiting-list-outer {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        border: 2px solid #faca6e;
+        background-color: transparent;
+    }
+ 
+    .waiting-list-inner {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background-color: #faca6e;
+    }
+</style>

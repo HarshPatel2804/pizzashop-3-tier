@@ -122,6 +122,143 @@
 <div id="customerModalContailer">
 
 </div>
+
+<div class="fade modal" id="completeOrderModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="completeOrderModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="width: 400px;">
+        <div class="modal-content">
+            <div class="row mx-1 mt-2">
+                <h5 class="modal-title col text-muted ms-2" id="completeOrderModalLabel">Complete Confirmation</h5>
+                <button type="button" class="btn-close col-auto me-1" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="d-flex justify-content-center align-items-center mt-4 flex-column">
+                <img src="~/images/caution.png" style="height: 40px; width: 40px;">
+                <span>Are you sure you want to complete Order?</span>
+                <form id="completeOrderForm">
+                    <div class="d-flex justify-content-center align-items-center mt-2 mb-4">
+                        <button type="submit" class="btn btn-prime" data-bs-dismiss="modal"
+                            style="border-radius: 3px; width: 60px;">Yes</button>
+                        <button type="button" class="btn ms-2 btn-border-prime border"
+                            style="border-radius: 3px; width: 60px;">No</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="fade modal" id="cancelOrderModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="width: 400px;">
+        <div class="modal-content">
+            <div class="row mx-1 mt-2">
+                <h5 class="modal-title col text-muted ms-2" id="cancelOrderModalLabel">Cancel Confirmation</h5>
+                <button type="button" class="btn-close col-auto me-1" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="d-flex justify-content-center align-items-center mt-4 flex-column">
+                <img src="~/images/caution.png" style="height: 40px; width: 40px;">
+                <span>Are you sure you want to cancel the Order?</span>
+                <form id="cancelOrderForm">
+                    <div class="d-flex justify-content-center align-items-center mt-2 mb-4">
+                        <button type="submit" class="btn btn-prime" data-bs-dismiss="modal"
+                            style="border-radius: 3px; width: 60px;">Yes</button>
+                        <button type="button" class="btn ms-2 btn-border-prime border"
+                            style="border-radius: 3px; width: 60px;">No</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="fade modal" id="QRModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="QRModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="width: 400px;">
+        <div class="modal-content">
+            <div class="row mx-1 mt-2">
+                <h5 class="modal-title col text-muted ms-2" id="QRModalLabel">Cancel Confirmation</h5>
+                <button type="button" class="btn-close col-auto me-1" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="d-flex justify-content-center align-items-center mt-4 flex-column">
+                
+                <form id="QRForm">
+                    <div class="d-flex justify-content-center align-items-center mt-2 mb-4">
+                        <button type="submit" class="btn btn-border-prime" data-bs-dismiss="modal"
+                            style="border-radius: 3px; width: 60px;">Done</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="customerReviewModal" tabindex="-1" aria-labelledby="customerReviewModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="customerReviewModalLabel">Customer Review</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="customerReviewForm">
+                    <div class="mb-1">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <label class="mb-0">Food</label>
+                            <div class="rating" data-ratingFor="Food">
+                                <i class="bi bi-star fs-5 text-warning" data-value="1"></i>
+                                <i class="bi bi-star fs-5 text-warning" data-value="2"></i>
+                                <i class="bi bi-star fs-5 text-warning" data-value="3"></i>
+                                <i class="bi bi-star fs-5 text-warning" data-value="4"></i>
+                                <i class="bi bi-star fs-5 text-warning" data-value="5"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-1">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <label class="mb-0">Service</label>
+                            <div class="rating" data-ratingFor="Service">
+                                <i class="bi bi-star fs-5 text-warning" data-value="1"></i>
+                                <i class="bi bi-star fs-5 text-warning" data-value="2"></i>
+                                <i class="bi bi-star fs-5 text-warning" data-value="3"></i>
+                                <i class="bi bi-star fs-5 text-warning" data-value="4"></i>
+                                <i class="bi bi-star fs-5 text-warning" data-value="5"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-1">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <label class="mb-0">Ambience</label>
+                            <div class="rating" data-ratingFor="Ambience">
+                                <i class="bi bi-star fs-5 text-warning" data-value="1"></i>
+                                <i class="bi bi-star fs-5 text-warning" data-value="2"></i>
+                                <i class="bi bi-star fs-5 text-warning" data-value="3"></i>
+                                <i class="bi bi-star fs-5 text-warning" data-value="4"></i>
+                                <i class="bi bi-star fs-5 text-warning" data-value="5"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 mt-2 w-100 form-floating">
+                        <textarea class="w-100 form-control" id="comment" name="Comment" placeholder="Multiple lines"
+                            style="height: 100px;"></textarea>
+                        <label for="comment">Description</label>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-prime px-4">Save</button>
+                        <button type="button" class="btn btn-border-prime px-4" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
     var parentOrderItemsArray = [];
 
@@ -561,7 +698,7 @@
             });
 
             $('.ItemCard').on('click', function () {
-                const itemId = $(this).data('itemid');
+                const itemId = parseInt($(this).data('itemid'));
                 const itemName = $(this).data('name');
                 const itemType = $(this).data('type');
                 const rate = $(this).data('rate');
@@ -671,7 +808,7 @@
         function handlemodifierPopUp() {
             initializeArray();
             function initializeArray() {
-                const itemId = $('.ItemId').val();
+                const itemId = parseInt($('.ItemId').val());
                 const itemName = $('.itemName').text();
                 const rate = $('.Rate').val();
                 const isTax = $('.isTax').val();
@@ -986,7 +1123,7 @@
             $.ajax({
                 url: '/OrderMenu/ItemComment',
                 method: 'POST',
-                data: { orderItemId: orderItemId , itemWiseComment : comment },
+                data: { orderItemId: orderItemId, itemWiseComment: comment },
                 success: function (response) {
                     if (response.success) {
                         $('#itemCommentModal').modal('hide');
@@ -997,6 +1134,160 @@
                     }
                 }
 
+            });
+        });
+
+        $('#order-card').on('click', '#Invoice-btn', function (e) {
+            let url = `/Orders/ForPdfDownload?orderid=${encodeURIComponent(orderId)}`;
+            window.location.href = url;
+        });
+
+        $('#order-card').on('click', '#Cancel-btn', function (e) {
+            $('#cancelOrderModal').modal('show');
+        });
+
+        $('#cancelOrderForm').on('submit', function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: '/OrderMenu/CancelOrder',
+                method: 'POST',
+                data: { orderId: orderId },
+                success: function (response) {
+                    if (response.success) {
+                        toastr.success(response.message);
+                        window.location.href = '/OrderTable/Table';
+                    }
+                    else {
+                        toastr.error(response.message);
+                    }
+                }
+            });
+        });
+
+        $('#order-card').on('click', '#Complete-btn', function (e) {
+            $('#completeOrderModal').modal('show');
+        });
+
+        $('#completeOrderForm').on('submit', function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: '/OrderMenu/CompleteOrder',
+                method: 'POST',
+                data: { orderId: orderId },
+                success: function (response) {
+                    if (response.success) {
+                        toastr.success(response.message);
+                        $('#customerReviewModal').modal('show');
+                    }
+                    else {
+                        toastr.error(response.message);
+                    }
+                }
+            });
+        });
+
+        const selectedRatings = {};
+
+        $('.rating').each(function () {
+            const $container = $(this);
+            const category = $container.data('ratingfor');
+            selectedRatings[category] = 0;
+
+            const $stars = $container.find('i');
+
+            $stars.on('click', function () {
+                const $clickedStar = $(this);
+                const clickedValue = parseInt($clickedStar.data('value'));
+                const currentCategory = $clickedStar.closest('.rating').data('ratingfor');
+
+                selectedRatings[currentCategory] = clickedValue;
+
+
+                const $starsInCurrentCategory = $clickedStar.closest('.rating').find('i');
+                $starsInCurrentCategory.each(function () {
+                    const $innerStar = $(this);
+                    const starValue = parseInt($innerStar.data('value'));
+
+                    if (starValue <= clickedValue) {
+                        $innerStar.removeClass('bi-star').addClass('bi-star-fill');
+                    } else {
+                        $innerStar.removeClass('bi-star-fill').addClass('bi-star');
+                    }
+                });
+
+                console.log('Current Ratings:', selectedRatings);
+            });
+
+            $stars.on('mouseover', function () {
+                const $hoveredStar = $(this);
+                const hoverValue = parseInt($hoveredStar.data('value'));
+                const $starsInCurrentCategory = $hoveredStar.closest('.rating').find('i');
+
+                $starsInCurrentCategory.each(function () {
+                    const $innerStar = $(this);
+                    const starValue = parseInt($innerStar.data('value'));
+
+                    if (starValue <= hoverValue) {
+                        $innerStar.removeClass('bi-star').addClass('bi-star-fill');
+                    } else {
+                        $innerStar.removeClass('bi-star-fill').addClass('bi-star');
+                    }
+                });
+            });
+        });
+
+        $('.rating').on('mouseleave', function () {
+            const $container = $(this);
+            const currentCategory = $container.data('ratingfor');
+            console.log(currentCategory);
+            const savedRating = selectedRatings[currentCategory];
+            console.log(savedRating);
+            const $starsInCurrentCategory = $container.find('i');
+
+            $starsInCurrentCategory.each(function () {
+                const $innerStar = $(this);
+                const starValue = parseInt($innerStar.data('value'));
+                if (starValue <= savedRating) {
+                    $innerStar.removeClass('bi-star').addClass('bi-star-fill');
+                } else {
+                    $innerStar.removeClass('bi-star-fill').addClass('bi-star');
+                }
+            });
+        });
+
+        $('#customerReviewForm').on('submit', function (event) {
+            event.preventDefault();
+
+            const comment = $('#comment').val();
+
+            const reviewData = {
+                orderId: orderId,
+                ratings: selectedRatings,
+                comment: comment
+            };
+
+            console.log('Submitting Review Data:', reviewData);
+
+            $.ajax({
+                url: '/OrderMenu/SaveRatings',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(reviewData),
+                success: function (response) {
+                    if (response.success) {
+                        $('#customerReviewModal').modal('hide');
+                        toastr.success(response.message);
+                        window.location.href = '/OrderTable/Table';
+                    }
+                    else {
+                        toastr.error(response.message);
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    toastr.error('There was an error submitting your review.');
+                }
             });
         });
     });

@@ -1,13 +1,98 @@
 @{
     Layout = "_Layout";
-    ViewData["Title"] = "Dashboard Page";
+    ViewData["Title"] = "Dashboard";
 }
 @await Html.PartialAsync("_Toast")
-<head>
-<link rel="stylesheet" href="~/css/dashboard.css">
-</head>
-<section style = "min-height: 100vh; background-color: #fafafa;">
-<div class="row pt-4 ms-sm-5 me-sm-5 ms-3 me-3" style="min-height: 70px; ">
-    <h2 class="col-sm col-12" style="color: rgb(101, 101, 224); font-family: Roboto; font-weight: 550">Dashboard</h1>
+
+<div class="ms-3 me-4" id="">
+    <div class="d-flex justify-content-between gap-4">
+
+        <div class="h1 mt-3 " style="color: rgb(1, 123, 217); font-weight: bold">
+            Dashboard
+        </div>
+
+        <select style="width: 12rem;" id="dateDropdown" class="form-control mt-3">
+            <option value="Today">Today</option>
+            <option value="Last7Days">Last 7 Days</option>
+            <option value="Last30Days">Last 30 Days</option>
+            <option value="CurrentMonth" selected>Current Month</option>
+        </select>
+
+
+    </div>
+    <div id="DashboardContainer">
+
+    </div>
 </div>
-</section>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
+<script>
+    $(document).ready(function () {
+        loadDashboardData();
+
+        function getDateRange(selectedRangeValue) {
+            let startDate;
+            let endDate = new Date();
+
+            switch (selectedRangeValue) {
+                case "Today":
+                    startDate = new Date();
+                    endDate = new Date();
+                    break;
+                case "Last7Days":
+                    startDate = new Date();
+                    startDate.setDate(endDate.getDate() - 6);
+                    break;
+                case "Last30Days":
+                    startDate = new Date();
+                    startDate.setDate(endDate.getDate() - 29);
+                    break;
+                case "CurrentMonth":
+                default:
+                    const today = new Date();
+                    startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                    let endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+                    endDate = (endOfMonth > today) ? today : endOfMonth;
+                    break;
+            }
+
+            return {
+                startDate: formatDate(startDate),
+                endDate: formatDate(endDate)
+            };
+        }
+
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function loadDashboardData() {
+            console.log('called');
+            const selectedRangeValue = $('#dateDropdown').val();
+            const dates = getDateRange(selectedRangeValue);
+
+            $.ajax({
+                url: '/Dashboard/Data',
+                type: 'GET',
+                data: {
+                    startDate: dates.startDate,
+                    endDate: dates.endDate
+                },
+                success: function (data) {
+                    $('#DashboardContainer').html(data);
+                }
+            });
+        }
+
+        $('#dateDropdown').on('change', function () {
+            loadDashboardData();
+        });
+
+        
+    });
+</script>

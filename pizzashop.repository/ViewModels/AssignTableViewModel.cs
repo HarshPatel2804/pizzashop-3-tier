@@ -28,6 +28,4 @@ public partial class AssignTableViewModel
     public int Noofpeople { get; set; }
 
     public int? Waitingtokenid { get; set; }
-
-
 }

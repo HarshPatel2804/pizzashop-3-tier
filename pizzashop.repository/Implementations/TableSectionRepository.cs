@@ -17,7 +17,7 @@ public class TableSectionRepository : ITableSectionRepository
 
     public async Task<List<Section>> GetAllSetionsAsync()
     {
-        return await _context.Sections.Where(u => u.Isdeleted != true).OrderBy(u => u.OrderField).ToListAsync();
+        return await _context.Sections.Where(u => u.Isdeleted != true).OrderBy(u => u.OrderField).Include(s => s.Waitingtokens).ToListAsync();
     }
 
     public async Task<(List<Table> tables, int totalTables)> GetTablesBySectionAsync(int Sectionid, int page, int pageSize, string search)

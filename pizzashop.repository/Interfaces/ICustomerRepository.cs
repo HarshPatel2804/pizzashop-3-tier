@@ -21,4 +21,6 @@ public interface ICustomerRepository
     Task<bool> IsSameEmail(string email , int customerId);
 
     Task<bool> IsSamePhone(string phone , int customerId);
+
+    Task<IEnumerable<Customer>> GetCustomersByDateRangeAsync(DateTime startDate, DateTime endDate);
 }
