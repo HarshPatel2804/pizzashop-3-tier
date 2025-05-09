@@ -24,17 +24,19 @@ public class WaitingTokenRepository : IWaitingTokenRepository
 
     public async Task<IEnumerable<Waitingtoken>> GetAllWaitingTokensWithCustomer(int section)
     {
+        var startDate =  DateTime.Today;
+        var endDate = startDate.Date.AddDays(1).AddTicks(-1);
         if (section == 0)
         {
             return await _context.Waitingtokens
-                .Where(u => u.Isassigned == false)
+                .Where(u => u.Isassigned == false && u.Createdat >= startDate && u.Modifiedat <= endDate)
                 .Include(w => w.Customer)
                 .ToListAsync();
         }
         else
         {
             return await _context.Waitingtokens
-                .Where(u => u.Sectionid == section && u.Isassigned == false)
+                .Where(u => u.Sectionid == section && u.Isassigned == false && u.Createdat >= startDate && u.Modifiedat <= endDate)
                 .Include(w => w.Customer)
                 .ToListAsync();
         }

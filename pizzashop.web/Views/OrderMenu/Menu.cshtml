@@ -15,9 +15,9 @@
 <section style="background-color: #fcfcfc;" class="row w-100">
     <aside class="col-auto d-flex justify-content-start align-items-center flex-column offcanvas-lg offcanvas-start"
         id=sidebar style="background-color: #f4f4f4 !important; min-width: 250px; min-height: 100vh;">
-        <div class="w-100 mt-3 mb-3">
+        <div class="w-100 mt-3 mb-3 d-flex align-items-center">
             <span class="fw-bold ms-4" style="font-size: 20px;">Category</span>
-            <button type="button" class="btn-close text-reset ms-auto d-lg-none" data-bs-dismiss="offcanvas"
+            <button type="button" class="btn-close text-reset ms-auto d-lg-none me-3" data-bs-dismiss="offcanvas"
                 data-bs-target="#sidebar" aria-label="Close"></button>
         </div>
         <a class='menu w-100' data-id="FAV">
@@ -35,13 +35,21 @@
 
     </aside>
     <div class="d-flex flex-column flex-lg-row col">
+
         <section style="height:100%; max-height: 100%; flex: 1">
+
             <div class=" d-flex justify-content-between ms-3 mt-4">
+                <div class="d-flex w-50">
+                <button class="navbar-toggler d-lg-none d-block me-2 btn-danger" type="button" data-bs-toggle="offcanvas"
+                    data-bs-target="#sidebar" aria-controls="sidebar" aria-expanded="false" aria-label="Toggle sidebar">
+                    <i class="bi bi-list"></i>
+                </button>
                 <div class="search-input-group">
                     <input type="text" class="form-control search-input" placeholder="Search">
                     <div class="search-icon">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </div>
+                </div>
                 </div>
                 <div class="food-type me-4">
                     <div class="type-option">
@@ -63,10 +71,15 @@
 
             </div>
         </section>
-        <div id="order-card" class="d-none OrderCard me-3 rounded shadow p-3 mt-3"
+        <div id="order-card" class="d-none offcanvas-lg offcanvas-end OrderCard ms-3 me-4 rounded shadow p-3 mt-3"
             style="flex : 1; align-self: flex-start; height: auto;">
 
         </div>
+        <button style="height: 50px; width: 50px; border-radius: 50%; background-color :rgb(43, 134, 200); right: 0px; bottom: 0px; position: sticky;" class="d-lg-none d-block d-flex justify-content-center align-items-center" data-bs-toggle="offcanvas"
+                data-bs-target="#order-card" aria-label="Close">
+            <img src="~/images/cart.svg" style="height:30px; width: 30px;"/>
+        </button>
+    </div>
     </div>
 </section>
 <div id="ItemModifierModal">
@@ -182,13 +195,13 @@
                     aria-label="Close"></button>
             </div>
             <div class="d-flex justify-content-center align-items-center mt-4 flex-column">
-                 <div id="qrCodePlaceholder" style="margin: 0 auto; width: 256px; height: 256px; ">
-                   
+                <div id="qrCodePlaceholder" style="margin: 0 auto; width: 256px; height: 256px; ">
+
                 </div>
-                    <div class="d-flex justify-content-center align-items-center mt-2 mb-4">
-                        <button type="submit" class="btn btn-border-prime" data-bs-dismiss="modal"
-                            style="border-radius: 3px; width: 60px;">Done</button>
-                    </div>
+                <div class="d-flex justify-content-center align-items-center mt-2 mb-4">
+                    <button type="submit" class="btn btn-border-prime" data-bs-dismiss="modal"
+                        style="border-radius: 3px; width: 60px;">Done</button>
+                </div>
             </div>
         </div>
     </div>
@@ -285,64 +298,66 @@
         const tokenFromUrl = getQueryParam('orderToken');
         console.log(orderId);
         console.log("orderId");
-        if(!orderId){
-            
+        if (!orderId) {
+
             if (tokenFromUrl) {
-            console.log("Order Token found in URL, validating:", tokenFromUrl);
+                console.log("Order Token found in URL, validating:", tokenFromUrl);
 
-            $.ajax({
-                url: '/OrderMenu/GetOrderIdFromToken', 
-                type: 'GET',
-                data: { orderToken: tokenFromUrl },
-                success: function (response) {
-                    if (response && response.success && response.orderId) {
-                        console.log(response.orderId);
-                        orderId = parseInt(response.orderId);
-                        loadOrderCard();
-                        
-                    } else {
-                        console.error("Failed to validate token or get orderId:", response.message);
+                $.ajax({
+                    url: '/OrderMenu/GetOrderIdFromToken',
+                    type: 'GET',
+                    data: { orderToken: tokenFromUrl },
+                    success: function (response) {
+                        if (response && response.success && response.orderId) {
+                            console.log(response.orderId);
+                            orderId = parseInt(response.orderId);
+                            loadOrderCard();
+
+                        } else {
+                            console.error("Failed to validate token or get orderId:", response.message);
+                        }
                     }
-                }
-            });
+                });
+            }
         }
-        } 
         loadOrderCard();
-        function loadOrderCard(){
-        if (orderId) {
-            $('#order-card').removeClass('d-none');
+        function loadOrderCard() {
+            if (orderId) {
+                $('#order-card').removeClass('d-none');
 
-            //Get already stored taxes
-            $.ajax({
-                url: '/Orders/GetOrderTaxIds',
-                method: 'GET',
-                data: { orderId: orderId },
-                dataType: 'json',
-                success: function (data) {
-                    appliedTaxIds = data.taxIds;
-                }
-            });
-
-            $.ajax({
-                url: '/OrderMenu/OrderCard',
-                type: 'GET',
-                data: { orderId: orderId },
-                success: function (result) {
-                    $('#order-card').html(result);
-                    confirmedSelections = JSON.parse(JSON.stringify(parentOrderItemsArray));
-                    console.log(confirmedSelections);
-                    if(tokenFromUrl){
-                        $('#Complete-btn').hide();
-                        $('#Cancel-btn').hide();
-                        $('#Invoice-btn').hide();
+                //Get already stored taxes
+                $.ajax({
+                    url: '/Orders/GetOrderTaxIds',
+                    method: 'GET',
+                    data: { orderId: orderId },
+                    dataType: 'json',
+                    success: function (data) {
+                        appliedTaxIds = data.taxIds;
                     }
-                    renderConfirmedSelections();
-                },
-                error: function () {
-                    $('#order-card').html('<p class="text-danger">Failed to load order details.</p>');
-                }
-            });
-        }
+                });
+
+                $.ajax({
+                    url: '/OrderMenu/OrderCard',
+                    type: 'GET',
+                    data: { orderId: orderId },
+                    success: function (result) {
+                        $('#order-card').html(result);
+                        confirmedSelections = JSON.parse(JSON.stringify(parentOrderItemsArray));
+                        console.log(confirmedSelections);
+                        if (tokenFromUrl) {
+                            $('#Complete-btn').hide();
+                            $('#Cancel-btn').hide();
+                            $('#Invoice-btn').hide();
+                            $('#QR').hide();
+                            $('#customer-update').hide();
+                        }
+                        renderConfirmedSelections();
+                    },
+                    error: function () {
+                        $('#order-card').html('<p class="text-danger">Failed to load order details.</p>');
+                    }
+                });
+            }
         }
 
         function renderConfirmedSelections() {
@@ -1322,52 +1337,47 @@
             });
         });
 
-        let qrCodeInstance = null; 
+        let qrCodeInstance = null;
 
-        $('#order-card').on('click','#QR', function () {
+        $('#order-card').on('click', '#QR', function () {
 
             if (!orderId) {
-               return;
+                return;
             }
-             $('#QRModal').modal('show');
+            $('#QRModal').modal('show');
             $('#qrCodePlaceholder').html('<div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>');
- 
+
             $.ajax({
-                url: '/OrderMenu/GenerateToken', 
+                url: '/OrderMenu/GenerateToken',
                 type: 'GET',
-                data: { orderId: orderId }, 
+                data: { orderId: orderId },
                 success: function (response) {
                     if (response && response.token) {
-                       
+
                         const baseUrl = window.location.origin;
                         const targetUrl = `${baseUrl}/OrderMenu/Menu?orderToken=${response.token}`;
 
-                        $('#qrCodePlaceholder').empty(); 
+                        $('#qrCodePlaceholder').empty();
 
-                             qrCodeInstance = new QRCode(document.getElementById('qrCodePlaceholder'), {
-                                text: targetUrl,
-                                width: 256,
-                                height: 256
-                            });
-                        
+                        qrCodeInstance = new QRCode(document.getElementById('qrCodePlaceholder'), {
+                            text: targetUrl,
+                            width: 256,
+                            height: 256
+                        });
+
                     } else {
-                       $('#qrCodePlaceholder').html('<p class="text-danger">Error: Failed to retrieve token.</p>');
+                        $('#qrCodePlaceholder').html('<p class="text-danger">Error: Failed to retrieve token.</p>');
                     }
-                },
-                error: function (xhr, status, error) {
-                   console.error('AJAX Error fetching token:', status, error);
-                   $('#qrCodePlaceholder').html('<p class="text-danger">Error generating code.</p>');
-                   @* alert('Error communicating with server.'); *@
                 }
             });
         });
-       
+
         $('#QRModal').on('hidden.bs.modal', function () {
-             if (qrCodeInstance) {
-                 qrCodeInstance.clear();
-             }
-            $('#qrCodePlaceholder').empty(); 
+            if (qrCodeInstance) {
+                qrCodeInstance.clear();
+            }
+            $('#qrCodePlaceholder').empty();
         });
     });
 </script>
- <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>

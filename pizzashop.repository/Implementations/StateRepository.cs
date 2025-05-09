@@ -20,7 +20,9 @@ public class StateRepository : IStateRepository
                 Value = r.Stateid.ToString(),
                 Text = r.Statename,
 
-            }).ToListAsync();
+            })
+            .OrderBy(c => c.Text)
+            .ToListAsync();
     }
 
 }

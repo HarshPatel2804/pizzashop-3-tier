@@ -22,4 +22,5 @@ public interface IWaitingTokenService
     Task<(bool success, string message, WaitingtokenViewModel? model)> GetWaitingTokenForEditAsync(int tokenId);
 
     Task<(bool success, string message)> UpdateWaitingTokenDetailsAsync(WaitingtokenViewModel viewModel);
+    Task<(string, int)> AssignTable(WaitingAssignViewModel model);
 }

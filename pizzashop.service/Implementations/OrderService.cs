@@ -25,14 +25,15 @@ public class OrderService : IOrderService
         return await _orderRepository.HasCustomerActiveOrder(customerId);
     }
 
-    public async Task<int> createOrderbycustomerId(int customerId)
+    public async Task<int> createOrderbycustomerId(int customerId , int Noofpeople)
     {
 
         Order order = new Order
         {
             Customerid = customerId,
             OrderStatus = orderstatus.Pending,
-            Createdat = DateTime.Now
+            Createdat = DateTime.Now,
+            Noofperson = (short?)Noofpeople
         };
         return await _orderRepository.createOrder(order);
     }

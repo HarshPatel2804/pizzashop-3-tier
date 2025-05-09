@@ -21,7 +21,9 @@ public class CityRepository : ICityRepository
                 Value = r.Cityid.ToString(),
                 Text = r.Cityname,
 
-            }).ToListAsync();
+            })
+            .OrderBy(c => c.Text)
+            .ToListAsync();
     }
 
 }

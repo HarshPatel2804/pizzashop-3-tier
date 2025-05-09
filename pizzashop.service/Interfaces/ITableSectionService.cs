@@ -42,4 +42,8 @@ public interface ITableSectionService
     Task<WaitingtokenViewModel> GetSectionList();
 
     Task<(string , int)> AssignTable(AssignTableViewModel model);
+
+    Task<WaitingAssignViewModel> GetAssignTableViewModelAsync(int waitingTokenId, int? sectionId = null);
+
+    Task<WaitingAssignViewModel> GetMultiAssignTableViewModelAsync(int waitingTokenId, List<int>? sectionId = null);
 }

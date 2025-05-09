@@ -1,3 +1,4 @@
+using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using pizzashop.repository.Interfaces;
@@ -80,7 +81,29 @@ public class TableSectionRepository : ITableSectionRepository
         {
             Value = c.Sectionid.ToString(),
             Text = c.Sectionname
-        }).ToList();
+        })
+        .OrderBy(c => c.Text)
+        .ToList();
+    }
+    public async Task<List<SelectListItem>> GetTableListAsync(int sectionId)
+    {
+        return _context.Tables.Where(u => u.Isdeleted != true && u.Tablestatus == tablestatus.Available && u.Sectionid == sectionId).Select(c => new SelectListItem
+        {
+            Value = c.Tableid.ToString(),
+            Text = c.Tablename
+        })
+        .OrderBy(c => c.Text)
+        .ToList();
+    }
+    public async Task<List<SelectListItem>> GetMultiTableListAsync(List<int> sectionId)
+    {
+        return _context.Tables.Where(u => u.Isdeleted != true && u.Tablestatus == tablestatus.Available && sectionId.Contains((int)u.Sectionid)).Select(c => new SelectListItem
+        {
+            Value = c.Tableid.ToString(),
+            Text = c.Tablename
+        })
+        .OrderBy(c => c.Text)
+        .ToList();
     }
 
     public async Task AddTableAsync(Table model)

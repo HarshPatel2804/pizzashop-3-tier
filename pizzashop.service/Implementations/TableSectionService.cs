@@ -24,7 +24,8 @@ public class TableSectionService : ITableSectionService
     }
 
     public async Task<List<SectionViewModel>> GetAllSections()
-    {
+    {   var startDate =  DateTime.Today;
+        var endDate = startDate.Date.AddDays(1).AddTicks(-1);
         var model = await _tableSectionRepository.GetAllSetionsAsync();
 
         var viewModel = model.Select(u => new SectionViewModel
@@ -32,12 +33,11 @@ public class TableSectionService : ITableSectionService
             Sectionid = u.Sectionid,
             Sectionname = u.Sectionname,
             Description = u.Description,
-            TokenCount = u.Waitingtokens.Where(w => w.Isassigned != true).Count()
+            TokenCount = u.Waitingtokens.Where(w => w.Isassigned != true && w.Createdat >= startDate && w.Createdat <= endDate).Count()
 
         }).ToList();
 
         return viewModel;
-
     }
 
     public async Task<(List<TableViewModel> tableModel, int totalTables, int totalPages)> GetTablesBySection(int sectionId, int page, int pageSize, string search)
@@ -331,7 +331,7 @@ public class TableSectionService : ITableSectionService
         }
 
         //Create Order
-        int orderId = await _orderService.createOrderbycustomerId(customerId);
+        int orderId = await _orderService.createOrderbycustomerId(customerId , model.Noofpeople);
 
         //Order Table mapping
         List<Ordertable> orderTables = new List<Ordertable>();
@@ -356,4 +356,29 @@ public class TableSectionService : ITableSectionService
 
         return ("true",orderId);
     }
+
+    public async Task<WaitingAssignViewModel> GetAssignTableViewModelAsync(int waitingTokenId, int? sectionId = null)
+        {
+            var viewModel = new WaitingAssignViewModel
+            {
+                WaitingTokenId = waitingTokenId,
+                SectionList = await _tableSectionRepository.GetSectionListAsync(),
+                SectionId = sectionId.Value,
+                TableList = await _tableSectionRepository.GetTableListAsync(sectionId.Value)
+            };
+
+            return viewModel;
+        }
+    public async Task<WaitingAssignViewModel> GetMultiAssignTableViewModelAsync(int waitingTokenId, List<int>? sectionId = null)
+        {
+            var viewModel = new WaitingAssignViewModel
+            {
+                WaitingTokenId = waitingTokenId,
+                SectionList = await _tableSectionRepository.GetSectionListAsync(),
+                SectionId = sectionId[0],
+                TableList = await _tableSectionRepository.GetMultiTableListAsync(sectionId)
+            };
+
+            return viewModel;
+        }
 }

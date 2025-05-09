@@ -25,7 +25,9 @@ public class UnitRepository : IUnitRepository
             {
                 Value = c.Unitid.ToString(),
                 Text = c.Unitname
-            }).ToList();
+            })
+            .OrderBy(c => c.Text)
+            .ToList();
     }
     }
 

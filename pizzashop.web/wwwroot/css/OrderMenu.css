@@ -214,3 +214,7 @@ body{
     color: #006499;
     border: 1px solid #006499;
 }
+
+.offcanvas-lg.offcanvas-end {
+    top: 50px !important;
+  }

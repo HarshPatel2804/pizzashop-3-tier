@@ -20,6 +20,8 @@ public interface ITableSectionRepository
 
     Task<List<SelectListItem>> GetSectionListAsync();
 
+    Task<List<SelectListItem>> GetTableListAsync(int sectionId);
+
     Task AddTableAsync(Table model);
 
     Task DeleteTableAsync(int tableId);
@@ -47,4 +49,6 @@ public interface ITableSectionRepository
      Task<bool> AnyTableOccupied(int sectionId);
 
      Task<bool> AreTablesOccupied(List<int> tableIds);
+
+     Task<List<SelectListItem>> GetMultiTableListAsync(List<int> sectionId);
 }

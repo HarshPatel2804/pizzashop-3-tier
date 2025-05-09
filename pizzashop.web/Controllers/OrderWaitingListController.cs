@@ -8,10 +8,12 @@ namespace pizzashop.web.Controllers;
 public class OrderWaitingListController : Controller
 {
     private readonly IWaitingTokenService _waitingTokenService;
+     private readonly ITableSectionService _tableSectionService;
 
-    public OrderWaitingListController(IWaitingTokenService waitingTokenService)
+    public OrderWaitingListController(IWaitingTokenService waitingTokenService , ITableSectionService tableSectionService)
     {
         _waitingTokenService = waitingTokenService;
+        _tableSectionService = tableSectionService;
     }
     public ActionResult WaitingList()
     {
@@ -69,4 +71,25 @@ public class OrderWaitingListController : Controller
 
         return Json(new { success = response.success, message = response.message });
     }
+
+    [HttpGet]
+        public async Task<IActionResult> GetAssignTablePartial(int waitingTokenId, int? sectionId = null)
+        {
+            var viewModel = await _tableSectionService.GetAssignTableViewModelAsync(waitingTokenId, sectionId);
+            return PartialView("_AssignTable", viewModel);
+        }
+
+    [HttpGet]
+        public async Task<IActionResult> GetMultiTablesBySectionId([FromQuery] List<int> sectionId)
+        {
+            var tables = await _tableSectionService.GetMultiAssignTableViewModelAsync(0, sectionId);
+            return Json(tables.TableList);
+        }
+
+    [HttpPost]
+        public async Task<IActionResult> AssignTableFromWaiting(WaitingAssignViewModel model)
+        {
+             var (Message , id) = await _waitingTokenService.AssignTable(model);
+             return Json(new { message = Message , orderId = id });
+        }
 }

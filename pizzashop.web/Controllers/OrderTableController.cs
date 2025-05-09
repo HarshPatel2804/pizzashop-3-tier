@@ -100,4 +100,6 @@ public class OrderTableController : Controller
 
         return Json(new { success = true, message = "Table Assigned Successfully", orderid = orderId});
     }
+
+    
 }

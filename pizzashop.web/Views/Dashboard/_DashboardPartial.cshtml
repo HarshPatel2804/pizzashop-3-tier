@@ -72,32 +72,30 @@
         </div>
     </div>
  
-    <div class="row g-3 mb-3">
-        <div class="col-lg-6 col-12">
-            <div style="height: 250px;" class="card p-2 custom-box-shadow">
-                <div class="d-flex justify-content-start fs-4 ps-2">
-                    Revenue
-                </div>
-                <div class="mt-4" style="height: 200px;">
-                    <div id="revenueChartContainer" style="height: 200px; max-height: 200px;">
- 
-                    </div>
-                </div>
+   <div class="row g-3 mb-3">
+    <div class="col-lg-6 col-12">
+        <div style="height: 250px;" class="card p-2 custom-box-shadow">
+            <div class="d-flex justify-content-start fs-4 ps-2">
+                Revenue
             </div>
-        </div>
-        <div class="col-lg-6 col-12">
-            <div style="height: 250px;" class="card p-2 custom-box-shadow">
-                <div class="d-flex justify-content-start fs-4 ps-2">
-                    Customer Growth
-                </div>
-                <div class="mt-4" style="height: 200px;">
-                    <div id="customerChartContainer" style="height: 200px; max-height: 200px;">
- 
-                    </div>
-                </div>
+            <div class="mt-4" style="height: 200px; position: relative;"> 
+                <canvas id="revenueChartCanvas" style="height: 180px; max-height: 180px;"></canvas>
+                <div id="revenueChartMessage" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align:center; color:grey; font-size:0.9rem; display:none;"></div>
             </div>
         </div>
     </div>
+    <div class="col-lg-6 col-12">
+        <div style="height: 250px;" class="card p-2 custom-box-shadow">
+            <div class="d-flex justify-content-start fs-4 ps-2">
+                Customer Growth
+            </div>
+            <div class="mt-4" style="height: 200px; position: relative;">
+                <canvas id="customerChartCanvas" style="height: 180px; max-height: 180px;"></canvas>
+                <div id="customerChartMessage" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align:center; color:grey; font-size:0.9rem; display:none;"></div>
+            </div>
+        </div>
+    </div>
+</div>
  
     <div class="row g-3 mb-3">
         <div class="col-lg-4 col-md-6 col-12">
@@ -204,7 +202,7 @@
         </div>
     </div>
     @* <script src="https://cdn.canvasjs.com/canvasjs.min.js"></script> *@
-<script>
+@* <script>
     $(document).ready( function (e) {
     const dailyRevenueDataFromModel = @Html.Raw(Json.Serialize(Model.DailyRevenueData ?? new List<pizzashop.repository.ViewModels.DailyRevenueViewModel>()));
         const revenueChartContainer = $('#revenueChartContainer');
@@ -295,6 +293,175 @@
             } else {
                 customerChartContainer.innerHTML = '<div style="text-align:center; padding-top:70px; color:grey; font-size:0.9rem;">No customer data for this period.</div>';
             }
+    });
+</script> *@
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/date-fns"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+<script>
+    $(document).ready(function () {
+        const dailyRevenueDataFromModel = @Html.Raw(Json.Serialize(Model.DailyRevenueData ?? new List<pizzashop.repository.ViewModels.DailyRevenueViewModel>()));
+        const customerDataFromModel = @Html.Raw(Json.Serialize(Model.CustomerCount ?? new List<pizzashop.repository.ViewModels.CustomerCountViewModel>()));
+
+        const revenueChart = document.getElementById('revenueChartCanvas');
+        const revenueChartMessage = $('#revenueChartMessage');
+
+        if (dailyRevenueDataFromModel.length > 0) {
+            const revenueDataPoints = dailyRevenueDataFromModel.map(d => {
+                return { x: new Date(d.date), y: d.revenue };
+            });
+
+            new Chart(revenueChart, {
+                type: 'line', 
+                data: {
+                    datasets: [{
+                        label: 'Revenue',
+                        data: revenueDataPoints,
+                        borderColor: 'rgb(1, 123, 217)',
+                        backgroundColor: 'rgba(1, 123, 217, 0.7)',
+                        tension: 0.1,
+                        fill: true, 
+                        pointRadius: 3, 
+                        pointHoverRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 800 
+                    },
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'day',
+                                tooltipFormat: 'dd MMM yyyy', 
+                                displayFormats: {
+                                    day: 'dd MMM' 
+                                }
+                            },
+                            title: {
+                                display: false 
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    return '₹' + value;
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                title: function (tooltipItems) {
+                                    return dateFns.format(new Date(tooltipItems[0].parsed.x), 'dd MMM yyyy');
+                                },
+                                label: function (context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += '₹' + context.parsed.y.toFixed(2);
+                                    }
+                                    return label;
+                                }
+                            }
+                        },
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        } else {
+            $(revenueChart).hide(); 
+            revenueChartMessage.text('No revenue data for this period.').show();
+        }
+
+
+        const customerChart = document.getElementById('customerChartCanvas');
+        const customerChartMessage = $('#customerChartMessage');
+
+        if (customerDataFromModel.length > 0) {
+            const customerDataPoints = customerDataFromModel.map(d => {
+                return { x: new Date(d.date), y: d.count };
+            });
+
+            new Chart(customerChart, {
+                type: 'line',
+                data: {
+                    datasets: [{
+                        label: 'Customer Count',
+                        data: customerDataPoints,
+                        borderColor: 'rgb(1, 123, 217)', 
+                        backgroundColor: 'rgba(1, 123, 217, 0.7)', 
+                        tension: 0.1,
+                        fill: true,
+                        pointRadius: 3,
+                        pointHoverRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 800
+                    },
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'day',
+                                tooltipFormat: 'dd MMM yyyy',
+                                displayFormats: {
+                                    day: 'dd MMM'
+                                }
+                            },
+                            title: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1,
+                                callback: function(value) {if (value % 1 === 0) {return value;}}
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                title: function (tooltipItems) {
+                                    return dateFns.format(new Date(tooltipItems[0].parsed.x), 'dd MMM yyyy');
+                                },
+                                label: function (context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y;
+                                    }
+                                    return label;
+                                }
+                            }
+                        },
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        } else {
+            $(customerChart).hide(); 
+            customerChartMessage.text('No customer data for this period.').show();
+        }
     });
 </script>
 <style>

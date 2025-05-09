@@ -1,0 +1,76 @@
+@model pizzashop.repository.ViewModels.WaitingAssignViewModel;
+<div class="modal fade" id="assignTableModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="post" id="assignTableFromWaiting">
+                <input value="@Model.WaitingTokenId" name="WaitingTokenId" hidden>
+                <input value="@Model.SectionId" name="SectionId" hidden>
+                <div class="d-flex justify-content-between m-3">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Assign Table</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="row ms-2 me-2 mb-2">
+                    <div class="col-12 col-lg-6 mb-3">
+                        <div class="form-floating">
+                            @* <select class="form-select input-height" id="SectionId" asp-for="SectionId"
+                            asp-items="Model.SectionList">
+                            <option>Select Section</option>
+                            </select>
+                            <label for="SectionId">Section*</label> *@
+
+                            <div class="dropdown">
+                                <button class="form-control text-start dropdown-toggle" type="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false" style="height: 58px;">
+                                    Select Sections
+                                </button>
+                                <ul class="dropdown-menu w-100 px-3" id="sectionCheckboxList"
+                                    style="max-height: 200px; overflow-y: auto;">
+                                    @foreach (var Section in Model.SectionList)
+                                    {
+                                        <li>
+                                            <div class="form-check">
+                                                <input class="form-check-input section-checkbox" type="checkbox"
+                                                    name="SelectedTableIds" value="@Section.Value" id="table_@Section.Value" @(Model.SectionId.ToString() == Section.Value ? "checked" : "")>
+                                                <label class="form-check-label" for="table_@Section.Value">@Section.Text</label>
+                                            </div>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-12 col-lg-6 mb-3">
+                        <div class="form-floating">
+                            <div class="dropdown">
+                                <button class="form-control text-start dropdown-toggle" type="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false" style="height: 58px;">
+                                    Select Tables
+                                </button>
+                                <ul class="dropdown-menu w-100 px-3" id="tableCheckboxList"
+                                    style="max-height: 200px; overflow-y: auto;">
+                                    @foreach (var table in Model.TableList)
+                                    {
+                                        <li>
+                                            <div class="form-check">
+                                                <input class="form-check-input table-checkbox" type="checkbox"
+                                                    name="SelectedTableIds" value="@table.Value" id="table_@table.Value">
+                                                <label class="form-check-label" for="table_@table.Value">@table.Text</label>
+                                            </div>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center justify-content-end mb-3 me-2">
+                    <a id="save-watingToken"><button type="submit" class="btn btn-prime me-3">Assign</button></a>
+                    <button type="button" class="btn btn-border-prime" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>

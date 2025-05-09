@@ -20,7 +20,9 @@ public class CountryRepository : ICountryRepository
                 Value = r.Countryid.ToString(),
                 Text = r.Countryname,
 
-            }).ToListAsync();
+            })
+            .OrderBy(c => c.Text)
+            .ToListAsync();
     }
 
 }

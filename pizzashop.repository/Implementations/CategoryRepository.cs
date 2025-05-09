@@ -39,7 +39,9 @@ public class CategoryRepository : ICategoryRepository
             {
                 Value = c.Categoryid.ToString(),
                 Text = c.Categoryname
-            }).ToList();
+            })
+            .OrderBy(c => c.Text)
+            .ToList();
     }
 
 

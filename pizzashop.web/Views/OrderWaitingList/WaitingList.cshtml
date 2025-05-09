@@ -40,6 +40,9 @@
 <div id="WaitingToken">
 
 </div>
+<div id="AssignModal">
+
+</div>
 <div id="EditWaitingTokenModalContainer">
 
 </div>
@@ -283,6 +286,138 @@
             $element.text(hours + ' hrs ' + minutes + ' min');
         }
         
+         var selectedTableIds = [];
+        var selectedSectionIds = [];
 
+        $('#Waiting-Container').on('click', '.assign-token-btn', function () {
+            var waitingTokenId = $(this).data('id');
+            var sectionId = $(this).data('sectionid');
+            console.log(waitingTokenId);
+            console.log(sectionId);
+
+            $.ajax({
+                url: '/OrderWaitingList/GetAssignTablePartial',
+                type: 'GET',
+                data: {
+                    waitingTokenId: waitingTokenId,
+                    sectionId: sectionId
+                },
+                success: function (result) {
+                    $('#AssignModal').html(result);
+                    selectedSectionIds.push(parseInt(sectionId));
+                    $('#assignTableModal').modal('show');
+                },
+                error: function () {
+                    alert('Failed to load the assign table form.');
+                }
+            });
+        });
+       
+        
+        $('#AssignModal').on('change', '.section-checkbox', function () {
+            var sectionId = parseInt($(this).val());
+            var isChecked = $(this).is(':checked');
+
+            if (isChecked) {
+                if (!selectedSectionIds.includes(sectionId)) {
+                    selectedSectionIds.push(sectionId);
+                }
+            } else {
+                var index = selectedSectionIds.indexOf(sectionId);
+                if (index > -1) {
+                    selectedSectionIds.splice(index, 1);
+                }
+            }
+
+            console.log(selectedSectionIds);
+            var tableCheckboxList = $('#tableCheckboxList');
+            tableCheckboxList.empty();
+            if (selectedSectionIds.length == 0) return;
+    
+            $.ajax({
+                url: '/OrderWaitingList/GetMultiTablesBySectionId',
+                type: 'GET',
+                data: { sectionId: selectedSectionIds },
+                traditional: true,
+                success: function (data) {
+                   
+
+                    $.each(data, function (i, table) {
+                        var checkboxItem = `
+                                <li>
+                                    <div class="form-check">
+                                        <input class="form-check-input table-checkbox" type="checkbox" name="SelectedTableIds" value="${table.value}" id="table_${table.value}">
+                                        <label class="form-check-label" for="table_${table.value}">${table.text}</label>
+                                    </div>
+                                </li>
+                            `;
+                        tableCheckboxList.append(checkboxItem);
+                    });
+
+                    $('#tableDropdownButton').text('Select Tables');
+                }
+            });
+        });
+
+        $('#AssignModal').on('change', '.table-checkbox', function () {
+            var tableId = parseInt($(this).val());
+            var isChecked = $(this).is(':checked');
+
+            if (isChecked) {
+                if (!selectedTableIds.includes(tableId)) {
+                    selectedTableIds.push(tableId);
+                }
+            } else {
+                var index = selectedTableIds.indexOf(tableId);
+                if (index > -1) {
+                    selectedTableIds.splice(index, 1);
+                }
+            }
+
+            console.log(selectedTableIds);
+
+        });
+
+        $(document).on("hidden.bs.modal", "#assignTableModal", function () {
+            selectedTableIds = [];
+            selectedSectionIds = [];
+        });
+
+        $('#AssignModal').on('submit', '#assignTableFromWaiting', function (e) {
+            e.preventDefault();
+            var form = $(this);
+            if (selectedSectionIds.length == 0) {
+                toastr.error('Select at least one section');
+                return;
+            }
+            if (selectedTableIds.length == 0) {
+                toastr.error('Select at least one table');
+                return;
+            }
+            var model = {
+                WaitingTokenId: form.find('input[name="WaitingTokenId"]').val(),
+                SectionId: form.find('#SectionId').val(),
+                SelectedTableIds: selectedTableIds,
+            };
+
+            $.ajax({
+                url: '/OrderWaitingList/AssignTableFromWaiting',
+                type: 'POST',
+                data: model,
+                success: function (response) {
+                    if (response.message == "true") {
+                        $('#assignTableModal').modal('hide');
+                        selectedTableIds = [];
+                        $('#assignTableModal .table-checkbox').prop('checked', false);
+                        toastr.success('Table Assigned successfully');
+                        const orderId = parseInt(response.orderId);
+                        const redirectUrl = `/OrderMenu/Menu?orderId=${orderId}`;
+                        window.location.href = redirectUrl;
+                    } else {
+                        toastr.error(response.message);
+                    }
+                }
+            });
+        });
     });
 </script>

@@ -106,7 +106,9 @@ public class ModifierRepository : IModifierRepository
             Value = r.Modifiergroupid.ToString(),
             Text = r.Modifiergroupname,
 
-        }).ToListAsync();
+        })
+        .OrderBy(c => c.Text)
+        .ToListAsync();
     }
 
     public async Task<(List<Modifier> modifiers, int totalModifiers)> GetAllModifierAsync(int page, int pageSize, string search)

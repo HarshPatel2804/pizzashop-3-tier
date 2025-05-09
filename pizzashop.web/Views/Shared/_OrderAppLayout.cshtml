@@ -155,23 +155,23 @@
                         <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                             data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
                             aria-label="Toggle navigation">
-                            <span class="navbar-toggler-icon"></span>
+                            <i class="bi bi-list"></i>
                         </button>
                         <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                             <ul class="navbar-nav align-items-center gap-3">
-                                <li class='@(ViewContext.RouteData.Values["controller"]!.ToString() == "OrderKOT" ? "active" : " ") nav-item'
+                                <li class = 'exclude @(ViewContext.RouteData.Values["controller"]!.ToString() == "OrderKOT" ? "active" : " ") nav-item'
                                     tabindex="0">
                                     <a class="nav-link btn" asp-controller="OrderKOT" asp-action="KOT">
                                         <i class="bi bi-clipboard2-minus-fill"></i> KOT
                                     </a>
                                 </li>
-                                <li class='@(ViewContext.RouteData.Values["controller"]!.ToString() == "OrderWaitingList" ? "active" : " ") nav-item'
+                                <li class='exclude @(ViewContext.RouteData.Values["controller"]!.ToString() == "OrderWaitingList" ? "active" : " ") nav-item'
                                     tabindex="0">
                                     <a class="nav-link btn" asp-controller="OrderWaitingList" asp-action="WaitingList">
                                         <i class="bi bi-clock-fill"></i> Waiting List
                                     </a>
                                 </li>
-                                <li class='@(ViewContext.RouteData.Values["controller"]!.ToString() == "OrderTable" ? "active" : " ") nav-item'
+                                <li class='exclude @(ViewContext.RouteData.Values["controller"]!.ToString() == "OrderTable" ? "active" : " ") nav-item'
                                     tabindex="0">
                                     <a class="nav-link btn" asp-controller="OrderTable" asp-action="Table">
                                         <i class="bi bi-square-fill"></i> Tables
@@ -234,6 +234,16 @@
 </html>
 <script>
     $(document).ready(function () {
+         function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        const tokenFromUrl = getQueryParam('orderToken');
+        if(tokenFromUrl){
+            $('.exclude').hide();
+            $('.dropdown').hide();
+        }
 
         $('.togglePassword').click(function () {
             console.log("clicked");
