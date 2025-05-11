@@ -186,7 +186,7 @@
                 }
             });
         }
-
+        let selectedTablesPerSection = {};
         function afterLoadSection() {
 
             $(document).on("click", "#SaveToken", function () {
@@ -203,11 +203,11 @@
                     }
                 });
             });
-
+            
             $(document).ready(function () {
                 $('.assign-btn').prop('disabled', true);
 
-                let selectedTablesPerSection = {};
+                selectedTablesPerSection = {};
 
                 $(document).on('click', '.table-card', function () {
 
@@ -296,7 +296,7 @@
                     }
                 });
 
-                $('.accordion-collapse').on('hidden.bs.collapse', function () {
+                @* $('.accordion-collapse').on('hidden.bs.collapse', function () {
                     const sectionId = $(this).closest('.accordion-item').find('.assign-btn').data('id');
 
                     if (selectedTablesPerSection[sectionId]) {
@@ -308,22 +308,26 @@
 
                         $(`.assign-btn[data-id="${sectionId}"]`).prop('disabled', true);
                     }
-                });
+                });  *@
             });
         }
 
         $(document).on('click', '.assign-btn', function () {
-            var Id = $(this).data('id');
+           const sectionIdsWithSelections = Object.keys(selectedTablesPerSection)
+        .filter(secId => selectedTablesPerSection[secId] && selectedTablesPerSection[secId].length > 0)
+        .map(secId => parseInt(secId));
             const selectedTables = [];
-            $(this).closest('.accordion-item').find('.table-card.selected-table').each(function () {
+            $('.accordion-item').find('.table-card.selected-table').each(function () {
                 selectedTables.push($(this).data('table-id'));
             });
 
             const selectedTableIds = JSON.stringify(selectedTables);
+            console.log(selectedTables);
             $.ajax({
                 url: "/OrderTable/GetWaitingDetails",
                 type: "GET",
-                data: { section: Id },
+                data: { section: sectionIdsWithSelections },
+                traditional: true,
                 success: function (response) {
                     $("#AssignModal").html(response);
                     $("#selectedTableIds").val(selectedTableIds);

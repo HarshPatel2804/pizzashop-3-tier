@@ -54,9 +54,9 @@ public class WaitingTokenService : IWaitingTokenService
         return await _waitingTokenRepository.SaveWaitingToken(WaitingTokenModel);
     }
 
-    public async Task<IEnumerable<WaitingtokenViewModel>> GetAllWaitingTokens(int section)
+    public async Task<IEnumerable<WaitingtokenViewModel>> GetAllWaitingTokens(List<int> sectionIds)
     {
-        var tokens = await _waitingTokenRepository.GetAllWaitingTokensWithCustomer(section);
+        var tokens = await _waitingTokenRepository.GetAllWaitingTokens(sectionIds);
 
         var result = tokens.Select(token => new WaitingtokenViewModel
         {

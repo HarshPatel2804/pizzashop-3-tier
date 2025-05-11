@@ -41,6 +41,15 @@ public class WaitingTokenRepository : IWaitingTokenRepository
                 .ToListAsync();
         }
     }
+    public async Task<IEnumerable<Waitingtoken>> GetAllWaitingTokens(List<int> sectionIds)
+    {
+        var startDate =  DateTime.Today;
+        var endDate = startDate.Date.AddDays(1).AddTicks(-1);
+            return await _context.Waitingtokens
+                .Where(u => sectionIds.Contains(u.Sectionid) && u.Isassigned == false && u.Createdat >= startDate && u.Modifiedat <= endDate)
+                .Include(w => w.Customer)
+                .ToListAsync();
+    }
 
     public async Task<bool> IsCustomerInWaitingList(int customerId)
     {

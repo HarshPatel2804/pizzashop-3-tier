@@ -63,7 +63,7 @@ public class OrderTableController : Controller
         return Json(new { success = true, message = "Waiting Token Added Successfully" });
     }
 
-    public async Task<IActionResult> GetWaitingDetails(int section)
+    public async Task<IActionResult> GetWaitingDetails([FromQuery] List<int> section)
     {
         var tokens = await _waitingTokenService.GetAllWaitingTokens(section);
 
