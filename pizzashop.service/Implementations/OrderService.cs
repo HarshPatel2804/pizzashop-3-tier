@@ -5,7 +5,6 @@ using pizzashop.service.Interfaces;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using NPOI.SS.Util;
-using pizzashop.repository.ViewModels;
 using Microsoft.AspNetCore.Mvc.ActionConstraints;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,7 +24,7 @@ public class OrderService : IOrderService
         return await _orderRepository.HasCustomerActiveOrder(customerId);
     }
 
-    public async Task<int> createOrderbycustomerId(int customerId , int Noofpeople)
+    public async Task<int> createOrderbycustomerId(int customerId, int Noofpeople)
     {
 
         Order order = new Order
@@ -33,7 +32,8 @@ public class OrderService : IOrderService
             Customerid = customerId,
             OrderStatus = orderstatus.Pending,
             Createdat = DateTime.Now,
-            Noofperson = (short?)Noofpeople
+            Noofperson = (short?)Noofpeople,
+            Rating = (decimal?)0.00
         };
         return await _orderRepository.createOrder(order);
     }
@@ -252,9 +252,9 @@ public class OrderService : IOrderService
     {
         var order = await _orderRepository.GetOrderWithDetailsByIdAsync(orderId);
 
-        if (order == null)
+        if (order == null || order.OrderStatus == orderstatus.Completed || order.OrderStatus == orderstatus.Cancelled)
         {
-            return null; // Order not found
+            return null;
         }
 
         var orderDetailsView = new OrderDetailsView
@@ -366,7 +366,10 @@ public class OrderService : IOrderService
     private async Task ProcessOrderedItemsAsync(int orderId, List<OrderItemViewModel> itemModels)
     {
         var existingDbItems = await _orderRepository.GetOrderedItemsWithModifiersAsync(orderId);
+        //To remove similar entries
         var modelItemIds = itemModels.Select(vm => vm.OrderedItemId).Where(id => id > 0).ToHashSet();
+
+        //To optimize the searching
         var dbItemMap = existingDbItems.ToDictionary(db => db.Ordereditemid);
 
         var itemsToDelete = existingDbItems.Where(db => !modelItemIds.Contains(db.Ordereditemid)).ToList();
@@ -407,7 +410,24 @@ public class OrderService : IOrderService
                     Quantity = itemViewModel.Quantity,
                 };
 
-                var newModifiers = CreateModifiersFromViewModel(itemViewModel, 0);
+                var newModifiers = new List<Ordereditemmodifer>();
+                if (itemViewModel.Groups != null)
+                {
+                    foreach (var groupPair in itemViewModel.Groups)
+                    {
+                        if (groupPair.Value.SelectedModifiers != null)
+                        {
+                            foreach (var modPair in groupPair.Value.SelectedModifiers)
+                            {
+                                newModifiers.Add(new Ordereditemmodifer
+                                {
+                                    Ordereditemid = 0,
+                                    Modifierid = modPair.Value.ModifierId
+                                });
+                            }
+                        }
+                    }
+                }
                 foreach (var mod in newModifiers)
                 {
                     newItem.Ordereditemmodifers.Add(mod);
@@ -437,11 +457,14 @@ public class OrderService : IOrderService
             }
         }
 
+        //remove modifiers that are not in viewmodel but in database.
         var modifiersToDelete = existingModifiers
             .Where(dbMod => !modelModifierIds.Contains(dbMod.Modifierid))
             .ToList();
 
         var existingModifierIds = existingModifiers.Select(dbMod => dbMod.Modifierid).ToHashSet();
+
+        //Add modifiers that are in viewmodel but not in database existing modifiers.
         var modifierIdsToAdd = modelModifierIds
             .Where(modelModId => !existingModifierIds.Contains(modelModId))
             .ToList();

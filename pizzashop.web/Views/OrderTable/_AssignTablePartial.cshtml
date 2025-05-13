@@ -73,12 +73,25 @@
                     <span asp-validation-for="AssignTableForm.Noofpeople" id="tab-name" class="text-danger"></span>
                 </div>
                 <div class="col-12 col-lg-6 mb-3">
-                    <div class="form-floating">
-                        <select class="form-select input-height" id="SectionId">
-                            <option value="">Select Section</option>
-                        </select>
-                        <label for="SectionId">Section*</label>
-                    </div>
+                   <div class="dropdown">
+                                <button class="form-control text-start dropdown-toggle" type="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false" style="height: 58px;">
+                                    Select Sections
+                                </button>
+                                <ul class="dropdown-menu w-100 px-3" id="sectionCheckboxList"
+                                    style="max-height: 200px; overflow-y: auto;">
+                                    @foreach (var Section in Model.AssignTableForm.Sections)
+                                    {
+                                        <li>
+                                            <div class="form-check">
+                                                <input class="form-check-input section-checkbox" type="checkbox"
+                                                    name="SelectedTableIds" value="@Section.Value" id="@Section.Value">
+                                                <label class="form-check-label" for="@Section.Value">@Section.Text</label>
+                                            </div>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
                     @* <span asp-validation-for="Sectionid" class="text-danger"></span> *@
                 </div>
             </div>

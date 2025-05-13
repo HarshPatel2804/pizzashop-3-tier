@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using pizzashop.repository.Models;
 using pizzashop.web;
 using Microsoft.Extensions.DependencyInjection;
+using pizzashop.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,8 @@ builder.Services.AddSession(options => {
     options.Cookie.SecurePolicy = CookieSecurePolicy.None;
 });
 
+builder.Services.AddSignalR();
+
 var app = builder.Build();
 
 app.UseStatusCodePagesWithReExecute("/Home/Error", "?statusCode={0}");
@@ -46,6 +49,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+app.MapHub<OrderHub>("/orderHub");
 app.Run();
 
 // This class helps resolve Lazy<T> services

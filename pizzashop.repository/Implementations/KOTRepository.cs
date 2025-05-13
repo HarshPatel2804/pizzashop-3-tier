@@ -47,7 +47,7 @@ namespace pizzashop.repository.Repositories
                                 Instruction = oi.Itemwisecomment,
                                 Modifiers = oi.Ordereditemmodifers.Select(oim => oim.Modifiers).ToList()
                             })
-                            .Where(item => item.Quantity > 0) 
+                            .Where(item => item.Quantity > 0)
                             .ToList()
                     })
                     .ToListAsync();
@@ -77,7 +77,7 @@ namespace pizzashop.repository.Repositories
                                 Instruction = oi.Itemwisecomment,
                                 Modifiers = oi.Ordereditemmodifers.Select(oim => oim.Modifiers).ToList()
                             })
-                            .Where(item => item.Quantity > 0) 
+                            .Where(item => item.Quantity > 0)
                             .ToList()
                     })
                     .ToListAsync();
@@ -96,11 +96,19 @@ namespace pizzashop.repository.Repositories
                     .ToList();
             }
         }
-        public void UpdatePreparedQuantities(List<PreparedItemviewModel> updates, string status)
+        public async Task UpdatePreparedQuantities(List<PreparedItemviewModel> updates, string status)
         {
+            if (updates.Any())
+            {
+                var orderitem = await _context.Ordereditems.FirstOrDefaultAsync(oi => oi.Ordereditemid == updates[0].OrderedItemId);
+                var order = await _context.Orders.FirstOrDefaultAsync(o => o.Orderid == orderitem.Orderid);
+                if(order.ServedTime == null){
+                    order.ServedTime = DateTime.Now;
+                }
+            }
             foreach (var Item in updates)
             {
-                var item = _context.Ordereditems.FirstOrDefault(o => o.Ordereditemid == Item.OrderedItemId);
+                var item = await _context.Ordereditems.FirstOrDefaultAsync(o => o.Ordereditemid == Item.OrderedItemId);
                 if (item != null)
                 {
                     if (status == "Ready")
@@ -113,7 +121,7 @@ namespace pizzashop.repository.Repositories
                     }
                 }
             }
-            _context.SaveChanges();
+           await _context.SaveChangesAsync();
         }
     }
 }

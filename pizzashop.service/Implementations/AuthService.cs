@@ -2,7 +2,6 @@ using pizzashop.service.Utils;
 using Microsoft.EntityFrameworkCore;
 using pizzashop.repository.Models;
 using pizzashop.service.Interfaces;
-using pizzashop.service.Utils;
 using Microsoft.AspNetCore.Http;
 using pizzashop.repository.ViewModels;
 using System.Data;

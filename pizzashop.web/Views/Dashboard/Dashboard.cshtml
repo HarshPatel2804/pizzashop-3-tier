@@ -5,32 +5,90 @@
 @await Html.PartialAsync("_Toast")
 
 <section style="min-height: 100vh; background-color: #fafafa;">
-<div class="ms-3 me-4" id="">
-    <div class="d-flex justify-content-between gap-4">
+    <div class="ms-3 me-4" id="">
+        <div class="d-flex justify-content-between gap-4">
 
-        <div class="h1 mt-3 " style="color: rgb(1, 123, 217); font-weight: bold">
-            Dashboard
+            <div class="h1 mt-3 " style="color: rgb(1, 123, 217); font-weight: bold">
+                Dashboard
+            </div>
+
+            <select style="width: 12rem;" id="dateDropdown" class="form-control mt-3">
+                <option value="Today">Today</option>
+                <option value="Last7Days">Last 7 Days</option>
+                <option value="Last30Days">Last 30 Days</option>
+                <option value="CurrentMonth" selected>Current Month</option>
+                <option value="custom" id="Custom">Custom Date</option>
+            </select>
+
+
         </div>
+        <div id="DashboardContainer">
 
-        <select style="width: 12rem;" id="dateDropdown" class="form-control mt-3">
-            <option value="Today">Today</option>
-            <option value="Last7Days">Last 7 Days</option>
-            <option value="Last30Days">Last 30 Days</option>
-            <option value="CurrentMonth" selected>Current Month</option>
-        </select>
-
-
+        </div>
     </div>
-    <div id="DashboardContainer">
+</section>
+<div class="modal fade modal-delete" id="customDate" tabindex="-1" aria-labelledby="deleteModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="customDateModal">Select Data Range</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body d-flex gap-2 flex-row align-items-center justify-content-center">
+                <div class="form-floating w-50">
+                    <input type="date" class="form-control" id="FromDate" placeholder="fromDate">
+                    <label for="fromDate">From Date</label>
+                </div>
 
+                <div class="form-floating w-50">
+                    <input type="date" class="form-control" id="ToDate" placeholder="ToDate">
+                    <label for="ToDate">To Date</label>
+                </div>
+            </div>
+
+            <div class="modal-footer d-flex justify-content-center gap-2">
+                <a id="serachDate">
+                    <button type="button" id="DateRange" class="btn btn-primary">Submit</button>
+                </a>
+                <button type="button" class="btn border-primary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
     </div>
 </div>
-</section>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/date-fns"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
 <script>
     $(document).ready(function () {
         loadDashboardData();
+        const $fromDate = $('#FromDate');
+        const $toDate = $('#ToDate');
+        let today = new Date().toISOString().slice(0, 10);
+        $toDate.attr('max', today);
+        $fromDate.attr('max', today);
+
+        $fromDate.on('change', function () {
+            const fromVal = $(this).val();
+            if (fromVal) {
+                $toDate.attr('min', fromVal);
+            }
+        });
+
+        $toDate.on('change', function () {
+            const toVal = $(this).val();
+            if (toVal) {
+                $fromDate.attr('max', toVal);
+            }
+        });
+
+        $('#customDate').on('hidden.bs.modal', function () {
+            $fromDate.val('');
+            $toDate.val('');
+            $toDate.removeAttr('min');
+        });
 
         function getDateRange(selectedRangeValue) {
             let startDate;
@@ -64,6 +122,33 @@
             };
         }
 
+            $('#DateRange').on('click', function (e) {
+                e.preventDefault();
+                let fromDate = $('#FromDate').val();
+                let toDate = $('#ToDate').val();
+                if(fromDate == null || fromDate == ""){
+                    toastr.error("Please select from date");
+                    return;
+                }
+                if(toDate == null || toDate == ""){
+                    toastr.error("Please select to date");
+                    return;
+                }
+
+                 $.ajax({
+                url: '/Dashboard/Data',
+                type: 'GET',
+                data: {
+                    startDate: fromDate,
+                    endDate: toDate
+                },
+                success: function (data) {
+                    $('#DashboardContainer').html(data);
+                    $('#customDate').modal('hide');
+                }
+            });
+            });
+
         function formatDate(date) {
             const year = date.getFullYear();
             const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -73,8 +158,16 @@
 
         function loadDashboardData() {
             console.log('called');
+            let dates = "";
             const selectedRangeValue = $('#dateDropdown').val();
-            const dates = getDateRange(selectedRangeValue);
+            console.log(typeof(selectedRangeValue));
+            if (selectedRangeValue == "custom") {
+                $('#customDate').modal('show');
+            }
+            else{
+                dates = getDateRange(selectedRangeValue);
+            
+            console.log(dates);
 
             $.ajax({
                 url: '/Dashboard/Data',
@@ -87,12 +180,15 @@
                     $('#DashboardContainer').html(data);
                 }
             });
+            }
         }
 
         $('#dateDropdown').on('change', function () {
             loadDashboardData();
         });
 
-        
+
     });
 </script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>

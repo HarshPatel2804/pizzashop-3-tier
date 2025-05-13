@@ -129,6 +129,7 @@
     CookiesViewModel user = SessionUtils.GetUser(HttpContextAccessor.HttpContext);
     var profileImageUrl = "";
     var Username = "";
+    var Role = 0;
     if (user != null)
     {
         var Id = user.Id;
@@ -137,6 +138,7 @@
         @Url.Content("~/images/Default_pfp.svg.png");
         Console.WriteLine(profileImageUrl);
         Username = ProfileData.Username;
+        Role = user.roleId;
     }
 
     var role = User.FindFirstValue(ClaimTypes.Role);
@@ -159,12 +161,14 @@
                         </button>
                         <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                             <ul class="navbar-nav align-items-center gap-3">
+                                
                                 <li class = 'exclude @(ViewContext.RouteData.Values["controller"]!.ToString() == "OrderKOT" ? "active" : " ") nav-item'
                                     tabindex="0">
                                     <a class="nav-link btn" asp-controller="OrderKOT" asp-action="KOT">
                                         <i class="bi bi-clipboard2-minus-fill"></i> KOT
                                     </a>
                                 </li>
+                                @if(Role != 3){
                                 <li class='exclude @(ViewContext.RouteData.Values["controller"]!.ToString() == "OrderWaitingList" ? "active" : " ") nav-item'
                                     tabindex="0">
                                     <a class="nav-link btn" asp-controller="OrderWaitingList" asp-action="WaitingList">
@@ -177,14 +181,15 @@
                                         <i class="bi bi-square-fill"></i> Tables
                                     </a>
                                 </li>
-                                <li class='@(ViewContext.RouteData.Values["controller"]!.ToString() == "OrderMenu" ? "active" : " ") nav-item me-2'
+                                <li class='@(ViewContext.RouteData.Values["controller"]!.ToString() == "OrderMenu" ? "active" : " ") nav-item me-2 mb-lg-0 mb-3'
                                     tabindex="0">
                                     <a class="nav-link btn" asp-controller="OrderMenu" asp-action="Menu">
                                         <i class="bi bi-list"></i> Menu
                                     </a>
                                 </li>
+                                }
                             </ul>
-                            <div class="dropdown">
+                            <div class="dropdown ms-lg-3 ms-0 d-flex align-items-center justify-content-center">
                                 <button class="profile" data-bs-toggle="dropdown" aria-expanded="false">
                                     <img src=@profileImageUrl class=""
                                         style="width: 40px; height: 40px; border-radius: 50%;" />
@@ -210,7 +215,7 @@
             </section>
         </section>
     </main>
-    <div class="fade modal" id="logout" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    <div class="fade modal" id="logoutModel" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" style="width: 400px;">
             <div class="modal-content">

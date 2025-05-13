@@ -1,6 +1,5 @@
 using pizzashop.repository.Models;
 using pizzashop.repository.ViewModels;
-using pizzashop.repository.ViewModels;
 
 namespace pizzashop.service.Interfaces;
 

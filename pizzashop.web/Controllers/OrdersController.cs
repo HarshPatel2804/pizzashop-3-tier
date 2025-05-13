@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.SignalR;
+using pizzashop.Hubs;
 
 namespace pizzashop.web.Controllers;
 
@@ -22,11 +24,13 @@ public class OrdersController : Controller
 {
     private readonly IOrderService _orderService;
     private readonly PizzaShopContext _context;
+    private readonly IHubContext<OrderHub> _orderHubContext;
 
-    public OrdersController(IOrderService orderService, PizzaShopContext context)
+    public OrdersController(IOrderService orderService, PizzaShopContext context, IHubContext<OrderHub> orderHubContext)
     {
         _orderService = orderService;
         _context = context;
+        _orderHubContext = orderHubContext;
     }
     [CustomAuthorize("Order", "CanView")]
     public IActionResult Order()
@@ -34,7 +38,7 @@ public class OrdersController : Controller
         return View();
     }
 
-    
+
 
     [CustomAuthorize("Order", "CanView")]
     public async Task<IActionResult> OrderList(int page = 1, int pageSize = 5, string search = "", string sortColumn = "", string sortOrder = "", orderstatus? status = null, DateTime? fromDate = null, DateTime? toDate = null)
@@ -136,6 +140,15 @@ public class OrdersController : Controller
     public async Task<IActionResult> SaveOrder([FromBody] OrderSaveViewModel model)
     {
         bool success = await _orderService.SaveOrderAsync(model);
+        //In same group send message after saving order
+        if (success)
+        {
+            string groupName = $"Order_{model.OrderId}";
+            await _orderHubContext.Clients.Group(groupName).SendAsync(
+                "OrderSaved",
+                model.OrderId
+            );
+        }
         return Json(new { success = success, message = "Order Saved Successfully" });
     }
 

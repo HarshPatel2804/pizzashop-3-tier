@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using pizzashop.repository.ViewModels;
+using pizzashop.service.Attributes;
 using pizzashop.service.Interfaces;
 
 namespace pizzashop.web.Controllers;
 
+[CustomAuthForApp("OrderTable")]
 public class OrderTableController : Controller
 {
     private readonly ITableSectionService _tableSectionService;
@@ -72,6 +74,7 @@ public class OrderTableController : Controller
             WaitingCustomers = (List<WaitingtokenViewModel>)tokens,
             AssignTableForm = new AssignTableViewModel()
         };
+        model.AssignTableForm.Sections = await _tableSectionService.GetSections();
         return PartialView("_AssignTablePartial", model);
     }
 

@@ -5,13 +5,18 @@
 @using pizzashop.repository.ViewModels;
 @using static pizzashop.repository.Models.itemtype;
 @model List<CategoryViewModel>;
+@await Html.PartialAsync("_Toast")
 
 <head>
     <link rel="stylesheet" href="~/css/OrderMenu.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
         integrity="sha512-MX5EkfBl..." crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
-
+<style>
+    body{
+    overflow-y: hidden;
+}
+</style>
 <section style="background-color: #fcfcfc;" class="row w-100">
     <aside class="col-auto d-flex justify-content-start align-items-center flex-column offcanvas-lg offcanvas-start"
         id=sidebar style="background-color: #f4f4f4 !important; min-width: 250px; min-height: 100vh;">
@@ -40,16 +45,17 @@
 
             <div class=" d-flex justify-content-between ms-3 mt-4">
                 <div class="d-flex w-50">
-                <button class="navbar-toggler d-lg-none d-block me-2 btn-danger" type="button" data-bs-toggle="offcanvas"
-                    data-bs-target="#sidebar" aria-controls="sidebar" aria-expanded="false" aria-label="Toggle sidebar">
-                    <i class="bi bi-list"></i>
-                </button>
-                <div class="search-input-group">
-                    <input type="text" class="form-control search-input" placeholder="Search">
-                    <div class="search-icon">
-                        <i class="fa-solid fa-magnifying-glass"></i>
+                    <button class="navbar-toggler d-lg-none d-block me-2 btn-danger" type="button"
+                        data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar"
+                        aria-expanded="false" aria-label="Toggle sidebar">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <div class="search-input-group">
+                        <input type="text" class="form-control search-input" placeholder="Search">
+                        <div class="search-icon">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </div>
                     </div>
-                </div>
                 </div>
                 <div class="food-type me-4">
                     <div class="type-option">
@@ -67,17 +73,19 @@
                 </div>
             </div>
 
-            <div id="menu-items" class="d-flex flex-wrap ms-4 mt-4 MenuItems overflow-auto">
+            <div id="menu-items" class="row ms-4 mt-4 MenuItems me-4" style="max-height: 80vh; overflow-y: auto; scrollbar-width: none;">
 
             </div>
         </section>
-        <div id="order-card" class="d-none offcanvas-lg offcanvas-end OrderCard ms-3 me-4 rounded shadow p-3 mt-3"
+        <div id="order-card" class="d-none offcanvas-xl offcanvas-end OrderCard ms-3 me-4 rounded shadow p-3 mt-3"
             style="flex : 1; align-self: flex-start; height: auto;">
 
         </div>
-        <button style="height: 50px; width: 50px; border-radius: 50%; background-color :rgb(43, 134, 200); right: 0px; bottom: 0px; position: sticky;" class="d-lg-none d-block d-flex justify-content-center align-items-center" data-bs-toggle="offcanvas"
-                data-bs-target="#order-card" aria-label="Close">
-            <img src="~/images/cart.svg" style="height:30px; width: 30px;"/>
+        <button id="Cart-image"
+            style="height: 50px; width: 50px; border-radius: 50%; background-color :rgb(43, 134, 200); right: 0px; bottom: 0px; position: sticky;"
+            class="d-xl-none d-block d-flex justify-content-center align-items-center" data-bs-toggle="offcanvas"
+            data-bs-target="#order-card" aria-label="Close">
+            <img src="~/images/cart.svg" style="height:30px; width: 30px;" />
         </button>
     </div>
     </div>
@@ -273,11 +281,11 @@
     </div>
 </div>
 <script>
-    var parentOrderItemsArray = [];
+    var savedOrderItemsArray = [];
 
     function addOrderItemsFromPartial(itemsFromPartial) {
         if (itemsFromPartial && Array.isArray(itemsFromPartial)) {
-            parentOrderItemsArray = itemsFromPartial;
+            savedOrderItemsArray = itemsFromPartial;
         }
     }
     $(document).ready(function () {
@@ -296,8 +304,6 @@
 
         let orderId = getQueryParam("orderId");
         const tokenFromUrl = getQueryParam('orderToken');
-        console.log(orderId);
-        console.log("orderId");
         if (!orderId) {
 
             if (tokenFromUrl) {
@@ -309,16 +315,18 @@
                     data: { orderToken: tokenFromUrl },
                     success: function (response) {
                         if (response && response.success && response.orderId) {
-                            console.log(response.orderId);
                             orderId = parseInt(response.orderId);
                             loadOrderCard();
 
                         } else {
-                            console.error("Failed to validate token or get orderId:", response.message);
+                            toastr.error("Failed to validate token or get orderId:", response.message);
                         }
                     }
                 });
             }
+        }
+        if(!orderId){
+            $('#Cart-image').addClass('d-none');
         }
         loadOrderCard();
         function loadOrderCard() {
@@ -341,8 +349,13 @@
                     type: 'GET',
                     data: { orderId: orderId },
                     success: function (result) {
+                        if (result.success == false) {
+                            toastr.error('Invalid Order Id or Order is Completed');
+                            const redirectUrl = `/OrderMenu/Menu`;
+                            window.location.href = redirectUrl;
+                        }
                         $('#order-card').html(result);
-                        confirmedSelections = JSON.parse(JSON.stringify(parentOrderItemsArray));
+                        confirmedSelections = JSON.parse(JSON.stringify(savedOrderItemsArray));
                         console.log(confirmedSelections);
                         if (tokenFromUrl) {
                             $('#Complete-btn').hide();
@@ -354,13 +367,64 @@
                         renderConfirmedSelections();
                     },
                     error: function () {
-                        $('#order-card').html('<p class="text-danger">Failed to load order details.</p>');
+                        toastr.error('Invalid Order Id or Order is Completed');
+                        const redirectUrl = `/OrderMenu/Menu`;
+                        window.location.href = redirectUrl;
                     }
                 });
             }
         }
 
+        function compareArrays(savedOrderItemsArray, confirmedSelections) {
+            if (savedOrderItemsArray.length !== confirmedSelections.length) {
+                return false;
+            }
+
+            for (const savedItem of savedOrderItemsArray) {
+                const matchingItem = confirmedSelections.find(item => item.uniqueId === savedItem.uniqueId);
+
+                if (!matchingItem || matchingItem.quantity !== savedItem.quantity) {
+                    return false;
+                }
+            }
+
+            for (const confirmedItem of confirmedSelections) {
+                const matchingItem = savedOrderItemsArray.find(item => item.uniqueId === confirmedItem.uniqueId);
+
+                if (!matchingItem) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        function updateButtonStates(savedOrderItemsArray, confirmedSelections) {
+            const areArraysEqual = compareArrays(savedOrderItemsArray, confirmedSelections);
+
+            const saveBtn = document.getElementById('Save-Order-Btn');
+            const completeBtn = document.getElementById('Complete-btn');
+            const invoiceBtn = document.getElementById('Invoice-btn');
+            const cancelBtn = document.getElementById('Cancel-btn');
+
+            if (areArraysEqual) {
+                saveBtn.disabled = true;
+
+                completeBtn.disabled = false;
+
+                invoiceBtn.disabled = false;
+            } else {
+                saveBtn.disabled = false;
+
+                completeBtn.disabled = true;
+
+                invoiceBtn.disabled = true;
+            }
+        }
+
         function renderConfirmedSelections() {
+            updateButtonStates(savedOrderItemsArray, confirmedSelections);
+
             const $container = $('#selected-items-container');
             $container.empty();
 
@@ -1022,6 +1086,38 @@
             }
         }
 
+        //signal R (Save Order)
+
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/orderHub")
+            .withAutomaticReconnect()
+            .build();
+
+        //When order save then call loadOrderCard
+        connection.on("OrderSaved", (savedOrderId) => {
+            loadOrderCard();
+            console.log(`SignalR: Received 'OrderSaved' event for OrderId: ${savedOrderId}`);
+        });
+
+        async function startSignalRConnection() {
+            try {
+                await connection.start();
+                console.log("SignalR Connected.");
+
+                if (orderId && orderId > 0) {
+                    await connection.invoke("JoinOrderGroup", orderId.toString());
+                }
+
+            } catch (err) {
+                console.error("SignalR Connection Error: ", err);
+            }
+        }
+
+        connection.onclose(error => {
+            console.warn(`SignalR connection closed. Error: ${error?.message}`);
+        });
+
+        startSignalRConnection();
 
         $('#order-card').on('click', '#Save-Order-Btn', function () {
 
@@ -1041,6 +1137,7 @@
 
                 success: function (response) {
                     toastr.success('Order saved successfully!');
+                    updateButtonStates(savedOrderItemsArray, confirmedSelections);
                 }
             });
         });
@@ -1380,4 +1477,10 @@
         });
     });
 </script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.14/signalr.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>

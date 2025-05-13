@@ -203,7 +203,7 @@
                     }
                 });
             });
-            
+
             $(document).ready(function () {
                 $('.assign-btn').prop('disabled', true);
 
@@ -296,26 +296,26 @@
                     }
                 });
 
-                @* $('.accordion-collapse').on('hidden.bs.collapse', function () {
+    @* $('.accordion-collapse').on('hidden.bs.collapse', function () {
                     const sectionId = $(this).closest('.accordion-item').find('.assign-btn').data('id');
 
                     if (selectedTablesPerSection[sectionId]) {
                         selectedTablesPerSection[sectionId].forEach(tableId => {
-                            $(`[data-table-id="${tableId}"]`).removeClass('selected-table');
-                        });
+                    $(`[data-table-id="${tableId}"]`).removeClass('selected-table');
+                    });
 
                         selectedTablesPerSection[sectionId] = [];
 
-                        $(`.assign-btn[data-id="${sectionId}"]`).prop('disabled', true);
+                    $(`.assign-btn[data-id="${sectionId}"]`).prop('disabled', true);
                     }
-                });  *@
+                    });  *@
             });
         }
 
         $(document).on('click', '.assign-btn', function () {
-           const sectionIdsWithSelections = Object.keys(selectedTablesPerSection)
-        .filter(secId => selectedTablesPerSection[secId] && selectedTablesPerSection[secId].length > 0)
-        .map(secId => parseInt(secId));
+            const sectionIdsWithSelections = Object.keys(selectedTablesPerSection)
+                .filter(secId => selectedTablesPerSection[secId] && selectedTablesPerSection[secId].length > 0)
+                .map(secId => parseInt(secId));
             const selectedTables = [];
             $('.accordion-item').find('.table-card.selected-table').each(function () {
                 selectedTables.push($(this).data('table-id'));
@@ -331,6 +331,11 @@
                 success: function (response) {
                     $("#AssignModal").html(response);
                     $("#selectedTableIds").val(selectedTableIds);
+                    sectionIdsWithSelections.forEach(function (sectionId) {
+                        $('#' + sectionId).prop('checked', true);
+                    });
+
+                    $('.section-checkbox').prop('disabled', true);
                     var offcanvasElement = document.getElementById('AssignTableModal');
                     var bsOffcanvas = new bootstrap.Offcanvas(offcanvasElement);
                     bsOffcanvas.show();

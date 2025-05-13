@@ -1,4 +1,5 @@
 
+using Microsoft.AspNetCore.Mvc.Rendering;
 using pizzashop.repository.Interfaces;
 using pizzashop.repository.Models;
 using pizzashop.repository.ViewModels;
@@ -381,4 +382,9 @@ public class TableSectionService : ITableSectionService
 
             return viewModel;
         }
+
+    public async Task<List<SelectListItem>> GetSections(){
+        var sections = await _tableSectionRepository.GetSectionListAsync();
+        return sections;
+    }
 }

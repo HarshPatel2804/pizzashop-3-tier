@@ -53,8 +53,10 @@ public class WaitingTokenRepository : IWaitingTokenRepository
 
     public async Task<bool> IsCustomerInWaitingList(int customerId)
     {
+         var startDate =  DateTime.Today;
+        var endDate = startDate.Date.AddDays(1).AddTicks(-1);
         return await _context.Waitingtokens
-            .AnyAsync(w => w.Customerid == customerId && w.Isassigned == false);
+            .AnyAsync(w => w.Customerid == customerId && w.Isassigned == false && w.Createdat >= startDate && w.Modifiedat <= endDate);
     }
 
     public async Task WaitingToAssign(int tokenId)

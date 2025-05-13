@@ -7,19 +7,20 @@ using pizzashop.service.Interfaces;
 namespace pizzashop.web.Controllers;
 public class OrderKOTController : Controller
 {
-
     private readonly IKOTService _KotService;
 
     public OrderKOTController(IKOTService kOTService)
     {
         _KotService = kOTService;
     }
+     [CustomAuthForApp("OrderKOT")]
     public async Task<IActionResult> KOT()
     {
         KOTViewModel kOTViewModel = await _KotService.GetKOTViewModel();
         return View(kOTViewModel);
     }
 
+     [CustomAuthForApp("OrderKOT")]
     [HttpGet]
     public async Task<IActionResult> GetKOTOrdersPartial(string categoryId, string status, int page = 1, int itemsPerPage = 8)
     {
@@ -37,6 +38,7 @@ public class OrderKOTController : Controller
         }
     }
 
+     [CustomAuthForApp("OrderKOT")]
     [HttpGet]
     public async Task<IActionResult> GetKOTOrders(string categoryId, string status, int page = 1, int itemsPerPage = 8)
     {
@@ -52,13 +54,14 @@ public class OrderKOTController : Controller
         }
     }
 
+     [CustomAuthForApp("OrderKOT")]
     [HttpPost]
-    public IActionResult UpdatePreparedItems([FromBody] UpdateKOTviewModel model)
+    public async Task<IActionResult> UpdatePreparedItems([FromBody] UpdateKOTviewModel model)
     {
         if (model.Items == null || !model.Items.Any())
             return BadRequest("No items provided.");
 
-        _KotService.UpdatePreparedQuantities(model.Items , model.Status);
+        await _KotService.UpdatePreparedQuantities(model.Items , model.Status);
         return Ok(new { message = "Items updated successfully." });
     }
 

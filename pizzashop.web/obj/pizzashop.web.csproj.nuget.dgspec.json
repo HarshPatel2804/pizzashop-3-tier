@@ -1,31 +1,26 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Harsh_pizzashop\\pizzashop.web\\pizzashop.web.csproj": {}
+    "D:\\pizzashop_3Tier\\pizzashop.web\\pizzashop.web.csproj": {}
   },
   "projects": {
-    "D:\\Harsh_pizzashop\\pizzashop.repository\\pizzashop.repository.csproj": {
+    "D:\\pizzashop_3Tier\\pizzashop.repository\\pizzashop.repository.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Harsh_pizzashop\\pizzashop.repository\\pizzashop.repository.csproj",
+        "projectUniqueName": "D:\\pizzashop_3Tier\\pizzashop.repository\\pizzashop.repository.csproj",
         "projectName": "pizzashop.repository",
-        "projectPath": "D:\\Harsh_pizzashop\\pizzashop.repository\\pizzashop.repository.csproj",
-        "packagesPath": "C:\\Users\\dell_\\.nuget\\packages\\",
-        "outputPath": "D:\\Harsh_pizzashop\\pizzashop.repository\\obj\\",
+        "projectPath": "D:\\pizzashop_3Tier\\pizzashop.repository\\pizzashop.repository.csproj",
+        "packagesPath": "C:\\Users\\pce29\\.nuget\\packages\\",
+        "outputPath": "D:\\pizzashop_3Tier\\pizzashop.repository\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
+        "centralPackageVersionsManagementEnabled": true,
         "configFilePaths": [
-          "C:\\Users\\dell_\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\pce29\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -46,18 +41,36 @@
           "dependencies": {
             "Microsoft.AspNetCore.Mvc": {
               "target": "Package",
-              "version": "[2.3.0, )"
+              "version": "[2.3.0, )",
+              "versionCentrallyManaged": true
             },
             "Microsoft.EntityFrameworkCore.Tools": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[7.0.11, )"
+              "version": "[7.0.11, )",
+              "versionCentrallyManaged": true
             },
             "Npgsql.EntityFrameworkCore.PostgreSQL": {
               "target": "Package",
-              "version": "[7.0.11, )"
+              "version": "[7.0.11, )",
+              "versionCentrallyManaged": true
             }
+          },
+          "centralPackageVersions": {
+            "MailKit": "[4.10.0, )",
+            "MailKit.NET": "[2.0.0, )",
+            "Microsoft.AspNetCore.Cors": "[2.3.0, )",
+            "Microsoft.AspNetCore.Http": "[2.3.0, )",
+            "Microsoft.AspNetCore.Mvc": "[2.3.0, )",
+            "Microsoft.AspNetCore.SignalR": "[1.2.0, )",
+            "Microsoft.EntityFrameworkCore.Tools": "[7.0.11, )",
+            "Microsoft.IdentityModel.Tokens": "[7.0.3, )",
+            "MimeKit": "[4.10.0, )",
+            "Npgsql.EntityFrameworkCore.PostgreSQL": "[7.0.11, )",
+            "NPOI": "[2.7.3, )",
+            "Select.Pdf.NetCore": "[24.1.0, )",
+            "System.IdentityModel.Tokens.Jwt": "[7.0.3, )"
           },
           "imports": [
             "net461",
@@ -79,36 +92,31 @@
         }
       }
     },
-    "D:\\Harsh_pizzashop\\pizzashop.service\\pizzashop.service.csproj": {
+    "D:\\pizzashop_3Tier\\pizzashop.service\\pizzashop.service.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Harsh_pizzashop\\pizzashop.service\\pizzashop.service.csproj",
+        "projectUniqueName": "D:\\pizzashop_3Tier\\pizzashop.service\\pizzashop.service.csproj",
         "projectName": "pizzashop.service",
-        "projectPath": "D:\\Harsh_pizzashop\\pizzashop.service\\pizzashop.service.csproj",
-        "packagesPath": "C:\\Users\\dell_\\.nuget\\packages\\",
-        "outputPath": "D:\\Harsh_pizzashop\\pizzashop.service\\obj\\",
+        "projectPath": "D:\\pizzashop_3Tier\\pizzashop.service\\pizzashop.service.csproj",
+        "packagesPath": "C:\\Users\\pce29\\.nuget\\packages\\",
+        "outputPath": "D:\\pizzashop_3Tier\\pizzashop.service\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
+        "centralPackageVersionsManagementEnabled": true,
         "configFilePaths": [
-          "C:\\Users\\dell_\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\pce29\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "D:\\Harsh_pizzashop\\pizzashop.repository\\pizzashop.repository.csproj": {
-                "projectPath": "D:\\Harsh_pizzashop\\pizzashop.repository\\pizzashop.repository.csproj"
+              "D:\\pizzashop_3Tier\\pizzashop.repository\\pizzashop.repository.csproj": {
+                "projectPath": "D:\\pizzashop_3Tier\\pizzashop.repository\\pizzashop.repository.csproj"
               }
             }
           }
@@ -125,24 +133,44 @@
           "dependencies": {
             "MailKit": {
               "target": "Package",
-              "version": "[4.10.0, )"
+              "version": "[4.10.0, )",
+              "versionCentrallyManaged": true
             },
             "Microsoft.AspNetCore.Cors": {
               "target": "Package",
-              "version": "[2.3.0, )"
+              "version": "[2.3.0, )",
+              "versionCentrallyManaged": true
             },
             "Microsoft.IdentityModel.Tokens": {
               "target": "Package",
-              "version": "[7.0.3, )"
+              "version": "[7.0.3, )",
+              "versionCentrallyManaged": true
             },
             "NPOI": {
               "target": "Package",
-              "version": "[2.7.3, )"
+              "version": "[2.7.3, )",
+              "versionCentrallyManaged": true
             },
             "System.IdentityModel.Tokens.Jwt": {
               "target": "Package",
-              "version": "[7.0.3, )"
+              "version": "[7.0.3, )",
+              "versionCentrallyManaged": true
             }
+          },
+          "centralPackageVersions": {
+            "MailKit": "[4.10.0, )",
+            "MailKit.NET": "[2.0.0, )",
+            "Microsoft.AspNetCore.Cors": "[2.3.0, )",
+            "Microsoft.AspNetCore.Http": "[2.3.0, )",
+            "Microsoft.AspNetCore.Mvc": "[2.3.0, )",
+            "Microsoft.AspNetCore.SignalR": "[1.2.0, )",
+            "Microsoft.EntityFrameworkCore.Tools": "[7.0.11, )",
+            "Microsoft.IdentityModel.Tokens": "[7.0.3, )",
+            "MimeKit": "[4.10.0, )",
+            "Npgsql.EntityFrameworkCore.PostgreSQL": "[7.0.11, )",
+            "NPOI": "[2.7.3, )",
+            "Select.Pdf.NetCore": "[24.1.0, )",
+            "System.IdentityModel.Tokens.Jwt": "[7.0.3, )"
           },
           "imports": [
             "net461",
@@ -164,36 +192,31 @@
         }
       }
     },
-    "D:\\Harsh_pizzashop\\pizzashop.web\\pizzashop.web.csproj": {
+    "D:\\pizzashop_3Tier\\pizzashop.web\\pizzashop.web.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Harsh_pizzashop\\pizzashop.web\\pizzashop.web.csproj",
+        "projectUniqueName": "D:\\pizzashop_3Tier\\pizzashop.web\\pizzashop.web.csproj",
         "projectName": "pizzashop.web",
-        "projectPath": "D:\\Harsh_pizzashop\\pizzashop.web\\pizzashop.web.csproj",
-        "packagesPath": "C:\\Users\\dell_\\.nuget\\packages\\",
-        "outputPath": "D:\\Harsh_pizzashop\\pizzashop.web\\obj\\",
+        "projectPath": "D:\\pizzashop_3Tier\\pizzashop.web\\pizzashop.web.csproj",
+        "packagesPath": "C:\\Users\\pce29\\.nuget\\packages\\",
+        "outputPath": "D:\\pizzashop_3Tier\\pizzashop.web\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
+        "centralPackageVersionsManagementEnabled": true,
         "configFilePaths": [
-          "C:\\Users\\dell_\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\pce29\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "D:\\Harsh_pizzashop\\pizzashop.service\\pizzashop.service.csproj": {
-                "projectPath": "D:\\Harsh_pizzashop\\pizzashop.service\\pizzashop.service.csproj"
+              "D:\\pizzashop_3Tier\\pizzashop.service\\pizzashop.service.csproj": {
+                "projectPath": "D:\\pizzashop_3Tier\\pizzashop.service\\pizzashop.service.csproj"
               }
             }
           }
@@ -210,24 +233,49 @@
           "dependencies": {
             "MailKit": {
               "target": "Package",
-              "version": "[4.10.0, )"
+              "version": "[4.10.0, )",
+              "versionCentrallyManaged": true
             },
             "MailKit.NET": {
               "target": "Package",
-              "version": "[2.0.0, )"
+              "version": "[2.0.0, )",
+              "versionCentrallyManaged": true
             },
             "Microsoft.AspNetCore.Http": {
               "target": "Package",
-              "version": "[2.3.0, )"
+              "version": "[2.3.0, )",
+              "versionCentrallyManaged": true
+            },
+            "Microsoft.AspNetCore.SignalR": {
+              "target": "Package",
+              "version": "[1.2.0, )",
+              "versionCentrallyManaged": true
             },
             "MimeKit": {
               "target": "Package",
-              "version": "[4.10.0, )"
+              "version": "[4.10.0, )",
+              "versionCentrallyManaged": true
             },
             "Select.Pdf.NetCore": {
               "target": "Package",
-              "version": "[24.1.0, )"
+              "version": "[24.1.0, )",
+              "versionCentrallyManaged": true
             }
+          },
+          "centralPackageVersions": {
+            "MailKit": "[4.10.0, )",
+            "MailKit.NET": "[2.0.0, )",
+            "Microsoft.AspNetCore.Cors": "[2.3.0, )",
+            "Microsoft.AspNetCore.Http": "[2.3.0, )",
+            "Microsoft.AspNetCore.Mvc": "[2.3.0, )",
+            "Microsoft.AspNetCore.SignalR": "[1.2.0, )",
+            "Microsoft.EntityFrameworkCore.Tools": "[7.0.11, )",
+            "Microsoft.IdentityModel.Tokens": "[7.0.3, )",
+            "MimeKit": "[4.10.0, )",
+            "Npgsql.EntityFrameworkCore.PostgreSQL": "[7.0.11, )",
+            "NPOI": "[2.7.3, )",
+            "Select.Pdf.NetCore": "[24.1.0, )",
+            "System.IdentityModel.Tokens.Jwt": "[7.0.3, )"
           },
           "imports": [
             "net461",

@@ -3,11 +3,12 @@
     <ProjectReference Include="..\pizzashop.service\pizzashop.service.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="MailKit" Version="4.10.0" />
-    <PackageReference Include="MailKit.NET" Version="2.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
-    <PackageReference Include="MimeKit" Version="4.10.0" />
-    <PackageReference Include="Select.Pdf.NetCore" Version="24.1.0" />
+    <PackageReference Include="MailKit" />
+    <PackageReference Include="MailKit.NET" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR" />
+    <PackageReference Include="MimeKit" />
+    <PackageReference Include="Select.Pdf.NetCore" />
   </ItemGroup>
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>

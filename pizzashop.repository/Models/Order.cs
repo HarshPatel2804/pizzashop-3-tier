@@ -47,6 +47,7 @@ public partial class Order
     public decimal Totalamount { get; set; }
 
     public DateTime? Createdat { get; set; }
+    public DateTime? ServedTime { get; set; }
 
     public int? Createdby { get; set; }
 

@@ -67,8 +67,8 @@ namespace pizzashop.service.Attributes
 
         public CustomAuthorizeAttribute(string? moduleName = null, string? permissionType = null)
         {
-            _moduleName = moduleName;
-            _permissionType = permissionType;
+            _moduleName = moduleName ?? string.Empty;
+            _permissionType = permissionType ?? string.Empty;
         }
 
         public void OnAuthorization(AuthorizationFilterContext context)

@@ -111,28 +111,21 @@ public class CustomerService : ICustomerService
 
     public async Task<(string fileName, byte[] fileContent)> GenerateCustomerExcel(string searchString, DateTime? fromDate, DateTime? toDate)
     {
-        // Get orders based on filters
         var (orders, totalOrders) = await GetOrdersForExport(searchString, fromDate, toDate);
 
-        // Get template path
         string templatePath = Path.Combine("wwwroot", "Templates", "CustomerTemplate.xlsx");
 
-        // Create file name for export
         string fileName = $"PizzaShopCustomers_{DateTime.Now:yyyyMMdd}.xlsx";
 
         using (var templateFile = new FileStream(templatePath, FileMode.Open, FileAccess.Read))
         {
-            // Create workbook from template
             IWorkbook workbook = new XSSFWorkbook(templateFile);
             ISheet sheet = workbook.GetSheetAt(0);
 
-            // Fill the header fields
             FillHeaderData(sheet, searchString, totalOrders, fromDate, toDate);
 
-            // Fill order data
             FillOrderData(workbook, sheet, orders);
 
-            // Write to memory stream
             using (var exportData = new MemoryStream())
             {
                 workbook.Write(exportData);
@@ -169,7 +162,6 @@ public class CustomerService : ICustomerService
         ICell dateCell = sheet.GetRow(4).GetCell(2);
         dateCell.SetCellValue(dateText);
 
-        // Number of Records (F4)
         sheet.AddMergedRegion(new CellRangeAddress(4, 5, 9, 12));
         ICell recordsCell = sheet.GetRow(4).GetCell(9);
         recordsCell.SetCellValue(recordCount);
@@ -177,34 +169,28 @@ public class CustomerService : ICustomerService
 
     private void FillOrderData(IWorkbook workbook, ISheet sheet, IEnumerable<Customer> customers)
     {
-        // Create styles for data cells
         ICellStyle dataStyle = CreateDataCellStyle(workbook);
         ICellStyle currencyStyle = CreateCurrencyStyle(workbook, dataStyle);
         ICellStyle dateStyle = CreateDateStyle(workbook, dataStyle);
 
-        // Start filling data from row 8
         int rowIndex = 9;
         foreach (var customer in customers)
         {
             IRow dataRow = sheet.CreateRow(rowIndex);
 
-            // Create cell for Order ID (1 column)
             CreateCell(dataRow, 0, customer.Customerid.ToString(), dataStyle);
 
-            // Merge cells for Order Date (3 columns)
             sheet.AddMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 1, 3));
             CreateCell(dataRow, 1, customer.Customername, dataStyle);
             CreateCell(dataRow, 2, "", dataStyle);
             CreateCell(dataRow, 3, "", dataStyle);
 
-            // Merge cells for Customer Name (3 columns)
             sheet.AddMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 4, 7));
             CreateCell(dataRow, 4, customer.Email, dataStyle);
             CreateCell(dataRow, 5, "", dataStyle);
             CreateCell(dataRow, 6, "", dataStyle);
             CreateCell(dataRow, 7, "", dataStyle);
 
-            // Merge cells for Order Status (3 columns)
             sheet.AddMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 8, 10));
             ICell dateCell = dataRow.CreateCell(8);
             dateCell.SetCellValue(customer.Customername);
@@ -212,13 +198,11 @@ public class CustomerService : ICustomerService
             CreateCell(dataRow, 9, "", dataStyle);
             CreateCell(dataRow, 10, "", dataStyle);
 
-            // Merge cells for Payment Mode (2 columns)
             sheet.AddMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 11, 13));
             CreateCell(dataRow, 11, customer.Phoneno.ToString(), dataStyle);
             CreateCell(dataRow, 12, "", dataStyle);
             CreateCell(dataRow, 13, "", dataStyle);
 
-            // Merge cells for Total Amount (2 columns)
             sheet.AddMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 14, 15));
             CreateCell(dataRow, 14, customer.Totalorder.ToString(), dataStyle);
             CreateCell(dataRow, 15, "", dataStyle);
@@ -226,7 +210,6 @@ public class CustomerService : ICustomerService
             rowIndex++;
         }
 
-        // Auto-size columns for better appearance
         for (int i = 0; i < 16; i++)
         {
             sheet.AutoSizeColumn(i);

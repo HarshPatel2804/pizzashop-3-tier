@@ -36,6 +36,10 @@ public class HomeController : Controller
         var user = SessionUtils.GetUser(HttpContext);
         var token = CookieUtils.GetJWTToken(Request);
         Console.WriteLine(user + "user");
+
+        if(user != null && token != null && user.roleId == 3){
+            return RedirectToAction("KOT", "OrderKOT");
+        }
         if (user != null && token != null)
             return RedirectToAction("Dashboard", "Dashboard");
 
@@ -46,7 +50,6 @@ public class HomeController : Controller
     [HttpPost]
     public async Task<IActionResult> Index(LoginViewModel loginViewModel)
     {
-
         if (ModelState.IsValid)
         {
             if (string.IsNullOrEmpty(loginViewModel.Email) || string.IsNullOrEmpty(loginViewModel.Password))
@@ -67,6 +70,9 @@ public class HomeController : Controller
                     var token = _JwtService.GenerateJwtResetToken(loginViewModel.Email);
                     await _usersLoginService.SetResetTokenAsync(loginViewModel.Email, token);
                     return RedirectToAction("ResetPassword", new { Token = token });
+                }
+                if(userLogin.Roleid == 3){
+                    return RedirectToAction("KOT", "OrderKOT");
                 }
                 return RedirectToAction("Dashboard", "Dashboard");
             }

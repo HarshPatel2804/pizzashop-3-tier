@@ -9,6 +9,6 @@ namespace pizzashop.repository.Interfaces
     {
         Task<List<KOTOrdersViewModel>> GetKOTOrdersByCategoryAndStatus(int? categoryId, string status, int skip, int take);
 
-        void UpdatePreparedQuantities(List<PreparedItemviewModel> updates , string status);
+        Task UpdatePreparedQuantities(List<PreparedItemviewModel> updates , string status);
     }
 }

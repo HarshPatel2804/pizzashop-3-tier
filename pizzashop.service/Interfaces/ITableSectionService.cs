@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.Rendering;
 using pizzashop.repository.Models;
 using pizzashop.repository.ViewModels;
 
@@ -46,4 +47,6 @@ public interface ITableSectionService
     Task<WaitingAssignViewModel> GetAssignTableViewModelAsync(int waitingTokenId, int? sectionId = null);
 
     Task<WaitingAssignViewModel> GetMultiAssignTableViewModelAsync(int waitingTokenId, List<int>? sectionId = null);
+
+    Task<List<SelectListItem>> GetSections();
 }

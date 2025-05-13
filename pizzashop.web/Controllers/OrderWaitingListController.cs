@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using pizzashop.repository.ViewModels;
+using pizzashop.service.Attributes;
 using pizzashop.service.Interfaces;
 
 namespace pizzashop.web.Controllers;
 
+[CustomAuthForApp("OrderWaitingList")]
 public class OrderWaitingListController : Controller
 {
     private readonly IWaitingTokenService _waitingTokenService;

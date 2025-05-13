@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using pizzashop.repository.ViewModels;
 using pizzashop.service.Interfaces;
 using pizzashop.service;
+using pizzashop.service.Attributes;
 
 
 namespace pizzashop.web.Controllers;
 
+[CustomAuthForApp("OrderMenu")]
 public class OrderMenuController : Controller
 {
     private readonly IMenuService _menuService;
@@ -22,6 +24,7 @@ public class OrderMenuController : Controller
         _customerService = customerService;
         _JwtService = JwtService;
     }
+    
     public async Task<ActionResult> Menu()
     {
         var categories = await _menuService.GetAllCategories();
@@ -30,6 +33,10 @@ public class OrderMenuController : Controller
     public async Task<ActionResult> OrderCard(int orderId)
     {
         var orderDetailsViewModel = await _orderService.GetOrderDetailsForViewAsync(orderId);
+        if(orderDetailsViewModel == null){
+            TempData["ErrorMessage"] = "Invalid Order Id or Order is Completed";
+            return Ok(new { success = false});
+        }
         return PartialView("_OrderDetailPartial", orderDetailsViewModel);
     }
 
@@ -51,7 +58,8 @@ public IActionResult GetOrderIdFromToken(string orderToken)
 
     if (principal == null)
     {
-        return Unauthorized(new { success = false, message = "Invalid or expired order token." });
+        // TempData["ErrorMessage"] = "Invalid or expired order token.";
+        return RedirectToAction("Menu","Menu");
     }
 
     var orderIdClaim = principal.Claims.FirstOrDefault(c => c.Type == "orderId");

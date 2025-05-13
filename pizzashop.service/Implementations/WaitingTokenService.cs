@@ -56,6 +56,7 @@ public class WaitingTokenService : IWaitingTokenService
 
     public async Task<IEnumerable<WaitingtokenViewModel>> GetAllWaitingTokens(List<int> sectionIds)
     {
+        ITableSectionService _tableSectionService = _tableSectionServiceLazy.Value;
         var tokens = await _waitingTokenRepository.GetAllWaitingTokens(sectionIds);
 
         var result = tokens.Select(token => new WaitingtokenViewModel

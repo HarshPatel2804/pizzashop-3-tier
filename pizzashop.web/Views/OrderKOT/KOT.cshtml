@@ -228,10 +228,10 @@
             order.items.forEach(item => {
                 let modifierList = item.modifiers?.map(mod => `<li>${mod.modifiername}</li>`).join('') || '';
                 let itemLabel = `
-            <label class="d-flex align-items-start justify-content-between w-100">
+            <div class="d-flex align-items-start justify-content-between w-100">
                 <div class="form-check d-flex flex-column">
                     <div class="d-flex align-items-start">
-                        <input type="checkbox" class="form-check-input mt-1 item-checkbox" data-id="${item.ordereditemid}" />
+                        <input type="checkbox" class="form-check-input mt-1 item-checkbox" id="item-check" data-id="${item.ordereditemid}" />
                         <div class="ms-2">
                             <div class="text-dark fs-6 fw-normal">${item.itemName}</div>
                             <ul class="subitem-list mb-0">${modifierList}</ul>
@@ -239,11 +239,11 @@
                     </div>
                 </div>
                 <div class="quantity-control d-flex align-items-center">
-                    <button type="button" class="btn-decrement">−</button>
+                    <button type="button" class="btn-decrement" id="MINUS">−</button>
                     <span class="item-qty" data-id="${item.ordereditemid}" data-qty="${item.quantity}">${item.quantity}</span>
-                    <button type="button" class="btn-increment">+</button>
+                    <button type="button" class="btn-increment" id="PLUS">+</button>
                 </div>
-            </label>
+            </div>
             <hr class="my-3" />
         `;
                 $formBody.append(itemLabel);

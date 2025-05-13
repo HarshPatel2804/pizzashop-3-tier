@@ -12,6 +12,7 @@ using pizzashop.service.Constants;
 
 namespace pizzashop.web.Controllers;
 
+[CustomAuthForApp("Dashboard")]
 [CustomAuthorize]
 public class DashboardController : Controller
 {

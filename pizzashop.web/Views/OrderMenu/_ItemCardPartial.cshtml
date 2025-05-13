@@ -3,7 +3,7 @@
 
 @foreach (var item in Model)
 {
-    <div class="me-5 mb-4">
+    <div>
         <div class="card card-custom d-flex flex-row align-items-center ItemCard" data-itemid="@item.Itemid"
             data-name="@item.Itemname" data-type="@item.Itemtype" data-rate="@item.Rate" data-tax="@item.Taxpercentage"
             data-istax="@item.Isdefaulttax">
@@ -12,7 +12,7 @@
                     alt="@item.Itemname" class="card-img-custom" />
             </div>
             <div class="ms-3 d-flex flex-column justify-content-center flex-grow-1">
-                <span style="color: black; font-size: 18px">@item.Itemname</span>
+                <span style="color: black; font-size: 18px" class="item-name" title="@item.Itemname">@item.Itemname</span>
                 <span class="text-muted fs-7 mt-1">₹@item.Rate</span>
             </div>
             <div

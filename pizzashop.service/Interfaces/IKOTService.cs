@@ -10,6 +10,6 @@ namespace pizzashop.service.Interfaces
         Task<KOTViewModel> GetKOTViewModel();
         Task<List<KOTOrdersViewModel>> GetKOTOrders(string categoryId, string status, int page, int itemsPerPage);
 
-        void UpdatePreparedQuantities(List<PreparedItemviewModel> updates , string status);
+        Task UpdatePreparedQuantities(List<PreparedItemviewModel> updates , string status);
     }
 }

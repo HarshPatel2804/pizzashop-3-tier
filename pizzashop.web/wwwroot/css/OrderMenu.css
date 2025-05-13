@@ -74,7 +74,6 @@ body{
 }
 
 .card-custom {
-    width: 270px;
     height: 90px;
     border-radius: 1rem;
     border-color: white;
@@ -217,4 +216,18 @@ body{
 
 .offcanvas-lg.offcanvas-end {
     top: 50px !important;
+  }
+
+  .MenuItems {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+}
+
+.item-name {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }

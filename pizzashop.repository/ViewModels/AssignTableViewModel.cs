@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using pizzashop.repository.Models;
 
 namespace pizzashop.repository.ViewModels;
@@ -26,6 +27,8 @@ public partial class AssignTableViewModel
     [Required(ErrorMessage = "Number of people is required")]
     [Range(1, 100, ErrorMessage = "Number of people must be between 1 and 100")]
     public int Noofpeople { get; set; }
+
+    public List<SelectListItem> Sections { get; set; }
 
     public int? Waitingtokenid { get; set; }
 }
