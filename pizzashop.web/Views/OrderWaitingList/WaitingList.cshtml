@@ -285,8 +285,8 @@
 
             $element.text(hours + ' hrs ' + minutes + ' min');
         }
-        
-         var selectedTableIds = [];
+
+        var selectedTableIds = [];
         var selectedSectionIds = [];
 
         $('#Waiting-Container').on('click', '.assign-token-btn', function () {
@@ -305,6 +305,8 @@
                 success: function (result) {
                     $('#AssignModal').html(result);
                     selectedSectionIds.push(parseInt(sectionId));
+                    var dropdownBtn = $('#sectionDropdownBtn');
+                    dropdownBtn.text($('#section_' + selectedSectionIds[0]).data('name'));
                     $('#assignTableModal').modal('show');
                 },
                 error: function () {
@@ -312,8 +314,8 @@
                 }
             });
         });
-       
-        
+
+
         $('#AssignModal').on('change', '.section-checkbox', function () {
             var sectionId = parseInt($(this).val());
             var isChecked = $(this).is(':checked');
@@ -332,21 +334,33 @@
             console.log(selectedSectionIds);
             var tableCheckboxList = $('#tableCheckboxList');
             tableCheckboxList.empty();
+
+            var dropdownBtn = $('#sectionDropdownBtn');
+
+            if (selectedSectionIds.length === 0) {
+                dropdownBtn.text('Select Sections');
+            } else if (selectedSectionIds.length === 1) {
+                dropdownBtn.text($('#section_' + selectedSectionIds[0]).data('name'));
+            } else {
+                var firstSectionText = $('#section_' + selectedSectionIds[0]).data('name');
+                var othersCount = selectedSectionIds.length - 1;
+                dropdownBtn.text(firstSectionText + ' +' + othersCount);
+            }
+
             if (selectedSectionIds.length == 0) return;
-    
+
             $.ajax({
                 url: '/OrderWaitingList/GetMultiTablesBySectionId',
                 type: 'GET',
                 data: { sectionId: selectedSectionIds },
                 traditional: true,
                 success: function (data) {
-                   
 
                     $.each(data, function (i, table) {
                         var checkboxItem = `
                                 <li>
                                     <div class="form-check">
-                                        <input class="form-check-input table-checkbox" type="checkbox" name="SelectedTableIds" value="${table.value}" id="table_${table.value}">
+                                        <input class="form-check-input table-checkbox" type="checkbox" name="SelectedTableIds" value="${table.value}" id="table_${table.value}" data-name="${table.text}">
                                         <label class="form-check-label" for="table_${table.value}">${table.text}</label>
                                     </div>
                                 </li>
@@ -354,7 +368,7 @@
                         tableCheckboxList.append(checkboxItem);
                     });
 
-                    $('#tableDropdownButton').text('Select Tables');
+                    $('#tableDropdownBtn').text('Select Tables');
                 }
             });
         });
@@ -373,9 +387,17 @@
                     selectedTableIds.splice(index, 1);
                 }
             }
+            var dropdownBtn = $('#tableDropdownBtn');
 
-            console.log(selectedTableIds);
-
+            if (selectedTableIds.length === 0) {
+                dropdownBtn.text('Select Tables');
+            } else if (selectedTableIds.length === 1) {
+                dropdownBtn.text($('#table_' + selectedTableIds[0]).data('name'));
+            } else {
+                var firstSectionText = $('#table_' + selectedTableIds[0]).data('name');
+                var othersCount = selectedTableIds.length - 1;
+                dropdownBtn.text(firstSectionText + ' +' + othersCount);
+            }
         });
 
         $(document).on("hidden.bs.modal", "#assignTableModal", function () {

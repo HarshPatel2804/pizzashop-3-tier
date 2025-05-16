@@ -3,7 +3,7 @@
     var hasMore = ViewData["HasMore"] as bool? ?? false;
 }
 
-<div data-has-more="@hasMore.ToString().ToLower()" id="hasMore" class="row mt-3">
+<div data-has-more="@hasMore.ToString().ToLower()" id="hasMore" class="row mt-3 g-2">
     @if (Model.Count == 0)
     {
         <div class="col-12 text-center">
@@ -14,7 +14,7 @@
     {
         @foreach (var order in Model)
         {
-            <div class="col-3 d-flex flex-column order-clickable" data-order='@Html.Raw(Json.Serialize(order))'>
+            <div class="col-xxl-3 col-md-6 col-12 d-flex flex-column order-clickable" data-order='@Html.Raw(Json.Serialize(order))'>
                 <div class="order-card d-flex flex-column" style="height: 300px">
                     <div class="rounded-top ps-2 pe-2 pt-1 pb-2" style="background-color: rgba(238,238,238,0.8);"> 
                         <div class="d-flex justify-content-between">
@@ -41,16 +41,16 @@
                                 }
                                 @if (!string.IsNullOrEmpty(item.Instruction))
                                 {
-                                    <span class="d-block ms-2 mt-0"><span class="text-info">Instruction : </span>@item.Instruction</span>
+                                    <span class="d-block ms-2 mt-0 text-break"><span class="text-info">Instruction : </span>@item.Instruction</span>
                                 }
                             </div>
                         }
                         
                     </div>
-                    <div class="rounded-bottom d-flex align-items-center" style="background-color: rgba(238,238,238,0.8); height:3.5rem"> 
+                    <div class="overflow-auto" style="background-color: rgba(238,238,238,0.8); min-height:3.5rem; max-height:3.5rem;"> 
                         @if (!string.IsNullOrEmpty(order.Instruction))
                         {
-                         <span><span class="text-info ms-2">Order Instruction : </span>@order.Instruction</span>
+                         <span class="d-block text-break ms-2"><span class="text-info">Order Instruction : </span>@order.Instruction</span>
                         }
                     </div>
                 </div>

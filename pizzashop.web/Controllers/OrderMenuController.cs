@@ -46,27 +46,7 @@ public class OrderMenuController : Controller
              return Ok(new { token = tokenString });
     }
 
-    [HttpGet] 
-public IActionResult GetOrderIdFromToken(string orderToken)
-{
-    if (string.IsNullOrEmpty(orderToken))
-    {
-        return BadRequest(new { success = false, message = "Order token is missing." });
-    }
-
-    var principal = _JwtService.ValidateToken(orderToken);
-
-    if (principal == null)
-    {
-        // TempData["ErrorMessage"] = "Invalid or expired order token.";
-        return RedirectToAction("Menu","Menu");
-    }
-
-    var orderIdClaim = principal.Claims.FirstOrDefault(c => c.Type == "orderId");
-    int.TryParse(orderIdClaim.Value, out int orderId);
-
-    return Ok(new { success = true, orderId = orderId });
-}
+   
 
     public async Task<IActionResult> GetMenuItems(string categoryId, string searchText)
     {

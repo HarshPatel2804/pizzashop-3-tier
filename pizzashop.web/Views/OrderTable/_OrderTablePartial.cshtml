@@ -3,38 +3,56 @@
     var sectionId = $"section{Section.SectionId}";
 
     <div class="accordion-item mb-3 border rounded shadow-sm bg-white">
-        <div class="d-flex">
-            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#@sectionId"
-                aria-expanded="true" aria-controls="@sectionId">
-                <div class="d-flex align-items-center justify-content-between w-100">
-                    <div class="d-flex align-items-center">
-                        <span class="text-color fs-4 ms-2">@Section.SectionName</span>
-                    </div>
-                    <div class="d-flex">
-                        <div class="d-flex gap-2">
-                            <div class="d-flex align-items-center ms-auto me-3">
-                                <div class="d-flex align-items-center me-3">
-                                    <span class="status-dot available"></span>
-                                    <span>@Section.AvailableCount</span>
-                                </div>
-                                <div class="d-flex align-items-center me-3">
-                                    <span class="status-dot assigned"></span>
-                                    <span>@Section.AssignedCount</span>
-                                </div>
-                                <div class="d-flex align-items-center">
-                                    <span class="status-dot running"></span>
-                                    <span>@Section.RunningCount</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        <div class="d-flex flex-column flex-md-row w-100">
+    <button class="accordion-button flex-grow-1" type="button" data-bs-toggle="collapse" data-bs-target="#@sectionId"
+        aria-expanded="true" aria-controls="@sectionId">
+        <div class="d-flex align-items-md-center align-items-start flex-column flex-md-row justify-content-between w-100">
+            <div class="d-flex align-items-center">
+                <span class="text-color fs-4 ms-2">@Section.SectionName</span>
+            </div>
+            <!-- Status dots visible only on medium screens and larger -->
+            <div class="d-none d-md-flex align-items-center">
+                <div class="d-flex align-items-center me-3">
+                    <span class="status-dot available"></span>
+                    <span>@Section.AvailableCount</span>
                 </div>
-            </button>
-            <button type="button" id="SaveToken" data-id="@Section.SectionId"
-                class="btn btn-border-prime btn-sm align-self-center p-2 me-3" style="height: 40px; width: 160px">
-                <i class="bi bi-plus"></i> Waiting Token
-            </button>
+                <div class="d-flex align-items-center me-3">
+                    <span class="status-dot assigned"></span>
+                    <span>@Section.AssignedCount</span>
+                </div>
+                <div class="d-flex align-items-center">
+                    <span class="status-dot running"></span>
+                    <span>@Section.RunningCount</span>
+                </div>
+            </div>
         </div>
+    </button>
+    
+    <div class="d-flex justify-content-between p-sm-4 p-2">
+    <!-- Status dots visible only on small screens -->
+    <div class="d-flex d-md-none justify-content-center align-items-center mt-2 mb-2">
+        <div class="d-flex align-items-center me-3">
+            <span class="status-dot available"></span>
+            <span>@Section.AvailableCount</span>
+        </div>
+        <div class="d-flex align-items-center me-3">
+            <span class="status-dot assigned"></span>
+            <span>@Section.AssignedCount</span>
+        </div>
+        <div class="d-flex align-items-center">
+            <span class="status-dot running"></span>
+            <span>@Section.RunningCount</span>
+        </div>
+    </div>
+    
+    <!-- Button for desktop screens -->
+    <button type="button" id="SaveToken" data-id="@Section.SectionId"
+        class="btn btn-border-prime btn-sm d-flex align-items-center justify-content-center align-self-center p-2 me-3"
+        style="height: 40px; width: 160px; min-width: 160px; white-space: nowrap; overflow: hidden;">
+        <i class="bi bi-plus me-1"></i><span>Waiting Token</span>
+    </button>
+    </div>
+</div>
 
         <div id="@sectionId" class="accordion-collapse collapse">
             <div class="accordion-body">

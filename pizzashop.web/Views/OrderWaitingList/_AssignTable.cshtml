@@ -19,7 +19,7 @@
                             <label for="SectionId">Section*</label> *@
 
                             <div class="dropdown">
-                                <button class="form-control text-start dropdown-toggle" type="button"
+                                <button class="form-control text-start dropdown-toggle" id="sectionDropdownBtn" type="button"
                                     data-bs-toggle="dropdown" aria-expanded="false" style="height: 58px;">
                                     Select Sections
                                 </button>
@@ -30,8 +30,8 @@
                                         <li>
                                             <div class="form-check">
                                                 <input class="form-check-input section-checkbox" type="checkbox"
-                                                    name="SelectedTableIds" value="@Section.Value" id="table_@Section.Value" @(Model.SectionId.ToString() == Section.Value ? "checked" : "")>
-                                                <label class="form-check-label" for="table_@Section.Value">@Section.Text</label>
+                                                    name="SelectedTableIds" value="@Section.Value" id="section_@Section.Value" data-name="@Section.Text" @(Model.SectionId.ToString() == Section.Value ? "checked" : "")>
+                                                <label class="form-check-label" for="section_@Section.Value">@Section.Text</label>
                                             </div>
                                         </li>
                                     }
@@ -43,7 +43,7 @@
                     <div class="col-12 col-lg-6 mb-3">
                         <div class="form-floating">
                             <div class="dropdown">
-                                <button class="form-control text-start dropdown-toggle" type="button"
+                                <button class="form-control text-start dropdown-toggle"  id="tableDropdownBtn" type="button"
                                     data-bs-toggle="dropdown" aria-expanded="false" style="height: 58px;">
                                     Select Tables
                                 </button>
@@ -54,7 +54,7 @@
                                         <li>
                                             <div class="form-check">
                                                 <input class="form-check-input table-checkbox" type="checkbox"
-                                                    name="SelectedTableIds" value="@table.Value" id="table_@table.Value">
+                                                    name="SelectedTableIds" value="@table.Value" id="table_@table.Value" data-name="@table.Text">
                                                 <label class="form-check-label" for="table_@table.Value">@table.Text</label>
                                             </div>
                                         </li>

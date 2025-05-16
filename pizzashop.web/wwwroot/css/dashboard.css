@@ -74,3 +74,44 @@ main>section.row{
 .navbar{
     --bs-navbar-padding-y: 0rem !important;
 }
+
+.password-container {
+    position: relative;
+    max-width: 450px;
+}
+
+.eyeIcon {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.validation-message {
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.btn-prime {
+    background-color: #0066a7;
+    color: white;
+  }
+  
+  .btn-prime:hover {
+    background-color: #075383;
+    color: white;
+  }
+  
+  .btn-border-prime {
+    border: 1px solid #0066a7;
+    color: #0066a7;
+    background-color: transparent;
+  }
+  
+  .btn-border-prime:hover {
+    border: 1px solid #0066a7;
+    color: #0066a7;
+    background-color: transparent;
+  }

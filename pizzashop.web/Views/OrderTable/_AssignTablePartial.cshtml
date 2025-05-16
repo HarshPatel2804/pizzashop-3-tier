@@ -74,7 +74,7 @@
                 </div>
                 <div class="col-12 col-lg-6 mb-3">
                    <div class="dropdown">
-                                <button class="form-control text-start dropdown-toggle" type="button"
+                                <button class="form-control text-start dropdown-toggle" id="sectionDropdownBtn" type="button"
                                     data-bs-toggle="dropdown" aria-expanded="false" style="height: 58px;">
                                     Select Sections
                                 </button>
@@ -85,7 +85,7 @@
                                         <li>
                                             <div class="form-check">
                                                 <input class="form-check-input section-checkbox" type="checkbox"
-                                                    name="SelectedTableIds" value="@Section.Value" id="@Section.Value">
+                                                    name="SelectedTableIds" value="@Section.Value" id="@Section.Value" data-name="@Section.Text">
                                                 <label class="form-check-label" for="@Section.Value">@Section.Text</label>
                                             </div>
                                         </li>

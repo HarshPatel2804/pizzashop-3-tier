@@ -1,7 +1,7 @@
 <table class="table border table-hover">
     <tr>
         <td>
-            <div class="d-flex sortDiv">
+            <div class="d-flex sortDiv" style="padding-left: 20px;">
                 Name
                 <a href="#" class="sort-icon" id="sortIdAsc" data-column="customername">
                     <i class="bi bi-arrow-up"></i>
@@ -47,7 +47,7 @@
     @foreach (var customer in Model)
     {
         <tr class="customer" data-customerid = "@customer.Customerid">
-            <td>@customer.Customername</td>
+            <td style="padding-left: 28px;">@customer.Customername</td>
             <td>@customer.Email</td>
             <td>@customer.Phoneno</td>
             <td>@customer.Createdat.ToString("yyyy-MM-dd")</td>

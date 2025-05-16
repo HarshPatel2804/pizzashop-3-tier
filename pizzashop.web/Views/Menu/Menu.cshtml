@@ -1727,6 +1727,7 @@
             if (isChecked) {
                 getAllItems(function (allIds) {
                     selectedItemIds = [...allIds];
+                    @* console.log(selectedItemIds); *@
                     retainCheckboxState();
                 });
             } else {
@@ -1754,7 +1755,7 @@
         function getItemIdFromRow(row) {
             const editItemElement = row.find('.editItem');
             const deleteItemElement = row.find('.deleteItem');
-
+            console.log(editItemElement.data('id') + "Id");
             if (editItemElement.length > 0) {
                 return editItemElement.data('id');
             } else if (deleteItemElement.length > 0) {
@@ -1830,7 +1831,7 @@
         }
         function retainModifierCheckboxState() {
             $("tbody #ModifierCheckBoxDelete").each(function () {
-                const itemId = getItemIdFromRow($(this).closest('tr'));
+                const itemId = getModifierIdFromRow($(this).closest('tr'));
 
                 if (selectedModifierIds.includes(itemId)) {
                     $(this).prop('checked', true);
@@ -1856,7 +1857,7 @@
 
         $("#Modifier").on('click', "#ModifierCheckBoxDelete", function () {
             const isChecked = $(this).prop('checked');
-            const itemId = getItemIdFromRow($(this).closest('tr'));
+            const itemId = getModifierIdFromRow($(this).closest('tr'));
 
             if (isChecked && !selectedModifierIds.includes(itemId)) {
                 selectedModifierIds.push(itemId);
@@ -1868,7 +1869,7 @@
             console.log("Selected Item IDs:", selectedModifierIds);
         });
 
-        function getItemIdFromRow(row) {
+        function getModifierIdFromRow(row) {
             const editItemElement = row.find('.EditModifier');
             const deleteItemElement = row.find('.deleteModifier');
 

@@ -78,25 +78,40 @@ namespace pizzashop.service.Implementations
             // Same day - group by hours
             if (startDate.Date == endDate.Date)
             {
-                dailyRevenue = completedOrders
+                // Generate all hours in the range
+                var allHours = new List<DateTime>();
+                for (int h = 0; h < 24; h++)
+                {
+                    allHours.Add(new DateTime(startDate.Year, startDate.Month, startDate.Day, h, 0, 0));
+                }
+
+                // Group completed orders by hour
+                var ordersByHour = completedOrders
                     .Where(o => o.Orderdate.HasValue)
                     .GroupBy(o => new DateTime(o.Orderdate.Value.Year, o.Orderdate.Value.Month, o.Orderdate.Value.Day, o.Orderdate.Value.Hour, 0, 0))
-                    .Select(g => new DailyRevenueViewModel
+                    .ToDictionary(g => g.Key, g => g.Sum(o => o.Totalamount));
+
+                dailyRevenue = allHours
+                    .Select(hour => new DailyRevenueViewModel
                     {
-                        Date = g.Key,
-                        Revenue = g.Sum(o => o.Totalamount),
+                        Date = hour,
+                        Revenue = ordersByHour.ContainsKey(hour) ? ordersByHour[hour] : 0,
                         GroupingType = "Hour"
                     })
                     .OrderBy(dr => dr.Date)
                     .ToList();
 
-                customerData = customers
+                // Group customers by hour
+                var customersByHour = customers
                     .Where(c => c.Createdat.HasValue)
                     .GroupBy(c => new DateTime(c.Createdat.Value.Year, c.Createdat.Value.Month, c.Createdat.Value.Day, c.Createdat.Value.Hour, 0, 0))
-                    .Select(g => new CustomerCountViewModel
+                    .ToDictionary(g => g.Key, g => g.Count());
+
+                customerData = allHours
+                    .Select(hour => new CustomerCountViewModel
                     {
-                        Date = g.Key,
-                        Count = g.Count(),
+                        Date = hour,
+                        Count = customersByHour.ContainsKey(hour) ? customersByHour[hour] : 0,
                         GroupingType = "Hour"
                     })
                     .OrderBy(cc => cc.Date)
@@ -105,25 +120,42 @@ namespace pizzashop.service.Implementations
             // More than 2 years - group by year
             else if (dateRange.TotalDays > 730)
             {
-                dailyRevenue = completedOrders
+                int startYear = startDate.Year;
+                int endYear = endDate.Year;
+
+                // Generate all years in the range
+                var allYears = new List<DateTime>();
+                for (int year = startYear; year <= endYear; year++)
+                {
+                    allYears.Add(new DateTime(year, 1, 1));
+                }
+                // Group completed orders by year
+                var ordersByYear = completedOrders
                     .Where(o => o.Orderdate.HasValue)
                     .GroupBy(o => new DateTime(o.Orderdate.Value.Year, 1, 1))
-                    .Select(g => new DailyRevenueViewModel
+                    .ToDictionary(g => g.Key, g => g.Sum(o => o.Totalamount));
+
+                dailyRevenue = allYears
+                    .Select(year => new DailyRevenueViewModel
                     {
-                        Date = g.Key,
-                        Revenue = g.Sum(o => o.Totalamount),
+                        Date = year,
+                        Revenue = ordersByYear.ContainsKey(year) ? ordersByYear[year] : 0,
                         GroupingType = "Year"
                     })
                     .OrderBy(dr => dr.Date)
                     .ToList();
 
-                customerData = customers
+                // Group customers by year
+                var customersByYear = customers
                     .Where(c => c.Createdat.HasValue)
                     .GroupBy(c => new DateTime(c.Createdat.Value.Year, 1, 1))
-                    .Select(g => new CustomerCountViewModel
+                    .ToDictionary(g => g.Key, g => g.Count());
+
+                customerData = allYears
+                    .Select(year => new CustomerCountViewModel
                     {
-                        Date = g.Key,
-                        Count = g.Count(),
+                        Date = year,
+                        Count = customersByYear.ContainsKey(year) ? customersByYear[year] : 0,
                         GroupingType = "Year"
                     })
                     .OrderBy(cc => cc.Date)
@@ -132,25 +164,42 @@ namespace pizzashop.service.Implementations
             // Between 1 month and 24 months - group by month
             else if (dateRange.TotalDays >= 30 && dateRange.TotalDays <= 730)
             {
-                dailyRevenue = completedOrders
+                var allMonths = new List<DateTime>();
+                for (var date = new DateTime(startDate.Year, startDate.Month, 1);
+                     date <= new DateTime(endDate.Year, endDate.Month, 1);
+                     date = date.AddMonths(1))
+                {
+                    allMonths.Add(date);
+                }
+
+                // Group completed orders by month
+                var ordersByMonth = completedOrders
                     .Where(o => o.Orderdate.HasValue)
                     .GroupBy(o => new DateTime(o.Orderdate.Value.Year, o.Orderdate.Value.Month, 1))
-                    .Select(g => new DailyRevenueViewModel
+                    .ToDictionary(g => g.Key, g => g.Sum(o => o.Totalamount));
+
+                // Join all months with order data
+                dailyRevenue = allMonths
+                    .Select(month => new DailyRevenueViewModel
                     {
-                        Date = g.Key,
-                        Revenue = g.Sum(o => o.Totalamount),
+                        Date = month,
+                        Revenue = ordersByMonth.ContainsKey(month) ? ordersByMonth[month] : 0,
                         GroupingType = "Month"
                     })
                     .OrderBy(dr => dr.Date)
                     .ToList();
 
-                customerData = customers
+                // Group customers by month
+                var customersByMonth = customers
                     .Where(c => c.Createdat.HasValue)
                     .GroupBy(c => new DateTime(c.Createdat.Value.Year, c.Createdat.Value.Month, 1))
-                    .Select(g => new CustomerCountViewModel
+                    .ToDictionary(g => g.Key, g => g.Count());
+
+                customerData = allMonths
+                    .Select(month => new CustomerCountViewModel
                     {
-                        Date = g.Key,
-                        Count = g.Count(),
+                        Date = month,
+                        Count = customersByMonth.ContainsKey(month) ? customersByMonth[month] : 0,
                         GroupingType = "Month"
                     })
                     .OrderBy(cc => cc.Date)
@@ -159,25 +208,39 @@ namespace pizzashop.service.Implementations
             // Default - group by day (less than a month)
             else
             {
-                dailyRevenue = completedOrders
+                // Generate all days in the range
+                var allDays = new List<DateTime>();
+                for (var date = startDate.Date; date <= endDate.Date; date = date.AddDays(1))
+                {
+                    allDays.Add(date);
+                }
+                // Group completed orders by day
+                var ordersByDay = completedOrders
                     .Where(o => o.Orderdate.HasValue)
                     .GroupBy(o => o.Orderdate.Value.Date)
-                    .Select(g => new DailyRevenueViewModel
+                    .ToDictionary(g => g.Key, g => g.Sum(o => o.Totalamount));
+
+                dailyRevenue = allDays
+                    .Select(day => new DailyRevenueViewModel
                     {
-                        Date = g.Key,
-                        Revenue = g.Sum(o => o.Totalamount),
+                        Date = day,
+                        Revenue = ordersByDay.ContainsKey(day) ? ordersByDay[day] : 0,
                         GroupingType = "Day"
                     })
                     .OrderBy(dr => dr.Date)
                     .ToList();
 
-                customerData = customers
+                // Group customers by day
+                var customersByDay = customers
                     .Where(c => c.Createdat.HasValue)
                     .GroupBy(c => c.Createdat.Value.Date)
-                    .Select(g => new CustomerCountViewModel
+                    .ToDictionary(g => g.Key, g => g.Count());
+
+                customerData = allDays
+                    .Select(day => new CustomerCountViewModel
                     {
-                        Date = g.Key,
-                        Count = g.Count(),
+                        Date = day,
+                        Count = customersByDay.ContainsKey(day) ? customersByDay[day] : 0,
                         GroupingType = "Day"
                     })
                     .OrderBy(cc => cc.Date)

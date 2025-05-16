@@ -284,7 +284,8 @@
                                         table.data('orderid', orderId);
                                     });
 
-                                    sectionList();
+                                    const redirectUrl = `/OrderMenu/Menu?orderId=${orderId}`;
+                                    window.location.href = redirectUrl;
                                     toastr.clear();
                                     toastr.success('Table assigned successfully');
                                 } else {
@@ -322,7 +323,7 @@
             });
 
             const selectedTableIds = JSON.stringify(selectedTables);
-            console.log(selectedTables);
+            console.log(sectionIdsWithSelections);
             $.ajax({
                 url: "/OrderTable/GetWaitingDetails",
                 type: "GET",
@@ -334,6 +335,19 @@
                     sectionIdsWithSelections.forEach(function (sectionId) {
                         $('#' + sectionId).prop('checked', true);
                     });
+
+                    var dropdownBtn = $('#sectionDropdownBtn');
+
+                    if (sectionIdsWithSelections.length === 0) {
+                        
+                        dropdownBtn.text('Select Sections');
+                    } else if (sectionIdsWithSelections.length === 1) {
+                        dropdownBtn.text($('#'+sectionIdsWithSelections[0]).data('name'));
+                    } else {
+                        var firstSectionText = $('#'+sectionIdsWithSelections[0]).data('name');
+                        var othersCount = sectionIdsWithSelections.length - 1;
+                        dropdownBtn.text(firstSectionText + ' +' + othersCount);
+                    }
 
                     $('.section-checkbox').prop('disabled', true);
                     var offcanvasElement = document.getElementById('AssignTableModal');

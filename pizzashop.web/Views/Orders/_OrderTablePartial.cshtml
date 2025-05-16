@@ -1,7 +1,7 @@
 <table class="table border">
     <tr>
         <td>
-            <div class="d-flex sortDiv">
+            <div class="d-flex sortDiv" style="padding-left: 20px;">
                 #Orders
                 <a href="#" class="sort-icon" id="sortIdAsc" data-column="orderid">
                     <i class="bi bi-arrow-up"></i>
@@ -52,7 +52,7 @@
     @foreach (var o in Model)
     {
         <tr data-orderid="@o.Orderid">
-            <td>
+            <td style="padding-left: 25px;">
                 # @o.Orderid
             </td>
             <td>@o.Orderdate.ToString("yyyy-MM-dd")</td>

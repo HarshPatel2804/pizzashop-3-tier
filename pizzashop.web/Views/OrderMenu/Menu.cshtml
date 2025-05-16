@@ -13,9 +13,9 @@
         integrity="sha512-MX5EkfBl..." crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <style>
-    body{
-    overflow-y: hidden;
-}
+    body {
+        overflow-y: hidden;
+    }
 </style>
 <section style="background-color: #fcfcfc;" class="row w-100">
     <aside class="col-auto d-flex justify-content-start align-items-center flex-column offcanvas-lg offcanvas-start"
@@ -73,7 +73,8 @@
                 </div>
             </div>
 
-            <div id="menu-items" class="row ms-4 mt-4 MenuItems me-4" style="max-height: 80vh; overflow-y: auto; scrollbar-width: none;">
+            <div id="menu-items" class="row ms-4 mt-4 MenuItems me-4"
+                style="max-height: 80vh; overflow-y: auto; scrollbar-width: none;">
 
             </div>
         </section>
@@ -104,7 +105,7 @@
             </div>
             <div class="modal-body">
                 <textarea id="orderCommentTextArea" class="form-control" rows="5"
-                    placeholder="Enter comment here..."></textarea>
+                    placeholder="Enter comment here..." maxlength="150"></textarea>
             </div>
             <div class="modal-footer">
                 <button type="button" id="saveOrderCommentBtn" class="btn btn-prime">Save</button>
@@ -127,7 +128,7 @@
                     <input type="hidden" id="OrderedItemId" name="orderedItemId" value="" />
                     <div class="mb-3">
                         <textarea id="itemCommentTextArea" class="form-control" rows="4"
-                            placeholder="Instruction"></textarea>
+                            placeholder="Instruction" maxlength="150"></textarea>
                     </div>
                 </form>
             </div>
@@ -310,12 +311,13 @@
                 console.log("Order Token found in URL, validating:", tokenFromUrl);
 
                 $.ajax({
-                    url: '/OrderMenu/GetOrderIdFromToken',
+                    url: '/Home/GetOrderIdFromToken',
                     type: 'GET',
                     data: { orderToken: tokenFromUrl },
                     success: function (response) {
                         if (response && response.success && response.orderId) {
                             orderId = parseInt(response.orderId);
+                            console.log(orderId);
                             loadOrderCard();
 
                         } else {
@@ -325,7 +327,7 @@
                 });
             }
         }
-        if(!orderId){
+        if (!orderId) {
             $('#Cart-image').addClass('d-none');
         }
         loadOrderCard();
@@ -437,28 +439,45 @@
                 $template.attr('data-unique-id', item.uniqueId);
                 $template.find('.item-name').text(item.itemName);
 
-                $template.find('.accordion-button')
-                    .attr('data-bs-target', `#${accordionId}`)
-                    .attr('aria-controls', accordionId);
-
-                $template.find('.accordion-collapse')
-                    .attr('id', accordionId);
-
+                // Check if item has any modifiers
+                let hasModifiers = false;
+                let totalModifierPrice = 0;
                 const $modifierList = $template.find('ul');
                 $modifierList.empty();
 
-                let totalModifierPrice = 0;
-
+                // Check all groups for modifiers
                 for (const groupId in item.groups) {
                     const group = item.groups[groupId];
+                    const modifierCount = Object.keys(group.selectedModifiers || {}).length;
 
-                    for (const modifierId in group.selectedModifiers) {
-                        const modifier = group.selectedModifiers[modifierId];
+                    if (modifierCount > 0) {
+                        hasModifiers = true;
 
-                        totalModifierPrice += parseFloat(modifier.rate);
-
-                        $modifierList.append(`<li>${modifier.modifierName} ₹${modifier.rate}</li>`);
+                        // Add modifiers to the list
+                        for (const modifierId in group.selectedModifiers) {
+                            const modifier = group.selectedModifiers[modifierId];
+                            totalModifierPrice += parseFloat(modifier.rate);
+                            $modifierList.append(`<li>${modifier.modifierName} ₹${modifier.rate}</li>`);
+                        }
                     }
+                }
+
+                if (!hasModifiers) {
+                    $template.find('.accordion-button')
+                        .removeClass('accordion-button')
+                        .addClass('ps-1')
+                        .removeAttr('data-bs-toggle')
+                        .removeAttr('data-bs-target')
+                        .removeAttr('aria-controls')
+                        .removeAttr('aria-expanded')
+                        .css('cursor', 'default');
+                } else {
+                    $template.find('.accordion-button')
+                        .attr('data-bs-target', `#${accordionId}`)
+                        .attr('aria-controls', accordionId);
+
+                    $template.find('.accordion-collapse')
+                        .attr('id', accordionId);
                 }
 
                 $template.find('.item-quantity').text(item.quantity);
@@ -467,7 +486,7 @@
                 const modifierPrice = item.quantity * totalModifierPrice;
 
                 $template.find('.item-base-price').text(`₹${itemPrice.toFixed(2)}`);
-                if ($modifierList.children().length !== 0) {
+                if (hasModifiers) {
                     $template.find('.item-total-price').text(`₹${modifierPrice.toFixed(2)}`);
                 }
 
@@ -939,12 +958,6 @@
                 const existingItem = confirmedSelections.find(item => item.itemId === itemId);
 
                 resetVisualSelections();
-
-                if (existingItem) {
-                    tempSelections.groups = JSON.parse(JSON.stringify(existingItem.groups));
-
-                    restoreVisualSelections(tempSelections);
-                }
             };
 
             $('.modifier-card-custom').on('click', function () {
@@ -1052,20 +1065,6 @@
                 });
             }
 
-            function restoreVisualSelections(selectionData) {
-                if (!selectionData) return;
-
-                for (const groupId in selectionData.groups) {
-                    const group = selectionData.groups[groupId];
-
-                    for (const modifierId in group.selectedModifiers) {
-                        $(`.modifier-card-custom[data-group="${groupId}"][data-id="${modifierId}"]`).addClass('active').css({
-                            'background-color': '#e6f2ff',
-                            'opacity': '0.9'
-                        });
-                    }
-                }
-            }
 
             function openModifiersModal(itemId, itemName) {
                 $('.ItemId').val(itemId);

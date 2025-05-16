@@ -37,7 +37,8 @@ public class HomeController : Controller
         var token = CookieUtils.GetJWTToken(Request);
         Console.WriteLine(user + "user");
 
-        if(user != null && token != null && user.roleId == 3){
+        if (user != null && token != null && user.roleId == 3)
+        {
             return RedirectToAction("KOT", "OrderKOT");
         }
         if (user != null && token != null)
@@ -71,7 +72,8 @@ public class HomeController : Controller
                     await _usersLoginService.SetResetTokenAsync(loginViewModel.Email, token);
                     return RedirectToAction("ResetPassword", new { Token = token });
                 }
-                if(userLogin.Roleid == 3){
+                if (userLogin.Roleid == 3)
+                {
                     return RedirectToAction("KOT", "OrderKOT");
                 }
                 return RedirectToAction("Dashboard", "Dashboard");
@@ -152,6 +154,28 @@ public class HomeController : Controller
     public IActionResult Error(int statusCode)
     {
         return View();
+    }
+
+    [HttpGet]
+    public IActionResult GetOrderIdFromToken(string orderToken)
+    {
+        if (string.IsNullOrEmpty(orderToken))
+        {
+            return BadRequest(new { success = false, message = "Order token is missing." });
+        }
+
+        var principal = _JwtService.ValidateToken(orderToken);
+
+        if (principal == null)
+        {
+            // TempData["ErrorMessage"] = "Invalid or expired order token.";
+            return RedirectToAction("Menu", "Menu");
+        }
+
+        var orderIdClaim = principal.Claims.FirstOrDefault(c => c.Type == "orderId");
+        int.TryParse(orderIdClaim.Value, out int orderId);
+
+        return Ok(new { success = true, orderId = orderId });
     }
 
     public IActionResult AccessDenied(int statusCode, string permissionType)
