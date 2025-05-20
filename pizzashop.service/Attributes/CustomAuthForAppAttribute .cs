@@ -1,5 +1,6 @@
 
 using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using pizzashop.service;
@@ -9,7 +10,7 @@ using pizzashop.service.Utils;
 
 namespace pizzashop.service.Attributes
 {
-public class CustomAuthForAppAttribute : Attribute, IAuthorizationFilter
+public class CustomAuthForAppAttribute : Attribute
     {
         private readonly string _moduleName;
 
@@ -18,14 +19,16 @@ public class CustomAuthForAppAttribute : Attribute, IAuthorizationFilter
             _moduleName = moduleName ?? string.Empty;
         }
 
-        public void OnAuthorization(AuthorizationFilterContext context)
+        public void OnAuthorization(AuthorizationFilterContext context , HttpContext httpContext)
         {
 
-            OnAuthorizationAsync(context).GetAwaiter().GetResult();
+            OnAuthorizationAsync(context , httpContext).GetAwaiter().GetResult();
         }
 
-        public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
+        public async Task OnAuthorizationAsync(AuthorizationFilterContext context , HttpContext httpContext)
         {
+            var orderToken = httpContext.Request.Query["orderToken"];
+            if(orderToken == "") return;
             var jwtService = context.HttpContext.RequestServices.GetService(typeof(IJwtService)) as IJwtService;
 
             if (jwtService == null)

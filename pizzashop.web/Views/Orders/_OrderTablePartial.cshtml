@@ -1,6 +1,7 @@
 <table class="table border">
+    <thead>
     <tr>
-        <td>
+        <th>
             <div class="d-flex sortDiv" style="padding-left: 20px;">
                 #Orders
                 <a href="#" class="sort-icon" id="sortIdAsc" data-column="orderid">
@@ -10,8 +11,8 @@
                     <i class="bi bi-arrow-down"></i>
                 </a>
             </div>
-        </td>
-        <td>
+        </th>
+        <th>
             <div class="d-flex sortDiv">
                 Date
                 <a href="#" class="sort-icon" id="sortDateAsc" data-column="orderdate">
@@ -21,8 +22,8 @@
                     <i class="bi bi-arrow-down"></i>
                 </a>
             </div>
-        </td>
-        <td>
+        </th>
+        <th>
             <div class="d-flex sortDiv">
                 Customers
                 <a href="#" class="sort-icon" id="sortNameAsc" data-column="customername">
@@ -32,11 +33,11 @@
                     <i class="bi bi-arrow-down"></i>
                 </a>
             </div>
-        </td>
-        <td class="text-secondary">Status</td>
-        <td class="text-secondary">PaymentMode</td>
-        <td class="text-secondary">Rating</td>
-        <td>
+        </th>
+        <th class="text-secondary">Status</th>
+        <th class="text-secondary">PaymentMode</th>
+        <th class="text-secondary">Rating</th>
+        <th>
             <div class="d-flex sortDiv">
                 Total Amount
                 <a href="#" class="sort-icon" id="sortDateAsc" data-column="totalamount">
@@ -46,9 +47,11 @@
                     <i class="bi bi-arrow-down"></i>
                 </a>
             </div>
-        </td>
-        <td class="text-secondary">Action</td>
+        </th>
+        <th class="text-secondary">Action</th>
     </tr>
+    </thead>
+    <tbody>
     @foreach (var o in Model)
     {
         <tr data-orderid="@o.Orderid">
@@ -98,6 +101,8 @@
             </td>
         </tr>
     }
+
+    </tbody>
 </table>
 <div class="d-flex justify-content-end align-items-center flex-wrap gap-2 mt-2 p-3">
     <div class="d-flex align-items-center">

@@ -1,6 +1,13 @@
 body{
-    overflow-x: hidden;
+    scrollbar-width: none;
+    overflow: auto;
 }
+
+body::-webkit-scrollbar,
+main::-webkit-scrollbar {
+    display: none;
+}
+
 
 .Categoey-active {
     background-color: #0066a7;
@@ -45,6 +52,7 @@ body{
 .food-type {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
 }
 
 .type-option {
@@ -230,4 +238,12 @@ body{
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .offcanvas-xl{
+  --bs-offcanvas-width: 90% !important;
+  }
+
+  @media screen and (max-width: 576px) {
+    .Cancel-btn{width: 100% !important}
   }

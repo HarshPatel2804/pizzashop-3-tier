@@ -23,5 +23,13 @@ body {
 
 body,main{
   height: 100vh;
-  overflow: hidden;
+  overflow: auto;
+  scrollbar-width: none;
 }
+
+body::-webkit-scrollbar,
+main::-webkit-scrollbar {
+    display: none;
+}
+
+

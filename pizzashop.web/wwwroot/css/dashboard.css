@@ -6,8 +6,15 @@
 
 body,main{
     height: 100vh;
-    /* overflow-x: hidden; */
+    scrollbar-width: none;
+    overflow: auto;
 }
+
+body::-webkit-scrollbar,
+main::-webkit-scrollbar {
+    display: none;
+}
+
 
 a{
     text-decoration: none !important;
@@ -114,4 +121,8 @@ main>section.row{
     border: 1px solid #0066a7;
     color: #0066a7;
     background-color: transparent;
+  }
+
+  @media screen and (max-width: 991px) {
+    .appItem{width: 150px;}
   }

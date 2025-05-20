@@ -39,7 +39,7 @@
         <div class="container tab-content" id="nav-tabContent">
             <div class="tab-pane show active" id="nav-items" role="tabpanel" aria-labelledby="nav-home-tab">
                 <div class="row" style="min-height: 600px;">
-                    <div class="col-auto d-lg-block d-none"
+                    <div class="col-auto d-xl-block d-none"
                         style="background: linear-gradient(to right, white, rgb(225, 224, 224))">
                         <div class="row px-3 mt-1">
                             <div class="col-auto d-flex align-items-center me-5 fw-bold" style="font-size: 20px;">
@@ -54,42 +54,70 @@
                             }
                         </div>
                         <div class="row overflow-auto me-2 mt-2" style="height: 400px;" id="Category">
-
                         </div>
                     </div>
+
                     <div class="col">
-                        <div class="row px-3">
-                            <div class="col-auto d-flex align-items-center mt-1 fw-bold" style="font-size: 20px;">Items
+                        <div class="row px-3 mt-1" style='height: 50px;'>
+                            <div class="col-auto d-flex align-items-center d-none d-xl-block fw-bold"
+                                style="font-size: 20px;">
+                                Items
+                            </div>
+
+                            <div class="dropdown d-xl-none d-flex align-items-center">
+                                <button class="btn dropdown-toggle fw-bold" id="category-btn" type="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 20px;">
+                                    Category
+                                </button>
+                                <div class="dropdown-menu p-2">
+                                    <div
+                                        class="d-flex justify-content-between align-items-center mb-2 border-bottom pb-2">
+                                        <div class="fw-bold" style="font-size: 18px;">Categories</div>
+                                        @if (permission.Canaddedit == true)
+                                        {
+                                            <button class="btn p-1" type="button" data-bs-toggle="modal"
+                                                data-bs-target="#Add-Category">
+                                                <img src="~/images/more.png" style="width: 24px;">
+                                            </button>
+                                        }
+                                    </div>
+                                    <div id="Category1" class="d-flex justify-content-start"
+                                        style="max-height: 40vh; width: 250px; overflow-y: auto;">
+                                        <!-- Categories will be loaded here -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-auto col-12 d-flex ms-auto mb-md-0 mb-3 mt-1 ps-0" style="height: 90%">
+                                <input type="search" class="me-1 ms-auto p-2" id="searchInput" placeholder="search"
+                                    style="border-radius: 3px; border: 1px solid black">
+                                @if (permission.Candelete == true)
+                                {
+                                    <button type="button" class="btn MassItemDelete"
+                                        style="width: 50px; border: 1px solid black" data-bs-toggle="modal"
+                                        data-bs-target="#MassDeleteItemModal"><img src="~/images/trash.svg"></button>
+                                }
+                                @if (permission.Canaddedit == true)
+                                {
+                                    <button type="button"
+                                        class="btn btn-prime col-md-auto ms-1 align-items-center d-flex item-button addItem"
+                                        style="border-radius: 4px;">
+                                        + <div class="d-none d-md-block">New Item</div>
+                                    </button>
+                                }
                             </div>
                         </div>
 
-                        <div class="row justify-content-end ms-lg-5 me-lg-5 me-2 mt-2" style="height: 50px;">
-                            <input type="search" class="col-md-auto col-6 me-1 " id="searchInput" placeholder="search"
-                                style="border-radius: 3px; border: 1px solid black">
-                            @if (permission.Candelete == true)
-                            {
-                                <button type="button" class="btn MassItemDelete"
-                                    style="width: 50px; border: 1px solid black" data-bs-toggle="modal"
-                                    data-bs-target="#MassDeleteItemModal"><img src="~/images/trash.svg"></button>
-                            }
-                            @if (permission.Canaddedit == true)
-                            {
-                                <button type="button"
-                                    class="btn btn-prime col-md-auto col-3 ms-1 align-items-center d-flex item-button addItem"
-                                    style="border-radius: 4px;">
-                                    + New Item
-                                </button>
-                            }
-                        </div>
-                        <div class="row table-responsive pt-4 ms-2 me-2" id="itemByCategory">
-
+                        <div class="row table-responsive pt-4 ms-2 me-2 mt-4 mt-md-0" id="itemByCategory">
+                            <!-- Items will be loaded here -->
                         </div>
                     </div>
                 </div>
             </div>
             <div class="tab-pane show" id="nav-modifiers" role="tabpanel" aria-labelledby="nav-profile-tab">
+
                 <div class="row" style="min-height: 600px;">
-                    <div class="col-auto d-lg-block d-none"
+                    <div class="col-auto d-xl-block d-none"
                         style="background: linear-gradient(to right, white, rgb(225, 224, 224))">
                         <div class="row px-3 mt-1">
                             <div class="col-auto d-flex align-items-center fw-bold" style="font-size: 20px;">
@@ -103,36 +131,61 @@
                                 </button>
                             }
                         </div>
-                        <div class="row overflow-auto me-2 mt-2" style="height: 400px; ;" id="ModifierGroup">
-
+                        <div class="row overflow-auto no-scrollbar me-2 mt-2" style="height: 400px;" id="ModifierGroup">
                         </div>
                     </div>
+
                     <div class="col">
-                        <div class="row px-3">
-                            <div class="col-auto d-flex align-items-center mt-1 fw-bold" style="font-size: 20px;">
+                        <div class="row px-3 mt-1" style='height: 50px;'>
+                            <div class="col-auto d-flex align-items-center d-none d-xl-block fw-bold"
+                                style="font-size: 20px;">
                                 Modifiers
+                            </div>
+
+                            <div class="dropdown d-xl-none d-flex align-items-center">
+                                <button class="btn dropdown-toggle fw-bold" id="modifier-group-btn" type="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 20px;">
+                                    Modifier Group
+                                </button>
+                                <div class="dropdown-menu p-2">
+                                    <div
+                                        class="d-flex justify-content-between align-items-center mb-2 border-bottom pb-2">
+                                        <div class="fw-bold" style="font-size: 18px;">Modifier Groups</div>
+                                        @if (permission.Canaddedit == true)
+                                        {
+                                            <button class="btn p-1" type="button" data-bs-toggle="modal"
+                                                data-bs-target="#addModifiersGroup">
+                                                <img src="~/images/more.png" style="width: 24px;">
+                                            </button>
+                                        }
+                                    </div>
+                                    <div id="ModifierGroup1" class="d-flex justify-content-start"
+                                        style="max-height: 40vh; width: 250px; overflow-y: auto;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-auto col-12 d-flex ms-auto mb-md-0 mb-3 mt-1 ps-0" style="height: 90%">
+                                <input type="search" class="me-1 ms-auto p-2" id="search" placeholder="search"
+                                    style="border-radius: 3px; border: 1px solid black">
+                                @if (permission.Candelete == true)
+                                {
+                                    <button type="button" class="btn" data-bs-toggle="modal"
+                                        data-bs-target="#MassDeletemodifierModal"
+                                        style="width: 50px; border: 1px solid black"><img src="~/images/trash.svg"></button>
+                                }
+                                @if (permission.Canaddedit == true)
+                                {
+                                    <button class="btn col-md-auto ms-1 align-items-center d-flex addModifier btn-prime"
+                                        style="border-radius: 4px;">
+                                        + <div class="d-none d-md-block">New Modifier</div>
+                                    </button>
+                                }
                             </div>
                         </div>
 
-                        <div class="row justify-content-end ms-lg-5 me-lg-5 me-2 mt-2" style="height: 50px;">
-                            <input type="search" class="col-md-auto col-6 me-1 " id="search" placeholder="search"
-                                style="border-radius: 3px; border: 1px solid black">
-                            @if (permission.Candelete == true)
-                            {
-                                <button type="button" class="btn" data-bs-toggle="modal"
-                                    data-bs-target="#MassDeletemodifierModal"
-                                    style="width: 50px; border: 1px solid black"><img src="~/images/trash.svg"></button>
-                            }
-                            @if (permission.Canaddedit == true)
-                            {
-                                <button class="btn col-md-auto col-3 ms-1 align-items-center d-flex addModifier btn-prime"
-                                    style="border-radius: 4px;">
-                                    + New Modifier
-                                </button>
-                            }
-                        </div>
-                        <div class="row table-responsive pt-4 ms-2 me-2" id="Modifier">
-
+                        <div class="row table-responsive pt-4 ms-2 me-2 mt-4 mt-md-0" id="Modifier">
+                            <!-- Modifiers will be loaded here -->
                         </div>
                     </div>
                 </div>
@@ -391,7 +444,7 @@
                     <h5 class="modal-title">Add Modifier Group</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form>
+                <form id="modifierForm">
                     <div class="modal-body ">
 
                         <div class="form-floating mb-3">
@@ -532,6 +585,7 @@
                 type: 'GET',
                 success: function (data) {
                     $('#Category').html(data);
+                    $('#Category1').html(data);
                     $(".selectedCategory").removeClass("ActiveEffect");
                     $(`.selectedCategory[data-id="${lastSelectedCategoryId}"]`).addClass("ActiveEffect");
                 }
@@ -611,6 +665,7 @@
                 type: 'GET',
                 success: function (data) {
                     $('#ModifierGroup').html(data);
+                    $('#ModifierGroup1').html(data);
 
                     var firstModifierGroup = $(".selectedModifierGroup:first").data("id");
                     lastSelectedModifierGroupId = firstModifierGroup;
@@ -885,6 +940,12 @@
 
         $('#addItem').on('hidden.bs.modal', resetModifierGroups);
         $('#editItem').on('hidden.bs.modal', resetModifierGroups);
+        $('.modal-addModifiersGroup').on('hidden.bs.modal', function (e) {
+            $('#modifierForm')[0].reset();
+        });
+        $('#Add-Category').on('hidden.bs.modal', function (e) {
+            $('#addCategoryForm')[0].reset();
+        });
 
 
         $(document).on('click', '.modifier-group-item', function (e) {
@@ -1727,8 +1788,8 @@
             if (isChecked) {
                 getAllItems(function (allIds) {
                     selectedItemIds = [...allIds];
-                    @* console.log(selectedItemIds); *@
-                    retainCheckboxState();
+    @* console.log(selectedItemIds); *@
+                        retainCheckboxState();
                 });
             } else {
                 selectedItemIds = [];

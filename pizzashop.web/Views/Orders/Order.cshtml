@@ -6,17 +6,17 @@
 @model pizzashop.repository.ViewModels.OrderViewModel
 <section style="min-height: 100vh; background-color: #fafafa; overflow-x: hidden;">
 <div class="Orderlist">
-    <div class="row mb-2">
+    <div class="row mb-2 me-2 ms-2">
         <div class="col-xl col-12">
             <div class="h1 mt-3 ms-3" style="color: rgb(1, 123, 217); font-weight: bold">
                 Orders
             </div>
         </div>
-        <div class="col-xl-2 col-12 mt-3 d-flex align-items-center">
+        <div class="col-xl-2 col-md-6 col-12 mt-3 d-flex align-items-center">
             <input id="searchInput" type="search" class="form-control form-control-lg w-100" placeholder="Search"
                 style="height: 55px !important;" />
         </div>
-        <div class="col-xl-3 col-12 mt-3 d-flex align-items-center">
+        <div class="col-xl-3 col-md-6 col-12 mt-3 d-flex align-items-center">
             <select class="form-select w-100" asp-for="OrderStatus" id="Status-Search"
                 aria-label="Floating label select example" style="height: 55px;">
                 <option value="0" selected>All Status</option>
@@ -29,7 +29,7 @@
                 }
             </select>
         </div>
-        <div class="col-xl-3 col-12 mt-3 d-flex align-items-center">
+        <div class="col-xl-3 col-md-6 col-12 mt-3 d-flex align-items-center">
             <select class="form-select w-100" id="Time-Search" aria-label="Item type" style="height: 55px;" required>
                 <option value="0" selected>All Times</option>
                 <option value="1">Last 7 Days</option>
@@ -38,33 +38,33 @@
                 <option value="4">Custom Date</option>
             </select>
         </div>
-        <div class="col-xl-auto col-12 mt-3 d-flex align-items-center justify-content-center me-3" style="height: 55px;">
-            <a class="text-decoration-none text-white" id="exportButton"><button class="btn btn-lg btn-color"><img
+        <div class="col-xl-auto col-md-6 col-12 mt-3 d-flex align-items-center justify-content-center" style="height: 55px; gap: 2px;">
+            <a class="text-decoration-none text-white w-100" id="exportButton"><button class="btn btn-lg btn-color w-100"><img
                         src="~/images/icons/export.svg"
-                        style="filter: brightness(0) invert(1); width: 24px; height: 24px;" alt=""
+                        style="filter: brightness(0) invert(1); height: 24px;" alt=""
                         class="mb-1 me-1">Export
                 </button></a>
         </div>
     </div>
-    <div class="row mb-2">
-        <div class="col-xl-auto col-12 mt-3 d-flex align-items-center justify-content-md-end justify-content-center ms-auto">
-            <div class="form-floating w-100" style="min-width: 360px;">
+    <div class="row mb-2 me-2 ms-2">
+        <div class="col-xl-auto col-md-6 col-12 mt-3 d-flex align-items-center justify-content-md-end justify-content-center ms-auto">
+            <div class="form-floating w-100" style="min-width: 340px;">
                 <input type="date" class="form-control" id="fromDate">
                 <label for="fromDateInput">From Date</label>
             </div>
         </div>
-        <div class="col-xl-auto col-12 mt-3 d-flex align-items-center justify-content-md-start justify-content-center">
-            <div class="form-floating w-100" style="min-width: 360px;">
+        <div class="col-xl-auto col-md-6 col-12 mt-3 d-flex align-items-center justify-content-md-start justify-content-center">
+            <div class="form-floating w-100" style="min-width: 340px;">
                 <input type="date" class="form-control" id="toDate">
                 <label for="toDateInput">To Date</label>
             </div>
         </div>
         <div class="col-xl-auto col-12 mt-3 d-flex align-items-center justify-content-center me-3    ">
-            <a class="text-decoration-none text-white me-2" id="searchButton"><button
-                    class="btn btn-lg btn-color">Search
+            <a class="text-decoration-none text-white me-2 w-100" id="searchButton"><button
+                    class="btn btn-lg btn-color w-100">Search
                 </button></a>
-            <a class="text-decoration-none text-white" id="clearButton"><button
-                    class="btn btn-lg btn-border-color">Clear
+            <a class="text-decoration-none text-white w-100" id="clearButton"><button
+                    class="btn btn-lg btn-border-color w-100">Clear
                 </button></a>
         </div>
     </div>
@@ -281,4 +281,9 @@
         color: #0066a7;
         background-color: transparent;
     }
+
+    .row{
+        --bs-gutter-x: 0.5rem !important;
+    }
+
 </style>

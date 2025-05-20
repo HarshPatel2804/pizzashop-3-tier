@@ -8,7 +8,7 @@ namespace pizzashop.service.Interfaces
     public interface IKOTService
     {
         Task<KOTViewModel> GetKOTViewModel();
-        Task<List<KOTOrdersViewModel>> GetKOTOrders(string categoryId, string status, int page, int itemsPerPage);
+        Task<(List<KOTOrdersViewModel>, int totalPages)> GetKOTOrders(string categoryId, string status, int page, int itemsPerPage);
 
         Task UpdatePreparedQuantities(List<PreparedItemviewModel> updates , string status);
     }

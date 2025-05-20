@@ -135,8 +135,12 @@ public class OrderRepository : IOrderRepository
             ContactNumber = order.Customer.Phoneno,
             CustomerEmail = order.Customer.Email,
             NoOfPerson = order.Noofperson ?? 0,
-            Section = order.Ordertables?.FirstOrDefault()?.Table?.Section.Sectionname,
-            Table = order.Ordertables?.FirstOrDefault()?.Table.Tablename,
+            Section = order.Ordertables.Any()
+                ? string.Join(", ", order.Ordertables.Select(ot => ot.Table?.Section?.Sectionname))
+                : "N/A",
+            Table = order.Ordertables.Any()
+                ? string.Join(", ", order.Ordertables.Select(ot => ot.Table?.Tablename))
+                : "N/A",
             OrderDate = order.Orderdate ?? DateTime.MinValue,
             ModifiedDate = order.Modifiedat ?? DateTime.MinValue,
             SubTotal = order.Subamount ?? 0,

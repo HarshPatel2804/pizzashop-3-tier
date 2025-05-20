@@ -18,19 +18,18 @@ namespace pizzashop.repository.Repositories
             _context = context;
         }
 
-        public async Task<List<KOTOrdersViewModel>> GetKOTOrdersByCategoryAndStatus(int? categoryId, string status, int skip, int take)
+        public async Task<(List<KOTOrdersViewModel>, int totalOrders)> GetKOTOrdersByCategoryAndStatus(int? categoryId, string status, int skip, int take)
         {
             var query = _context.Orders
                 .Where(o => o.OrderStatus == orderstatus.InProgress)
                 .OrderByDescending(o => o.Orderdate)
+                .Where(o => o.Ordereditems.Any())
                 .AsQueryable();
 
             if (!categoryId.HasValue)
             {
                 var orders = await query
                     .Where(o => o.Ordereditems.Any())
-                    .Skip(skip)
-                    .Take(take)
                     .Select(o => new KOTOrdersViewModel
                     {
                         OrderId = o.Orderid,
@@ -52,14 +51,18 @@ namespace pizzashop.repository.Repositories
                     })
                     .ToListAsync();
 
-                return orders.Where(o => o.Items.Any()).ToList();
+                var Orders = orders.Where(o => o.Items.Any())
+                    .Skip(skip)
+                    .Take(take)
+                    .ToList();
+                int totalOrders = orders.Where(o => o.Items.Any()).Count();
+                return (Orders, totalOrders);
             }
             else
             {
+                query = query.Where(o => o.Ordereditems.Any(oi => oi.Item.Categoryid == categoryId.Value));
                 var ordersWithSpecifiedCategory = await query
                     .Where(o => o.Ordereditems.Any(oi => oi.Item.Categoryid == categoryId.Value))
-                    .Skip(skip)
-                    .Take(take)
                     .Select(o => new
                     {
                         OrderId = o.Orderid,
@@ -81,8 +84,8 @@ namespace pizzashop.repository.Repositories
                             .ToList()
                     })
                     .ToListAsync();
-
-                return ordersWithSpecifiedCategory
+                int totalOrders = ordersWithSpecifiedCategory.Where(o => o.Items.Any()).Count();
+                var Orders = ordersWithSpecifiedCategory
                     .Where(o => o.Items.Any())
                     .Select(o => new KOTOrdersViewModel
                     {
@@ -93,7 +96,11 @@ namespace pizzashop.repository.Repositories
                         Instruction = o.Instruction,
                         Items = o.Items
                     })
+                    .Skip(skip)
+                    .Take(take)
                     .ToList();
+
+                return (Orders, totalOrders);
             }
         }
         public async Task UpdatePreparedQuantities(List<PreparedItemviewModel> updates, string status)
@@ -102,7 +109,8 @@ namespace pizzashop.repository.Repositories
             {
                 var orderitem = await _context.Ordereditems.FirstOrDefaultAsync(oi => oi.Ordereditemid == updates[0].OrderedItemId);
                 var order = await _context.Orders.FirstOrDefaultAsync(o => o.Orderid == orderitem.Orderid);
-                if(order.ServedTime == null){
+                if (order.ServedTime == null)
+                {
                     order.ServedTime = DateTime.Now;
                 }
             }
@@ -121,7 +129,7 @@ namespace pizzashop.repository.Repositories
                     }
                 }
             }
-           await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
     }
 }

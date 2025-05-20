@@ -273,7 +273,9 @@ public class OrderService : IOrderService
             OrderStatus = order.OrderStatus,
             OrderWiseComment = order.Orderwisecomment ?? string.Empty,
 
-            Section = order.Ordertables.FirstOrDefault()?.Table?.Section?.Sectionname ?? "N/A",
+            Section = order.Ordertables.Any()
+                ? string.Join(", ", order.Ordertables.Select(ot => ot.Table?.Section?.Sectionname))
+                : "N/A",
             Table = order.Ordertables.Any()
                 ? string.Join(", ", order.Ordertables.Select(ot => ot.Table?.Tablename))
                 : "N/A",

@@ -2,6 +2,7 @@
     Layout = "_Layout";
     ViewData["Title"] = "Table Page";
 }
+@using NPOI.SS.Formula.Functions
 @using pizzashop.service.Interfaces
 @inject IPermissionService PermissionService
 @{
@@ -11,84 +12,87 @@
 <head>
     <link rel="stylesheet" href="~/css/Menu.css">
 </head>
+<style>
+    
+</style>
 <section style="min-height: 100vh;background-color: #fafafa;">
     <div class="row pt-4 ms-1 me-1" style="height: 70px;">
         <h2 class="col" style="color: rgb(1, 123, 217); font-weight: bold">Sections/Tables
             </h1>
     </div>
     <div id="nav-home" class="mt-3 ms-2 me-2">
-        <div class="row main-content" style="min-height: 600px;">
-            <div class="col-auto d-none d-xl-block"
-                style="background: linear-gradient(to right, white, rgb(225, 224, 224))">
-                <div class="row px-3 mt-1">
-                    <div class="col-auto d-flex align-items-center me-5 fw-bold" style="font-size: 20px;">Section
-                    </div>
-                    @if (permission.Canaddedit == true)
-                    {
-                        <button class="btn col-auto ms-5" type="button" data-bs-toggle="modal"
-                            data-bs-target="#addSectionModal">
-                            <img src="~/images/more.png" style="width: 30px;">
-                        </button>
-                    }
+    <div class="row main-content" style="min-height: 600px;">
+        <div class="col-auto d-none d-xl-block"
+            style="background: linear-gradient(to right, white, rgb(225, 224, 224))">
+            <div class="row px-3 mt-1">
+                <div class="col-auto d-flex align-items-center me-5 fw-bold" style="font-size: 20px;">Section
                 </div>
-                <div class="row overflow-auto me-2 mt-2" style="height: 400px;" id="Sections">
-                    @* sections *@
+                @if (permission.Canaddedit == true)
+                {
+                    <button class="btn col-auto ms-5" type="button" data-bs-toggle="modal"
+                        data-bs-target="#addSectionModal">
+                        <img src="~/images/more.png" style="width: 30px;">
+                    </button>
+                }
+            </div>
+            <div class="row overflow-auto me-2 mt-2" style="height: 400px;" id="Sections">
+                @* sections will be loaded here *@
+            </div>
+        </div>
+        
+        <div class="col">
+            <div class="row px-3 mt-1" style='height: 50px;'>
+                <div class="col-auto d-flex align-items-center d-none d-xl-block fw-bold" style="font-size: 20px;">
+                    Table
+                </div>
+                
+                <div class="dropdown d-xl-none d-flex align-items-center">
+                    <button class="btn dropdown-toggle fw-bold" id="category-btn" type="button"
+                        data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 20px;">
+                        Section
+                    </button>
+                    <div class="dropdown-menu p-2">
+                        <div class="d-flex justify-content-between align-items-center mb-2 border-bottom pb-2">
+                            <div class="fw-bold" style="font-size: 18px;">Sections</div>
+                            @if (permission.Canaddedit == true)
+                            {
+                                <button class="btn p-1" type="button" data-bs-toggle="modal"
+                                    data-bs-target="#addSectionModal">
+                                    <img src="~/images/more.png" style="width: 24px;">
+                                </button>
+                            }
+                        </div>
+                        <div id="Sections1" class="d-flex justify-content-start"  style="max-height: 40vh; width: 250px; overflow-y: auto;">
+                            @* sections will be loaded here *@
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-auto col-12 d-flex ms-auto mb-md-0 mb-3" style="height: 90%">
+                <input type="search" class="me-1 ms-auto p-2" id="search" placeholder="search"
+                    style="border-radius: 3px; border: 1px solid black">
+                @if (permission.Candelete == true)
+                {
+                    <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#MassDeleteTableModal"
+                        style="width: 50px; border: 1px solid black"><img src="~/images/trash.svg"></button>
+                }
+                @if (permission.Canaddedit == true)
+                {
+                    <button type="button"
+                        class="btn btn-prime col-md-auto ms-1 align-items-center d-flex addTable"
+                        style="border-radius: 2px; border-radius: 4px;">
+                        + <div class="d-none d-md-block">New Table</div>
+                    </button>
+                }
                 </div>
             </div>
-            <div class="col">
-                <div class="row px-3 mt-1" style='height: 50px;'>
-                    <div class="col-auto d-flex align-items-center d-none d-xl-block fw-bold" style="font-size: 20px;">
-                        Table
-                    </div>
-                    <div class="dropdown d-xl-none d-flex align-items-center justify-content-between w-25">
-                        <button class="btn fs-3 dropdown-toggle no-imp w-100" id="category-btn" type="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            Section
-                        </button>
-                        <ul class="dropdown-menu sortableSection w-100" style="height: 40vh;" id="sections-cont-drop">
-                            <li class="w-100 d-flex" id="drop-category-head">
-                                <div class="w-100 h-100 d-flex justify-content-between align-items-center">
-                                    <div class="col-auto d-flex align-items-center me-5 fw-bold"
-                                        style="font-size: 20px;">Section
-                                    </div>
-                                    @if (permission.Canaddedit == true)
-                                    {
-                                        <button class="btn col-auto ms-5" type="button" data-bs-toggle="modal"
-                                            data-bs-target="#addSectionModal">
-                                            <img src="~/images/more.png" style="width: 30px;">
-                                        </button>
-                                    }
-                                </div>
-                            </li>
-                            <div class="row overflow-auto me-2 mt-2" style="height: 400px;" id="Sections1">
-                                @* sections *@
-                            </div>
-                        </ul>
-                    </div>
-                    <input type="search" class="col-md-auto col-6 me-1 ms-auto " id="search" placeholder="search"
-                        style="border-radius: 3px; border: 1px solid black">
-                    @if (permission.Candelete == true)
-                    {
-                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#MassDeleteTableModal"
-                            style="width: 50px; border: 1px solid black"><img src="~/images/trash.svg"></button>
-                    }
-                    @if (permission.Canaddedit == true)
-                    {
-                        <button type="button"
-                            class="btn btn-prime col-md-auto col-3 ms-1 align-items-center d-flex addTable"
-                            style="border-radius: 2px; border-radius: 4px;">
-                            + New Table
-                        </button>
-                    }
-                </div>
 
-                <div class="row table-responsive pt-4 ms-2 me-2" id="TablesBySection">
-
-                </div>
+            <div class="row table-responsive pt-4 ms-2 me-2 mt-4 mt-md-0" id="TablesBySection">
+                @* tables will be loaded here *@
             </div>
         </div>
     </div>
-
+</div>
     @* delete section modal *@
     <div class="fade modal" id="DeleteSectionModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -281,7 +285,7 @@
                 type: 'GET',
                 success: function (data) {
                     $('#Sections').html(data);
-    @* $('#Sections1').html(data); *@
+    $('#Sections1').html(data);
                         $(".selectedSection").removeClass("ActiveEffect");
                     $(`.selectedSection[data-id="${lastSelectedSectionId}"]`).addClass("ActiveEffect");
                 }
@@ -365,6 +369,11 @@
             selectedItemIds = [];
             TableList(sectionId, 1);
         });
+
+        $('#addSectionModal').on('hidden.bs.modal', function (e){
+            $('#addSectionForm')[0].reset();
+        });
+
 
         $("#addSectionForm").submit(function (e) {
             e.preventDefault(); // Prevent page refresh

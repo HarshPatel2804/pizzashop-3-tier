@@ -4,7 +4,8 @@
     var permission = await PermissionService.GetCurrentUserPermissionsForModule("Menu");
 }
 
-<table class="table  px-5" style="border-radius: 6px;">
+<div style="max-height: 400px;" class="overflow-auto">
+<table class="table px-5" style="border-radius: 6px;">
     <thead>
         <tr>
             <th scope="col">
@@ -40,7 +41,7 @@
                 </div>
             </td>
             @if(permission.Canaddedit == true || permission.Candelete == true){
-            <td>
+            <td class="text-nowrap">
                 @if(permission.Canaddedit == true){
                 <a>
                     <img src="~/images/pen.svg" alt="profile image" class="me-2 bg-light editItem" id="profile" data-id="@item.Itemid"
@@ -60,6 +61,7 @@
          }
     </tbody>
 </table>
+</div>
 <div class="d-flex justify-content-end align-items-center flex-wrap gap-2 mt-2 p-3">
     <div class="d-flex align-items-center">
         <span class=" px-1">Items Per page:</span>

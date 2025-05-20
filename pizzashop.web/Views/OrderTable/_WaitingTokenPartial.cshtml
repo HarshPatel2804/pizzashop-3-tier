@@ -60,26 +60,7 @@
 <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 <script>
   $(document).ready(function () {
-    $('#Email').on('blur', function () {
-      var email = $(this).val();
-      if (email) {
-        $.ajax({
-          url: '/Customer/GetCustomerByEmail',
-          type: 'GET',
-          data: { email: email },
-          success: function (response) {
-            console.log(response);
-            if (response.success) {
-              $('#Name').val(response.data.customername);
-              $('#mobile').val(response.data.phoneno);
-            } else {
-              $('#Name').val('');
-              $('#mobile').val('');
-            }
-          }
-        });
-      }
-    });
+   
   });
 </script>
 

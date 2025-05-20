@@ -43,8 +43,8 @@
 
         <section style="height:100%; max-height: 100%; flex: 1">
 
-            <div class=" d-flex justify-content-between ms-3 mt-4">
-                <div class="d-flex w-50">
+            <div class=" d-flex justify-content-between flex-column flex-md-row ms-3 mt-4">
+                <div class="d-flex w-50 search-container">
                     <button class="navbar-toggler d-lg-none d-block me-2 btn-danger" type="button"
                         data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar"
                         aria-expanded="false" aria-label="Toggle sidebar">
@@ -57,7 +57,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="food-type me-4">
+                <div class="food-type me-4 mt-md-0 mt-3">
                     <div class="type-option">
                         <div class="indicator vegetarian"></div>
                         <span>Vegetarian</span>
@@ -78,12 +78,12 @@
 
             </div>
         </section>
-        <div id="order-card" class="d-none offcanvas-xl offcanvas-end OrderCard ms-3 me-4 rounded shadow p-3 mt-3"
-            style="flex : 1; align-self: flex-start; height: auto;">
+        <div id="order-card" class="d-none offcanvas-xl offcanvas-end OrderCard ms-3 me-4 rounded shadow p-3 mt-3 overflow-auto"
+            style="flex : 1; align-self: flex-start; height: auto; max-height: 85vh; scrollbar-width: none;">
 
         </div>
         <button id="Cart-image"
-            style="height: 50px; width: 50px; border-radius: 50%; background-color :rgb(43, 134, 200); right: 0px; bottom: 0px; position: sticky;"
+            style="height: 50px; width: 50px; border-radius: 50%; background-color :rgb(43, 134, 200); right: 10px; bottom: 10px; position: absolute; z-index: 100"
             class="d-xl-none d-block d-flex justify-content-center align-items-center" data-bs-toggle="offcanvas"
             data-bs-target="#order-card" aria-label="Close">
             <img src="~/images/cart.svg" style="height:30px; width: 30px;" />
@@ -437,7 +437,7 @@
 
                 $template.attr('data-item-id', item.itemId);
                 $template.attr('data-unique-id', item.uniqueId);
-                $template.find('.item-name').text(item.itemName);
+                $template.find('.Item-name').text(item.itemName);
 
                 // Check if item has any modifiers
                 let hasModifiers = false;
@@ -1136,7 +1136,9 @@
 
                 success: function (response) {
                     toastr.success('Order saved successfully!');
-                    updateButtonStates(savedOrderItemsArray, confirmedSelections);
+                    const saveBtn = document.getElementById('Save-Order-Btn');
+                    saveBtn.disabled = true;
+                    @* loadOrderCard(); *@
                 }
             });
         });

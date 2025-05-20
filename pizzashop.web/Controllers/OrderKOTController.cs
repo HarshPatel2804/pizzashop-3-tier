@@ -26,9 +26,16 @@ public class OrderKOTController : Controller
     {
         try
         {
-            var orders = await _KotService.GetKOTOrders(categoryId, status, page, itemsPerPage);
+            var (orders, totalOrders) = await _KotService.GetKOTOrders(categoryId, status, page, itemsPerPage);
 
-            ViewData["HasMore"] = orders.Count == itemsPerPage;
+            if(!orders.Any()){
+                return new JsonResult(new {order = "no"});
+            }
+
+            ViewBag.CurrentPage = page;
+        ViewBag.PageSize = itemsPerPage;
+        ViewBag.TotalPages = totalOrders;
+        ViewBag.hasMore = page * itemsPerPage < totalOrders;
 
             return PartialView("_KOTOrdersPartial", orders);
         }

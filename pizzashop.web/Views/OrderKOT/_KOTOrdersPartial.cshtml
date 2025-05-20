@@ -1,9 +1,9 @@
 @model List<pizzashop.repository.ViewModels.KOTOrdersViewModel>
 @{
-    var hasMore = ViewData["HasMore"] as bool? ?? false;
+    var hasMore = ViewData["hasMore"];
 }
 
-<div data-has-more="@hasMore.ToString().ToLower()" id="hasMore" class="row mt-3 g-2">
+<div data-has-more="@hasMore" id="hasMore" class="row mt-3 g-2">
     @if (Model.Count == 0)
     {
         <div class="col-12 text-center">

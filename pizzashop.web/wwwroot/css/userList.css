@@ -7,7 +7,14 @@
 body,main{
     height: 100vh;
     overflow: auto;
+    scrollbar-width: none;
 }
+
+body::-webkit-scrollbar,
+main::-webkit-scrollbar {
+    display: none;
+}
+
 
 main>section.row{
     --bs-gutter-x : 0rem !important;

@@ -2,7 +2,7 @@
 @model pizzashop.repository.ViewModels.OrderDetailsView;
 <div class="d-flex justify-content-between align-items-center">
     <div class="d-flex justify-content-start align-items-center">
-        <div class="d-flex align-items-center justify-content-center p-1"
+        <div class="d-sm-flex align-items-center justify-content-center p-1 d-none"
             style="background-color: #adc3e4; width: 60px; height: 60px;">
             <img src="~/images/icons/dinner-table.svg" width="42px" height="42px">
         </div>
@@ -31,7 +31,7 @@
         <div class="d-flex justify-content-start w-50">
             <h6><strong>Item</strong></h6>
         </div>
-        <div class="d-flex justify-content-around align-items-center w-50">
+        <div class="d-flex justify-content-around align-items-center w-50 me-4">
             <h6><strong>Quantity</strong></h6>
             <h6><strong>Amount</strong></h6>
             <h6></h6>
@@ -44,7 +44,7 @@
                 <button class="accordion-button collapsed p-2 bg-transparent border-0" type="button"
                     data-bs-toggle="collapse" data-bs-target="#collapse-template" aria-expanded="false"
                     aria-controls="collapse-template" style="width: fit-content;">
-                    <strong class="ps-1 item-name">ItemName</strong>
+                    <strong class="ps-1 Item-name text-break">ItemName</strong>
                 </button>
 
                 <div id="collapse-template" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
@@ -56,8 +56,8 @@
                 </div>
             </div>
 
-            <div class="d-flex justify-content-around align-items-center flex-row w-50">
-                <div class="d-flex align-items-center border rounded px-2 py-1">
+            <div class="d-flex justify-content-around align-items-center flex-row w-50 me-4">
+                <div class="d-flex align-items-center border rounded px-2 py-1 me-sm-0 me-1">
                     <i class="bi bi-dash cursor-pointer item-quantity-decrease"></i>
                     <span class="mx-2 item-quantity">1</span>
                     <i class="bi bi-plus cursor-pointer item-quantity-increase"></i>
@@ -68,7 +68,7 @@
                     <div class="text-muted small item-total-price"></div>
                 </div>
 
-                <i class="bi bi-trash text-muted fs-6 cursor-pointer remove-item"></i>
+                <i class="bi bi-trash text-muted fs-6 cursor-pointer remove-item ms-sm-0 ms-1"></i>
             </div>
         </div>
     </div>
@@ -100,7 +100,7 @@
             <div>Payment Method</div>
             <div class="d-flex flex-row gap-3 fs-6" style="font-weight: 500;">
                 <div class="d-flex flex-row align-items-center gap-2">
-                    <input type="radio" name="paymentMethod" id="Cash" checked disabled>
+                    <input type="radio" name="paymentMethod" id="Cash" disabled>
                     <label for="Cash">Cash</label>
                 </div>
                 <div class="d-flex flex-row align-items-center gap-2">
@@ -108,7 +108,7 @@
                     <label for="card">Card</label>
                 </div>
                 <div class="d-flex flex-row align-items-center gap-2">
-                    <input type="radio" name="paymentMethod" id="UPI" disabled>
+                    <input type="radio" name="paymentMethod" id="UPI" checked disabled>
                     <label for="UPI">UPI</label>
                 </div>
             </div>
@@ -116,14 +116,14 @@
     </div>
 </div>
 
-<div class="mt-5 ps-5 d-flex flex-row gap-3 pb-3">
+<div class="mt-5 ps-sm-5 d-flex flex-sm-row flex-column gap-3 pb-3">
     <button type="button" class="btn p-3 w-100 btn-prime" id="Save-Order-Btn">Save</button>
     <button type="button" class="btn p-3 w-100 btn-border-prime" id="Complete-btn">Complete</button>
     <button type="button" class="btn p-3 w-100 btn-border-prime" id="Invoice-btn">Generate Invoice</button>
 </div>
 
-<div class="d-flex justify-content-end">
-    <button type="button" class="btn p-3 Cancel-btn w-40 btn-border-prime" id="Cancel-btn">Cancel</button>
+<div class="d-flex justify-content-end ps-sm-5 ">
+    <button type="button" class="btn p-3 Cancel-btn btn-border-prime" id="Cancel-btn">Cancel</button>
 </div>
 <script>
     (function () {

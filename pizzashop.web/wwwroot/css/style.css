@@ -6,7 +6,15 @@
 
 body,main{
     height: 100vh;
+    scrollbar-width: none;
+    overflow: auto;
 }
+
+body::-webkit-scrollbar,
+main::-webkit-scrollbar {
+    display: none;
+}
+
 
 a{
     text-decoration: none !important;

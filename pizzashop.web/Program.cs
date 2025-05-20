@@ -19,7 +19,7 @@ DependencyInjection.RegisterServices(builder.Services, connectionString!);
 // Add Lazy<T> resolution support to fix circular dependencies
 builder.Services.AddTransient(typeof(Lazy<>), typeof(LazyResolution<>));
 
-builder.Services.AddSession(options => {
+builder.Services.AddSession(options => {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
     options.IdleTimeout = TimeSpan.FromDays(20);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;

@@ -160,6 +160,28 @@
         };
         sectionList();
 
+         $('#AssignModal').on('blur','#Email', function () {
+      var email = $(this).val();
+      console.log(email + "Email");
+      if (email) {
+        $.ajax({
+          url: '/Customer/GetCustomerByEmail',
+          type: 'GET',
+          data: { email: email },
+          success: function (response) {
+            console.log(response);
+            if (response.success) {
+              $('#Name').val(response.data.customername);
+              $('#mobile').val(response.data.phoneno);
+            } else {
+              $('#Name').val('');
+              $('#mobile').val('');
+            }
+          }
+        });
+      }
+    });
+
         function WaitingList() {
             $("#addWaitingTokenForm").submit(function (e) {
                 e.preventDefault();

@@ -33,8 +33,8 @@
         <div class="d-flex justify-content-between row mb-2">
             <h4 class="for-color col" id="show-category-kot">ALL</h4>
             <div class="d-flex col justify-content-end" id="status-cont">
-                <div class="btn btn-prime mx-2" data-status="InProgress">In Progress</div>
-                <div class="btn btn-border-prime me-2" data-status="Ready">Ready</div>
+                <div class="btn btn-prime mx-2 status" data-status="InProgress">In Progress</div>
+                <div class="btn btn-border-prime me-2 status" data-status="Ready">Ready</div>
                 <button class="btn-border-prime me-2 btn" id="prev"><i class="fa fa-angle-left"
                         aria-hidden="true"></i></button>
                 <button class="btn-border-prime btn" id="next"><i class="fa fa-angle-right"
@@ -141,7 +141,7 @@
         let currentPage = 1;
         const itemsPerPage = 4;
 
-        loadKOTOrders(currentCategory, currentStatus, currentPage);
+        loadKOTOrders(currentCategory, currentStatus, 1);
 
         $('.menu-btn').on('click', function () {
             $('.menu-btn').removeClass('active');
@@ -159,7 +159,7 @@
             loadKOTOrders(currentCategory, currentStatus, currentPage);
         });
 
-        $('#status-cont .btn').on('click', function () {
+        $('#status-cont .status').on('click', function () {
             $('#status-cont .btn').removeClass('btn-prime').addClass('btn-border-prime');
 
             $(this).removeClass('btn-border-prime').addClass('btn-prime');
@@ -170,18 +170,26 @@
         });
 
         $('#prev').on('click', function () {
-            if (currentPage > 1) {
-                currentPage--;
-                loadKOTOrders(currentCategory, currentStatus, currentPage);
-            }
+            if (currentPage == 1) return;
+            currentPage = currentPage - 1;
+            let page = currentPage;
+
+            loadKOTOrders(currentCategory, currentStatus, page);
         });
 
         $('#next').on('click', function () {
-            currentPage++;
-            loadKOTOrders(currentCategory, currentStatus, currentPage);
+            currentPage = currentPage + 1;
+            let page = currentPage;
+            loadKOTOrders(currentCategory, currentStatus, page);
         });
 
         function loadKOTOrders(categoryId, status, page) {
+            if (page == 1) {
+                $('#prev').prop('disabled', true);
+            }
+            else {
+                $('#prev').prop('disabled', false);
+            }
             $.ajax({
                 url: '/OrderKOT/GetKOTOrdersPartial',
                 type: 'GET',
@@ -193,29 +201,20 @@
                 },
                 success: function (response) {
                     $('#Order-Card-Container').html(response);
+                    var hasMore = $('#hasMore').data('has-more');
+                    console.log(hasMore);
+                    if (hasMore == "False") {
+                        $('#next').prop('disabled', true);
+                    }
+                    else {
+                        $('#next').prop('disabled', false);
+                    }
 
-                    updatePaginationButtons(response);
                 },
                 error: function (error) {
                     console.error("Error loading KOT orders:", error);
                 }
             });
-        }
-
-        function updatePaginationButtons(response) {
-            const hasMore = $('#hasMore').data('has-more') === true;
-
-            if (!hasMore) {
-                $('#next').prop('disabled', true);
-            } else {
-                $('#next').prop('disabled', false);
-            }
-
-            if (currentPage === 1) {
-                $('#prev').prop('disabled', true);
-            } else {
-                $('#prev').prop('disabled', false);
-            }
         }
 
         function populateOrderModal(order) {
@@ -250,7 +249,7 @@
             });
             const actionButtons = `
         <div class="d-flex justify-content-end gap-3 mt-4">
-            <button type="submit" class="btn btn-prime px-3 fw-semibold">${currentStatus == "Ready" ? "Mark as In Progress": "Mark as Prepared"} </button>
+            <button type="submit" class="btn btn-prime px-3 fw-semibold">${currentStatus == "Ready" ? "Mark as In Progress" : "Mark as Prepared"} </button>
             <button type="button" class="btn btn-border-prime fw-normal px-3" data-bs-dismiss="modal">Cancel</button>
         </div>
     `;
@@ -311,12 +310,12 @@
             e.preventDefault();
 
             const updateModel = {
-        items: Object.entries(preparedItems).map(([id, qty]) => ({
-            OrderedItemId: parseInt(id),
-            ReadyQuantity: qty
-        })),
-        status: currentStatus
-    };
+                items: Object.entries(preparedItems).map(([id, qty]) => ({
+                    OrderedItemId: parseInt(id),
+                    ReadyQuantity: qty
+                })),
+                status: currentStatus
+            };
 
             $.ajax({
                 url: '/OrderKOT/UpdatePreparedItems',
@@ -326,7 +325,8 @@
                 success: function (res) {
                     $('#orderModal').modal('hide');
                     preparedItems = {};
-                    loadKOTOrders(currentCategory, currentStatus, currentPage);
+                    currentPage = 1;
+                    loadKOTOrders(currentCategory, currentStatus, 1);
                 },
                 error: function (err) {
                     console.error("Update failed", err);

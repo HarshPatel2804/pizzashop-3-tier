@@ -7,7 +7,6 @@ using pizzashop.service.Attributes;
 
 namespace pizzashop.web.Controllers;
 
-[CustomAuthorize]
 public class TaxesController : Controller
 {
      private readonly ITaxService _taxService;

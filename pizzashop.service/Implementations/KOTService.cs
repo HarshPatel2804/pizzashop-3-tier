@@ -35,7 +35,7 @@ namespace pizzashop.service.Services
             return viewModel;
         }
 
-        public async Task<List<KOTOrdersViewModel>> GetKOTOrders(string categoryId, string status, int page, int itemsPerPage)
+        public async Task<(List<KOTOrdersViewModel>, int totalPages)> GetKOTOrders(string categoryId, string status, int page, int itemsPerPage)
         {
 
             int? categoryIdInt = null;
@@ -46,9 +46,9 @@ namespace pizzashop.service.Services
 
             var skip = (page - 1) * itemsPerPage;
 
-            var orders = await _kotRepository.GetKOTOrdersByCategoryAndStatus(categoryIdInt, status, skip, itemsPerPage);
+            var (orders, totalOrders) = await _kotRepository.GetKOTOrdersByCategoryAndStatus(categoryIdInt, status, skip, itemsPerPage);
 
-            return orders;
+            return (orders,totalOrders);
         }
 
         public async Task UpdatePreparedQuantities(List<PreparedItemviewModel> updates , string status)
