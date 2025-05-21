@@ -51,9 +51,9 @@ namespace pizzashop.service.Services
             return (orders,totalOrders);
         }
 
-        public async Task UpdatePreparedQuantities(List<PreparedItemviewModel> updates , string status)
+        public async Task<int> UpdatePreparedQuantities(List<PreparedItemviewModel> updates , string status)
         {
-            await _kotRepository.UpdatePreparedQuantities(updates , status);
+            return await _kotRepository.UpdatePreparedQuantities(updates , status);
         }
 
     }

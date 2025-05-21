@@ -3,15 +3,20 @@ using pizzashop.service.Attributes;
 using pizzashop.repository.Models;
 using pizzashop.repository.ViewModels;
 using pizzashop.service.Interfaces;
+using Microsoft.AspNetCore.SignalR;
+using pizzashop.Hubs;
 
 namespace pizzashop.web.Controllers;
 public class OrderKOTController : Controller
 {
     private readonly IKOTService _KotService;
 
-    public OrderKOTController(IKOTService kOTService)
+     private readonly IHubContext<KOTHub> _kotHubContext;
+
+    public OrderKOTController(IKOTService kOTService, IHubContext<KOTHub> kotHubContext)
     {
         _KotService = kOTService;
+        _kotHubContext = kotHubContext;
     }
      [CustomAuthForApp("OrderKOT")]
     public async Task<IActionResult> KOT()
@@ -27,10 +32,6 @@ public class OrderKOTController : Controller
         try
         {
             var (orders, totalOrders) = await _KotService.GetKOTOrders(categoryId, status, page, itemsPerPage);
-
-            if(!orders.Any()){
-                return new JsonResult(new {order = "no"});
-            }
 
             ViewBag.CurrentPage = page;
         ViewBag.PageSize = itemsPerPage;
@@ -68,7 +69,8 @@ public class OrderKOTController : Controller
         if (model.Items == null || !model.Items.Any())
             return BadRequest("No items provided.");
 
-        await _KotService.UpdatePreparedQuantities(model.Items , model.Status);
+        var orderId = await _KotService.UpdatePreparedQuantities(model.Items , model.Status);
+        await _kotHubContext.Clients.All.SendAsync("updateOrderItems" , orderId);
         return Ok(new { message = "Items updated successfully." });
     }
 

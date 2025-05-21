@@ -52,6 +52,7 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapHub<OrderHub>("/orderHub");
+app.MapHub<KOTHub>("/kotHub");
 app.Run();
 
 // This class helps resolve Lazy<T> services

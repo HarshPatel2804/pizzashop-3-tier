@@ -142,6 +142,58 @@
         const itemsPerPage = 4;
 
         loadKOTOrders(currentCategory, currentStatus, 1);
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/orderHub")
+            .withAutomaticReconnect()
+            .build();
+
+        //When order save then call loadOrderCard
+        connection.on("OrderSavedKOT", async (orderId) => {
+            toastr.info(`Order with id #${orderId} is modified`);
+            await loadKOTOrders(currentCategory, currentStatus, 1);
+            updateModal(orderId);
+        });
+
+        async function startSignalRConnection() {
+            try {
+                await connection.start();
+                console.log("SignalR Connected.");
+
+            } catch (err) {
+                console.error("SignalR Connection Error: ", err);
+            }
+        }
+
+        connection.onclose(error => {
+            console.warn(`SignalR connection closed. Error: ${error?.message}`);
+        });
+        const conn = new signalR.HubConnectionBuilder()
+            .withUrl("/kotHub")
+            .withAutomaticReconnect()
+            .build();
+
+        //When order save then call loadOrderCard
+        conn.on("updateOrderItems", async (orderId) => {
+            toastr.info(`Changed item status in order #${orderId}`);
+            await loadKOTOrders(currentCategory, currentStatus, 1);
+            updateModal(orderId);
+        });
+
+        async function startSignalRConnection() {
+            try {
+                await conn.start();
+                console.log("SignalR Connected.");
+
+            } catch (err) {
+                console.error("SignalR Connection Error: ", err);
+            }
+        }
+
+        conn.onclose(error => {
+            console.warn(`SignalR connection closed. Error: ${error?.message}`);
+        });
+
+        startSignalRConnection();
 
         $('.menu-btn').on('click', function () {
             $('.menu-btn').removeClass('active');
@@ -190,6 +242,7 @@
             else {
                 $('#prev').prop('disabled', false);
             }
+            return new Promise((resolve, reject) => {
             $.ajax({
                 url: '/OrderKOT/GetKOTOrdersPartial',
                 type: 'GET',
@@ -210,10 +263,12 @@
                         $('#next').prop('disabled', false);
                     }
 
+                    resolve();
                 },
                 error: function (error) {
                     console.error("Error loading KOT orders:", error);
                 }
+            });
             });
         }
 
@@ -258,82 +313,107 @@
 
         let selectedOrder = null;
 
-        $('#Order-Card-Container').on('click', '.order-clickable', function () {
-            const orderData = $(this).data('order');
-            selectedOrder = orderData;
-
-            populateOrderModal(orderData);
-            $('#orderModal').modal('show');
-        });
-
-        let preparedItems = {};
-
-        $(document).on('change', '.item-checkbox', function () {
-            const id = $(this).data('id');
-            const $qty = $(`.item-qty[data-id='${id}']`);
-            let val = parseInt($qty.text());
-            if (this.checked) {
-                preparedItems[id] = val;
-            } else {
-                delete preparedItems[id];
-            }
-        });
-
-        $(document).on('click', '.btn-increment', function () {
-            const $qty = $(this).siblings('.item-qty');
-            const value = $qty.data('qty');
-            const id = $qty.data('id');
-            let val = parseInt($qty.text());
-            if (val < value) {
-                console.log(val);
-                $qty.text(++val);
-                if (preparedItems[id] !== undefined) {
-                    preparedItems[id] = val;
+        function updateModal(orderId) {
+            if ($('#orderModal').is(':visible')) {
+                console.log(orderId);
+                var modalOrderId = $('#orderModalLabel span').text();
+                console.log(modalOrderId);
+                //To check modal order id and save order id is same or not
+                if (modalOrderId != `#${orderId}`) { return; }
+                console.log("All order-clickable elements:", $('.order-clickable').length);
+                //Reach to the kOTorder which have same orderId and get data from that
+                $('.order-clickable').each(function () {
+                    var tempId = $(this).attr('data-orderid');
+                if (tempId == orderId) {
+                    const orderData = $(this).data('order');
+                    selectedOrder = orderData;
+                    populateOrderModal(orderData);
                 }
-            }
-        });
-
-        $(document).on('click', '.btn-decrement', function () {
-            const $qty = $(this).siblings('.item-qty');
-            const id = $qty.data('id');
-            const value = $qty.data('qty');
-            let val = parseInt($qty.text());
-            if (val > 1) {
-                $qty.text(--val);
-                if (preparedItems[id] !== undefined) {
-                    preparedItems[id] = val;
-                }
-            }
-        });
-
-        $(document).on('submit', '#orderModal form', function (e) {
-            e.preventDefault();
-
-            const updateModel = {
-                items: Object.entries(preparedItems).map(([id, qty]) => ({
-                    OrderedItemId: parseInt(id),
-                    ReadyQuantity: qty
-                })),
-                status: currentStatus
-            };
-
-            $.ajax({
-                url: '/OrderKOT/UpdatePreparedItems',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(updateModel),
-                success: function (res) {
-                    $('#orderModal').modal('hide');
-                    preparedItems = {};
-                    currentPage = 1;
-                    loadKOTOrders(currentCategory, currentStatus, 1);
-                },
-                error: function (err) {
-                    console.error("Update failed", err);
-                }
+                console.log("Found order with ID:", $(this).attr('data-orderid'));
             });
+
+            }
+        }
+
+    $('#Order-Card-Container').on('click', '.order-clickable', function () {
+        const orderData = $(this).data('order');
+        selectedOrder = orderData;
+
+        populateOrderModal(orderData);
+        $('#orderModal').modal('show');
+    });
+
+    let preparedItems = {};
+
+    $(document).on('change', '.item-checkbox', function () {
+        const id = $(this).data('id');
+        const $qty = $(`.item-qty[data-id='${id}']`);
+        let val = parseInt($qty.text());
+        if (this.checked) {
+            preparedItems[id] = val;
+        } else {
+            delete preparedItems[id];
+        }
+    });
+
+    $(document).on('click', '.btn-increment', function () {
+        const $qty = $(this).siblings('.item-qty');
+        const value = $qty.data('qty');
+        const id = $qty.data('id');
+        let val = parseInt($qty.text());
+        if (val < value) {
+            console.log(val);
+            $qty.text(++val);
+            if (preparedItems[id] !== undefined) {
+                preparedItems[id] = val;
+            }
+        }
+    });
+
+    $(document).on('click', '.btn-decrement', function () {
+        const $qty = $(this).siblings('.item-qty');
+        const id = $qty.data('id');
+        const value = $qty.data('qty');
+        let val = parseInt($qty.text());
+        if (val > 1) {
+            $qty.text(--val);
+            if (preparedItems[id] !== undefined) {
+                preparedItems[id] = val;
+            }
+        }
+    });
+
+    $(document).on('submit', '#orderModal form', function (e) {
+        e.preventDefault();
+
+        const updateModel = {
+            items: Object.entries(preparedItems).map(([id, qty]) => ({
+                OrderedItemId: parseInt(id),
+                ReadyQuantity: qty
+            })),
+            status: currentStatus
+        };
+
+        $.ajax({
+            url: '/OrderKOT/UpdatePreparedItems',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(updateModel),
+            success: function (res) {
+                $('#orderModal').modal('hide');
+                preparedItems = {};
+                currentPage = 1;
+                loadKOTOrders(currentCategory, currentStatus, 1);
+            },
+            error: function (err) {
+                console.error("Update failed", err);
+            }
         });
+    });
 
 
     });
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.14/signalr.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>

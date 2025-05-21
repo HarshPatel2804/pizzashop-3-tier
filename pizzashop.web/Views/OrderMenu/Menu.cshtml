@@ -1086,7 +1086,6 @@
         }
 
         //signal R (Save Order)
-
         const connection = new signalR.HubConnectionBuilder()
             .withUrl("/orderHub")
             .withAutomaticReconnect()
@@ -1104,6 +1103,7 @@
                 console.log("SignalR Connected.");
 
                 if (orderId && orderId > 0) {
+                    //Join to group
                     await connection.invoke("JoinOrderGroup", orderId.toString());
                 }
 

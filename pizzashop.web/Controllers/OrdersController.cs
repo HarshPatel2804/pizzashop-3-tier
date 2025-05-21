@@ -143,11 +143,15 @@ public class OrdersController : Controller
         //In same group send message after saving order
         if (success)
         {
+            //Order
             string groupName = $"Order_{model.OrderId}";
             await _orderHubContext.Clients.Group(groupName).SendAsync(
                 "OrderSaved",
                 model.OrderId
             );
+
+            //KOT
+            await _orderHubContext.Clients.All.SendAsync("OrderSavedKOT",model.OrderId);
         }
         return Json(new { success = success, message = "Order Saved Successfully" });
     }

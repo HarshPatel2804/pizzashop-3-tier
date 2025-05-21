@@ -18,6 +18,7 @@
                 <option value="Last30Days">Last 30 Days</option>
                 <option value="CurrentMonth" selected>Current Month</option>
                 <option value="custom" id="Custom">Custom Date</option>
+                <option value="hidden" id="hidden" hidden>Custom Date</option>
             </select>
 
 
@@ -93,6 +94,7 @@
         function getDateRange(selectedRangeValue) {
             let startDate;
             let endDate = new Date();
+            $('#Custom').removeClass('selectedOption');
 
             switch (selectedRangeValue) {
                 case "Today":
@@ -162,6 +164,8 @@
             const selectedRangeValue = $('#dateDropdown').val();
             console.log(typeof(selectedRangeValue));
             if (selectedRangeValue == "custom") {
+                $('#dateDropdown').val("hidden");
+                $('#Custom').addClass('selectedOption');
                 $('#customDate').modal('show');
             }
             else{

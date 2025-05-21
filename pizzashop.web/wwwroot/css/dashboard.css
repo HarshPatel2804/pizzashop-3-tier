@@ -126,3 +126,8 @@ main>section.row{
   @media screen and (max-width: 991px) {
     .appItem{width: 150px;}
   }
+
+  .selectedOption{
+    color: #ffffff;
+    background-color: #1967d2;
+  }

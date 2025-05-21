@@ -103,8 +103,9 @@ namespace pizzashop.repository.Repositories
                 return (Orders, totalOrders);
             }
         }
-        public async Task UpdatePreparedQuantities(List<PreparedItemviewModel> updates, string status)
+        public async Task<int> UpdatePreparedQuantities(List<PreparedItemviewModel> updates, string status)
         {
+            var orderId = 0;
             if (updates.Any())
             {
                 var orderitem = await _context.Ordereditems.FirstOrDefaultAsync(oi => oi.Ordereditemid == updates[0].OrderedItemId);
@@ -113,6 +114,7 @@ namespace pizzashop.repository.Repositories
                 {
                     order.ServedTime = DateTime.Now;
                 }
+                orderId = order.Orderid;
             }
             foreach (var Item in updates)
             {
@@ -130,6 +132,7 @@ namespace pizzashop.repository.Repositories
                 }
             }
             await _context.SaveChangesAsync();
+            return orderId;
         }
     }
 }
