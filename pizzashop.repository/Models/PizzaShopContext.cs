@@ -74,6 +74,8 @@ public partial class PizzaShopContext : DbContext
 
     public DbSet<TaxType> TaxTypes { get; set; }
 
+    public DbSet<KOTRawDataviewModel> KOTOrderFlat { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseNpgsql("Host=localhost;Database=PizzaShop;Username=postgres; password=Tatva@123");
@@ -85,6 +87,12 @@ public partial class PizzaShopContext : DbContext
             .HasPostgresEnum("orderstatus", new[] { "InProgress", "Pending", "Served", "Completed", "Cancelled", "On Hold", "Failed" })
             .HasPostgresEnum("statustype", new[] { "Active", "Inactive" })
             .HasPostgresEnum("tablestatus", new[] { "Available", "Occupied", "Reserved" });
+
+        modelBuilder.Entity<KOTRawDataviewModel>(entity =>
+     {
+         entity.HasNoKey();
+         entity.ToFunction("getkotordersbycategoryandstatus");
+     });
 
         modelBuilder.Entity<TaxType>(entity =>
         {

@@ -58,6 +58,7 @@
             }
           },
           "centralPackageVersions": {
+            "Dapper": "[2.1.66, )",
             "MailKit": "[4.10.0, )",
             "MailKit.NET": "[2.0.0, )",
             "Microsoft.AspNetCore.Cors": "[2.3.0, )",
@@ -158,6 +159,7 @@
             }
           },
           "centralPackageVersions": {
+            "Dapper": "[2.1.66, )",
             "MailKit": "[4.10.0, )",
             "MailKit.NET": "[2.0.0, )",
             "Microsoft.AspNetCore.Cors": "[2.3.0, )",
@@ -231,6 +233,11 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "dependencies": {
+            "Dapper": {
+              "target": "Package",
+              "version": "[2.1.66, )",
+              "versionCentrallyManaged": true
+            },
             "MailKit": {
               "target": "Package",
               "version": "[4.10.0, )",
@@ -263,6 +270,7 @@
             }
           },
           "centralPackageVersions": {
+            "Dapper": "[2.1.66, )",
             "MailKit": "[4.10.0, )",
             "MailKit.NET": "[2.0.0, )",
             "Microsoft.AspNetCore.Cors": "[2.3.0, )",

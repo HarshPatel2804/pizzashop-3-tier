@@ -16,30 +16,33 @@ public class CategoryRepository : ICategoryRepository
     }
     public async Task<List<CategoryViewModel>> GetAllCategoryAsync()
     {
-        var model = await _context.Categories.Where(u => u.Isdeleted != true).OrderBy(u => u.SortOrder).Select(u => new CategoryViewModel
-        {
-            Categoryid = u.Categoryid,
-            Categoryname = u.Categoryname,
-            Description = u.Description
-
-        }).ToListAsync();
+        var model = await _context.Categories
+       .FromSqlRaw("SELECT * FROM GetAllCategories()")
+       .Select(u => new CategoryViewModel
+       {
+           Categoryid = u.Categoryid,
+           Categoryname = u.Categoryname,
+           Description = u.Description
+       })
+       .ToListAsync();
 
         return model;
     }
 
-    public async Task AddCategoryAsync(Category model){
+    public async Task AddCategoryAsync(Category model)
+    {
         await _context.Categories.AddAsync(model);
         await _context.SaveChangesAsync();
 
     }
 
-     public async Task<List<SelectListItem>> GetCategoriesListAsync()
+    public async Task<List<SelectListItem>> GetCategoriesListAsync()
     {
-        return _context.Categories.Where(u=>u.Isdeleted == false).OrderBy(u=>u.Categoryid).Select(c => new SelectListItem
-            {
-                Value = c.Categoryid.ToString(),
-                Text = c.Categoryname
-            })
+        return _context.Categories.Where(u => u.Isdeleted == false).OrderBy(u => u.Categoryid).Select(c => new SelectListItem
+        {
+            Value = c.Categoryid.ToString(),
+            Text = c.Categoryname
+        })
             .OrderBy(c => c.Text)
             .ToList();
     }
@@ -65,10 +68,12 @@ public class CategoryRepository : ICategoryRepository
     }
 
     public async Task<Category> GetCategoryByName(CategoryViewModel model)
-        {
-            return await _context.Categories
-                .FirstOrDefaultAsync(c => c.Categoryname.ToLower() == model.Categoryname.ToLower() && c.Isdeleted != true && c.Categoryid != model.Categoryid);
-        }
+    {
+        var category = await _context.Categories
+            .FirstOrDefaultAsync(c => c.Categoryname.ToLower() == model.Categoryname.ToLower() && c.Isdeleted != true && c.Categoryid != model.Categoryid);
+
+        return category ?? new Category(); 
+    }
 
     public async Task UpdateSortOrderOfCategory(List<int> sortOrder)
     {
@@ -85,7 +90,7 @@ public class CategoryRepository : ICategoryRepository
         await _context.SaveChangesAsync();
     }
 
-     public async Task<int> GetFirstCategoryId()
+    public async Task<int> GetFirstCategoryId()
     {
         var categortId = await _context.Categories
             .Where(s => s.SortOrder.HasValue && s.Isdeleted == false)

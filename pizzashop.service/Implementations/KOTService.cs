@@ -37,7 +37,6 @@ namespace pizzashop.service.Services
 
         public async Task<(List<KOTOrdersViewModel>, int totalPages)> GetKOTOrders(string categoryId, string status, int page, int itemsPerPage)
         {
-
             int? categoryIdInt = null;
             if (categoryId != "all" && int.TryParse(categoryId, out int parsedCategoryId))
             {
@@ -46,14 +45,48 @@ namespace pizzashop.service.Services
 
             var skip = (page - 1) * itemsPerPage;
 
-            var (orders, totalOrders) = await _kotRepository.GetKOTOrdersByCategoryAndStatus(categoryIdInt, status, skip, itemsPerPage);
+            var (flatOrders, totalOrders) = await _kotRepository.GetKOTOrdersByCategoryAndStatus(categoryIdInt, status, skip, itemsPerPage);
 
-            return (orders,totalOrders);
+            var ordersViewModel = flatOrders
+                .GroupBy(fo => fo.OrderId)
+                .Skip(skip)
+                .Take(itemsPerPage)
+                .Select(orderGroup => new KOTOrdersViewModel
+                {
+                    OrderId = orderGroup.Key,
+                    OrderDate = orderGroup.First().OrderDate,
+                    TableName = orderGroup.First().TableName,
+                    SectionName = orderGroup.First().SectionName,
+                    Instruction = orderGroup.First().OrderInstruction,
+                    Items = orderGroup
+                        .GroupBy(fo => fo.OrderedItemId)
+                        .Select(itemGroup => new KOTOrderedItemsViewModel
+                        {
+                            Ordereditemid = itemGroup.Key,
+                            ItemName = itemGroup.First().ItemName,
+                            Quantity = itemGroup.First().ItemQuantity,
+                            Instruction = itemGroup.First().ItemInstruction,
+                            Modifiers = itemGroup
+                                .Where(fo => fo.ModifierId > 0)
+                                .Select(fo => new KOTModifierViewModel
+                                {
+                                    ModifierId = fo.ModifierId,
+                                    ModifierName = fo.ModifierName
+                                })
+                                .Distinct()
+                                .ToList()
+                        })
+                        .Where(item => item.Quantity > 0)
+                        .ToList()
+                })
+                .Where(o => o.Items.Any())
+                .ToList();
+
+            return (ordersViewModel, totalOrders);
         }
-
-        public async Task<int> UpdatePreparedQuantities(List<PreparedItemviewModel> updates , string status)
+        public async Task<int> UpdatePreparedQuantities(List<PreparedItemviewModel> updates, string status)
         {
-            return await _kotRepository.UpdatePreparedQuantities(updates , status);
+            return await _kotRepository.UpdatePreparedQuantities(updates, status);
         }
 
     }

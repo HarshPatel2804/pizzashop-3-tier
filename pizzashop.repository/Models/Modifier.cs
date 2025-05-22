@@ -33,5 +33,6 @@ public partial class Modifier
 
     public virtual Unit Unit { get; set; } = null!;
 
+    [System.Text.Json.Serialization.JsonIgnore]
     public virtual ICollection<Ordereditemmodifer> Ordereditemmodifers { get; set; } = new List<Ordereditemmodifer>();
 }

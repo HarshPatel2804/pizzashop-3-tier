@@ -280,7 +280,7 @@
             $('#orderModalLabel span').text(`#${order.orderId}`);
 
             order.items.forEach(item => {
-                let modifierList = item.modifiers?.map(mod => `<li>${mod.modifiername}</li>`).join('') || '';
+                let modifierList = item.modifiers?.map(mod => `<li>${mod.modifierName}</li>`).join('') || '';
                 let itemLabel = `
             <div class="d-flex align-items-start justify-content-between w-100">
                 <div class="form-check d-flex flex-column">

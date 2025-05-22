@@ -58,6 +58,7 @@
             }
           },
           "centralPackageVersions": {
+            "Dapper": "[2.1.66, )",
             "MailKit": "[4.10.0, )",
             "MailKit.NET": "[2.0.0, )",
             "Microsoft.AspNetCore.Cors": "[2.3.0, )",

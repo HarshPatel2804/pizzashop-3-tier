@@ -3,6 +3,7 @@
     <ProjectReference Include="..\pizzashop.service\pizzashop.service.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Dapper" />
     <PackageReference Include="MailKit" />
     <PackageReference Include="MailKit.NET" />
     <PackageReference Include="Microsoft.AspNetCore.Http" />

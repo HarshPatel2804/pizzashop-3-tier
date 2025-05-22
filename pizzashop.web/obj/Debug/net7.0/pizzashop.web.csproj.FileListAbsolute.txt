@@ -334,3 +334,4 @@ D:\pizzashop_3Tier\pizzashop.web\obj\Debug\net7.0\refint\pizzashop.web.dll
 D:\pizzashop_3Tier\pizzashop.web\obj\Debug\net7.0\pizzashop.web.pdb
 D:\pizzashop_3Tier\pizzashop.web\obj\Debug\net7.0\pizzashop.web.genruntimeconfig.cache
 D:\pizzashop_3Tier\pizzashop.web\obj\Debug\net7.0\ref\pizzashop.web.dll
+D:\pizzashop_3Tier\pizzashop.web\bin\Debug\net7.0\Dapper.dll

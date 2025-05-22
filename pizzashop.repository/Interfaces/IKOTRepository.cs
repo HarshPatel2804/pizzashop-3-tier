@@ -7,7 +7,7 @@ namespace pizzashop.repository.Interfaces
 {
     public interface IKOTRepository
     {
-        Task<(List<KOTOrdersViewModel>,int totalOrders)> GetKOTOrdersByCategoryAndStatus(int? categoryId, string status, int skip, int take);
+        Task<(List<KOTRawDataviewModel>,int totalOrders)> GetKOTOrdersByCategoryAndStatus(int? categoryId, string status, int skip, int take);
 
         Task<int> UpdatePreparedQuantities(List<PreparedItemviewModel> updates , string status);
     }

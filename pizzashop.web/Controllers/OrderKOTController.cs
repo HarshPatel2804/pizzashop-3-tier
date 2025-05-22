@@ -42,6 +42,7 @@ public class OrderKOTController : Controller
         }
         catch (Exception ex)
         {
+            Console.WriteLine(ex.Message);
             return StatusCode(500, ex.Message);
         }
     }
