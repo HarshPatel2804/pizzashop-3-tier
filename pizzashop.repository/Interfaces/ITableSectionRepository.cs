@@ -6,7 +6,7 @@ namespace pizzashop.repository.Interfaces;
 
 public interface ITableSectionRepository
 {
-    Task<List<Section>> GetAllSetionsAsync();
+    Task<List<SectionRawViewModel>> GetAllSetionsAsync();
 
     Task<(List<Table> tables, int totalTables)> GetTablesBySectionAsync(int Sectionid , int page, int pageSize, string search);
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using pizzashop.repository.ViewModels;
 using Pizzashop.repository.Models;
 
 namespace pizzashop.repository.Models;
@@ -75,6 +76,7 @@ public partial class PizzaShopContext : DbContext
     public DbSet<TaxType> TaxTypes { get; set; }
 
     public DbSet<KOTRawDataviewModel> KOTOrderFlat { get; set; }
+    public DbSet<SectionRawViewModel> SectionViewModels { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
@@ -92,6 +94,11 @@ public partial class PizzaShopContext : DbContext
      {
          entity.HasNoKey();
          entity.ToFunction("getkotordersbycategoryandstatus");
+     });
+        modelBuilder.Entity<SectionRawViewModel>(entity =>
+     {
+         entity.HasNoKey();
+         entity.ToFunction("get_all_sections_with_tokens");
      });
 
         modelBuilder.Entity<TaxType>(entity =>

@@ -63,7 +63,6 @@ namespace pizzashop.repository.Repositories
 
             var updatesJson = System.Text.Json.JsonSerializer.Serialize(updates);
 
-            // Call the stored procedure
             var orderId = await _context.Database.ExecuteSqlInterpolatedAsync($@"SELECT update_prepared_quantities({updatesJson}::jsonb, {status})");
 
             return orderId;

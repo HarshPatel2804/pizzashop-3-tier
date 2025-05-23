@@ -22,7 +22,7 @@ public class WaitingTokenRepository : IWaitingTokenRepository
         return model.Waitingtokenid;
     }
 
-    public async Task<IEnumerable<Waitingtoken>> GetAllWaitingTokensWithCustomer(int section)
+    public async Task<IEnumerable<Waitingtoken>>  GetAllWaitingTokensWithCustomer(int section)
     {
         var startDate =  DateTime.Today;
         var endDate = startDate.Date.AddDays(1).AddTicks(-1);

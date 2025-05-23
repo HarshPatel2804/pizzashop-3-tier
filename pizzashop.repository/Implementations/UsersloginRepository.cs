@@ -17,20 +17,20 @@ public class UsersloginRepository : IUsersloginRepository
 
     public async Task<Userslogin> GetUserByEmailAsync(string email)
     {
-        return await _context.Userslogins
-            .FirstOrDefaultAsync(u => u.Email == email);
+        var user = await _context.Userslogins.FirstOrDefaultAsync(u => u.Email == email);
+        return user ?? new Userslogin(); 
     }
 
     public async Task<Userslogin> GetUserByIdAsync(int id)
     {
-        return await _context.Userslogins
-            .FirstOrDefaultAsync(u => u.Userid == id);
+        var user = await _context.Userslogins.FirstOrDefaultAsync(u => u.Userid == id);
+        return user ?? new Userslogin();
     }
 
     public async Task UpdateUserLoginDetails(Userslogin user)
     {
         _context.Userslogins.Update(user);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 
     public bool CheckUsername(string Username, int? Id = null)
@@ -57,7 +57,7 @@ public class UsersloginRepository : IUsersloginRepository
         var query = _context.Userslogins
                     .Include(u => u.User)
                     .Include(u => u.Role)
-                    .Where(u => u.User.Isdeleted == false)
+                    .Where(u => u.User != null && u.User.Isdeleted == false)
                     .OrderBy(u => u.User.Firstname)
                     .Where(u => string.IsNullOrEmpty(search) ||
                         u.User.Firstname.ToLower().Contains(search.ToLower()) ||

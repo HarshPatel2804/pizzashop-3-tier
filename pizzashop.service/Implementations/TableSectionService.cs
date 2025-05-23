@@ -25,20 +25,16 @@ public class TableSectionService : ITableSectionService
     }
 
     public async Task<List<SectionViewModel>> GetAllSections()
-    {   var startDate =  DateTime.Today;
-        var endDate = startDate.Date.AddDays(1).AddTicks(-1);
-        var model = await _tableSectionRepository.GetAllSetionsAsync();
-
-        var viewModel = model.Select(u => new SectionViewModel
+    {   
+        var result = await _tableSectionRepository.GetAllSetionsAsync();
+        var model = result.Select(u => new SectionViewModel
         {
             Sectionid = u.Sectionid,
             Sectionname = u.Sectionname,
             Description = u.Description,
-            TokenCount = u.Waitingtokens.Where(w => w.Isassigned != true && w.Createdat >= startDate && w.Createdat <= endDate).Count()
-
+            TokenCount = u.TokenCount
         }).ToList();
-
-        return viewModel;
+        return model;
     }
 
     public async Task<(List<TableViewModel> tableModel, int totalTables, int totalPages)> GetTablesBySection(int sectionId, int page, int pageSize, string search)

@@ -16,9 +16,13 @@ public class TableSectionRepository : ITableSectionRepository
         _context = context;
     }
 
-    public async Task<List<Section>> GetAllSetionsAsync()
+    public async Task<List<SectionRawViewModel>> GetAllSetionsAsync()
     {
-        return await _context.Sections.Where(u => u.Isdeleted != true).OrderBy(u => u.OrderField).Include(s => s.Waitingtokens).ToListAsync();
+       var result = await _context.Set<SectionRawViewModel>()
+        .FromSqlRaw("SELECT * FROM get_all_sections_with_tokens()")
+        .ToListAsync();
+
+        return result;
     }
 
     public async Task<(List<Table> tables, int totalTables)> GetTablesBySectionAsync(int Sectionid, int page, int pageSize, string search)
