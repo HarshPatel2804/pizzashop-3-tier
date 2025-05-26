@@ -7,5 +7,7 @@ namespace pizzashop.service.Interfaces
     public interface IDashboardService
     {
         Task<DashboardViewModel> GetDashboardDataAsync(DateTime startDate, DateTime endDate);
+
+         DateTime? GetFirstOrderDate();
     }
 }

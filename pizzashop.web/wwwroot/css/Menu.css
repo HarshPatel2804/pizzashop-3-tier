@@ -382,3 +382,7 @@ li {
         margin-top: 0px !important;
     }
 }
+
+.zero-scroll-width::-webkit-scrollbar {
+    display: none;
+}

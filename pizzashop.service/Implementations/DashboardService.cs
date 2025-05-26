@@ -260,5 +260,10 @@ namespace pizzashop.service.Implementations
                 CustomerCount = customerData.ToList()
             };
         }
+
+        public DateTime? GetFirstOrderDate()
+        {
+            return _orderRepository.GetFirstOrderDate();
+        }
     }
 }

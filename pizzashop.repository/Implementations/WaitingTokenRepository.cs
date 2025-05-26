@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using pizzashop.repository.Interfaces;
 using pizzashop.repository.Models;
 using pizzashop.repository.ViewModels;
+using Dapper;
+using System.Data;
+
 
 namespace pizzashop.repository.Implementations;
 
@@ -22,24 +25,20 @@ public class WaitingTokenRepository : IWaitingTokenRepository
         return model.Waitingtokenid;
     }
 
-    public async Task<IEnumerable<Waitingtoken>>  GetAllWaitingTokensWithCustomer(int section)
+    public async Task<IEnumerable<WaitingTokenWithCustomerViewModel>>  GetAllWaitingTokensWithCustomer(int section)
     {
-        var startDate =  DateTime.Today;
-        var endDate = startDate.Date.AddDays(1).AddTicks(-1);
-        if (section == 0)
+       var connection = _context.Database.GetDbConnection();
+        
+        if (connection.State != ConnectionState.Open)
         {
-            return await _context.Waitingtokens
-                .Where(u => u.Isassigned == false && u.Createdat >= startDate && u.Modifiedat <= endDate)
-                .Include(w => w.Customer)
-                .ToListAsync();
+            await connection.OpenAsync();
         }
-        else
-        {
-            return await _context.Waitingtokens
-                .Where(u => u.Sectionid == section && u.Isassigned == false && u.Createdat >= startDate && u.Modifiedat <= endDate)
-                .Include(w => w.Customer)
-                .ToListAsync();
-        }
+        
+        const string query = "SELECT * FROM get_waiting_token_with_customer(@sectionId)";
+        
+        var parameters = new { sectionId = section };
+        
+        return await connection.QueryAsync<WaitingTokenWithCustomerViewModel>(query, parameters);
     }
     public async Task<IEnumerable<Waitingtoken>> GetAllWaitingTokens(List<int> sectionIds)
     {

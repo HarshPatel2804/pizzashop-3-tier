@@ -94,7 +94,29 @@ public class WaitingTokenService : IWaitingTokenService
 
     public async Task<IEnumerable<Waitingtoken>> GetWaitingTokensBySectionAsync(int sectionId)
     {
-        return await _waitingTokenRepository.GetAllWaitingTokensWithCustomer(sectionId);
+        var Result = await _waitingTokenRepository.GetAllWaitingTokensWithCustomer(sectionId);
+        
+        return Result.Select(vm => new Waitingtoken
+        {
+            Waitingtokenid = vm.Waitingtokenid,
+            Createdat = vm.Createdat,
+            Createdby = vm.Createdby,
+            Customerid = vm.Customerid,
+            Isassigned = vm.Isassigned,
+            Modifiedat = vm.Modifiedat,
+            Modifiedby = vm.Modifiedby,
+            Noofpeople = vm.Noofpeople,
+            Sectionid = vm.Sectionid,
+            Customer = new Customer
+            {
+                Customerid = vm.Customerid,
+                Customername = vm.Customername,
+                Email = vm.Email,
+                Phoneno = vm.Phoneno,
+                Totalorder = vm.Totalorder,
+                Visitcount = (short?)vm.Visitcount
+            }
+        }).ToList();
     }
 
     public async Task<bool> RemoveWaitingTokenAsync(int tokenId)

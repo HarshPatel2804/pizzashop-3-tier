@@ -17,6 +17,7 @@
                 <option value="Last7Days">Last 7 Days</option>
                 <option value="Last30Days">Last 30 Days</option>
                 <option value="CurrentMonth" selected>Current Month</option>
+                <option value="AllTime">All Time</option>
                 <option value="custom" id="Custom">Custom Date</option>
                 <option value="hidden" id="hidden" hidden>Custom Date</option>
             </select>
@@ -109,6 +110,19 @@
                     startDate = new Date();
                     startDate.setDate(endDate.getDate() - 29);
                     break;
+                case "AllTime":
+                    $.ajax({
+                        url: '/Dashboard/GetFirstOrderDate',
+                        type: 'GET',
+                        async: false,
+                        success: function (data) {
+                            startDate = new Date(data);
+                        },
+                        error: function () {
+                            toastr.error("Failed to fetch the first order date.");
+                        }
+                    });
+                    break;
                 case "CurrentMonth":
                 default:
                     const today = new Date();
@@ -124,20 +138,20 @@
             };
         }
 
-            $('#DateRange').on('click', function (e) {
-                e.preventDefault();
-                let fromDate = $('#FromDate').val();
-                let toDate = $('#ToDate').val();
-                if(fromDate == null || fromDate == ""){
-                    toastr.error("Please select from date");
-                    return;
-                }
-                if(toDate == null || toDate == ""){
-                    toastr.error("Please select to date");
-                    return;
-                }
+        $('#DateRange').on('click', function (e) {
+            e.preventDefault();
+            let fromDate = $('#FromDate').val();
+            let toDate = $('#ToDate').val();
+            if (fromDate == null || fromDate == "") {
+                toastr.error("Please select from date");
+                return;
+            }
+            if (toDate == null || toDate == "") {
+                toastr.error("Please select to date");
+                return;
+            }
 
-                 $.ajax({
+            $.ajax({
                 url: '/Dashboard/Data',
                 type: 'GET',
                 data: {
@@ -149,7 +163,7 @@
                     $('#customDate').modal('hide');
                 }
             });
-            });
+        });
 
         function formatDate(date) {
             const year = date.getFullYear();
@@ -162,28 +176,28 @@
             console.log('called');
             let dates = "";
             const selectedRangeValue = $('#dateDropdown').val();
-            console.log(typeof(selectedRangeValue));
+            console.log(typeof (selectedRangeValue));
             if (selectedRangeValue == "custom") {
                 $('#dateDropdown').val("hidden");
                 $('#Custom').addClass('selectedOption');
                 $('#customDate').modal('show');
             }
-            else{
+            else {
                 dates = getDateRange(selectedRangeValue);
-            
-            console.log(dates);
 
-            $.ajax({
-                url: '/Dashboard/Data',
-                type: 'GET',
-                data: {
-                    startDate: dates.startDate,
-                    endDate: dates.endDate
-                },
-                success: function (data) {
-                    $('#DashboardContainer').html(data);
-                }
-            });
+                console.log(dates);
+
+                $.ajax({
+                    url: '/Dashboard/Data',
+                    type: 'GET',
+                    data: {
+                        startDate: dates.startDate,
+                        endDate: dates.endDate
+                    },
+                    success: function (data) {
+                        $('#DashboardContainer').html(data);
+                    }
+                });
             }
         }
 

@@ -48,4 +48,6 @@ public interface IOrderRepository
     Task<int> AddReviewAsync(Customerreview review);
 
     Task<IEnumerable<Order>> GetOrdersByDateRangeAsync(DateTime startDate, DateTime endDate);
+
+    DateTime? GetFirstOrderDate();
 }

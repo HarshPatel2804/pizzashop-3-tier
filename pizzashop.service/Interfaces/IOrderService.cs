@@ -30,7 +30,9 @@ public interface IOrderService
      Task<int> updateOrder(Order order);
 
      Task<string> GetItemCommentAsync(int orderItemId);
+
      Task<(bool , string)> UpdateItemCommentAsync(int orderItemId , string comment);
+
      Task<(bool , string)> CompleteOrder(int orderId);
 
      Task<(bool, string)> CancelOrder(int orderId);

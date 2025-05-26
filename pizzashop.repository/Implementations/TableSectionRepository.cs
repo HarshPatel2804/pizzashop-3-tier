@@ -18,9 +18,9 @@ public class TableSectionRepository : ITableSectionRepository
 
     public async Task<List<SectionRawViewModel>> GetAllSetionsAsync()
     {
-       var result = await _context.Set<SectionRawViewModel>()
-        .FromSqlRaw("SELECT * FROM get_all_sections_with_tokens()")
-        .ToListAsync();
+        var result = await _context.Set<SectionRawViewModel>()
+         .FromSqlRaw("SELECT * FROM get_all_sections_with_tokens()")
+         .ToListAsync();
 
         return result;
     }
@@ -34,7 +34,8 @@ public class TableSectionRepository : ITableSectionRepository
 
         int totalTables = await query.CountAsync();
 
-        if(pageSize == 0){
+        if (pageSize == 0)
+        {
             var allTables = await query
             .ToListAsync();
             return (allTables, totalTables);
@@ -66,12 +67,12 @@ public class TableSectionRepository : ITableSectionRepository
     }
 
     public async Task<bool> AnyTableOccupied(int sectionId)
-{
-    return await _context.Tables
-        .AnyAsync(t => t.Sectionid == sectionId && 
-                      t.Isdeleted != true && 
-                      (t.Tablestatus == tablestatus.Occupied || t.Tablestatus == tablestatus.Reserved));
-}
+    {
+        return await _context.Tables
+            .AnyAsync(t => t.Sectionid == sectionId &&
+                          t.Isdeleted != true &&
+                          (t.Tablestatus == tablestatus.Occupied || t.Tablestatus == tablestatus.Reserved));
+    }
 
     public async Task DeleteTablesBySectionAsync(int sectionId)
     {
@@ -81,13 +82,23 @@ public class TableSectionRepository : ITableSectionRepository
 
     public async Task<List<SelectListItem>> GetSectionListAsync()
     {
-        return _context.Sections.Where(u => u.Isdeleted != true).OrderBy(u => u.Sectionid).Select(c => new SelectListItem
+        // return _context.Sections.Where(u => u.Isdeleted != true).OrderBy(u => u.Sectionid).Select(c => new SelectListItem
+        // {
+        //     Value = c.Sectionid.ToString(),
+        //     Text = c.Sectionname
+        // })
+        // .OrderBy(c => c.Text)
+        // .ToList();
+
+        var result = await _context.Set<SectionRawViewModel>()
+        .FromSqlRaw("SELECT * FROM get_all_sections_with_tokens()")
+        .ToListAsync();
+
+        return result.Select(c => new SelectListItem
         {
             Value = c.Sectionid.ToString(),
             Text = c.Sectionname
-        })
-        .OrderBy(c => c.Text)
-        .ToList();
+        }).ToList();
     }
     public async Task<List<SelectListItem>> GetTableListAsync(int sectionId)
     {
@@ -150,10 +161,10 @@ public class TableSectionRepository : ITableSectionRepository
     }
 
     public async Task<bool> AreTablesOccupied(List<int> tableIds)
-{
-    return await _context.Tables
-        .AnyAsync(t => tableIds.Contains(t.Tableid) && t.Tablestatus == tablestatus.Occupied);
-}
+    {
+        return await _context.Tables
+            .AnyAsync(t => tableIds.Contains(t.Tableid) && t.Tablestatus == tablestatus.Occupied);
+    }
 
     public async Task MassDeleteTable(List<int> Tableid)
     {
@@ -170,7 +181,7 @@ public class TableSectionRepository : ITableSectionRepository
                 mg.Isdeleted != true);
     }
 
-     public async Task<Section> GetSectionByName(SectionViewModel model)
+    public async Task<Section> GetSectionByName(SectionViewModel model)
     {
         return await _context.Sections
             .FirstOrDefaultAsync(mg =>
@@ -212,7 +223,7 @@ public class TableSectionRepository : ITableSectionRepository
         var table = await _context.Tables.FirstOrDefaultAsync(t => t.Tableid == tableId);
         if (table != null)
         {
-            table.Tablestatus = tablestatus.Occupied; 
+            table.Tablestatus = tablestatus.Occupied;
             _context.Tables.Update(table);
             await _context.SaveChangesAsync();
         }

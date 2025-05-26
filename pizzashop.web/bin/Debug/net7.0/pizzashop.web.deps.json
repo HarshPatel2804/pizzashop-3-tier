@@ -1851,6 +1851,7 @@
       },
       "pizzashop.repository/1.0.0": {
         "dependencies": {
+          "Dapper": "2.1.66",
           "Microsoft.AspNetCore.Mvc": "2.3.0",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "7.0.11"
         },

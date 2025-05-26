@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "g03F8LiOaB6+n8YDNZl+1IAuGaAjc/aXrgRYnneRrGq0F7MQLqY7YumT7aH8MvRBNgvCCy3Ye1trIJUuLhZLpA==",
+  "dgSpecHash": "fhbGh/lcyY8hte2g89uecNGeu9JOJXJ7iZxRw54dluYMVZBUkewJG7+eL3PKEZcqp+QerwyqXnpVLC9hZCUvaw==",
   "success": true,
   "projectFilePath": "D:\\pizzashop_3Tier\\pizzashop.repository\\pizzashop.repository.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\pce29\\.nuget\\packages\\dapper\\2.1.66\\dapper.2.1.66.nupkg.sha512",
     "C:\\Users\\pce29\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\pce29\\.nuget\\packages\\microsoft.aspnetcore.antiforgery\\2.3.0\\microsoft.aspnetcore.antiforgery.2.3.0.nupkg.sha512",
     "C:\\Users\\pce29\\.nuget\\packages\\microsoft.aspnetcore.authentication.abstractions\\2.3.0\\microsoft.aspnetcore.authentication.abstractions.2.3.0.nupkg.sha512",
@@ -45,6 +46,7 @@
     "C:\\Users\\pce29\\.nuget\\packages\\microsoft.aspnetcore.routing\\2.3.0\\microsoft.aspnetcore.routing.2.3.0.nupkg.sha512",
     "C:\\Users\\pce29\\.nuget\\packages\\microsoft.aspnetcore.routing.abstractions\\2.3.0\\microsoft.aspnetcore.routing.abstractions.2.3.0.nupkg.sha512",
     "C:\\Users\\pce29\\.nuget\\packages\\microsoft.aspnetcore.webutilities\\2.3.0\\microsoft.aspnetcore.webutilities.2.3.0.nupkg.sha512",
+    "C:\\Users\\pce29\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\9.0.1\\microsoft.bcl.asyncinterfaces.9.0.1.nupkg.sha512",
     "C:\\Users\\pce29\\.nuget\\packages\\microsoft.codeanalysis.analyzers\\1.1.0\\microsoft.codeanalysis.analyzers.1.1.0.nupkg.sha512",
     "C:\\Users\\pce29\\.nuget\\packages\\microsoft.codeanalysis.common\\2.8.2\\microsoft.codeanalysis.common.2.8.2.nupkg.sha512",
     "C:\\Users\\pce29\\.nuget\\packages\\microsoft.codeanalysis.csharp\\2.8.2\\microsoft.codeanalysis.csharp.2.8.2.nupkg.sha512",
@@ -128,7 +130,7 @@
     "C:\\Users\\pce29\\.nuget\\packages\\system.reflection\\4.3.0\\system.reflection.4.3.0.nupkg.sha512",
     "C:\\Users\\pce29\\.nuget\\packages\\system.reflection.emit\\4.3.0\\system.reflection.emit.4.3.0.nupkg.sha512",
     "C:\\Users\\pce29\\.nuget\\packages\\system.reflection.emit.ilgeneration\\4.3.0\\system.reflection.emit.ilgeneration.4.3.0.nupkg.sha512",
-    "C:\\Users\\pce29\\.nuget\\packages\\system.reflection.emit.lightweight\\4.3.0\\system.reflection.emit.lightweight.4.3.0.nupkg.sha512",
+    "C:\\Users\\pce29\\.nuget\\packages\\system.reflection.emit.lightweight\\4.7.0\\system.reflection.emit.lightweight.4.7.0.nupkg.sha512",
     "C:\\Users\\pce29\\.nuget\\packages\\system.reflection.extensions\\4.3.0\\system.reflection.extensions.4.3.0.nupkg.sha512",
     "C:\\Users\\pce29\\.nuget\\packages\\system.reflection.metadata\\1.4.2\\system.reflection.metadata.1.4.2.nupkg.sha512",
     "C:\\Users\\pce29\\.nuget\\packages\\system.reflection.primitives\\4.3.0\\system.reflection.primitives.4.3.0.nupkg.sha512",

@@ -216,428 +216,329 @@
             </div>
         </div>
     </div>
-     <div class="@(role == "Admin" ? "col-lg-3" : "d-none") col-md-6 col-12 mx-auto mb-3">
-            <div style="height: 200px;" class="card p-2 custom-box-shadow">
+    <div class="@(role == "Admin" ? "col-lg-3" : "d-none") col-md-6 col-12 mx-auto mb-3">
+        <div style="height: 200px;" class="card p-2 custom-box-shadow">
+            <div class="d-flex justify-content-end">
                 <div class="d-flex justify-content-end">
-                    <div class="d-flex justify-content-end">
-                        <div class="new-customer-outer d-flex align-items-center justify-content-center">
-                            <div class="new-customer-inner d-flex align-items-center justify-content-center">
-                                    <i class="bi bi-person-fill fs-4" alt="person icon"></i>
-                            </div>
+                    <div class="new-customer-outer d-flex align-items-center justify-content-center">
+                        <div class="new-customer-inner d-flex align-items-center justify-content-center">
+                            <i class="bi bi-person-fill fs-4" alt="person icon"></i>
                         </div>
                     </div>
                 </div>
-                <div class="d-flex flex-column justify-content-end align-items-start p-2 h-100">
-                    <div style="font-size: 30px;" id="CustomerCount"></div>
-                    <div class="text-muted">New Customer Count</div>
-                </div>
+            </div>
+            <div class="d-flex flex-column justify-content-end align-items-start p-2 h-100">
+                <div style="font-size: 30px;" id="CustomerCount"></div>
+                <div class="text-muted">New Customer Count</div>
             </div>
         </div>
+    </div>
 </div>
-    @* <script src="https://cdn.canvasjs.com/canvasjs.min.js"></script> *@
-    @* <script>
-    $(document).ready( function (e) {
-    const dailyRevenueDataFromModel = @Html.Raw(Json.Serialize(Model.DailyRevenueData ?? new
-    List<pizzashop.repository.ViewModels.DailyRevenueViewModel>()));
-    const revenueChartContainer = $('#revenueChartContainer');
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/date-fns"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+<script>
+    $(document).ready(function () {
+        const dailyRevenueDataFromModel = @Html.Raw(Json.Serialize(Model.DailyRevenueData ?? new List<pizzashop.repository.ViewModels.DailyRevenueViewModel>()));
+        const customerDataFromModel = @Html.Raw(Json.Serialize(Model.CustomerCount ?? new List<pizzashop.repository.ViewModels.CustomerCountViewModel>()));
 
-    const customerDataFromModel = @Html.Raw(Json.Serialize(Model.CustomerCount ?? new
-    List<pizzashop.repository.ViewModels.CustomerCountViewModel>()));
-    const customerChartContainer = $('#customerChartContainer');
-    console.log(customerDataFromModel);
+        const revenueChart = document.getElementById('revenueChartCanvas');
+        const revenueChartMessage = $('#revenueChartMessage');
+        const customerChart = document.getElementById('customerChartCanvas');
+        const customerChartMessage = $('#customerChartMessage');
 
-    const revenueDataPoints = dailyRevenueDataFromModel.map(d => {
-    return { x: new Date(d.date), y: d.revenue };
-    });
-    const customerDataPoints = customerDataFromModel.map(d => {
-    return { x: new Date(d.date), y: d.count };
-    });
+        const groupingType = dailyRevenueDataFromModel.length > 0 ?
+            dailyRevenueDataFromModel[0].groupingType : 'Day';
 
-    if (revenueDataPoints.length > 0) {
-    var revenueChart = {
-    animationEnabled: true,
-    theme: "light2",
-    axisX: {
-    valueFormatString: "DD MMM",
-    },
-    axisY: {
-    includeZero: true
-    },
-    toolTip: {
-    contentFormatter: function (e) {
-    let content = "";
-    for (var i = 0; i < e.entries.length; i++) {
-    content += "<strong>" + CanvasJS.formatDate(e.entries[i].dataPoint.x, "DD MMM YYYY") + "</strong>";
-    content += "<br/>";
-    content += e.entries[i].dataSeries.name + ": ₹" + e.entries[i].dataPoint.y.toFixed(2);
-    }
-    return content;
-    }
-    },
-    data: [{
-    type: "area",
-    name: "Revenue",
-    color: "rgba(1, 123, 217, 0.7)",
-    lineColor: "rgb(1, 123, 217)",
-    markerSize: 5,
-    dataPoints: revenueDataPoints
-    }]
-    };
-    } else {
-    revenueChartContainer.innerHTML = '<div style="text-align:center; padding-top:70px; color:grey;
-    font-size:0.9rem;">No
-    revenue data for this period.</div>';
-    }
-
-    var chart = new CanvasJS.Chart("revenueChartContainer", revenueChart);
-
-    console.log(customerDataPoints);
-    if (customerDataPoints.length > 0) {
-    var customerChart = {
-    animationEnabled: true,
-    theme: "light2",
-    axisX: {
-    valueFormatString: "DD MMM",
-    },
-    axisY: {
-    includeZero: true
-    },
-    toolTip: {
-    contentFormatter: function (e) {
-    let content = "";
-    for (var i = 0; i < e.entries.length; i++) {
-    content += "<strong>" + CanvasJS.formatDate(e.entries[i].dataPoint.x, "DD MMM YYYY") + "</strong>";
-    content += "<br/>";
-    content += e.entries[i].dataSeries.name + " : " + e.entries[i].dataPoint.y;
-    }
-    return content;
-    }
-    },
-    data: [{
-    type: "area",
-    name: "Customer Count",
-    color: "rgba(1, 123, 217, 0.7)",
-    lineColor: "rgb(1, 123, 217)",
-    markerSize: 5,
-    dataPoints: customerDataPoints
-    }]
-    };
-
-    var chart1 = new CanvasJS.Chart("customerChartContainer", customerChart);
-    chart.render();
-    chart1.render();
-
-    } else {
-    customerChartContainer.innerHTML = '<div style="text-align:center; padding-top:70px; color:grey;
-    font-size:0.9rem;">No
-    customer data for this period.</div>';
-    }
-    });
-    </script> *@
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/date-fns"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
-    <script>
-        $(document).ready(function () {
-            const dailyRevenueDataFromModel = @Html.Raw(Json.Serialize(Model.DailyRevenueData ?? new List<pizzashop.repository.ViewModels.DailyRevenueViewModel>()));
-            const customerDataFromModel = @Html.Raw(Json.Serialize(Model.CustomerCount ?? new List<pizzashop.repository.ViewModels.CustomerCountViewModel>()));
-
-            const revenueChart = document.getElementById('revenueChartCanvas');
-            const revenueChartMessage = $('#revenueChartMessage');
-            const customerChart = document.getElementById('customerChartCanvas');
-            const customerChartMessage = $('#customerChartMessage');
-
-            const groupingType = dailyRevenueDataFromModel.length > 0 ?
-                dailyRevenueDataFromModel[0].groupingType : 'Day';
-
-            const revenueDataPoints = dailyRevenueDataFromModel.map(d => {
-                return { x: new Date(d.date), y: d.revenue };
-            });
-
-            const customerDataPoints = customerDataFromModel.map(d => {
-                return { x: new Date(d.date), y: d.count };
-            });
-
-            //Customer Count
-            let CustomerCount = 0;
-            for (var Count in customerDataFromModel) {
-                console.log(Count);
-                CustomerCount += parseInt(customerDataFromModel[Count].count);
-            }
-            $('#CustomerCount').text(CustomerCount);
-
-            let timeUnit = 'day';
-            let tooltipFormat = 'dd MMM yyyy';
-            let displayFormat = 'dd MMM';
-
-            switch (groupingType) {
-                case 'Hour':
-                    timeUnit = 'hour';
-                    break;
-                case 'Day':
-                    timeUnit = 'day';
-                    break;
-                case 'Month':
-                    timeUnit = 'month';
-                    break;
-                case 'Year':
-                    timeUnit = 'year';
-                    break;
-            }
-
-            if (dailyRevenueDataFromModel.length > 0) {
-
-                new Chart(revenueChart, {
-                    type: 'line',
-                    data: {
-                        datasets: [{
-                            label: 'Revenue',
-                            data: revenueDataPoints,
-                            borderColor: 'rgb(75, 192, 192)',
-                            tension: 0.1,
-                            backgroundColor: 'rgba(75, 192, 192, 0.3)',
-                            fill: true
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        animation: {
-                            duration: 800
-                        },
-                        scales: {
-                            x: {
-                                type: 'time',
-                                time: {
-                                    unit: timeUnit,
-                                    displayFormats: {
-                                        hour: 'HH:00',
-                                        day: 'dd MMM',
-                                        month: 'MMM yyyy',
-                                        year: 'yyyy'
-                                    }
-                                },
-                                title: {
-                                    display: false
-                                }
-                            },
-                            y: {
-                                beginAtZero: true,
-                                ticks: {
-                                    callback: function (value, index, values) {
-                                        return '₹' + value;
-                                    }
-                                }
-                            }
-                        },
-                        plugins: {
-                            tooltip: {
-                                callbacks: {
-                                    title: function (tooltipItems) {
-                                        switch (groupingType) {
-                                            case 'Hour':
-                                                return dateFns.format(new Date(tooltipItems[0].parsed.x), 'dd MMM yyyy, HH:00');
-                                            case 'Day':
-                                                return dateFns.format(new Date(tooltipItems[0].parsed.x), 'dd MMM yyyy');
-                                            case 'Month':
-                                                return dateFns.format(new Date(tooltipItems[0].parsed.x), 'MMMM yyyy');
-                                            case 'Year':
-                                                return dateFns.format(new Date(tooltipItems[0].parsed.x), 'yyyy');
-                                            default:
-                                                return dateFns.format(new Date(tooltipItems[0].parsed.x), 'dd MMM yyyy');
-                                        }
-                                    },
-                                    label: function (context) {
-                                        let label = context.dataset.label || '';
-                                        if (label) {
-                                            label += ': ';
-                                        }
-                                        if (context.parsed.y !== null) {
-                                            label += '₹' + context.parsed.y.toFixed(2);
-                                        }
-                                        return label;
-                                    }
-                                }
-                            },
-                            legend: {
-                                display: true
-                            }
-                        }
-                    }
-                });
-            } else {
-                $(revenueChart).hide();
-                revenueChartMessage.text('No revenue data for this period.').show();
-            }
-
-            if (customerDataFromModel.length > 0) {
-
-                new Chart(customerChart, {
-                    type: 'line',
-                    data: {
-                        datasets: [{
-                            label: 'New Customers',
-                            data: customerDataPoints,
-                            borderColor: 'rgb(54, 162, 235)',
-                            tension: 0.1,
-                            backgroundColor: 'rgba(0, 100, 153, 0.3)',
-                            fill: true
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        animation: {
-                            duration: 800
-                        },
-                        scales: {
-                            x: {
-                                type: 'time',
-                                time: {
-                                    unit: timeUnit,
-                                    displayFormats: {
-                                        hour: 'HH:00',
-                                        day: 'dd MMM',
-                                        month: 'MMM yyyy',
-                                        year: 'yyyy'
-                                    }
-                                },
-                                title: {
-                                    display: false
-                                }
-                            },
-                            y: {
-                                beginAtZero: true,
-                                ticks: {
-                                    precision: 0
-                                }
-                            }
-                        },
-                        plugins: {
-                            tooltip: {
-                                callbacks: {
-                                    title: function (tooltipItems) {
-                                        switch (groupingType) {
-                                            case 'Hour':
-                                                return dateFns.format(new Date(tooltipItems[0].parsed.x), 'dd MMM yyyy, HH:00');
-                                            case 'Day':
-                                                return dateFns.format(new Date(tooltipItems[0].parsed.x), 'dd MMM yyyy');
-                                            case 'Month':
-                                                return dateFns.format(new Date(tooltipItems[0].parsed.x), 'MMMM yyyy');
-                                            case 'Year':
-                                                return dateFns.format(new Date(tooltipItems[0].parsed.x), 'yyyy');
-                                            default:
-                                                return dateFns.format(new Date(tooltipItems[0].parsed.x), 'dd MMM yyyy');
-                                        }
-                                    },
-                                    label: function (context) {
-                                        return 'New Customers: ' + context.parsed.y;
-                                    }
-                                }
-                            },
-                            legend: {
-                                display: true
-                            }
-                        }
-                    }
-                });
-            } else {
-                $(customerChart).hide();
-                customerChartMessage.text('No customer data for this period.').show();
-            }
+        const revenueDataPoints = dailyRevenueDataFromModel.map(d => {
+            return { x: new Date(d.date), y: d.revenue };
         });
-    </script>
-    <style>
-        .card {
-            border-radius: 0.7rem;
+
+        const customerDataPoints = customerDataFromModel.map(d => {
+            return { x: new Date(d.date), y: d.count };
+        });
+
+        //Customer Count
+        let CustomerCount = 0;
+        for (var Count in customerDataFromModel) {
+            console.log(Count);
+            CustomerCount += parseInt(customerDataFromModel[Count].count);
+        }
+        $('#CustomerCount').text(CustomerCount);
+
+        let timeUnit = 'day';
+        let tooltipFormat = 'dd MMM yyyy';
+        let displayFormat = 'dd MMM';
+
+        switch (groupingType) {
+            case 'Hour':
+                timeUnit = 'hour';
+                break;
+            case 'Day':
+                timeUnit = 'day';
+                break;
+            case 'Month':
+                timeUnit = 'month';
+                break;
+            case 'Year':
+                timeUnit = 'year';
+                break;
         }
 
-        .sale-outer {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            border: 2px solid #62ec80;
-            background-color: transparent;
+        if (dailyRevenueDataFromModel.length > 0) {
+
+            new Chart(revenueChart, {
+                type: 'line',
+                data: {
+                    datasets: [{
+                        label: 'Revenue',
+                        data: revenueDataPoints,
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1,
+                        backgroundColor: 'rgba(75, 192, 192, 0.3)',
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 800
+                    },
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: timeUnit,
+                                displayFormats: {
+                                    hour: 'HH:00',
+                                    day: 'dd MMM',
+                                    month: 'MMM yyyy',
+                                    year: 'yyyy'
+                                }
+                            },
+                            title: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function (value, index, values) {
+                                    return '₹' + value;
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                title: function (tooltipItems) {
+                                    switch (groupingType) {
+                                        case 'Hour':
+                                            return dateFns.format(new Date(tooltipItems[0].parsed.x), 'dd MMM yyyy, HH:00');
+                                        case 'Day':
+                                            return dateFns.format(new Date(tooltipItems[0].parsed.x), 'dd MMM yyyy');
+                                        case 'Month':
+                                            return dateFns.format(new Date(tooltipItems[0].parsed.x), 'MMMM yyyy');
+                                        case 'Year':
+                                            return dateFns.format(new Date(tooltipItems[0].parsed.x), 'yyyy');
+                                        default:
+                                            return dateFns.format(new Date(tooltipItems[0].parsed.x), 'dd MMM yyyy');
+                                    }
+                                },
+                                label: function (context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += '₹' + context.parsed.y.toFixed(2);
+                                    }
+                                    return label;
+                                }
+                            }
+                        },
+                        legend: {
+                            display: true
+                        }
+                    }
+                }
+            });
+        } else {
+            $(revenueChart).hide();
+            revenueChartMessage.text('No revenue data for this period.').show();
         }
 
-        .sale-inner {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            background-color: #62ec80;
-        }
+        if (customerDataFromModel.length > 0) {
 
-        .order-outer {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            border: 2px solid #d7a4e5;
-            background-color: transparent;
+            new Chart(customerChart, {
+                type: 'line',
+                data: {
+                    datasets: [{
+                        label: 'New Customers',
+                        data: customerDataPoints,
+                        borderColor: 'rgb(54, 162, 235)',
+                        tension: 0.1,
+                        backgroundColor: 'rgba(0, 100, 153, 0.3)',
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 800
+                    },
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: timeUnit,
+                                displayFormats: {
+                                    hour: 'HH:00',
+                                    day: 'dd MMM',
+                                    month: 'MMM yyyy',
+                                    year: 'yyyy'
+                                }
+                            },
+                            title: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                title: function (tooltipItems) {
+                                    switch (groupingType) {
+                                        case 'Hour':
+                                            return dateFns.format(new Date(tooltipItems[0].parsed.x), 'dd MMM yyyy, HH:00');
+                                        case 'Day':
+                                            return dateFns.format(new Date(tooltipItems[0].parsed.x), 'dd MMM yyyy');
+                                        case 'Month':
+                                            return dateFns.format(new Date(tooltipItems[0].parsed.x), 'MMMM yyyy');
+                                        case 'Year':
+                                            return dateFns.format(new Date(tooltipItems[0].parsed.x), 'yyyy');
+                                        default:
+                                            return dateFns.format(new Date(tooltipItems[0].parsed.x), 'dd MMM yyyy');
+                                    }
+                                },
+                                label: function (context) {
+                                    return 'New Customers: ' + context.parsed.y;
+                                }
+                            }
+                        },
+                        legend: {
+                            display: true
+                        }
+                    }
+                }
+            });
+        } else {
+            $(customerChart).hide();
+            customerChartMessage.text('No customer data for this period.').show();
         }
+    });
+</script>
+<style>
+    .card {
+        border-radius: 0.7rem;
+    }
 
-        .order-inner {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            background-color: #d7a4e5;
-        }
+    .sale-outer {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        border: 2px solid #62ec80;
+        background-color: transparent;
+    }
 
-        .order-value-outer {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            border: 2px solid #92b7cc;
-            background-color: transparent;
-        }
+    .sale-inner {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background-color: #62ec80;
+    }
 
-        .order-value-inner {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            background-color: #92b7cc;
-        }
+    .order-outer {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        border: 2px solid #d7a4e5;
+        background-color: transparent;
+    }
 
-        .waiting-time-outer {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            border: 2px solid #faafa3;
-            background-color: transparent;
-        }
+    .order-inner {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background-color: #d7a4e5;
+    }
 
-        .waiting-time-inner {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            background-color: #faafa3;
-        }
+    .order-value-outer {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        border: 2px solid #92b7cc;
+        background-color: transparent;
+    }
 
-        .waiting-list-outer {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            border: 2px solid #faca6e;
-            background-color: transparent;
-        }
+    .order-value-inner {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background-color: #92b7cc;
+    }
 
-        .waiting-list-inner {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            background-color: #faca6e;
-        }
-        .new-customer-outer {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            border: 2px solid #fca886;
-            background-color: transparent;
-        }
+    .waiting-time-outer {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        border: 2px solid #faafa3;
+        background-color: transparent;
+    }
 
-        .new-customer-inner {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            background-color: #fca886;
-        }
-    </style>
+    .waiting-time-inner {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background-color: #faafa3;
+    }
+
+    .waiting-list-outer {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        border: 2px solid #faca6e;
+        background-color: transparent;
+    }
+
+    .waiting-list-inner {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background-color: #faca6e;
+    }
+
+    .new-customer-outer {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        border: 2px solid #fca886;
+        background-color: transparent;
+    }
+
+    .new-customer-inner {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background-color: #fca886;
+    }
+</style>

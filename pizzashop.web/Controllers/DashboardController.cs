@@ -99,4 +99,14 @@ public class DashboardController : Controller
         var cities = _context.Cities.Where(s => s.Stateid == stateId);
         return Json(cities);
     }
+
+    public IActionResult GetFirstOrderDate()
+        {
+            var firstOrderDate = _dashboardService.GetFirstOrderDate();
+            if (firstOrderDate.HasValue)
+            {
+                return Ok(firstOrderDate.Value.ToString("yyyy-MM-dd"));
+            }
+            return NotFound("No orders found.");
+        }
 }

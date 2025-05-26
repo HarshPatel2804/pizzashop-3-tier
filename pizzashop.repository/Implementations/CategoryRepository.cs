@@ -72,7 +72,7 @@ public class CategoryRepository : ICategoryRepository
         var category = await _context.Categories
             .FirstOrDefaultAsync(c => c.Categoryname.ToLower() == model.Categoryname.ToLower() && c.Isdeleted != true && c.Categoryid != model.Categoryid);
 
-        return category ?? new Category(); 
+        return category; 
     }
 
     public async Task UpdateSortOrderOfCategory(List<int> sortOrder)

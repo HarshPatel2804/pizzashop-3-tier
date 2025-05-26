@@ -333,5 +333,14 @@ public class OrderRepository : IOrderRepository
                 .Include(o => o.Customer) 
                 .ToListAsync();
         }
+
+    public DateTime? GetFirstOrderDate()
+        {
+            return _context.Orders
+                .Where(o => o.Orderdate.HasValue)
+                .OrderBy(o => o.Orderdate)
+                .Select(o => o.Orderdate)
+                .FirstOrDefault();
+        }
 }
 

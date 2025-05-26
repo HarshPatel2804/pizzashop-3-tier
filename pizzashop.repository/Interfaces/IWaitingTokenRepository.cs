@@ -1,4 +1,5 @@
 using pizzashop.repository.Models;
+using pizzashop.repository.ViewModels;
 
 namespace pizzashop.repository.Interfaces;
 
@@ -6,7 +7,7 @@ public interface IWaitingTokenRepository
 {
     Task<int> SaveWaitingToken(Waitingtoken model);
 
-    Task<IEnumerable<Waitingtoken>> GetAllWaitingTokensWithCustomer(int section);
+    Task<IEnumerable<WaitingTokenWithCustomerViewModel>> GetAllWaitingTokensWithCustomer(int section);
 
     Task<IEnumerable<Waitingtoken>> GetAllWaitingTokens(List<int> sectionIds);
 
