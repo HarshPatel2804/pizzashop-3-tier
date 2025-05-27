@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using pizzashop.repository.Interfaces;
 using pizzashop.repository.Models;
@@ -157,51 +158,53 @@ public class WaitingTokenService : IWaitingTokenService
 
     public async Task<(bool success, string message)> UpdateWaitingTokenDetailsAsync(WaitingtokenViewModel viewModel)
     {
-        if (string.IsNullOrEmpty(viewModel.Email))
-        {
-            return (false, "Customer email is required to update details.");
-        }
+        // if (string.IsNullOrEmpty(viewModel.Email))
+        // {
+        //     return (false, "Customer email is required to update details.");
+        // }
 
-        Customer? existingCustomer = await _customerRepository.GetCustomerByEmail(viewModel.Email);
-        if (existingCustomer == null)
-        {
-            return (false, $"Customer with email '{viewModel.Email}' not found.");
-        }
+        // Customer? existingCustomer = await _customerRepository.GetCustomerByEmail(viewModel.Email);
+        // if (existingCustomer == null)
+        // {
+        //     return (false, $"Customer with email '{viewModel.Email}' not found.");
+        // }
 
 
-        var customer = new Customer
-        {
-            Customerid = existingCustomer.Customerid,
-            Email = viewModel.Email,
-            Customername = viewModel.Customername,
-            Phoneno = viewModel.Phoneno,
-        };
+        // var customer = new Customer
+        // {
+        //     Customerid = existingCustomer.Customerid,
+        //     Email = viewModel.Email,
+        //     Customername = viewModel.Customername,
+        //     Phoneno = viewModel.Phoneno,
+        // };
 
-        int updatedCustomerId = await _customerRepository.UpdateCustomer(customer);
-        if (updatedCustomerId == 0)
-        {
-            return (false, "Failed to update customer details.");
-        }
+        // int updatedCustomerId = await _customerRepository.UpdateCustomer(customer);
+        // if (updatedCustomerId == 0)
+        // {
+        //     return (false, "Failed to update customer details.");
+        // }
 
-        Waitingtoken? waitingToken = await _waitingTokenRepository.GetByIdAsync(viewModel.Waitingtokenid);
-        if (waitingToken == null)
-        {
-            return (false, "Waiting token not found.");
-        }
+        // Waitingtoken? waitingToken = await _waitingTokenRepository.GetByIdAsync(viewModel.Waitingtokenid);
+        // if (waitingToken == null)
+        // {
+        //     return (false, "Waiting token not found.");
+        // }
 
-        waitingToken.Noofpeople = viewModel.Noofpeople;
-        waitingToken.Sectionid = viewModel.Sectionid;
+        // waitingToken.Noofpeople = viewModel.Noofpeople;
+        // waitingToken.Sectionid = viewModel.Sectionid;
 
-        bool tokenUpdated = await _waitingTokenRepository.UpdateWaitingTokenAsync(waitingToken);
+        // bool tokenUpdated = await _waitingTokenRepository.UpdateWaitingTokenAsync(waitingToken);
 
-        if (tokenUpdated)
-        {
-            return (true, "Waiting token details updated successfully.");
-        }
-        else
-        {
-            return (false, "Failed to update waiting token information.");
-        }
+        // if (tokenUpdated)
+        // {
+        //     return (true, "Waiting token details updated successfully.");
+        // }
+        // else
+        // {
+        //     return (false, "Failed to update waiting token information.");
+        // }
+        var result = await _waitingTokenRepository.UpdateWaitingTokenAsync(viewModel);
+        return (result.Success, result.Message);
     }
 
     public async Task<(string, int)> AssignTable(WaitingAssignViewModel model)

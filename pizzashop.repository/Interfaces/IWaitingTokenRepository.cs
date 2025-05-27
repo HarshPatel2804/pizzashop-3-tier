@@ -20,7 +20,7 @@ public interface IWaitingTokenRepository
     Task<Waitingtoken?> GetTokenByIdWithCustomerAsync(int tokenId);
 
     Task<Waitingtoken?> GetByIdAsync(int tokenId);
-    Task<bool> UpdateWaitingTokenAsync(Waitingtoken token);
+    Task<SaveWaitingTokenRawViewModel> UpdateWaitingTokenAsync(WaitingtokenViewModel token);
 
     Task<IEnumerable<Waitingtoken>> GetActiveWaitingTokensByDateRangeAsync(DateTime startDate, DateTime endDate);
 
