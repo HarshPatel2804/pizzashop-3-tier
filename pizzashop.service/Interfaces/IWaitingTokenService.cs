@@ -5,7 +5,7 @@ namespace pizzashop.service.Interfaces;
 
 public interface IWaitingTokenService
 {
-    Task<int> SaveWaitingToken(WaitingtokenViewModel model);
+    Task<(bool , string)> SaveWaitingToken(WaitingtokenViewModel model);
 
     Task<IEnumerable<WaitingtokenViewModel>> GetAllWaitingTokens(List<int> sectionIds);
 

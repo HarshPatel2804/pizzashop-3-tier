@@ -25,6 +25,34 @@ public class WaitingTokenRepository : IWaitingTokenRepository
         return model.Waitingtokenid;
     }
 
+    public async Task<SaveWaitingTokenRawViewModel> AddWaitingTokenAsync(WaitingtokenViewModel model)
+{
+    var connection = _context.Database.GetDbConnection();
+
+    if (connection.State != ConnectionState.Open)
+    {
+        await connection.OpenAsync();
+    }
+
+    const string query = "SELECT add_waiting_token(@p_email, @p_customername, @p_phoneno, @p_noofpeople, @p_sectionid)";
+
+    var parameters = new
+    {
+        p_email = model.Email,
+        p_customername = model.Customername,
+        p_phoneno = model.Phoneno,
+        p_noofpeople = model.Noofpeople,
+        p_sectionid = model.Sectionid
+    };
+
+    var jsonResult = await connection.QuerySingleAsync<string>(query, parameters);
+    Console.WriteLine(jsonResult);
+
+    var result = System.Text.Json.JsonSerializer.Deserialize<SaveWaitingTokenRawViewModel>(jsonResult);
+
+    return result;
+}
+
     public async Task<IEnumerable<WaitingTokenWithCustomerViewModel>>  GetAllWaitingTokensWithCustomer(int section)
     {
        var connection = _context.Database.GetDbConnection();

@@ -26,32 +26,35 @@ public class WaitingTokenService : IWaitingTokenService
         _tableSectionRepository = tableSectionRepository;
     }
 
-    public async Task<int> SaveWaitingToken(WaitingtokenViewModel model)
+    public async Task<(bool , string)> SaveWaitingToken(WaitingtokenViewModel model)
     {
-        var customer = await _customerService.GetCustomerByEmail(model.Email);
-        int customerId = 0;
-        if (customer == null)
-        {
-            var CustomerModel = new Customer
-            {
-                Customername = model.Customername,
-                Email = model.Email,
-                Phoneno = model.Phoneno
-            };
-            customerId = await _customerService.AddCustomer(CustomerModel);
-        }
-        else
-        {
-            customerId = customer.Customerid;
-        }
-        var WaitingTokenModel = new Waitingtoken
-        {
-            Sectionid = model.Sectionid,
-            Noofpeople = model.Noofpeople,
-            Customerid = customerId
-        };
+        // var customer = await _customerService.GetCustomerByEmail(model.Email);
+        // int customerId = 0;
+        // if (customer == null)
+        // {
+        //     var CustomerModel = new Customer
+        //     {
+        //         Customername = model.Customername,
+        //         Email = model.Email,
+        //         Phoneno = model.Phoneno
+        //     };
+        //     customerId = await _customerService.AddCustomer(CustomerModel);
+        // }
+        // else
+        // {
+        //     customerId = customer.Customerid;
+        // }
+        // var WaitingTokenModel = new Waitingtoken
+        // {
+        //     Sectionid = model.Sectionid,
+        //     Noofpeople = model.Noofpeople,
+        //     Customerid = customerId
+        // };
 
-        return await _waitingTokenRepository.SaveWaitingToken(WaitingTokenModel);
+        // return await _waitingTokenRepository.SaveWaitingToken(WaitingTokenModel);
+
+        var result = await _waitingTokenRepository.AddWaitingTokenAsync(model);
+        return(result.Success, result.Message);
     }
 
     public async Task<IEnumerable<WaitingtokenViewModel>> GetAllWaitingTokens(List<int> sectionIds)

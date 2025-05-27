@@ -24,5 +24,5 @@ public interface IWaitingTokenRepository
 
     Task<IEnumerable<Waitingtoken>> GetActiveWaitingTokensByDateRangeAsync(DateTime startDate, DateTime endDate);
 
-
+    Task<SaveWaitingTokenRawViewModel> AddWaitingTokenAsync(WaitingtokenViewModel model);
 }

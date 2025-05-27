@@ -45,24 +45,24 @@ public class OrderTableController : Controller
     [HttpPost]
     public async Task<IActionResult> AddWaitingToken(WaitingtokenViewModel model)
     {
-        var customer = await _customerService.GetCustomerByEmail(model.Email);
-        if (customer != null)
-        {
-            var hasActiveOrder = await _orderService.HasCustomerActiveOrder(customer.Customerid);
-            if (hasActiveOrder)
-            {
-                return Json(new { success = false, message = "Customer already has an active order." });
-            }
+        // var customer = await _customerService.GetCustomerByEmail(model.Email);
+        // if (customer != null)
+        // {
+        //     var hasActiveOrder = await _orderService.HasCustomerActiveOrder(customer.Customerid);
+        //     if (hasActiveOrder)
+        //     {
+        //         return Json(new { success = false, message = "Customer already has an active order." });
+        //     }
 
-            var isInWaitingList = await _waitingTokenService.IsCustomerInWaitingList(customer.Customerid);
-            if (isInWaitingList)
-            {
-                return Json(new { success = false, message = "Customer is already in the waiting list." });
-            }
-        }
+        //     var isInWaitingList = await _waitingTokenService.IsCustomerInWaitingList(customer.Customerid);
+        //     if (isInWaitingList)
+        //     {
+        //         return Json(new { success = false, message = "Customer is already in the waiting list." });
+        //     }
+        // }
 
-        await _waitingTokenService.SaveWaitingToken(model);
-        return Json(new { success = true, message = "Waiting Token Added Successfully" });
+        var (Success , Message) = await _waitingTokenService.SaveWaitingToken(model);
+        return Json(new { success = Success, message = Message });
     }
 
     public async Task<IActionResult> GetWaitingDetails([FromQuery] List<int> section)
