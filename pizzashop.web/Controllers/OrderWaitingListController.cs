@@ -92,6 +92,9 @@ public class OrderWaitingListController : Controller
         public async Task<IActionResult> AssignTableFromWaiting(WaitingAssignViewModel model)
         {
              var (Message , id) = await _waitingTokenService.AssignTable(model);
+             if(Message == "true")
+             TempData["SuccessMessage"] = "Table assigned successfully.";
+
              return Json(new { message = Message , orderId = id });
         }
 }

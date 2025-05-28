@@ -1,4 +1,6 @@
+using System.Data;
 using System.Linq;
+using Dapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using pizzashop.repository.Interfaces;
@@ -102,23 +104,87 @@ public class TableSectionRepository : ITableSectionRepository
     }
     public async Task<List<SelectListItem>> GetTableListAsync(int sectionId)
     {
-        return _context.Tables.Where(u => u.Isdeleted != true && u.Tablestatus == tablestatus.Available && u.Sectionid == sectionId).Select(c => new SelectListItem
+        // return _context.Tables.Where(u => u.Isdeleted != true && u.Tablestatus == tablestatus.Available && u.Sectionid == sectionId).Select(c => new SelectListItem
+        // {
+        //     Value = c.Tableid.ToString(),
+        //     Text = c.Tablename
+        // })
+        // .OrderBy(c => c.Text)
+        // .ToList();
+        var connection = _context.Database.GetDbConnection();
+
+        if (connection.State != ConnectionState.Open)
         {
-            Value = c.Tableid.ToString(),
-            Text = c.Tablename
-        })
-        .OrderBy(c => c.Text)
-        .ToList();
+            await connection.OpenAsync();
+        }
+
+        const string query = "SELECT * FROM get_table_list(@p_section_id)";
+
+        var parameters = new { p_section_id = sectionId };
+
+        var result = await connection.QueryAsync(query, parameters);
+
+        if (result == null)
+        {
+            return new List<SelectListItem>();
+        }
+
+        var tableList = new List<SelectListItem>();
+
+        foreach (var item in result)
+        {
+            var listItem = new SelectListItem
+            {
+                Text = item.tablename,
+                Value = item.tableid.ToString()
+            };
+            tableList.Add(listItem);
+        }
+
+        return tableList;
     }
     public async Task<List<SelectListItem>> GetMultiTableListAsync(List<int> sectionId)
     {
-        return _context.Tables.Where(u => u.Isdeleted != true && u.Tablestatus == tablestatus.Available && sectionId.Contains((int)u.Sectionid)).Select(c => new SelectListItem
+        // return _context.Tables.Where(u => u.Isdeleted != true && u.Tablestatus == tablestatus.Available && sectionId.Contains((int)u.Sectionid)).Select(c => new SelectListItem
+        // {
+        //     Value = c.Tableid.ToString(),
+        //     Text = c.Tablename
+        // })
+        // .OrderBy(c => c.Text)
+        // .ToList();
+
+        var connection = _context.Database.GetDbConnection();
+
+        if (connection.State != ConnectionState.Open)
         {
-            Value = c.Tableid.ToString(),
-            Text = c.Tablename
-        })
-        .OrderBy(c => c.Text)
-        .ToList();
+            await connection.OpenAsync();
+        }
+
+        const string query = "SELECT * FROM get_multi_table_list(@p_section_ids)";
+
+        // Convert List<int> to array for PostgreSQL
+        var parameters = new { p_section_ids = sectionId.ToArray() };
+
+        var result = await connection.QueryAsync(query, parameters);
+
+        if (result == null)
+        {
+            return new List<SelectListItem>();
+        }
+
+        var tableList = new List<SelectListItem>();
+
+        foreach (var item in result)
+        {
+            var listItem = new SelectListItem
+            {
+                Text = item.tablename,
+                Value = item.tableid.ToString()
+            };
+            tableList.Add(listItem);
+        }
+
+        return tableList;
     }
 
     public async Task AddTableAsync(Table model)
@@ -201,15 +267,28 @@ public class TableSectionRepository : ITableSectionRepository
         return sectionId;
     }
 
-    public async Task<List<Section>> GetAllSectionsWithTablesAndOrdersAsync()
+    public async Task<List<SectionWithTableRawViewModel>> GetAllSectionsWithTablesAndOrdersAsync()
     {
-        return await _context.Sections
-            .Where(s => s.Isdeleted != true)
-            .Include(s => s.Tables.Where(t => t.Isdeleted != true))
-                .ThenInclude(t => t.Ordertables)
-                    .ThenInclude(ot => ot.Order)
-            .OrderBy(s => s.OrderField)
-            .ToListAsync();
+        // return await _context.Sections
+        //     .Where(s => s.Isdeleted != true)
+        //     .Include(s => s.Tables.Where(t => t.Isdeleted != true))
+        //         .ThenInclude(t => t.Ordertables)
+        //             .ThenInclude(ot => ot.Order)
+        //     .OrderBy(s => s.OrderField)
+        //     .ToListAsync();
+
+        var connection = _context.Database.GetDbConnection();
+
+        if (connection.State != ConnectionState.Open)
+        {
+            await connection.OpenAsync();
+        }
+
+        const string query = "SELECT * FROM get_all_sections_with_tables_and_orders()";
+
+        var result = await connection.QueryAsync<SectionWithTableRawViewModel>(query);
+
+        return (List<SectionWithTableRawViewModel>)result;
     }
 
     public async Task AddOrderTables(List<Ordertable> orderTables)
@@ -228,5 +307,32 @@ public class TableSectionRepository : ITableSectionRepository
             await _context.SaveChangesAsync();
         }
     }
+
+    public async Task<(bool Success, string Message, int OrderId)> AssignTableUsingFunction(AssignTableViewModel model)
+{
+    using (var connection = _context.Database.GetDbConnection())
+    {
+        // Ensure the connection is open
+        if (connection.State == ConnectionState.Closed)
+        {
+            await connection.OpenAsync();
+        }
+
+        var query = "SELECT * FROM assign_table(@Email, @CustomerName, @PhoneNo, @NoOfPeople, @SelectedTableIds, @WaitingTokenId)";
+        var parameters = new
+        {
+            Email = model.Email,
+            CustomerName = model.Customername,
+            PhoneNo = model.Phoneno,
+            NoOfPeople = model.Noofpeople,
+            SelectedTableIds = model.selectedTableIds.ToArray(),
+            WaitingTokenId = model.Waitingtokenid
+        };
+
+        // Execute the query and return the result
+        var result = await connection.QueryFirstOrDefaultAsync<(bool Success, string Message, int OrderId)>(query, parameters);
+        return result;
+    }
+}
 
 }

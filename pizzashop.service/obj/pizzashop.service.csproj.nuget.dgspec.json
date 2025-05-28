@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\pizzashop_3Tier\\pizzashop.service\\pizzashop.service.csproj": {}
+    "d:\\pizzashop_3Tier\\pizzashop.service\\pizzashop.service.csproj": {}
   },
   "projects": {
-    "D:\\pizzashop_3Tier\\pizzashop.repository\\pizzashop.repository.csproj": {
+    "d:\\pizzashop_3Tier\\pizzashop.repository\\pizzashop.repository.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\pizzashop_3Tier\\pizzashop.repository\\pizzashop.repository.csproj",
+        "projectUniqueName": "d:\\pizzashop_3Tier\\pizzashop.repository\\pizzashop.repository.csproj",
         "projectName": "pizzashop.repository",
-        "projectPath": "D:\\pizzashop_3Tier\\pizzashop.repository\\pizzashop.repository.csproj",
+        "projectPath": "d:\\pizzashop_3Tier\\pizzashop.repository\\pizzashop.repository.csproj",
         "packagesPath": "C:\\Users\\pce29\\.nuget\\packages\\",
-        "outputPath": "D:\\pizzashop_3Tier\\pizzashop.repository\\obj\\",
+        "outputPath": "d:\\pizzashop_3Tier\\pizzashop.repository\\obj\\",
         "projectStyle": "PackageReference",
         "centralPackageVersionsManagementEnabled": true,
         "configFilePaths": [
@@ -98,14 +98,14 @@
         }
       }
     },
-    "D:\\pizzashop_3Tier\\pizzashop.service\\pizzashop.service.csproj": {
+    "d:\\pizzashop_3Tier\\pizzashop.service\\pizzashop.service.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\pizzashop_3Tier\\pizzashop.service\\pizzashop.service.csproj",
+        "projectUniqueName": "d:\\pizzashop_3Tier\\pizzashop.service\\pizzashop.service.csproj",
         "projectName": "pizzashop.service",
-        "projectPath": "D:\\pizzashop_3Tier\\pizzashop.service\\pizzashop.service.csproj",
+        "projectPath": "d:\\pizzashop_3Tier\\pizzashop.service\\pizzashop.service.csproj",
         "packagesPath": "C:\\Users\\pce29\\.nuget\\packages\\",
-        "outputPath": "D:\\pizzashop_3Tier\\pizzashop.service\\obj\\",
+        "outputPath": "d:\\pizzashop_3Tier\\pizzashop.service\\obj\\",
         "projectStyle": "PackageReference",
         "centralPackageVersionsManagementEnabled": true,
         "configFilePaths": [
@@ -121,8 +121,8 @@
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "D:\\pizzashop_3Tier\\pizzashop.repository\\pizzashop.repository.csproj": {
-                "projectPath": "D:\\pizzashop_3Tier\\pizzashop.repository\\pizzashop.repository.csproj"
+              "d:\\pizzashop_3Tier\\pizzashop.repository\\pizzashop.repository.csproj": {
+                "projectPath": "d:\\pizzashop_3Tier\\pizzashop.repository\\pizzashop.repository.csproj"
               }
             }
           }

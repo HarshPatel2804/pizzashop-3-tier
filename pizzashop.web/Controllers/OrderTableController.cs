@@ -80,28 +80,38 @@ public class OrderTableController : Controller
 
     public async Task<IActionResult> AssignTable([FromBody] AssignTableViewModel model){
 
-        var customer = await _customerService.GetCustomerByEmail(model.Email);
-        if (customer != null)
+        // var customer = await _customerService.GetCustomerByEmail(model.Email);
+        // if (customer != null)
+        // {
+        //     var hasActiveOrder = await _orderService.HasCustomerActiveOrder(customer.Customerid);
+        //     if (hasActiveOrder)
+        //     {
+        //         return Json(new { success = false, message = "Customer already has an active order." });
+        //     }
+
+        //     var isInWaitingList = await _waitingTokenService.IsCustomerInWaitingList(customer.Customerid);
+        //     if (model.Waitingtokenid == null && isInWaitingList)
+        //     {
+        //         return Json(new { success = false, message = "Customer is already in the waiting list." });
+        //     }
+        // }
+
+        // var (result , orderId) = await _tableSectionService.AssignTable(model);
+        // if(result != "true"){
+        //     return Json(new { success = false, message = result });
+        // }
+
+        // return Json(new { success = true, message = "Table Assigned Successfully", orderid = orderId});
+
+        var (success, message , orderId) = await _tableSectionService.AssignTable(model);
+        if(success)
         {
-            var hasActiveOrder = await _orderService.HasCustomerActiveOrder(customer.Customerid);
-            if (hasActiveOrder)
-            {
-                return Json(new { success = false, message = "Customer already has an active order." });
-            }
-
-            var isInWaitingList = await _waitingTokenService.IsCustomerInWaitingList(customer.Customerid);
-            if (model.Waitingtokenid == null && isInWaitingList)
-            {
-                return Json(new { success = false, message = "Customer is already in the waiting list." });
-            }
+            return Json(new { success = true, message = "Table Assigned Successfully", orderId });
         }
-
-        var (result , orderId) = await _tableSectionService.AssignTable(model);
-        if(result != "true"){
-            return Json(new { success = false, message = result });
+        else
+        {
+            return Json(new { success = false, message = message });
         }
-
-        return Json(new { success = true, message = "Table Assigned Successfully", orderid = orderId});
     }
 
     

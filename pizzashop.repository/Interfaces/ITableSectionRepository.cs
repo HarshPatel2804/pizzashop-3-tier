@@ -40,7 +40,7 @@ public interface ITableSectionRepository
 
     Task<int> GetSectionIdWithLeastOrderField();
 
-     Task<List<Section>> GetAllSectionsWithTablesAndOrdersAsync();
+     Task<List<SectionWithTableRawViewModel>> GetAllSectionsWithTablesAndOrdersAsync();
 
      Task AddOrderTables(List<Ordertable> orderTables);
 
@@ -51,4 +51,6 @@ public interface ITableSectionRepository
      Task<bool> AreTablesOccupied(List<int> tableIds);
 
      Task<List<SelectListItem>> GetMultiTableListAsync(List<int> sectionId);
+
+     Task<(bool Success, string Message, int OrderId)> AssignTableUsingFunction(AssignTableViewModel model);
 }

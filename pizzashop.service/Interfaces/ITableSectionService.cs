@@ -42,7 +42,7 @@ public interface ITableSectionService
 
     Task<WaitingtokenViewModel> GetSectionList();
 
-    Task<(string , int)> AssignTable(AssignTableViewModel model);
+    Task<(bool Success, string Message, int OrderId)> AssignTable(AssignTableViewModel model);
 
     Task<WaitingAssignViewModel> GetAssignTableViewModelAsync(int waitingTokenId, int? sectionId = null);
 

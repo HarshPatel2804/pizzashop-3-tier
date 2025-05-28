@@ -25,7 +25,7 @@ public class TableSectionService : ITableSectionService
     }
 
     public async Task<List<SectionViewModel>> GetAllSections()
-    {   
+    {
         var result = await _tableSectionRepository.GetAllSetionsAsync();
         var model = result.Select(u => new SectionViewModel
         {
@@ -88,27 +88,27 @@ public class TableSectionService : ITableSectionService
         await _tableSectionRepository.EditSectionAsync(section);
     }
 
-   public async Task<(bool Success, string Message)> DeleteSection(int sectionId)
-{
-    var areTablesOccupied = await _tableSectionRepository.AnyTableOccupied(sectionId);
-    
-    if (areTablesOccupied)
+    public async Task<(bool Success, string Message)> DeleteSection(int sectionId)
     {
-        return (false, "Cannot delete section because some tables are currently occupied.");
+        var areTablesOccupied = await _tableSectionRepository.AnyTableOccupied(sectionId);
+
+        if (areTablesOccupied)
+        {
+            return (false, "Cannot delete section because some tables are currently occupied.");
+        }
+
+        var section = await _tableSectionRepository.GetSectionById(sectionId);
+        if (section == null)
+        {
+            return (false, "Section not found.");
+        }
+
+        section.Isdeleted = true;
+        await _tableSectionRepository.EditSectionAsync(section);
+        await _tableSectionRepository.DeleteTablesBySectionAsync(sectionId);
+
+        return (true, "Section deleted successfully.");
     }
-    
-    var section = await _tableSectionRepository.GetSectionById(sectionId);
-    if (section == null)
-    {
-        return (false, "Section not found.");
-    }
-    
-    section.Isdeleted = true;
-    await _tableSectionRepository.EditSectionAsync(section);
-    await _tableSectionRepository.DeleteTablesBySectionAsync(sectionId);
-    
-    return (true, "Section deleted successfully.");
-}
 
     public async Task<TableViewModel> GetTableviewModel(int sectionId)
     {
@@ -142,14 +142,15 @@ public class TableSectionService : ITableSectionService
         await _tableSectionRepository.AddTableAsync(Table);
     }
 
-    public async Task<(string message , bool success)> DeleteTable(int tableId)
+    public async Task<(string message, bool success)> DeleteTable(int tableId)
     {
         var table = await _tableSectionRepository.GetTableById(tableId);
-        if(table.Tablestatus == pizzashop.repository.Models.tablestatus.Occupied){
-            return ("Cannot delete this table because table is occupied" , false);
+        if (table.Tablestatus == pizzashop.repository.Models.tablestatus.Occupied)
+        {
+            return ("Cannot delete this table because table is occupied", false);
         }
         await _tableSectionRepository.DeleteTableAsync(tableId);
-        return ("Table deleted successfully" , true);
+        return ("Table deleted successfully", true);
     }
 
     public async Task<TableViewModel> GetTableById(int tableId)
@@ -167,12 +168,13 @@ public class TableSectionService : ITableSectionService
         return model;
     }
 
-    public async Task<(string message , bool success)> EditTable(TableViewModel tableViewModel)
+    public async Task<(string message, bool success)> EditTable(TableViewModel tableViewModel)
     {
         var table = await _tableSectionRepository.GetTableById(tableViewModel.Tableid);
         Console.WriteLine(table.Tablestatus);
-        if(table.Tablestatus == pizzashop.repository.Models.tablestatus.Occupied){
-            return ("Cannot edit this table because table is occupied" , false);
+        if (table.Tablestatus == pizzashop.repository.Models.tablestatus.Occupied)
+        {
+            return ("Cannot edit this table because table is occupied", false);
         }
 
         Console.WriteLine(table.Tablestatus);
@@ -182,7 +184,7 @@ public class TableSectionService : ITableSectionService
         table.Sectionid = tableViewModel.Sectionid;
 
         await _tableSectionRepository.EditTableAsync(table);
-        return ("Table edited successfully" , true);
+        return ("Table edited successfully", true);
     }
 
     public async Task UpdateSectionSortOrder(List<int> sortOrder)
@@ -193,14 +195,14 @@ public class TableSectionService : ITableSectionService
     public async Task<(bool success, string message)> DeleteMultipleTables(List<int> tableIds)
     {
         bool hasOccupiedTables = await _tableSectionRepository.AreTablesOccupied(tableIds);
-    
-    if (hasOccupiedTables)
-    {
-        return (false, "Cannot delete tables because some tables are occupied");
-    }
-    
-    await _tableSectionRepository.MassDeleteTable(tableIds);
-    return (true, "Tables deleted successfully");
+
+        if (hasOccupiedTables)
+        {
+            return (false, "Cannot delete tables because some tables are occupied");
+        }
+
+        await _tableSectionRepository.MassDeleteTable(tableIds);
+        return (true, "Tables deleted successfully");
     }
 
     public async Task<Table> GetTableByName(TableViewModel model)
@@ -223,8 +225,32 @@ public class TableSectionService : ITableSectionService
 
     public async Task<List<OrderSectionViewModel>> GetAllSectionsWithTablesAsync()
     {
-        var sections = await _tableSectionRepository.GetAllSectionsWithTablesAndOrdersAsync();
-        return sections.Select(MapSectionToViewModel).ToList();
+        var result = await _tableSectionRepository.GetAllSectionsWithTablesAndOrdersAsync();
+        var groupedSections = result
+       .GroupBy(r => new { r.SectionId, r.SectionName, r.Description })
+       .Select(g => new OrderSectionViewModel
+       {
+           SectionId = g.Key.SectionId,
+           SectionName = g.Key.SectionName,
+           Description = g.Key.Description,
+           Tables = g.Select(t => new OrderTableViewModel
+           {
+               TableId = t.TableId,
+               TableName = t.TableName,
+               Capacity = t.Capacity,
+               Status = (TableViewStatus)t.TableViewStatus,
+               CurrentOrderAmount = t.CurrentOrderAmount,
+               NumberOfPersons = t.NumberOfPersons,
+               OrderId = t.OrderId ?? 0,
+               OrderDate = t.OrderDate
+           }).ToList(),
+           AvailableCount = g.First().AvailableCount,
+           AssignedCount = g.First().AssignedCount,
+           RunningCount = g.First().RunningCount
+       }).ToList();
+
+        return groupedSections;
+        // return sections.Select(MapSectionToViewModel).ToList();
     }
 
     private OrderSectionViewModel MapSectionToViewModel(Section section)
@@ -233,7 +259,7 @@ public class TableSectionService : ITableSectionService
         {
             SectionId = section.Sectionid,
             SectionName = section.Sectionname,
-            Description = section.Description,
+            Description = section.Description ?? "",
             Tables = section.Tables.Select(t => new OrderTableViewModel
             {
                 TableId = t.Tableid,
@@ -295,91 +321,94 @@ public class TableSectionService : ITableSectionService
         return activeOrder?.Noofperson ?? 0;
     }
 
-    public async Task<(string , int)> AssignTable(AssignTableViewModel model)
+    public async Task<(bool Success, string Message, int OrderId)> AssignTable(AssignTableViewModel model)
     {
-        int totalCapacity = 0;
-        foreach (int tableId in model.selectedTableIds)
-        {
-            var tableDetails = await GetTableById(tableId);
-            totalCapacity += (int)tableDetails.Capacity;
-        }
+        // int totalCapacity = 0;
+        // foreach (int tableId in model.selectedTableIds)
+        // {
+        //     var tableDetails = await GetTableById(tableId);
+        //     totalCapacity += (int)tableDetails.Capacity;
+        // }
 
-        if (totalCapacity < model.Noofpeople)
-        {
-            var result = $"Selected tables don't have enough capacity. Required: {model.Noofpeople}, Available: {totalCapacity}";
-            return (result,0);
-        }
-        //Add or update Customer details
-        var customer = await _customerService.GetCustomerByEmail(model.Email);
-        int customerId = 0;
-        var CustomerModel = new Customer
-        {
-            Customername = model.Customername,
-            Email = model.Email,
-            Phoneno = model.Phoneno,
-        };
-        if (customer == null)
-        {
-            customerId = await _customerService.AddCustomer(CustomerModel);
-        }
-        else
-        {
-            customerId = await _customerService.UpdateCustomer(CustomerModel);
-        }
+        // if (totalCapacity < model.Noofpeople)
+        // {
+        //     var result = $"Selected tables don't have enough capacity. Required: {model.Noofpeople}, Available: {totalCapacity}";
+        //     return (result,0);
+        // }
+        // //Add or update Customer details
+        // var customer = await _customerService.GetCustomerByEmail(model.Email);
+        // int customerId = 0;
+        // var CustomerModel = new Customer
+        // {
+        //     Customername = model.Customername,
+        //     Email = model.Email,
+        //     Phoneno = model.Phoneno,
+        // };
+        // if (customer == null)
+        // {
+        //     customerId = await _customerService.AddCustomer(CustomerModel);
+        // }
+        // else
+        // {
+        //     customerId = await _customerService.UpdateCustomer(CustomerModel);
+        // }
 
-        //Create Order
-        int orderId = await _orderService.createOrderbycustomerId(customerId , model.Noofpeople);
+        // //Create Order
+        // int orderId = await _orderService.createOrderbycustomerId(customerId , model.Noofpeople);
 
-        //Order Table mapping
-        List<Ordertable> orderTables = new List<Ordertable>();
-        foreach (int tableId in model.selectedTableIds)
-        {
-            orderTables.Add(new Ordertable
-            {
-                Orderid = orderId,
-                Tableid = tableId
-            });
+        // //Order Table mapping
+        // List<Ordertable> orderTables = new List<Ordertable>();
+        // foreach (int tableId in model.selectedTableIds)
+        // {
+        //     orderTables.Add(new Ordertable
+        //     {
+        //         Orderid = orderId,
+        //         Tableid = tableId
+        //     });
 
-            //update Table status to occupied
-            await _tableSectionRepository.UpdateTableStatusToOccupied(tableId);
-        }
+        //     //update Table status to occupied
+        //     await _tableSectionRepository.UpdateTableStatusToOccupied(tableId);
+        // }
 
-        await _tableSectionRepository.AddOrderTables(orderTables);
+        // await _tableSectionRepository.AddOrderTables(orderTables);
 
-        if (model.Waitingtokenid != null)
-        {
-            await _waitingTokenService.WaitingToAssign((int)model.Waitingtokenid);
-        }
+        // if (model.Waitingtokenid != null)
+        // {
+        //     await _waitingTokenService.WaitingToAssign((int)model.Waitingtokenid);
+        // }
 
-        return ("true",orderId);
+        // return ("true",orderId);
+
+        return await _tableSectionRepository.AssignTableUsingFunction(model);
     }
 
     public async Task<WaitingAssignViewModel> GetAssignTableViewModelAsync(int waitingTokenId, int? sectionId = null)
+    {
+        var viewModel = new WaitingAssignViewModel
         {
-            var viewModel = new WaitingAssignViewModel
-            {
-                WaitingTokenId = waitingTokenId,
-                SectionList = await _tableSectionRepository.GetSectionListAsync(),
-                SectionId = sectionId.Value,
-                TableList = await _tableSectionRepository.GetTableListAsync(sectionId.Value)
-            };
+            WaitingTokenId = waitingTokenId,
+            SectionList = await _tableSectionRepository.GetSectionListAsync(),
+            SectionId = sectionId.Value,
+            TableList = await _tableSectionRepository.GetTableListAsync(sectionId.Value)
+        };
 
-            return viewModel;
-        }
+        return viewModel;
+    }
     public async Task<WaitingAssignViewModel> GetMultiAssignTableViewModelAsync(int waitingTokenId, List<int>? sectionId = null)
+    {
+        var viewModel = new WaitingAssignViewModel
         {
-            var viewModel = new WaitingAssignViewModel
-            {
-                WaitingTokenId = waitingTokenId,
-                SectionList = await _tableSectionRepository.GetSectionListAsync(),
-                SectionId = sectionId[0],
-                TableList = await _tableSectionRepository.GetMultiTableListAsync(sectionId)
-            };
+            WaitingTokenId = waitingTokenId,
+            SectionList = await _tableSectionRepository.GetSectionListAsync(),
+            SectionId = sectionId[0],
+            TableList = await _tableSectionRepository.GetMultiTableListAsync(sectionId)
+        };
 
-            return viewModel;
-        }
+        return viewModel;
+    }
 
-    public async Task<List<SelectListItem>> GetSections(){
+    public async Task<List<SelectListItem>> GetSections()
+    {
         var sections = await _tableSectionRepository.GetSectionListAsync();
         return sections;
     }

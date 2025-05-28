@@ -69,12 +69,45 @@ public class WaitingTokenRepository : IWaitingTokenRepository
     }
     public async Task<IEnumerable<Waitingtoken>> GetAllWaitingTokens(List<int> sectionIds)
     {
-        var startDate = DateTime.Today;
-        var endDate = startDate.Date.AddDays(1).AddTicks(-1);
-        return await _context.Waitingtokens
-            .Where(u => sectionIds.Contains(u.Sectionid) && u.Isassigned == false && u.Createdat >= startDate && u.Modifiedat <= endDate)
-            .Include(w => w.Customer)
-            .ToListAsync();
+        // var startDate = DateTime.Today;
+        // var endDate = startDate.Date.AddDays(1).AddTicks(-1);
+        // return await _context.Waitingtokens
+        //     .Where(u => sectionIds.Contains(u.Sectionid) && u.Isassigned == false && u.Createdat >= startDate && u.Modifiedat <= endDate)
+        //     .Include(w => w.Customer)
+        //     .ToListAsync();
+
+        var connection = _context.Database.GetDbConnection();
+
+        if (connection.State != ConnectionState.Open)
+        {
+            await connection.OpenAsync();
+        }
+
+        const string query = "SELECT * FROM get_all_waiting_tokens_with_customer(@sectionIds)";
+
+        var parameters = new { sectionIds = sectionIds.ToArray() };
+
+        var result = await connection.QueryAsync(query, parameters);
+
+        var waitingTokens = result.Select(row => new Waitingtoken
+        {
+            Waitingtokenid = row.waitingtokenid,
+            Customerid = row.customerid,
+            Noofpeople = row.noofpeople,
+            Sectionid = row.sectionid,
+            Isassigned = row.isassigned,
+            Createdat = row.createdat,
+            Modifiedat = row.modifiedat,
+            Customer = new Customer
+            {
+                Email = row.email,
+                Phoneno = row.phoneno,
+                Customername = row.customername
+            }
+        }).ToList();
+
+        return waitingTokens;
+    
     }
 
     public async Task<bool> IsCustomerInWaitingList(int customerId)
@@ -92,23 +125,45 @@ public class WaitingTokenRepository : IWaitingTokenRepository
         await _context.SaveChangesAsync();
     }
 
+    public async Task<(string, int)> WaitingtoAssignTable(WaitingAssignViewModel model)
+    {
+        var connection = _context.Database.GetDbConnection();
+
+        if (connection.State != ConnectionState.Open)
+        {
+            await connection.OpenAsync();
+        }
+
+        const string query = "SELECT * FROM assign_table(@waiting_token_id, @selected_table_ids)";
+
+        var parameters = new
+        {
+            waiting_token_id = model.WaitingTokenId,
+            selected_table_ids = model.SelectedTableIds.ToArray()
+        };
+
+        var result = await connection.QuerySingleAsync<(string, int)>(query, parameters);
+
+        return result;
+    }
+
     public async Task<bool> DeleteAsync(int tokenId)
     {
         var connection = _context.Database.GetDbConnection();
 
-    if (connection.State != ConnectionState.Open)
-    {
-        await connection.OpenAsync();
-    }
+        if (connection.State != ConnectionState.Open)
+        {
+            await connection.OpenAsync();
+        }
 
-    const string query = "SELECT delete_waiting_token(@p_token_id)";
+        const string query = "SELECT delete_waiting_token(@p_token_id)";
 
-    var parameters = new { p_token_id = tokenId };
+        var parameters = new { p_token_id = tokenId };
 
-    // Call the PostgreSQL function and get the result
-    var result = await connection.QuerySingleAsync<bool>(query, parameters);
+        // Call the PostgreSQL function and get the result
+        var result = await connection.QuerySingleAsync<bool>(query, parameters);
 
-    return result;
+        return result;
     }
 
     public async Task<Waitingtoken?> GetTokenByIdWithCustomerAsync(int tokenId)
@@ -165,28 +220,28 @@ public class WaitingTokenRepository : IWaitingTokenRepository
         // return true;
         var connection = _context.Database.GetDbConnection();
 
-    if (connection.State != ConnectionState.Open)
-    {
-        await connection.OpenAsync();
-    }
+        if (connection.State != ConnectionState.Open)
+        {
+            await connection.OpenAsync();
+        }
 
-    const string query = "SELECT * FROM update_waiting_token_details(@p_waitingtokenid, @p_noofpeople, @p_sectionid, @p_customername, @p_email, @p_phoneno)";
+        const string query = "SELECT * FROM update_waiting_token_details(@p_waitingtokenid, @p_noofpeople, @p_sectionid, @p_customername, @p_email, @p_phoneno)";
 
-    var parameters = new
-    {
-        p_waitingtokenid = token.Waitingtokenid,
-        p_noofpeople = token.Noofpeople,
-        p_sectionid = token.Sectionid,
-        p_customername = token.Customername,
-        p_email = token.Email,
-        p_phoneno = token.Phoneno
-    };
+        var parameters = new
+        {
+            p_waitingtokenid = token.Waitingtokenid,
+            p_noofpeople = token.Noofpeople,
+            p_sectionid = token.Sectionid,
+            p_customername = token.Customername,
+            p_email = token.Email,
+            p_phoneno = token.Phoneno
+        };
 
-    var resultJson = await connection.QuerySingleAsync<string>(query, parameters);
+        var resultJson = await connection.QuerySingleAsync<string>(query, parameters);
 
-    var result = System.Text.Json.JsonSerializer.Deserialize<SaveWaitingTokenRawViewModel>(resultJson);
+        var result = System.Text.Json.JsonSerializer.Deserialize<SaveWaitingTokenRawViewModel>(resultJson);
 
-    return result;
+        return result;
     }
 
     public async Task<IEnumerable<Waitingtoken>> GetActiveWaitingTokensByDateRangeAsync(DateTime startDate, DateTime endDate)

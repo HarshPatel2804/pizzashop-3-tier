@@ -17,7 +17,7 @@ public class WaitingTokenService : IWaitingTokenService
     private readonly ITableSectionRepository _tableSectionRepository;
     private readonly Lazy<ITableSectionService> _tableSectionServiceLazy;
 
-    public WaitingTokenService(IWaitingTokenRepository waitingTokenRepository, ICustomerService customerService, Lazy<ITableSectionService> tableSectionService, ICustomerRepository customerRepository, IOrderService orderService , ITableSectionRepository tableSectionRepository)
+    public WaitingTokenService(IWaitingTokenRepository waitingTokenRepository, ICustomerService customerService, Lazy<ITableSectionService> tableSectionService, ICustomerRepository customerRepository, IOrderService orderService, ITableSectionRepository tableSectionRepository)
     {
         _waitingTokenRepository = waitingTokenRepository;
         _customerService = customerService;
@@ -27,7 +27,7 @@ public class WaitingTokenService : IWaitingTokenService
         _tableSectionRepository = tableSectionRepository;
     }
 
-    public async Task<(bool , string)> SaveWaitingToken(WaitingtokenViewModel model)
+    public async Task<(bool, string)> SaveWaitingToken(WaitingtokenViewModel model)
     {
         // var customer = await _customerService.GetCustomerByEmail(model.Email);
         // int customerId = 0;
@@ -55,7 +55,7 @@ public class WaitingTokenService : IWaitingTokenService
         // return await _waitingTokenRepository.SaveWaitingToken(WaitingTokenModel);
 
         var result = await _waitingTokenRepository.AddWaitingTokenAsync(model);
-        return(result.Success, result.Message);
+        return (result.Success, result.Message);
     }
 
     public async Task<IEnumerable<WaitingtokenViewModel>> GetAllWaitingTokens(List<int> sectionIds)
@@ -99,7 +99,7 @@ public class WaitingTokenService : IWaitingTokenService
     public async Task<IEnumerable<Waitingtoken>> GetWaitingTokensBySectionAsync(int sectionId)
     {
         var Result = await _waitingTokenRepository.GetAllWaitingTokensWithCustomer(sectionId);
-        
+
         return Result.Select(vm => new Waitingtoken
         {
             Waitingtokenid = vm.Waitingtokenid,
@@ -210,45 +210,46 @@ public class WaitingTokenService : IWaitingTokenService
     public async Task<(string, int)> AssignTable(WaitingAssignViewModel model)
     {
 
-        var token = await _waitingTokenRepository.GetTokenByIdWithCustomerAsync(model.WaitingTokenId);
-        int totalCapacity = 0;
-        foreach (int tableId in model.SelectedTableIds)
-        {
-            var tableDetails = await _tableSectionServiceLazy.Value.GetTableById(tableId);
-            totalCapacity += (int)tableDetails.Capacity;
-        }
+        // var token = await _waitingTokenRepository.GetTokenByIdWithCustomerAsync(model.WaitingTokenId);
+        // int totalCapacity = 0;
+        // foreach (int tableId in model.SelectedTableIds)
+        // {
+        //     var tableDetails = await _tableSectionServiceLazy.Value.GetTableById(tableId);
+        //     totalCapacity += (int)tableDetails.Capacity;
+        // }
 
-        if (totalCapacity < token.Noofpeople)
-        {
-            var result = $"Selected tables don't have enough capacity. Required: {token.Noofpeople}, Available: {totalCapacity}";
-            return (result, 0);
-        }
+        // if (totalCapacity < token.Noofpeople)
+        // {
+        //     var result = $"Selected tables don't have enough capacity. Required: {token.Noofpeople}, Available: {totalCapacity}";
+        //     return (result, 0);
+        // }
 
-        //Create Order
-        int orderId = await _orderService.createOrderbycustomerId(token.Customerid , token.Noofpeople);
+        // //Create Order
+        // int orderId = await _orderService.createOrderbycustomerId(token.Customerid, token.Noofpeople);
 
-        //Order Table mapping
-        List<Ordertable> orderTables = new List<Ordertable>();
-        foreach (int tableId in model.SelectedTableIds)
-        {
-            orderTables.Add(new Ordertable
-            {
-                Orderid = orderId,
-                Tableid = tableId
-            });
+        // //Order Table mapping
+        // List<Ordertable> orderTables = new List<Ordertable>();
+        // foreach (int tableId in model.SelectedTableIds)
+        // {
+        //     orderTables.Add(new Ordertable
+        //     {
+        //         Orderid = orderId,
+        //         Tableid = tableId
+        //     });
 
-            //update Table status to occupied
-            await _tableSectionRepository.UpdateTableStatusToOccupied(tableId);
-        }
+        //     //update Table status to occupied
+        //     await _tableSectionRepository.UpdateTableStatusToOccupied(tableId);
+        // }
 
-        await _tableSectionRepository.AddOrderTables(orderTables);
+        // await _tableSectionRepository.AddOrderTables(orderTables);
 
-        if (model.WaitingTokenId != null)
-        {
-            await WaitingToAssign(model.WaitingTokenId);
-        }
+        // if (model.WaitingTokenId != null)
+        // {
+        //     await WaitingToAssign(model.WaitingTokenId);
+        // }
 
-        return ("true", orderId);
+        // return ("true", orderId);
+        return await _waitingTokenRepository.WaitingtoAssignTable(model);
     }
 
 

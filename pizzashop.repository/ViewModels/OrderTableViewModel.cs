@@ -3,9 +3,9 @@ namespace pizzashop.repository.ViewModels
 {
  public enum TableViewStatus
     {
-        Available,
-        Assigned,
-        Running
+        Available = 0,
+        Assigned = 1,
+        Running = 2
     }
 
 public class OrderTableViewModel
