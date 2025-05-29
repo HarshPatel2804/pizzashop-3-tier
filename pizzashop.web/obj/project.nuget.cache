@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "i7V5oY11IJRqEoF0z82lYj388REn4GkYMtCDaSPbqF1RcHzEbbCCJ0y531lxvyJe2aBCngkQ0nDDVZS+l5Ul4Q==",
+  "dgSpecHash": "Z5dilg10FOTgKpbx2bR9mMJryhD6q7+iWM+36y0mxk1+18PTJlHDmgnA/xmFiexJ1dK1m2eW9tadDGRlUSClyw==",
   "success": true,
-  "projectFilePath": "d:\\pizzashop_3Tier\\pizzashop.web\\pizzashop.web.csproj",
+  "projectFilePath": "D:\\pizzashop_3Tier\\pizzashop.web\\pizzashop.web.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\pce29\\.nuget\\packages\\bouncycastle.cryptography\\2.5.0\\bouncycastle.cryptography.2.5.0.nupkg.sha512",
     "C:\\Users\\pce29\\.nuget\\packages\\dapper\\2.1.66\\dapper.2.1.66.nupkg.sha512",

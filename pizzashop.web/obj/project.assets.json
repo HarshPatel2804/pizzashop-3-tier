@@ -9739,11 +9739,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "d:\\pizzashop_3Tier\\pizzashop.web\\pizzashop.web.csproj",
+      "projectUniqueName": "D:\\pizzashop_3Tier\\pizzashop.web\\pizzashop.web.csproj",
       "projectName": "pizzashop.web",
-      "projectPath": "d:\\pizzashop_3Tier\\pizzashop.web\\pizzashop.web.csproj",
+      "projectPath": "D:\\pizzashop_3Tier\\pizzashop.web\\pizzashop.web.csproj",
       "packagesPath": "C:\\Users\\pce29\\.nuget\\packages\\",
-      "outputPath": "d:\\pizzashop_3Tier\\pizzashop.web\\obj\\",
+      "outputPath": "D:\\pizzashop_3Tier\\pizzashop.web\\obj\\",
       "projectStyle": "PackageReference",
       "centralPackageVersionsManagementEnabled": true,
       "configFilePaths": [
@@ -9759,8 +9759,8 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "projectReferences": {
-            "d:\\pizzashop_3Tier\\pizzashop.service\\pizzashop.service.csproj": {
-              "projectPath": "d:\\pizzashop_3Tier\\pizzashop.service\\pizzashop.service.csproj"
+            "D:\\pizzashop_3Tier\\pizzashop.service\\pizzashop.service.csproj": {
+              "projectPath": "D:\\pizzashop_3Tier\\pizzashop.service\\pizzashop.service.csproj"
             }
           }
         }

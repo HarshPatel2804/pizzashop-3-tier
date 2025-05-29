@@ -106,7 +106,7 @@ public class OrderTableController : Controller
         var (success, message , orderId) = await _tableSectionService.AssignTable(model);
         if(success)
         {
-            return Json(new { success = true, message = "Table Assigned Successfully", orderId });
+            return Json(new { success = true, message = "Table Assigned Successfully", orderid = orderId });
         }
         else
         {

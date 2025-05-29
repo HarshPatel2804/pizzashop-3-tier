@@ -295,6 +295,7 @@
                             dataType: 'json',
                             success: function (response) {
                                 if (response.success) {
+                                    console.log(response);
                                     var offcanvasElement = document.getElementById('AssignTableModal');
                                     var bsOffcanvas = bootstrap.Offcanvas.getInstance(offcanvasElement);
                                     bsOffcanvas.hide();
